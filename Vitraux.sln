@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vitraux", "src\Vitraux.csproj", "{66811227-E1AD-4874-A15C-94D64C5A58AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vitraux.Test", "test\Vitraux.Test.csproj", "{97450DEE-54AD-4126-B99B-AA3F1B2A703D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66811227-E1AD-4874-A15C-94D64C5A58AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66811227-E1AD-4874-A15C-94D64C5A58AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66811227-E1AD-4874-A15C-94D64C5A58AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66811227-E1AD-4874-A15C-94D64C5A58AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97450DEE-54AD-4126-B99B-AA3F1B2A703D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97450DEE-54AD-4126-B99B-AA3F1B2A703D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97450DEE-54AD-4126-B99B-AA3F1B2A703D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97450DEE-54AD-4126-B99B-AA3F1B2A703D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F383332D-96A6-479A-B0F7-7DDE5E393A0C}
+	EndGlobalSection
+EndGlobal
