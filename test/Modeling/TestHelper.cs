@@ -1,5 +1,4 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements;
-using Vitraux.Modeling.Building.ModelMappers;
+﻿using Vitraux.Modeling.Building.ModelMappers;
 using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Building.Selectors.TableRows;
@@ -114,16 +113,14 @@ namespace Vitraux.Test.Modeling
 
         private static void AssertDelegate(Delegate actual, Delegate expected)
         {
-            CollectionAssert.AreEqual(actual.Method.GetParameters().Select(p => p.ParameterType), expected.Method.GetParameters().Select(p => p.ParameterType));
+            var actualParametersTypes = GetDelegateParameterTypes(actual);
+            var expectedParametersTypes = GetDelegateParameterTypes(expected);
+
+            Assert.That(actualParametersTypes, Is.EquivalentTo(expectedParametersTypes));
             Assert.That(actual.Method.ReturnType, Is.EqualTo(expected.Method.ReturnType));
         }
-    }
 
-    internal class ModelMappingDataFake(IEnumerable<ValueModel> values, IEnumerable<CollectionTableModel> collectionTables) : IModelMappingData
-    {
-        public QueryElementStrategy QueryElementStrategy { get; set; }
-        public bool TrackChanges { get; set; }
-        IEnumerable<ValueModel> IModelMappingData.Values { get; } = values;
-        IEnumerable<CollectionTableModel> IModelMappingData.CollectionTables { get; } = collectionTables;
+        private static IEnumerable<Type> GetDelegateParameterTypes(Delegate @delegate)
+            => @delegate.Method.GetParameters().Select(p => p.ParameterType);
     }
 }
