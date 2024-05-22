@@ -13,7 +13,7 @@ internal class FinallizableRoot<TViewModel>(
     IDocumentElementSelectorBuilder<IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>
 {
     IEnumerable<ValueModel> IModelMappingData.Values => innerModelMapper.Values;
-    IEnumerable<CollectionTableModel> IModelMappingData.CollectionTables => innerModelMapper.CollectionTables;
+    IEnumerable<CollectionElementModel> IModelMappingData.CollectionElements => innerModelMapper.CollectionElements;
 
     IDocumentElementSelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
         IElementBuilder<TViewModel, IDocumentElementSelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.ToElements

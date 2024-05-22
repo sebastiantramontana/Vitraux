@@ -1,7 +1,7 @@
 ﻿using Vitraux.Modeling.Building.ModelMappers;
 using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Building.Selectors.Elements.Populating;
-using Vitraux.Modeling.Building.Selectors.TableRows;
+using Vitraux.Modeling.Building.Selectors.Insertion;
 using Vitraux.Modeling.Models;
 
 namespace Vitraux.Test.Modeling
@@ -14,11 +14,11 @@ namespace Vitraux.Test.Modeling
                 TargetElements = targetElements.ToArray()
             };
 
-        public static CollectionTableModel CreateCollectionTableModel(Delegate collectionFunc, ElementSelector tableSelector, RowSelector rowSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionTableModel> collectionTables)
+        public static CollectionTableModel CreateCollectionTableModel(Delegate collectionFunc, ElementSelector tableSelector, InsertionSelector rowSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionTableModel> collectionTables)
             => new(collectionFunc)
             {
-                TableSelector = tableSelector,
-                RowSelector = rowSelector,
+                ElementSelector = tableSelector,
+                InsertionSelector = rowSelector,
                 ModelMappingData = new ModelMappingDataFake(values, collectionTables)
             };
 
@@ -49,8 +49,8 @@ namespace Vitraux.Test.Modeling
         public static void AssertCollectionTableModel(CollectionTableModel actualCollection, CollectionTableModel expectedCollection)
         {
             AssertDelegate(actualCollection.CollectionFunc, expectedCollection.CollectionFunc);
-            AssertSelector(actualCollection.TableSelector, expectedCollection.TableSelector);
-            AssertRowSelector(actualCollection.RowSelector, expectedCollection.RowSelector);
+            AssertSelector(actualCollection.ElementSelector, expectedCollection.ElementSelector);
+            AssertRowSelector(actualCollection.InsertionSelector, expectedCollection.InsertionSelector);
             AssertModelMappingData(actualCollection.ModelMappingData, expectedCollection.ModelMappingData);
         }
 
@@ -87,7 +87,7 @@ namespace Vitraux.Test.Modeling
             Assert.That(actualSelector, Is.EqualTo(expectedSelector));
         }
 
-        public static void AssertRowSelector(RowSelector actualSelector, RowSelector expectedSelector)
+        public static void AssertRowSelector(InsertionSelector actualSelector, InsertionSelector expectedSelector)
         {
             Assert.That(actualSelector, Is.EqualTo(expectedSelector));
         }
@@ -97,27 +97,36 @@ namespace Vitraux.Test.Modeling
             Assert.Multiple(() =>
             {
                 Assert.That(actualModelMappingData.Values.Count(), Is.EqualTo(expectedModelMappingData.Values.Count()));
-                Assert.That(actualModelMappingData.CollectionTables.Count(), Is.EqualTo(expectedModelMappingData.CollectionTables.Count()));
+                Assert.That(actualModelMappingData.CollectionElements.Count(), Is.EqualTo(expectedModelMappingData.CollectionElements.Count()));
 
                 for (int i = 0; i < actualModelMappingData.Values.Count(); i++)
                 {
                     AssertValueModel(actualModelMappingData.Values.ElementAt(i), expectedModelMappingData.Values.ElementAt(i), false);
                 }
 
-                for (int i = 0; i < actualModelMappingData.CollectionTables.Count(); i++)
+                for (int i = 0; i < actualModelMappingData.CollectionElements.OfType<CollectionTableModel>().Count(); i++)
                 {
-                    AssertCollectionTableModel(actualModelMappingData.CollectionTables.ElementAt(i), expectedModelMappingData.CollectionTables.ElementAt(i));
+                    var actual = CastToCollectionTableAt(actualModelMappingData.CollectionElements, i);
+                    var expected = CastToCollectionTableAt(expectedModelMappingData.CollectionElements, i);
+
+                    AssertCollectionTableModel(actual, expected);
                 }
             });
         }
+
+        private static CollectionTableModel CastToCollectionTableAt(IEnumerable<CollectionElementModel> collection, int i)
+            => collection.Cast<CollectionTableModel>().ElementAt(i);
 
         private static void AssertDelegate(Delegate actual, Delegate expected)
         {
             var actualParametersTypes = GetDelegateParameterTypes(actual);
             var expectedParametersTypes = GetDelegateParameterTypes(expected);
 
-            Assert.That(actualParametersTypes, Is.EquivalentTo(expectedParametersTypes));
-            Assert.That(actual.Method.ReturnType, Is.EqualTo(expected.Method.ReturnType));
+            Assert.Multiple(() =>
+            {
+                Assert.That(actualParametersTypes, Is.EquivalentTo(expectedParametersTypes));
+                Assert.That(actual.Method.ReturnType, Is.EqualTo(expected.Method.ReturnType));
+            });
         }
 
         private static IEnumerable<Type> GetDelegateParameterTypes(Delegate @delegate)

@@ -6,7 +6,7 @@ namespace Vitraux.Modeling.Building.ModelMappers;
 internal class ModelMapperRoot<TViewModel> : IModelMapperRoot<TViewModel>
 {
     private readonly ICollection<ValueModel> _values = [];
-    private readonly ICollection<CollectionTableModel> _collections = [];
+    private readonly ICollection<CollectionElementModel> _collections = [];
 
     public IElementBuilderRoot<TViewModel> MapValue<TReturn>(Func<TViewModel, TReturn> func)
     {
@@ -17,13 +17,8 @@ internal class ModelMapperRoot<TViewModel> : IModelMapperRoot<TViewModel>
     }
 
     public ICollectionElementBuilder<TReturn, IModelMapperRoot<TViewModel>> MapCollection<TReturn>(Func<TViewModel, IEnumerable<TReturn>> func)
-    {
-        var collectionTableModel = new CollectionTableModel(func);
-        _collections.Add(collectionTableModel);
-
-        return new MapCollectionBuilder<TReturn, IModelMapperRoot<TViewModel>>(collectionTableModel, this);
-    }
+        => new MapCollectionBuilder<TReturn, IModelMapperRoot<TViewModel>>(_collections, func, this);
 
     IEnumerable<ValueModel> IModelMappingData.Values => _values;
-    IEnumerable<CollectionTableModel> IModelMappingData.CollectionTables => _collections;
+    IEnumerable<CollectionElementModel> IModelMappingData.CollectionElements => _collections;
 }

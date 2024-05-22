@@ -45,5 +45,5 @@ internal class JsGenerator<TViewModel>(
             .Values
             .SelectMany(v => v.TargetElements.Select(te => te.Selector))
             .Distinct()
-            .Concat(modelMappingData.CollectionTables.Select(c => c.TableSelector));
+            .Concat(modelMappingData.CollectionElements.Select(c => c.ElementSelector));
 }

@@ -11,7 +11,7 @@ internal class FinallizableCollection<TViewModel, TModelMapperBack>(
     IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>
 {
     IEnumerable<ValueModel> IModelMappingData.Values => innerModelMapper.Values;
-    IEnumerable<CollectionTableModel> IModelMappingData.CollectionTables => innerModelMapper.CollectionTables;
+    IEnumerable<CollectionElementModel> IModelMappingData.CollectionElements => innerModelMapper.CollectionElements;
 
     public TModelMapperBack EndCollection => innerModelMapper.EndCollection;
 

@@ -7,10 +7,10 @@ internal class ModelMapperCollection<TViewModel, TModelMapperBack>(TModelMapperB
     : IModelMapperCollection<TViewModel, TModelMapperBack>
 {
     private readonly ICollection<ValueModel> _values = [];
-    private readonly ICollection<CollectionTableModel> _collections = [];
+    private readonly ICollection<CollectionElementModel> _collections = [];
 
     IEnumerable<ValueModel> IModelMappingData.Values => _values;
-    IEnumerable<CollectionTableModel> IModelMappingData.CollectionTables => _collections;
+    IEnumerable<CollectionElementModel> IModelMappingData.CollectionElements => _collections;
 
     public TModelMapperBack EndCollection => modelMapperBack;
 
@@ -23,10 +23,5 @@ internal class ModelMapperCollection<TViewModel, TModelMapperBack>(TModelMapperB
     }
 
     public ICollectionElementBuilder<TReturn, IModelMapperCollection<TViewModel, TModelMapperBack>> MapCollection<TReturn>(Func<TViewModel, IEnumerable<TReturn>> func)
-    {
-        var collectionTableModel = new CollectionTableModel(func);
-        _collections.Add(collectionTableModel);
-
-        return new MapCollectionBuilder<TReturn, IModelMapperCollection<TViewModel, TModelMapperBack>>(collectionTableModel, this);
-    }
+        => new MapCollectionBuilder<TReturn, IModelMapperCollection<TViewModel, TModelMapperBack>>(_collections, func, this);
 }
