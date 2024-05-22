@@ -16,7 +16,7 @@ internal class ModelMapperRoot<TViewModel> : IModelMapperRoot<TViewModel>
         return new MapValueBuilder<TViewModel>(valueModel, this);
     }
 
-    public ICollectionElementBuilder<TReturn, IModelMapperRoot<TViewModel>> MapCollection<TReturn>(Func<TViewModel, IEnumerable<TReturn>> func)
+    public IPopulationForCollectionBuilder<TReturn, IModelMapperRoot<TViewModel>> MapCollection<TReturn>(Func<TViewModel, IEnumerable<TReturn>> func)
         => new MapCollectionBuilder<TReturn, IModelMapperRoot<TViewModel>>(_collections, func, this);
 
     IEnumerable<ValueModel> IModelMappingData.Values => _values;

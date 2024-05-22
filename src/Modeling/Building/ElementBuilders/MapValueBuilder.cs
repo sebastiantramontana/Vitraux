@@ -9,11 +9,11 @@ namespace Vitraux.Modeling.Building.ElementBuilders;
 internal class MapValueBuilder<TViewModel>(ValueModel valueModel, IModelMapperRoot<TViewModel> modelMapperRoot)
     : IElementBuilderRoot<TViewModel>,
     IDocumentElementSelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>,
-    IDocumentElementSelectorBuilder<IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>,
+    IDocumentElementSelectorBuilder<IPopulationToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>,
     IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>,
-    IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>,
-    IToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>,
-    IPopulatingChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
+    IPopulationToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>,
+    IRootValuePopulationToChildrenBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>,
+    IRootValuePopulationChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
 {
     private TargetElement _currentTargetElement = default!;
     private PopulatingAppendToElementSelector _currentByPopulatingElementsAppendTo = default!;
@@ -21,7 +21,7 @@ internal class MapValueBuilder<TViewModel>(ValueModel valueModel, IModelMapperRo
     public IDocumentElementSelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
         ToElements => this;
 
-    public IDocumentElementSelectorBuilder<IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>
+    public IDocumentElementSelectorBuilder<IPopulationToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>
         ByPopulatingElements => this;
 
     IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>
@@ -32,12 +32,12 @@ internal class MapValueBuilder<TViewModel>(ValueModel valueModel, IModelMapperRo
         IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>.ByQuery(string query)
         => CreateTargetElement(new ElementQuerySelector(query));
 
-    IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
-        IDocumentElementSelectorBuilder<IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.ById(string id)
+    IPopulationToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
+        IDocumentElementSelectorBuilder<IPopulationToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.ById(string id)
         => SetElementToAppendForPopulating(new PopulatingAppendToElementIdSelector(id));
 
-    IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
-        IElementQuerySelectorBuilder<IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.ByQuery(string query)
+    IPopulationToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
+        IElementQuerySelectorBuilder<IPopulationToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.ByQuery(string query)
         => SetElementToAppendForPopulating(new PopulatingAppendToElementQuerySelector(query));
 
     IFinallizableRoot<TViewModel>
@@ -48,20 +48,20 @@ internal class MapValueBuilder<TViewModel>(ValueModel valueModel, IModelMapperRo
         IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>.ToAttribute(string attribute)
         => CreateFinallizable(new AttributeElementPlace(attribute));
 
-    IToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
-        IPopulationToNextElementSelector<IToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.FromTemplate(string templateid)
+    IRootValuePopulationToChildrenBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
+        IPopulationToNextElementSelector<IRootValuePopulationToChildrenBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.FromTemplate(string templateid)
         => CreatePopulatingElementTarget(new ElementTemplateSelector(templateid));
 
-    IToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
-        IPopulationToNextElementSelector<IToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.FromFetch(Uri uri)
+    IRootValuePopulationToChildrenBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
+        IPopulationToNextElementSelector<IRootValuePopulationToChildrenBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>.FromFetch(Uri uri)
         => CreatePopulatingElementTarget(new ElementFetchSelector(uri));
 
-    IPopulatingChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
-        IToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>.ToChildren
+    IRootValuePopulationChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>
+        IRootValuePopulationToChildrenBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>.ToChildren
         => this;
 
     IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>
-        IPopulatingChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>.ByQuery(string query)
+        IRootValuePopulationChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>.ByQuery(string query)
         => SetTargetChildElementForPopulating(new ElementQuerySelector(query));
 
     private MapValueBuilder<TViewModel> CreateTargetElement(ElementSelector selector)

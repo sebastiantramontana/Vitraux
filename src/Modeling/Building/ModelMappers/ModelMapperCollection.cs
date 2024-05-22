@@ -22,6 +22,6 @@ internal class ModelMapperCollection<TViewModel, TModelMapperBack>(TModelMapperB
         return new ElementPlaceBuilderCollection<TViewModel, TModelMapperBack>(valueModel, this);
     }
 
-    public ICollectionElementBuilder<TReturn, IModelMapperCollection<TViewModel, TModelMapperBack>> MapCollection<TReturn>(Func<TViewModel, IEnumerable<TReturn>> func)
+    public IPopulationForCollectionBuilder<TReturn, IModelMapperCollection<TViewModel, TModelMapperBack>> MapCollection<TReturn>(Func<TViewModel, IEnumerable<TReturn>> func)
         => new MapCollectionBuilder<TReturn, IModelMapperCollection<TViewModel, TModelMapperBack>>(_collections, func, this);
 }

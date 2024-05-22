@@ -1,0 +1,29 @@
+//para elementos genericos
+.MapCollection(po=>po.Coleccion)
+    .ByPopulatingElements.ById("id")
+    .FromTemplate("templateid")
+        .MapValue(Vaccine=>Vaccine.Name)
+            .ToElements.ByQuery(".cell-pet-name").ToContent
+            .ToElements.ByQuery(".cell-pet-name").ToContent
+
+//posible feature para tablas: ToTBody(int tbodyIndex)
+.MapCollection(po => po.pets)
+    .ToTable.ById("pets-table")
+    .ByPopulatingRows.ToTBody(1)
+	.FromTemplate("pet-row-template")
+            .MapValue(pet => pet.Name)
+                .ToElements.ByQuery(".cell-pet-name").ToContent
+                .ToElements.ByQuery(".anchor-cell-pet-name").ToAttribute("href")
+
+//Un shortcut para mapeos de objetos complejos para evitar la propagacion de properties
+.MapComposite(vm=>vm.Property)
+    .MapValue(p=>p.Name).ToElements...
+    .MapCollection(p=>p.Collection)...
+
+en vez de...
+.MapValue(vm=>vm.Property.Name).ToElements...
+.MapCollection(vm=>vm.Property.Collection)...
+
+//Un "mapeo" a una function personalizada de JS a la que se le pasa el valor/colleccion
+.MapXXX(...).ToCustomFunction("myJsFunction") //aca finaliza la cadena y siguen todos los demas mappings
+.MapValue(...).ToElements... //sigue todo igual

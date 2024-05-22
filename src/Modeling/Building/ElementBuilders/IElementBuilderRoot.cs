@@ -2,7 +2,7 @@
 
 namespace Vitraux.Modeling.Building.ElementBuilders;
 
-public interface IElementBuilderRoot<TViewModel> : IElementBuilder<TViewModel, IDocumentElementSelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>
+public interface IElementBuilderRoot<TViewModel> : IToElementsBuilder<TViewModel, IDocumentElementSelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>>
 {
-    IDocumentElementSelectorBuilder<IAppendablePopulationElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>> ByPopulatingElements { get; }
+    IDocumentElementSelectorBuilder<IPopulationToChildrenElementSelector<IElementPlaceBuilder<TViewModel, IFinallizableRoot<TViewModel>>>> ByPopulatingElements { get; }
 }

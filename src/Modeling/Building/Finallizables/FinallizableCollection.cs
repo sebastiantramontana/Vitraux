@@ -16,14 +16,14 @@ internal class FinallizableCollection<TViewModel, TModelMapperBack>(
     public TModelMapperBack EndCollection => innerModelMapper.EndCollection;
 
     IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>
-        IElementBuilder<TViewModel, IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>>.ToElements
+        IToElementsBuilder<TViewModel, IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>>.ToElements
         => this;
 
     IElementBuilderCollection<TViewModel, TModelMapperBack>
         IModelMapper<TViewModel, IElementBuilderCollection<TViewModel, TModelMapperBack>, IModelMapperCollection<TViewModel, TModelMapperBack>, IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>>.MapValue<TReturn>(Func<TViewModel, TReturn> func)
         => innerModelMapper.MapValue(func);
 
-    ICollectionElementBuilder<TReturn, IModelMapperCollection<TViewModel, TModelMapperBack>>
+    IPopulationForCollectionBuilder<TReturn, IModelMapperCollection<TViewModel, TModelMapperBack>>
         IModelMapper<TViewModel, IElementBuilderCollection<TViewModel, TModelMapperBack>, IModelMapperCollection<TViewModel, TModelMapperBack>, IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>>.MapCollection<TReturn>(Func<TViewModel, IEnumerable<TReturn>> func)
         => innerModelMapper.MapCollection(func);
 

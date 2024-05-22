@@ -7,7 +7,7 @@ using Vitraux.Modeling.Models;
 namespace Vitraux.Modeling.Building.ElementBuilders;
 
 internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<CollectionElementModel> collectionElements, Delegate collectionElementsFunc, TModelMapperBack modelMapperBack)
-    : ICollectionElementBuilder<TViewModel, TModelMapperBack>,
+    : IPopulationForCollectionBuilder<TViewModel, TModelMapperBack>,
     IDocumentElementSelectorBuilder<ITableRowsBuilder<TViewModel, TModelMapperBack>>,
     ITableRowsBuilder<TViewModel, TModelMapperBack>,
     IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>
@@ -15,7 +15,7 @@ internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<Co
     private CollectionElementModel _currentCollectionElement = default!;
 
     IDocumentElementSelectorBuilder<ITableRowsBuilder<TViewModel, TModelMapperBack>>
-        ICollectionElementBuilder<TViewModel, TModelMapperBack>.ToTable
+        IPopulationForCollectionBuilder<TViewModel, TModelMapperBack>.ToTable
         => AddNewTableToCollectionElements();
 
     public IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>> ByPopulatingRows
