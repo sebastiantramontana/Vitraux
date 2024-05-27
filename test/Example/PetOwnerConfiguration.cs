@@ -36,8 +36,8 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery(".pet-photo").ToAttribute("src")
                     .MapCollection(pet => pet.Antiparasitics)
-                        .ToTable.ByQuery("inner-table-antiparasitics")
-                        .ByPopulatingRows.FromFetch(new Uri("http://mysite.com/htmlparts/row-antiparasitics.html"))
+                        .ByPopulatingElements.ByQuery("inner-nav-antiparasitics")
+                        .FromFetch(new Uri("http://mysite.com/htmlparts/row-antiparasitics.html"))
                             .MapValue(a => a.Name).ToElements.ByQuery(".div-antiparasitics").ToContent
                             .MapValue(a => a.DateApplied).ToElements.ByQuery(".span-antiparasitics-date").ToContent
                     .EndCollection

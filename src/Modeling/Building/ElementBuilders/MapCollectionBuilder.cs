@@ -1,5 +1,4 @@
-﻿using System;
-using Vitraux.Modeling.Building.ModelMappers;
+﻿using Vitraux.Modeling.Building.ModelMappers;
 using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Building.Selectors.Insertion;
 using Vitraux.Modeling.Models;
@@ -9,6 +8,7 @@ namespace Vitraux.Modeling.Building.ElementBuilders;
 internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<CollectionElementModel> collectionElements, Delegate collectionElementsFunc, TModelMapperBack modelMapperBack)
     : IPopulationForCollectionBuilder<TViewModel, TModelMapperBack>,
     IDocumentElementSelectorBuilder<ITableRowsBuilder<TViewModel, TModelMapperBack>>,
+    IDocumentElementSelectorBuilder<IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>>,
     ITableRowsBuilder<TViewModel, TModelMapperBack>,
     IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>
 {
@@ -18,7 +18,12 @@ internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<Co
         IPopulationForCollectionBuilder<TViewModel, TModelMapperBack>.ToTable
         => AddNewTableToCollectionElements();
 
-    public IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>> ByPopulatingRows
+    IDocumentElementSelectorBuilder<IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>>
+        IPopulationForCollectionBuilder<TViewModel, TModelMapperBack>.ByPopulatingElements
+        => AddNewElementToCollectionElements();
+
+    IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>
+        ITableRowsBuilder<TViewModel, TModelMapperBack>.ByPopulatingRows
         => this;
 
     ITableRowsBuilder<TViewModel, TModelMapperBack>
@@ -27,6 +32,14 @@ internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<Co
 
     ITableRowsBuilder<TViewModel, TModelMapperBack>
         IElementQuerySelectorBuilder<ITableRowsBuilder<TViewModel, TModelMapperBack>>.ByQuery(string query)
+        => SetElementSelectorToCurrentCollectionElement(new ElementQuerySelector(query));
+
+    IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>
+        IDocumentElementSelectorBuilder<IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>>.ById(string id)
+        => SetElementSelectorToCurrentCollectionElement(new ElementIdSelector(id));
+
+    IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>
+        IElementQuerySelectorBuilder<IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>>.ByQuery(string query)
         => SetElementSelectorToCurrentCollectionElement(new ElementQuerySelector(query));
 
     IModelMapperCollection<TViewModel, TModelMapperBack>
@@ -39,9 +52,20 @@ internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<Co
 
     private MapCollectionBuilder<TViewModel, TModelMapperBack> AddNewTableToCollectionElements()
     {
-        _currentCollectionElement = new CollectionTableModel(collectionElementsFunc);
-        collectionElements.Add(_currentCollectionElement);
+        AddNewCollectionElementToCollectionElements(new CollectionTableModel(collectionElementsFunc));
         return this;
+    }
+
+    private MapCollectionBuilder<TViewModel, TModelMapperBack> AddNewElementToCollectionElements()
+    {
+        AddNewCollectionElementToCollectionElements(new CollectionElementModel(collectionElementsFunc));
+        return this;
+    }
+
+    private void AddNewCollectionElementToCollectionElements(CollectionElementModel collectionElementModel)
+    {
+        _currentCollectionElement = collectionElementModel;
+        collectionElements.Add(_currentCollectionElement);
     }
 
     private MapCollectionBuilder<TViewModel, TModelMapperBack> SetElementSelectorToCurrentCollectionElement(ElementSelector selector)
@@ -52,7 +76,7 @@ internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<Co
 
     private ModelMapperCollection<TViewModel, TModelMapperBack> SetInsertionSelector(InsertionSelector insertionSelector)
     {
-        var modelMapper = new ModelMapperCollection<TViewModel, TModelMapperBack>(modelMapperBack);
+        ModelMapperCollection<TViewModel, TModelMapperBack> modelMapper = new(modelMapperBack);
 
         _currentCollectionElement.ModelMappingData = modelMapper;
         _currentCollectionElement.InsertionSelector = insertionSelector;

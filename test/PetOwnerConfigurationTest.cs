@@ -61,9 +61,9 @@ public class PetOwnerConfigurationTest
                     ])
                 ],
                 []),
-                TestHelper.CreateCollectionTableModel(
+                TestHelper.CreateCollectionElementModel(
                 (Pet m) => m.Antiparasitics,
-                new ElementQuerySelector("inner-table-antiparasitics"),
+                new ElementQuerySelector("inner-nav-antiparasitics"),
                 new FetchInsertionSelector(new Uri("http://mysite.com/htmlparts/row-antiparasitics.html")),
                 [
                     TestHelper.CreateValueModel((Antiparasitic v) => v.Name,
@@ -84,7 +84,7 @@ public class PetOwnerConfigurationTest
 
         TestHelper.AssertValueModel(data.Values.ElementAt(0), nameValue, false);
         TestHelper.AssertValueModel(data.Values.ElementAt(1), addressValue, false);
-        TestHelper.AssertCollectionTableModel(data.CollectionElements.Cast<CollectionTableModel>().ElementAt(0), petsCollection);
+        TestHelper.AssertCollectionElementModel(data.CollectionElements.Cast<CollectionTableModel>().ElementAt(0), petsCollection);
     }
 
     private string ToDataUri(byte[] data)

@@ -14,14 +14,11 @@ namespace Vitraux.Test.Modeling
                 TargetElements = targetElements.ToArray()
             };
 
-        public static CollectionTableModel CreateCollectionTableModel(Delegate collectionFunc, ElementSelector tableSelector, InsertionSelector rowSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionTableModel> collectionTables)
-            => new(collectionFunc)
-            {
-                ElementSelector = tableSelector,
-                InsertionSelector = rowSelector,
-                ModelMappingData = new ModelMappingDataFake(values, collectionTables)
-            };
+        public static CollectionTableModel CreateCollectionTableModel(Delegate collectionFunc, ElementSelector tableSelector, InsertionSelector rowSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
+            => FillCollectionElementModel(new CollectionTableModel(collectionFunc), tableSelector, rowSelector, values, collectionElements);
 
+        public static CollectionElementModel CreateCollectionElementModel(Delegate collectionFunc, ElementSelector elementSelector, InsertionSelector insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
+            => FillCollectionElementModel(new CollectionElementModel(collectionFunc), elementSelector, insertionSelector, values, collectionElements);
 
         public static ElementTemplateSelector CreateElementTemplateSelectorToId(string templateId, string elementToAppendId, string toChildQuerySelector)
             => new(templateId)
@@ -46,8 +43,10 @@ namespace Vitraux.Test.Modeling
         public static ElementPlace CreateContentElementPlace()
             => new ContentElementPlace();
 
-        public static void AssertCollectionTableModel(CollectionTableModel actualCollection, CollectionTableModel expectedCollection)
+        public static void AssertCollectionElementModel(CollectionElementModel actualCollection, CollectionElementModel expectedCollection)
         {
+            Assert.That(actualCollection, Is.TypeOf(expectedCollection.GetType()));
+
             AssertDelegate(actualCollection.CollectionFunc, expectedCollection.CollectionFunc);
             AssertSelector(actualCollection.ElementSelector, expectedCollection.ElementSelector);
             AssertRowSelector(actualCollection.InsertionSelector, expectedCollection.InsertionSelector);
@@ -104,18 +103,15 @@ namespace Vitraux.Test.Modeling
                     AssertValueModel(actualModelMappingData.Values.ElementAt(i), expectedModelMappingData.Values.ElementAt(i), false);
                 }
 
-                for (int i = 0; i < actualModelMappingData.CollectionElements.OfType<CollectionTableModel>().Count(); i++)
+                for (int i = 0; i < actualModelMappingData.CollectionElements.Count(); i++)
                 {
-                    var actual = CastToCollectionTableAt(actualModelMappingData.CollectionElements, i);
-                    var expected = CastToCollectionTableAt(expectedModelMappingData.CollectionElements, i);
+                    var actual = actualModelMappingData.CollectionElements.ElementAt(i);
+                    var expected = expectedModelMappingData.CollectionElements.ElementAt(i);
 
-                    AssertCollectionTableModel(actual, expected);
+                    AssertCollectionElementModel(actual, expected);
                 }
             });
         }
-
-        private static CollectionTableModel CastToCollectionTableAt(IEnumerable<CollectionElementModel> collection, int i)
-            => collection.Cast<CollectionTableModel>().ElementAt(i);
 
         private static void AssertDelegate(Delegate actual, Delegate expected)
         {
@@ -131,5 +127,15 @@ namespace Vitraux.Test.Modeling
 
         private static IEnumerable<Type> GetDelegateParameterTypes(Delegate @delegate)
             => @delegate.Method.GetParameters().Select(p => p.ParameterType);
+
+        private static TCollectionElementModel FillCollectionElementModel<TCollectionElementModel>(TCollectionElementModel collectionElementModel, ElementSelector elementSelector, InsertionSelector insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
+            where TCollectionElementModel : CollectionElementModel
+        {
+            collectionElementModel.ElementSelector = elementSelector;
+            collectionElementModel.InsertionSelector = insertionSelector;
+            collectionElementModel.ModelMappingData = new ModelMappingDataFake(values, collectionElements);
+
+            return collectionElementModel;
+        }
     }
 }
