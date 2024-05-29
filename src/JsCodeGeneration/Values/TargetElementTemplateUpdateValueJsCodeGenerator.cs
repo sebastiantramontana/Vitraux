@@ -2,6 +2,7 @@
 using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Models;
 
@@ -23,9 +24,9 @@ internal class TargetElementTemplateUpdateValueJsCodeGenerator(
 
     private string CreateUpdateByTemplateFunctionCall(TargetElement targetElement, ElementTemplateObjectName elementTemplateObjectName, string valueObjectName)
     {
-        var templateSelector = elementTemplateObjectName.AssociatedSelector as ElementTemplateSelector;
+        var templateSelector = elementTemplateObjectName.AssociatedSelector as ElementTemplateSelectorString;
 
-        var toChildQueryFunctionCall = GenerateToChildQueryFunctionCall(templateSelector!.TargetChildElement.Value);
+        var toChildQueryFunctionCall = GenerateToChildQueryFunctionCall((templateSelector!.TargetChildElement as ElementQuerySelectorString).Query);
         var updateTemplateChildFunctionCall = GenerateUpdateTemplateChildFunctionCall(targetElement, valueObjectName);
 
         return codeFormatting.Indent(updateByTemplateCall.Generate(elementTemplateObjectName.Name, elementTemplateObjectName.AppendToName, toChildQueryFunctionCall, updateTemplateChildFunctionCall));

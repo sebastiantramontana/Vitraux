@@ -6,22 +6,22 @@ namespace Vitraux.JsCodeGeneration.QueryElements;
 
 internal class QueryAppendToElementsDeclaringByTemplateJsCodeGenerator : IQueryAppendToElementsDeclaringByTemplateJsCodeGenerator
 {
-    public string GenerateAppendToJsCode(string appendToObjectName, PopulatingAppendToElementSelector elementToAppend, IJsQueryFromTemplateElementsDeclaringGeneratorFactory jsGeneratorFactory)
+    public string GenerateAppendToJsCode(string appendToObjectName, PopulatingAppendToElementSelectorBase elementToAppend, IJsQueryFromTemplateElementsDeclaringGeneratorFactory jsGeneratorFactory)
         => jsGeneratorFactory
             .GetInstance(elementToAppend.SelectionBy)
             .GenerateJsCode("document", MapElementObjectNameFromTemplateSelector(appendToObjectName, elementToAppend));
 
-    private static ElementObjectName MapElementObjectNameFromTemplateSelector(string objectName, PopulatingAppendToElementSelector fromTemplateElementSelector)
+    private static ElementObjectName MapElementObjectNameFromTemplateSelector(string objectName, PopulatingAppendToElementSelectorBase fromTemplateElementSelector)
     {
         var newSelector = CreateElementSelectorFromTemplateSelector(fromTemplateElementSelector);
         return new ElementObjectName(objectName, newSelector);
     }
 
-    private static ElementSelector CreateElementSelectorFromTemplateSelector(PopulatingAppendToElementSelector selector)
+    private static ElementSelectorBase CreateElementSelectorFromTemplateSelector(PopulatingAppendToElementSelectorBase selector)
         => selector.SelectionBy switch
         {
-            PopulatingAppendToElementSelection.Id => new ElementIdSelector(selector.Value),
-            PopulatingAppendToElementSelection.QuerySelector => new ElementQuerySelector(selector.Value),
+            PopulatingAppendToElementSelection.Id => new ElementIdSelectorString((selector as PopulatingAppendToElementIdSelectorString).Id),
+            PopulatingAppendToElementSelection.QuerySelector => new ElementQuerySelectorString((selector as PopulatingAppendToElementQuerySelectorString).Query),
             _ => throw new NotImplementedException($"{selector.SelectionBy} not implemented"),
         };
 }

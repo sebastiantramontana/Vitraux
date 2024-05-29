@@ -1,10 +1,10 @@
-//para elementos genericos
-.MapCollection(po=>po.Coleccion)
-    .ByPopulatingElements.ById("id")
-    .FromTemplate("templateid")
-        .MapValue(Vaccine=>Vaccine.Name)
-            .ToElements.ByQuery(".cell-pet-name").ToContent
-            .ToElements.ByQuery(".cell-pet-name").ToContent
++ //para elementos genericos
+ .MapCollection(po=>po.Coleccion)
+     .ByPopulatingElements.ById("id")
+     .FromTemplate("templateid")
+         .MapValue(Vaccine=>Vaccine.Name)
+             .ToElements.ByQuery(".cell-pet-name").ToContent
+             .ToElements.ByQuery(".cell-pet-name").ToContent
 
 //posible feature para tablas: ToTBody(int tbodyIndex)
 .MapCollection(po => po.pets)

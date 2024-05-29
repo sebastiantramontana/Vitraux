@@ -11,7 +11,7 @@ internal class QueryTemplateCallingJsBuiltInFunctionCodeGenerator(
     public string GenerateJsCode(ElementObjectName elementObjectName, Func<string> getElementTemplateCallingFunc, IJsQueryFromTemplateElementsDeclaringGeneratorFactory queryGeneratorFactory)
     {
         var templateObjectName = elementObjectName as ElementTemplateObjectName;
-        var templateSelector = templateObjectName!.AssociatedSelector as ElementTemplateSelector;
+        var templateSelector = templateObjectName!.AssociatedSelector as ElementTemplateSelectorString;
 
         var templateDeclaring = $"const {templateObjectName.Name} = {getElementTemplateCallingFunc()};";
         var appendToDeclaring = appendToDeclaringGenerator.GenerateAppendToJsCode(templateObjectName.AppendToName, templateSelector!.ElementToAppend, queryGeneratorFactory);

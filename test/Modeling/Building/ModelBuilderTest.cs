@@ -33,16 +33,16 @@ namespace Vitraux.Test.Modeling.Building
 
             //Assert
 
-            var querySelector = new ElementQuerySelector(".test > p");
-            var templateSelector = new ElementTemplateSelector("template-id")
+            var querySelector = new ElementQuerySelectorString(".test > p");
+            var templateSelector = new ElementTemplateSelectorString("template-id")
             {
-                ElementToAppend = new PopulatingAppendToElementIdSelector("element-to-append-id"),
-                TargetChildElement = new ElementQuerySelector(".children")
+                ElementToAppend = new PopulatingAppendToElementIdSelectorString("element-to-append-id"),
+                TargetChildElement = new ElementQuerySelectorString(".children")
             };
 
             var expectedValue1 = TestHelper.CreateValueModel(func1,
                 [
-                    TestHelper.CreateTargetElement(new ElementIdSelector("test-id"), TestHelper.CreateContentElementPlace()),
+                    TestHelper.CreateTargetElement(new ElementIdSelectorString("test-id"), TestHelper.CreateContentElementPlace()),
                     TestHelper.CreateTargetElement(querySelector, TestHelper.CreateAttributeElementPlace("data-name")),
                     TestHelper.CreateTargetElement(templateSelector, TestHelper.CreateContentElementPlace())
                 ]);

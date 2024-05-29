@@ -14,27 +14,27 @@ namespace Vitraux.Test.Modeling
                 TargetElements = targetElements.ToArray()
             };
 
-        public static CollectionTableModel CreateCollectionTableModel(Delegate collectionFunc, ElementSelector tableSelector, InsertionSelector rowSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
+        public static CollectionTableModel CreateCollectionTableModel(Delegate collectionFunc, ElementSelectorBase tableSelector, InsertionSelectorBase rowSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
             => FillCollectionElementModel(new CollectionTableModel(collectionFunc), tableSelector, rowSelector, values, collectionElements);
 
-        public static CollectionElementModel CreateCollectionElementModel(Delegate collectionFunc, ElementSelector elementSelector, InsertionSelector insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
+        public static CollectionElementModel CreateCollectionElementModel(Delegate collectionFunc, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
             => FillCollectionElementModel(new CollectionElementModel(collectionFunc), elementSelector, insertionSelector, values, collectionElements);
 
-        public static ElementTemplateSelector CreateElementTemplateSelectorToId(string templateId, string elementToAppendId, string toChildQuerySelector)
+        public static ElementTemplateSelectorString CreateElementTemplateSelectorToId(string templateId, string elementToAppendId, string toChildQuerySelector)
             => new(templateId)
             {
-                ElementToAppend = new PopulatingAppendToElementIdSelector(elementToAppendId),
-                TargetChildElement = new ElementQuerySelector(toChildQuerySelector)
+                ElementToAppend = new PopulatingAppendToElementIdSelectorString(elementToAppendId),
+                TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
             };
 
-        public static ElementTemplateSelector CreateElementTemplateSelectorToQuery(string templateId, string elementToAppendQuerySelector, string toChildQuerySelector)
+        public static ElementTemplateSelectorString CreateElementTemplateSelectorToQuery(string templateId, string elementToAppendQuerySelector, string toChildQuerySelector)
             => new(templateId)
             {
-                ElementToAppend = new PopulatingAppendToElementQuerySelector(elementToAppendQuerySelector),
-                TargetChildElement = new ElementQuerySelector(toChildQuerySelector)
+                ElementToAppend = new PopulatingAppendToElementQuerySelectorString(elementToAppendQuerySelector),
+                TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
             };
 
-        public static TargetElement CreateTargetElement(ElementSelector selector, ElementPlace place)
+        public static TargetElement CreateTargetElement(ElementSelectorBase selector, ElementPlace place)
             => new(selector) { Place = place };
 
         public static ElementPlace CreateAttributeElementPlace(string attribute)
@@ -81,12 +81,12 @@ namespace Vitraux.Test.Modeling
                 Assert.That(actualPlace, Is.EqualTo(expectedPlace).And.Not.Null);
         }
 
-        public static void AssertSelector(ElementSelector actualSelector, ElementSelector expectedSelector)
+        public static void AssertSelector(ElementSelectorBase actualSelector, ElementSelectorBase expectedSelector)
         {
             Assert.That(actualSelector, Is.EqualTo(expectedSelector));
         }
 
-        public static void AssertRowSelector(InsertionSelector actualSelector, InsertionSelector expectedSelector)
+        public static void AssertRowSelector(InsertionSelectorBase actualSelector, InsertionSelectorBase expectedSelector)
         {
             Assert.That(actualSelector, Is.EqualTo(expectedSelector));
         }
@@ -128,7 +128,7 @@ namespace Vitraux.Test.Modeling
         private static IEnumerable<Type> GetDelegateParameterTypes(Delegate @delegate)
             => @delegate.Method.GetParameters().Select(p => p.ParameterType);
 
-        private static TCollectionElementModel FillCollectionElementModel<TCollectionElementModel>(TCollectionElementModel collectionElementModel, ElementSelector elementSelector, InsertionSelector insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
+        private static TCollectionElementModel FillCollectionElementModel<TCollectionElementModel>(TCollectionElementModel collectionElementModel, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
             where TCollectionElementModel : CollectionElementModel
         {
             collectionElementModel.ElementSelector = elementSelector;

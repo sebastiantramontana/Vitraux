@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
 internal interface IJsQueryElementsDeclaringAlwaysGeneratorFactory
 {
-    IQueryElementsDeclaringJsCodeGenerator GetInstance(ElementSelector elementSelector);
+    IQueryElementsDeclaringJsCodeGenerator GetInstance(ElementSelectorBase elementSelector);
 }

@@ -7,7 +7,7 @@ internal class JsQueryElementsOnlyOnceOnDemandGeneratorFactory(
     IQueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsCodeGenerator jsQueryElementsByQuerySelectorGenerator,
     IQueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator jsQueryElementsByTemplateGenerator) : IJsQueryElementsOnlyOnceOnDemandGeneratorFactory
 {
-    public IQueryElementsDeclaringJsCodeGenerator GetInstance(ElementSelector elementSelector)
+    public IQueryElementsDeclaringJsCodeGenerator GetInstance(ElementSelectorBase elementSelector)
         => elementSelector.SelectionBy switch
         {
             ElementSelection.Id => jsQueryElementsByIdGenerator,

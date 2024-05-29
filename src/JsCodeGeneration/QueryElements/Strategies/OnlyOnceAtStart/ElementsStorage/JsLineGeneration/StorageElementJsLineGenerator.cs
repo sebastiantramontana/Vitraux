@@ -12,8 +12,8 @@ internal class StorageElementJsLineGenerator(
     public string Generate(ElementObjectName elementObjectName, string parentObjectName)
         => elementObjectName.AssociatedSelector.SelectionBy switch
         {
-            ElementSelection.Id => generatorById.Generate(elementObjectName.Name, elementObjectName.AssociatedSelector.Value),
-            ElementSelection.QuerySelector => generatorByQuerySelector.Generate(elementObjectName.Name, elementObjectName.AssociatedSelector.Value, parentObjectName),
+            ElementSelection.Id => generatorById.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementIdSelectorString).Id),
+            ElementSelection.QuerySelector => generatorByQuerySelector.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementQuerySelectorString).Query, parentObjectName),
             ElementSelection.Template => generatorByTemplate.Generate(elementObjectName, parentObjectName),
             _ => throw new NotImplementedException($"Selector type {elementObjectName.AssociatedSelector.SelectionBy} not implemented in {GetType().FullName} for OnlyOnceAtStart initialization"),
         };

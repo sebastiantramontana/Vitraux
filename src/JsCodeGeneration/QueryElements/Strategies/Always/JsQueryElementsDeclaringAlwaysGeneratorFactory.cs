@@ -8,7 +8,7 @@ internal class JsQueryElementsDeclaringAlwaysGeneratorFactory(
     IQueryElementsDeclaringAlwaysByTemplateJsCodeGenerator jsQueryElementsByTemplateGenerator)
     : IJsQueryElementsDeclaringAlwaysGeneratorFactory
 {
-    public IQueryElementsDeclaringJsCodeGenerator GetInstance(ElementSelector elementSelector)
+    public IQueryElementsDeclaringJsCodeGenerator GetInstance(ElementSelectorBase elementSelector)
         => elementSelector.SelectionBy switch
         {
             ElementSelection.Id => jsQueryElementsByIdGenerator,

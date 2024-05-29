@@ -25,7 +25,7 @@ internal class TargetElementsJsCodeGenerationBuilder(
     private static IEnumerable<ElementObjectName> GetElementNamesAssociatedToTargetElement(IEnumerable<ElementObjectName> elements, TargetElement targetElement)
         => elements.Where(e => e.AssociatedSelector == targetElement.Selector);
 
-    private ITargetElementUpdateValueJsCodeGenerator GetCodeGeneratorBySelector(ElementSelector selector)
-        => (selector is ElementTemplateSelector) ? targetTemplatetJsCodeGenerator : targetElementDirectJsCodeGenerator;
+    private ITargetElementUpdateValueJsCodeGenerator GetCodeGeneratorBySelector(ElementSelectorBase selector)
+        => (selector is ElementTemplateSelectorString) ? targetTemplatetJsCodeGenerator : targetElementDirectJsCodeGenerator;
 
 }

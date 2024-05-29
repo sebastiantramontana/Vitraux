@@ -4,6 +4,6 @@ namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
 internal interface IElementNamesGenerator
 {
-    IEnumerable<ElementObjectName> Generate(IEnumerable<ElementSelector> selectors);
+    IEnumerable<ElementObjectName> Generate(IEnumerable<ElementSelectorBase> selectors);
 }
 

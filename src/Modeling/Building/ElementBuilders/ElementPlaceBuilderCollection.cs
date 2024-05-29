@@ -8,32 +8,32 @@ namespace Vitraux.Modeling.Building.ElementBuilders;
 //TODO: Duplicated code in MapValueBuilder
 internal class ElementPlaceBuilderCollection<TViewModel, TModelMapperBack>(ValueModel valueModel, IModelMapperCollection<TViewModel, TModelMapperBack> modelMapper)
     : IElementBuilderCollection<TViewModel, TModelMapperBack>,
-    IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>,
+    IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>, TViewModel>,
     IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>
 {
     private TargetElement _currentTargetElement = default!;
 
-    IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>
-        IToElementsBuilder<TViewModel, IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>>.ToElements
+    IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>, TViewModel>
+        IToElementsBuilder<TViewModel, IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>, TViewModel>>.ToElements
         => this;
 
     IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>
-        IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>>.ByQuery(string query)
-    {
-        return CreateTargetElement(new ElementQuerySelector(query));
-    }
+        IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>, TViewModel>.ByQuery(string query) 
+        => CreateTargetElement(new ElementQuerySelectorString(query));
+
+    IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>
+        IElementQuerySelectorBuilder<IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>, TViewModel>.ByQuery(Func<TViewModel, string> queryFunc)
+        => CreateTargetElement(new ElementQuerySelectorDelegate(queryFunc));
 
     IFinallizableCollection<TViewModel, TModelMapperBack>
         IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>.ToContent
         => CreateFinallizable(new ContentElementPlace());
 
     IFinallizableCollection<TViewModel, TModelMapperBack>
-        IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>.ToAttribute(string attribute)
-    {
-        return CreateFinallizable(new AttributeElementPlace(attribute));
-    }
+        IElementPlaceBuilder<TViewModel, IFinallizableCollection<TViewModel, TModelMapperBack>>.ToAttribute(string attribute) 
+        => CreateFinallizable(new AttributeElementPlace(attribute));
 
-    private ElementPlaceBuilderCollection<TViewModel, TModelMapperBack> CreateTargetElement(ElementSelector selector)
+    private ElementPlaceBuilderCollection<TViewModel, TModelMapperBack> CreateTargetElement(ElementSelectorBase selector)
     {
         _currentTargetElement = new TargetElement(selector);
         valueModel.TargetElements = valueModel.TargetElements.Append(_currentTargetElement);

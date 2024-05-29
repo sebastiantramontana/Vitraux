@@ -18,61 +18,61 @@ public class PetOwnerConfigurationTest
     {
         ValueModel nameValue = TestHelper.CreateValueModel((PetOwner a) => a.Name,
         [
-            TestHelper.CreateTargetElement(new ElementIdSelector("petowner-name"), TestHelper.CreateContentElementPlace())
+            TestHelper.CreateTargetElement(new ElementIdSelectorString("petowner-name"), TestHelper.CreateContentElementPlace())
         ]);
 
-        Vitraux.Modeling.Building.Selectors.Elements.Populating.ElementTemplateSelector templateForValue2 = TestHelper.CreateElementTemplateSelectorToId("petowner-address-template", "petowner-parent", ".petowner-address-target");
+        Vitraux.Modeling.Building.Selectors.Elements.Populating.ElementTemplateSelectorString templateForValue2 = TestHelper.CreateElementTemplateSelectorToId("petowner-address-template", "petowner-parent", ".petowner-address-target");
 
         ValueModel addressValue = TestHelper.CreateValueModel((PetOwner a) => a.Address,
         [
             TestHelper.CreateTargetElement(templateForValue2, TestHelper.CreateContentElementPlace()),
-            TestHelper.CreateTargetElement(new ElementQuerySelector(".petwoner-address > div"), TestHelper.CreateAttributeElementPlace("data-petowner-address"))
+            TestHelper.CreateTargetElement(new ElementQuerySelectorString(".petwoner-address > div"), TestHelper.CreateAttributeElementPlace("data-petowner-address"))
         ]);
 
         CollectionTableModel petsCollection = TestHelper.CreateCollectionTableModel(
             (PetOwner a) => a.pets,
-            new ElementIdSelector("pets-table"),
-            new TemplateInsertionSelector("pet-row-template"),
+            new ElementIdSelectorString("pets-table"),
+            new TemplateInsertionSelectorString("pet-row-template"),
             [
                 TestHelper.CreateValueModel((Pet m) => m.Name,
                 [
-                    TestHelper.CreateTargetElement(new ElementQuerySelector(".cell-pet-name"),TestHelper.CreateContentElementPlace()),
-                    TestHelper.CreateTargetElement(new ElementQuerySelector(".anchor-cell-pet-name"),TestHelper.CreateAttributeElementPlace("href")),
-                    TestHelper.CreateTargetElement(new ElementQuerySelector(".another-anchor-cell-pet-name"),TestHelper.CreateAttributeElementPlace("href")),
+                    TestHelper.CreateTargetElement(new ElementQuerySelectorString(".cell-pet-name"),TestHelper.CreateContentElementPlace()),
+                    TestHelper.CreateTargetElement(new ElementQuerySelectorString(".anchor-cell-pet-name"),TestHelper.CreateAttributeElementPlace("href")),
+                    TestHelper.CreateTargetElement(new ElementQuerySelectorString(".another-anchor-cell-pet-name"),TestHelper.CreateAttributeElementPlace("href")),
                 ]),
                 TestHelper.CreateValueModel((Pet m) => ToDataUri(m.Photo),
                 [
-                    TestHelper.CreateTargetElement(new ElementQuerySelector(".pet-photo"), TestHelper.CreateAttributeElementPlace("src")),
+                    TestHelper.CreateTargetElement(new ElementQuerySelectorString(".pet-photo"), TestHelper.CreateAttributeElementPlace("src")),
                 ])
             ],
             [
                 TestHelper.CreateCollectionTableModel(
                 (Pet m) => m.Vaccines,
-                new ElementIdSelector("inner-table-vaccines"),
-                new FetchInsertionSelector(new Uri("http://mysite.com/htmlparts/row-vaccines.html")),
+                new ElementIdSelectorString("inner-table-vaccines"),
+                new FetchInsertionSelectorUri(new Uri("http://mysite.com/htmlparts/row-vaccines.html")),
                 [
                     TestHelper.CreateValueModel((Vaccine v) => v.Name,
                     [
-                        TestHelper.CreateTargetElement(new ElementQuerySelector(".div-vaccine"),TestHelper.CreateContentElementPlace())
+                        TestHelper.CreateTargetElement(new ElementQuerySelectorString(".div-vaccine"),TestHelper.CreateContentElementPlace())
                     ]),
                     TestHelper.CreateValueModel((Vaccine v) => v.DateApplied,
                     [
-                        TestHelper.CreateTargetElement(new ElementQuerySelector(".span-vaccine-date"),TestHelper.CreateContentElementPlace())
+                        TestHelper.CreateTargetElement(new ElementQuerySelectorString(".span-vaccine-date"),TestHelper.CreateContentElementPlace())
                     ])
                 ],
                 []),
                 TestHelper.CreateCollectionElementModel(
                 (Pet m) => m.Antiparasitics,
-                new ElementQuerySelector("inner-nav-antiparasitics"),
-                new FetchInsertionSelector(new Uri("http://mysite.com/htmlparts/row-antiparasitics.html")),
+                new ElementQuerySelectorString("inner-nav-antiparasitics"),
+                new FetchInsertionSelectorUri(new Uri("http://mysite.com/htmlparts/row-antiparasitics.html")),
                 [
                     TestHelper.CreateValueModel((Antiparasitic v) => v.Name,
                     [
-                        TestHelper.CreateTargetElement(new ElementQuerySelector(".div-antiparasitics"),TestHelper.CreateContentElementPlace())
+                        TestHelper.CreateTargetElement(new ElementQuerySelectorString(".div-antiparasitics"),TestHelper.CreateContentElementPlace())
                     ]),
                     TestHelper.CreateValueModel((Antiparasitic v) => v.DateApplied,
                     [
-                        TestHelper.CreateTargetElement(new ElementQuerySelector(".span-antiparasitics-date"),TestHelper.CreateContentElementPlace())
+                        TestHelper.CreateTargetElement(new ElementQuerySelectorString(".span-antiparasitics-date"),TestHelper.CreateContentElementPlace())
                     ])
                 ],
                 [])

@@ -6,11 +6,11 @@ internal class StorageFromTemplateElementJsLineGenerator(
     IStorageElementJsLineGeneratorById generatorById,
     IStorageElementJsLineGeneratorByQuerySelector generatorByQuerySelector) : IStorageFromTemplateElementJsLineGenerator
 {
-    public string Generate(PopulatingAppendToElementSelector selector, string elementObjectName, string parentObjectName)
+    public string Generate(PopulatingAppendToElementSelectorBase selector, string elementObjectName, string parentObjectName)
         => selector.SelectionBy switch
         {
-            PopulatingAppendToElementSelection.Id => generatorById.Generate(elementObjectName, selector.Value),
-            PopulatingAppendToElementSelection.QuerySelector => generatorByQuerySelector.Generate(elementObjectName, selector.Value, parentObjectName),
+            PopulatingAppendToElementSelection.Id => generatorById.Generate(elementObjectName, (selector as PopulatingAppendToElementIdSelectorString).Id),
+            PopulatingAppendToElementSelection.QuerySelector => generatorByQuerySelector.Generate(elementObjectName, (selector as PopulatingAppendToElementQuerySelectorString).Query, parentObjectName),
             _ => throw new NotImplementedException($"Selector type {selector.SelectionBy} not implemented"),
         };
 }

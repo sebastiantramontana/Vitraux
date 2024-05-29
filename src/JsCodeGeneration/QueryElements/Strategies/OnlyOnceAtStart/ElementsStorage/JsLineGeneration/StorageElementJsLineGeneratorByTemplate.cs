@@ -13,10 +13,10 @@ internal class StorageElementJsLineGeneratorByTemplate(
     public string Generate(ElementObjectName elementObjectName, string parentObjectToAppend)
     {
         var templateObjectName = elementObjectName as ElementTemplateObjectName;
-        var templateSelector = templateObjectName!.AssociatedSelector as ElementTemplateSelector;
+        var templateSelector = templateObjectName!.AssociatedSelector as ElementTemplateSelectorString;
 
         return new StringBuilder()
-            .AppendLine($"{getStoredElementByTemplateAsArrayCall.Generate(elementObjectName.AssociatedSelector.Value, elementObjectName.Name)};")
+            .AppendLine($"{getStoredElementByTemplateAsArrayCall.Generate(templateSelector.TemplateId, elementObjectName.Name)};")
             .Append(storageFromTemplateElementJsLineGenerator.Generate(templateSelector!.ElementToAppend, templateObjectName.AppendToName, parentObjectToAppend))
             .ToString();
     }

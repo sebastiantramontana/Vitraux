@@ -40,7 +40,7 @@ internal class JsGenerator<TViewModel>(
                 .GenerateJsCode(elements, rootObject)
                 .Trim();
 
-    private static IEnumerable<ElementSelector> GroupSelectors(IModelMappingData modelMappingData)
+    private static IEnumerable<ElementSelectorBase> GroupSelectors(IModelMappingData modelMappingData)
         => modelMappingData
             .Values
             .SelectMany(v => v.TargetElements.Select(te => te.Selector))

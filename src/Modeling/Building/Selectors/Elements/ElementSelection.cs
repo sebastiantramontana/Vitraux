@@ -1,10 +1,9 @@
-﻿namespace Vitraux.Modeling.Building.Selectors.Elements
+﻿namespace Vitraux.Modeling.Building.Selectors.Elements;
+
+internal enum ElementSelection
 {
-    internal enum ElementSelection
-    {
-        Id,
-        QuerySelector,
-        Template,
-        Fetch
-    }
+    Id,
+    QuerySelector,
+    Template,
+    Fetch
 }

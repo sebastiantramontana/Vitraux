@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 internal interface IJsQueryElementsOnlyOnceOnDemandGeneratorFactory
 {
-    IQueryElementsDeclaringJsCodeGenerator GetInstance(ElementSelector elementSelector);
+    IQueryElementsDeclaringJsCodeGenerator GetInstance(ElementSelectorBase elementSelector);
 }

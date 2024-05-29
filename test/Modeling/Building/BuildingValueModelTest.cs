@@ -13,13 +13,13 @@ namespace Vitraux.Test.Modeling.Building
         [Test]
         public void AddingNewTargetValueToValueModelTest()
         {
-            var selector1 = new ElementIdSelector("test-id");
-            var selector2 = new ElementQuerySelector(".test > p");
+            var selector1 = new ElementIdSelectorString("test-id");
+            var selector2 = new ElementQuerySelectorString(".test > p");
 
-            var templeateSelector = new ElementTemplateSelector("template-id")
+            var templeateSelector = new ElementTemplateSelectorString("template-id")
             {
-                ElementToAppend = new PopulatingAppendToElementIdSelector("element-to-append-id"),
-                TargetChildElement = new ElementQuerySelector(".chidren")
+                ElementToAppend = new PopulatingAppendToElementIdSelectorString("element-to-append-id"),
+                TargetChildElement = new ElementQuerySelectorString(".chidren")
             };
 
             var func1 = (ViewModelTest e) => e.Name;
