@@ -4,24 +4,22 @@ globalThis.vitraux = {
 
     storedElements: {
         elements: {},
-        getElementByIdAsArray(parent, id) {
-            const element = parent.getElementById
-                ? parent.getElementById(id)
-                : parent.querySelector("#".concat(id));
+        getElementByIdAsArray(id) {
+            const element = document.getElementById(id);
 
             return element ? [element] : [];
         },
 
-        getStoredElementByIdAsArray(parentObj, parentObjName, id, elementObjectName) {
-            const elementArray = this.elements[parentObjName][elementObjectName]
-                ?? this.storeElementByIdAsArray(parentObj, parentObjName, id, elementObjectName);
+        getStoredElementByIdAsArray(id, elementObjectName) {
+            const elementArray = this.elements["document"][elementObjectName]
+                ?? this.storeElementByIdAsArray(id, elementObjectName);
 
             return elementArray;
         },
 
-        storeElementByIdAsArray(parentObj, parentObjName, id, elementObjectName) {
-            const elementArray = this.getElementByIdAsArray(parentObj, id);
-            this.elements[parentObjName][elementObjectName] = elementArray;
+        storeElementByIdAsArray(id, elementObjectName) {
+            const elementArray = this.getElementByIdAsArray(id);
+            this.elements["document"][elementObjectName] = elementArray;
 
             return elementArray;
         },
