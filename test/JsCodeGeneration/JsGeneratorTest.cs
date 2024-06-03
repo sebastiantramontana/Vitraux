@@ -31,7 +31,7 @@ namespace Vitraux.Test.JsCodeGeneration
 
         const string expectedCodeOnDemand = """
                                             const elements0 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'elements0');
-                                            const elements1 = globalThis.vitraux.storedElements.getStoredElementByTemplateAsArray('petowner-address-template', 'elements1');
+                                            const elements1 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
                                             const elements1_appendTo = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
                                             const elements2 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petwoner-address > div', 'elements2');
                                             const elements3 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements3');
@@ -39,7 +39,7 @@ namespace Vitraux.Test.JsCodeGeneration
 
         const string expectedCodeAlways = """
                                           const elements0 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-name');
-                                          const elements1 = globalThis.vitraux.storedElements.getElementByTemplateAsArray('petowner-address-template');
+                                          const elements1 = globalThis.vitraux.storedElements.getTemplate('petowner-address-template');
                                           const elements1_appendTo = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-parent');
                                           const elements2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petwoner-address > div');
                                           const elements3 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
@@ -47,7 +47,7 @@ namespace Vitraux.Test.JsCodeGeneration
 
         const string expectedExecutedCodeForAtStart = """
                                                     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'elements0');
-                                                    globalThis.vitraux.storedElements.getStoredElementByTemplateAsArray('petowner-address-template', 'elements1');
+                                                    globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
                                                     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
                                                     globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petwoner-address > div', 'elements2');
                                                     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements3');
@@ -183,11 +183,11 @@ namespace Vitraux.Test.JsCodeGeneration
         {
             var generatorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
             var generatorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
-            var getStoredElementByTemlateAsArrayCall = new GetStoredElementByTemplateAsArrayCall();
+            var getStoredTemplateCall = new GetStoredTemplateCall();
             var storageElementJsLineGeneratorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
             var storageElementJsLineGeneratorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
             var storageFromTemplateElementJsLineGenerator = new StorageFromTemplateElementJsLineGenerator(storageElementJsLineGeneratorById, storageElementJsLineGeneratorByQuerySelector);
-            var generatorByTemplate = new StorageElementJsLineGeneratorByTemplate(getStoredElementByTemlateAsArrayCall, storageFromTemplateElementJsLineGenerator);
+            var generatorByTemplate = new StorageElementJsLineGeneratorByTemplate(getStoredTemplateCall, storageFromTemplateElementJsLineGenerator);
             var storageElementLineGenerator = new StorageElementJsLineGenerator(generatorById, generatorByQuerySelector, generatorByTemplate);
             var storageElementsBuilder = new StoreElementsJsCodeBuilder(storageElementLineGenerator);
             var initializer = new QueryElementsOnlyOnceAtStartup(storageElementsBuilder, jsCodeExecutor);
@@ -204,9 +204,9 @@ namespace Vitraux.Test.JsCodeGeneration
         {
             var declaringOnlyOncenDemandByIdGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator(getStoredElementByIdAsArrayCall);
             var declaringOnlyOnceOnDemandByQuerySelectorGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsCodeGenerator(getStoredElementsByQuerySelectorCall);
-            var getStoredElementByTemplateAsArrayCall = new GetStoredElementByTemplateAsArrayCall();
+            var getStoredTemplateCall = new GetStoredTemplateCall();
             var jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorFactory = new JsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorFactory(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator);
-            var declaringOnlyOnceOnDemandByTemplateGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(getStoredElementByTemplateAsArrayCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorFactory);
+            var declaringOnlyOnceOnDemandByTemplateGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(getStoredTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorFactory);
             var onDemandGeneratorFactory = new JsQueryElementsOnlyOnceOnDemandGeneratorFactory(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator, declaringOnlyOnceOnDemandByTemplateGenerator);
             var declaringOnlyOnceOnDemandGenerator = new QueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator(onDemandGeneratorFactory);
 
@@ -221,9 +221,9 @@ namespace Vitraux.Test.JsCodeGeneration
         {
             var declaringAlwaysByIdGenerator = new QueryElementsDeclaringAlwaysByIdJsCodeGenerator(getElementByIdAsArrayCall);
             var declaringAlwaysByQuerySelectorGenerator = new QueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator(getElementsByQuerySelectorCall);
-            var getElementByTemplateAsArrayCall = new GetElementByTemplateAsArrayCall();
+            var getTemplateCall = new GetTemplateCall();
             var jsQueryFromTemplateElementsDeclaringAlwaysGeneratorFactory = new JsQueryFromTemplateElementsDeclaringAlwaysGeneratorFactory(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator);
-            var declaringAlwaysByTemplateGenerator = new QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(getElementByTemplateAsArrayCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorFactory);
+            var declaringAlwaysByTemplateGenerator = new QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(getTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorFactory);
             var alwaysGeneratorFactory = new JsQueryElementsDeclaringAlwaysGeneratorFactory(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator, declaringAlwaysByTemplateGenerator);
             var declaringAlwaysGenerator = new QueryElementsDeclaringAlwaysCodeGenerator(alwaysGeneratorFactory);
 

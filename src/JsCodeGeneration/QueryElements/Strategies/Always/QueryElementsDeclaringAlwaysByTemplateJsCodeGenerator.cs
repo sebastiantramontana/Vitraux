@@ -5,7 +5,7 @@ using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
 internal class QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(
-    IGetElementByTemplateAsArrayCall getElementByTemplateAsArrayCalling,
+    IGetTemplateCall getElementByTemplateAsArrayCalling,
     IQueryTemplateCallingJsBuiltInFunctionCodeGenerator queryElementsDeclaringByTemplateCallingJsBuilt,
     IJsQueryFromTemplateElementsDeclaringAlwaysGeneratorFactory queryGeneratorFactory)
     : IQueryElementsDeclaringAlwaysByTemplateJsCodeGenerator

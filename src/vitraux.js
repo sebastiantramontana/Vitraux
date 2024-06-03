@@ -42,23 +42,23 @@ globalThis.vitraux = {
             return elements;
         },
 
-        getElementByTemplateAsArray(id) {
-            return document.getElementById(id)?.content ?? [];
+        getTemplate(id) {
+            return document.getElementById(id)?.content;
         },
 
-        getStoredElementByTemplateAsArray(id, elementsObjectName) {
+        getStoredTemplate(id, elementsObjectName) {
             const elements = this.elements["document"][elementsObjectName]
                 ?? this.storeElementByTemplateAsArray(id, elementsObjectName);
 
             return elements;
         },
 
-        storeElementByTemplateAsArray(id, elementsObjectName) {
+        storeTemplate(id, elementsObjectName) {
             const element = this.getElementByTemplateAsArray(id);
             this.elements["document"][elementsObjectName] = element;
 
             return element;
-        },
+        }
     },
     updating: {
         vms: {},
@@ -86,6 +86,9 @@ globalThis.vitraux = {
         },
 
         UpdateByTemplate(templateContent, appendToElements, toChildQueryFunction, updateTemplateChildFunction) {
+            if (!templateContent)
+                return;
+
             for (const appendToElement of appendToElements) {
                 const clonedTemplateContent = templateContent.cloneNode(true);
                 targetTemplateChildElements = toChildQueryFunction(clonedTemplateContent);

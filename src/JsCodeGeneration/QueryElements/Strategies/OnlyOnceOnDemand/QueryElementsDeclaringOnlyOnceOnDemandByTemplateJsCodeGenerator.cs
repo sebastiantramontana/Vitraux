@@ -5,7 +5,7 @@ using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 internal class QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(
-    IGetStoredElementByTemplateAsArrayCall getStoredElementByTemplateAsArrayCall,
+    IGetStoredTemplateCall getStoredElementByTemplateAsArrayCall,
     IQueryTemplateCallingJsBuiltInFunctionCodeGenerator queryElementsDeclaringByTemplateCallingJsBuilt,
     IJsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorFactory queryGeneratorFactory)
     : IQueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator

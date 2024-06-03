@@ -6,7 +6,7 @@ using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration;
 
 internal class StorageElementJsLineGeneratorByTemplate(
-    IGetStoredElementByTemplateAsArrayCall getStoredElementByTemplateAsArrayCall,
+    IGetStoredTemplateCall getStoredElementByTemplateAsArrayCall,
     IStorageFromTemplateElementJsLineGenerator storageFromTemplateElementJsLineGenerator)
     : IStorageElementJsLineGeneratorByTemplate
 {
