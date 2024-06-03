@@ -1,7 +1,6 @@
-﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating
+﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+
+internal interface ISetElementsContentCall
 {
-    internal interface ISetElementsContentCall
-    {
-        string Generate(string elementsArg, string contentArg);
-    }
+    string Generate(string elementsArg, string contentArg);
 }

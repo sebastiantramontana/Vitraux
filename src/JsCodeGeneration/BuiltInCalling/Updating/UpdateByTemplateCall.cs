@@ -1,16 +1,7 @@
-﻿using System.Text;
+﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 
-namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating
+internal class UpdateByTemplateCall(IUpdateByPopulatingElementsCall updateByPopulatingElementsCall) : IUpdateByTemplateCall
 {
-    internal class UpdateByTemplateCall(ICodeFormatting codeFormatting) : IUpdateByTemplateCall
-    {
-        public string Generate(string templateElementAsArrayObjectName, string appendToElementsObjectName, string toChildQueryFunctionCall, string updateTemplateChildFunctionCall)
-            => new StringBuilder()
-                .AppendLine($"globalThis.vitraux.updating.UpdateByTemplate(")
-                .AppendLine(codeFormatting.Indent($"{templateElementAsArrayObjectName}[0],"))
-                .AppendLine(codeFormatting.Indent($"{appendToElementsObjectName},"))
-                .AppendLine(codeFormatting.Indent($"{toChildQueryFunctionCall},"))
-                .AppendLine(codeFormatting.Indent($"{updateTemplateChildFunctionCall});"))
-                .ToString();
-    }
+    public string Generate(string templateElementObjectName, string appendToElementsObjectName, string toChildQueryFunctionCall, string updateTemplateChildFunctionCall) 
+        => updateByPopulatingElementsCall.Generate(templateElementObjectName, appendToElementsObjectName, toChildQueryFunctionCall, updateTemplateChildFunctionCall);
 }

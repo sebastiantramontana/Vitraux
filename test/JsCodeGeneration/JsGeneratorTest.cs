@@ -59,8 +59,8 @@ namespace Vitraux.Test.JsCodeGeneration
                                             }
 
                                             if(vm.value1) {
-                                                globalThis.vitraux.updating.UpdateByTemplate(
-                                                elements1[0],
+                                                globalThis.vitraux.updating.UpdateByPopulatingElements(
+                                                elements1,
                                                 elements1_appendTo,
                                                 (templateContent) => globalThis.vitraux.storedElements.getElementsByQuerySelector(templateContent, '.petowner-address-target'),
                                                 (targetTemplateChildElements) => globalThis.vitraux.updating.setElementsContent(targetTemplateChildElements, vm.value1));
@@ -169,7 +169,8 @@ namespace Vitraux.Test.JsCodeGeneration
 
             var codeFormatting = new CodeFormatting();
 
-            var updateByTemplateCall = new UpdateByTemplateCall(codeFormatting);
+            var updateByPopulatingElementsCall = new UpdateByPopulatingElementsCall(codeFormatting);
+            var updateByTemplateCall = new UpdateByTemplateCall(updateByPopulatingElementsCall);
 
             var targetElementDirectUpdateJsCodeGeneration = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator, codeFormatting);
             var targetElementTemplateUpdateJsCodeGeneration = new TargetElementTemplateUpdateValueJsCodeGenerator(updateByTemplateCall, getElementsByQuerySelectorCall, setElementsAttributeCall, setElementsContentCall, codeFormatting);

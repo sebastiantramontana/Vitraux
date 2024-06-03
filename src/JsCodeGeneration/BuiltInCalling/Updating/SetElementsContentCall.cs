@@ -1,8 +1,7 @@
-﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating
+﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+
+internal class SetElementsContentCall : ISetElementsContentCall
 {
-    internal class SetElementsContentCall : ISetElementsContentCall
-    {
-        public string Generate(string elementsArg, string contentArg)
-            => $"globalThis.vitraux.updating.setElementsContent({elementsArg}, {contentArg})";
-    }
+    public string Generate(string elementsArg, string contentArg)
+        => $"globalThis.vitraux.updating.setElementsContent({elementsArg}, {contentArg})";
 }

@@ -1,7 +1,6 @@
-﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating
+﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+
+internal interface IUpdateByTemplateCall
 {
-    internal interface IUpdateByTemplateCall
-    {
-        string Generate(string templateElementAsArrayObjectName, string appendToElementsObjectName, string toChildQueryFunctionCall, string updateTemplateChildFunctionCall);
-    }
+    string Generate(string templateElementObjectName, string appendToElementsObjectName, string toChildQueryFunctionCall, string updateTemplateChildFunctionCall);
 }

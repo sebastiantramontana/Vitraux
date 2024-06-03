@@ -47,14 +47,37 @@ globalThis.vitraux = {
         },
 
         getStoredTemplate(id, elementsObjectName) {
-            const elements = this.elements["document"][elementsObjectName]
-                ?? this.storeElementByTemplateAsArray(id, elementsObjectName);
+            const template = this.elements["document"][elementsObjectName]
+                ?? this.storeTemplate(id, elementsObjectName);
 
-            return elements;
+            return template;
         },
 
         storeTemplate(id, elementsObjectName) {
-            const element = this.getElementByTemplateAsArray(id);
+            const template = this.getTemplate(id);
+            this.elements["document"][elementsObjectName] = template;
+
+            return template;
+        },
+
+        async fetchElement(uri) {
+            const response = await fetch(uri);
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            return doc.body.firstElementChild;
+        },
+
+        async getFetchedElement(uri, elementsObjectName) {
+            const element = this.elements["document"][elementsObjectName]
+                ?? this.storeFetchedElement(uri, elementsObjectName);
+
+            return element;
+        },
+
+        async storeFetchedElement(uri, elementsObjectName) {
+            const element = await this.fetchElement(uri);
             this.elements["document"][elementsObjectName] = element;
 
             return element;
@@ -85,16 +108,16 @@ globalThis.vitraux = {
                 element.setAttribute(attribute, value);
         },
 
-        UpdateByTemplate(templateContent, appendToElements, toChildQueryFunction, updateTemplateChildFunction) {
-            if (!templateContent)
+        UpdateByPopulatingElements(element, appendToElements, toChildQueryFunction, updateElementChildFunction) {
+            if (!element)
                 return;
 
             for (const appendToElement of appendToElements) {
-                const clonedTemplateContent = templateContent.cloneNode(true);
-                targetTemplateChildElements = toChildQueryFunction(clonedTemplateContent);
-                updateTemplateChildFunction(targetTemplateChildElements);
+                const clonedElement = element.cloneNode(true);
+                targetChildElements = toChildQueryFunction(clonedElement);
+                updateElementChildFunction(targetChildElements);
 
-                vitraux.appendChild(appendToElement, clonedTemplateContent);
+                vitraux.appendChild(appendToElement, clonedElement);
             }
         }
     },
