@@ -4,13 +4,13 @@ using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 namespace Vitraux.JsCodeGeneration.QueryElements;
 
-internal class QueryElementsJsCodeGeneratorByStrategyFactory(
+internal class QueryElementsJsCodeGeneratorByStrategyContext(
     IQueryElementsOnlyOnceAtStartJsCodeGenerator atStartGenerator,
     IQueryElementsOnlyOnceOnDemandJsCodeGenerator onDemandGenerator,
     IQueryElementsAlwaysJsCodeGenerator alwaysGenerator)
-    : IQueryElementsJsCodeGeneratorByStrategyFactory
+    : IQueryElementsJsCodeGeneratorByStrategyContext
 {
-    public IQueryElementsJsCodeGenerator GetInstance(QueryElementStrategy strategy)
+    public IQueryElementsJsCodeGenerator GetStrategy(QueryElementStrategy strategy)
     => strategy switch
     {
         QueryElementStrategy.OnlyOnceAtStart => atStartGenerator,

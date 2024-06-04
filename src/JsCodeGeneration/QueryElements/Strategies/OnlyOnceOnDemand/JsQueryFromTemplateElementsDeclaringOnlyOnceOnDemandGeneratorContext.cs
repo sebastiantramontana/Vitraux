@@ -2,12 +2,12 @@
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
-internal class JsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorFactory(
+internal class JsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext(
     IQueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator jsQueryElementsByIdGenerator,
     IQueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsCodeGenerator jsQueryElementsByQuerySelectorGenerator)
-    : IJsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorFactory
+    : IJsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext
 {
-    public IQueryElementsDeclaringJsCodeGenerator GetInstance(PopulatingAppendToElementSelection selectionBy)
+    public IQueryElementsDeclaringJsCodeGenerator GetStrategy(PopulatingAppendToElementSelection selectionBy)
      => selectionBy switch
      {
          PopulatingAppendToElementSelection.Id => jsQueryElementsByIdGenerator,

@@ -2,10 +2,10 @@
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
-internal class QueryElementsDeclaringAlwaysCodeGenerator(IJsQueryElementsDeclaringAlwaysGeneratorFactory factory) : IQueryElementsDeclaringAlwaysCodeGenerator
+internal class QueryElementsDeclaringAlwaysCodeGenerator(IJsQueryElementsDeclaringAlwaysGeneratorContext context) : IQueryElementsDeclaringAlwaysCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => factory
-            .GetInstance(elementObjectName.AssociatedSelector)
+        => context
+            .GetStrategy(elementObjectName.AssociatedSelector)
             .GenerateJsCode(parentObjectName, elementObjectName);
 }

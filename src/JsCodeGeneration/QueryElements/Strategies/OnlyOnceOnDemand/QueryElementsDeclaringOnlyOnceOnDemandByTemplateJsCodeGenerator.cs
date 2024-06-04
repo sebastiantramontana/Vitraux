@@ -7,9 +7,9 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 internal class QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(
     IGetStoredTemplateCall getStoredElementByTemplateAsArrayCall,
     IQueryTemplateCallingJsBuiltInFunctionCodeGenerator queryElementsDeclaringByTemplateCallingJsBuilt,
-    IJsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorFactory queryGeneratorFactory)
+    IJsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext queryGeneratorContext)
     : IQueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, () => getStoredElementByTemplateAsArrayCall.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId, elementObjectName.Name), queryGeneratorFactory);
+        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, () => getStoredElementByTemplateAsArrayCall.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId, elementObjectName.Name), queryGeneratorContext);
 }

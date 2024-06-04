@@ -7,9 +7,9 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 internal class QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(
     IGetTemplateCall getElementByTemplateAsArrayCalling,
     IQueryTemplateCallingJsBuiltInFunctionCodeGenerator queryElementsDeclaringByTemplateCallingJsBuilt,
-    IJsQueryFromTemplateElementsDeclaringAlwaysGeneratorFactory queryGeneratorFactory)
+    IJsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext queryGeneratorContext)
     : IQueryElementsDeclaringAlwaysByTemplateJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, () => getElementByTemplateAsArrayCalling.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId), queryGeneratorFactory);
+        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, () => getElementByTemplateAsArrayCalling.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId), queryGeneratorContext);
 }

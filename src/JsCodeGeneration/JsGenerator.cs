@@ -8,7 +8,7 @@ using Vitraux.Modeling.Building.Selectors.Elements;
 namespace Vitraux.JsCodeGeneration;
 
 internal class JsGenerator<TViewModel>(
-    IQueryElementsJsCodeGeneratorByStrategyFactory queryElementsJsCodeGeneratorFactory,
+    IQueryElementsJsCodeGeneratorByStrategyContext queryElementsJsCodeGeneratorContext,
     IElementNamesGenerator elementNamesGenerator,
     IValueNamesGenerator valueNamesGenerator,
     IValuesJsCodeGenerator valueJsCodeGenerator)
@@ -35,8 +35,8 @@ internal class JsGenerator<TViewModel>(
             .Trim();
 
     private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<ElementObjectName> elements, string rootObject)
-        => queryElementsJsCodeGeneratorFactory
-                .GetInstance(strategy)
+        => queryElementsJsCodeGeneratorContext
+                .GetStrategy(strategy)
                 .GenerateJsCode(elements, rootObject)
                 .Trim();
 

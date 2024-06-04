@@ -6,9 +6,9 @@ namespace Vitraux.JsCodeGeneration.QueryElements;
 
 internal class QueryAppendToElementsDeclaringByTemplateJsCodeGenerator : IQueryAppendToElementsDeclaringByTemplateJsCodeGenerator
 {
-    public string GenerateAppendToJsCode(string appendToObjectName, PopulatingAppendToElementSelectorBase elementToAppend, IJsQueryFromTemplateElementsDeclaringGeneratorFactory jsGeneratorFactory)
-        => jsGeneratorFactory
-            .GetInstance(elementToAppend.SelectionBy)
+    public string GenerateAppendToJsCode(string appendToObjectName, PopulatingAppendToElementSelectorBase elementToAppend, IJsQueryFromTemplateElementsDeclaringGeneratorContext jsGeneratorContext)
+        => jsGeneratorContext
+            .GetStrategy(elementToAppend.SelectionBy)
             .GenerateJsCode("document", MapElementObjectNameFromTemplateSelector(appendToObjectName, elementToAppend));
 
     private static ElementObjectName MapElementObjectNameFromTemplateSelector(string objectName, PopulatingAppendToElementSelectorBase fromTemplateElementSelector)
