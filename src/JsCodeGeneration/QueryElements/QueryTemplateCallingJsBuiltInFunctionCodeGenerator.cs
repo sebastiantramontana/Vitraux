@@ -6,11 +6,11 @@ namespace Vitraux.JsCodeGeneration.QueryElements;
 
 internal class QueryTemplateCallingJsBuiltInFunctionCodeGenerator(
     IQueryAppendToElementsDeclaringByTemplateJsCodeGenerator appendToDeclaringGenerator)
-    : IQueryTemplateCallingJsBuiltInFunctionCodeGenerator
+    : IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator
 {
-    public string GenerateJsCode(ElementObjectName elementObjectName, Func<string> getElementTemplateCallingFunc, IJsQueryFromTemplateElementsDeclaringGeneratorContext queryGeneratorContext)
+    public string GenerateJsCode(ElementObjectName elementObjectName, Func<string> getElementTemplateCallingFunc, IJsQueryPopulatingElementsDeclaringGeneratorContext queryGeneratorContext)
     {
-        var templateObjectName = elementObjectName as ElementTemplateObjectName;
+        var templateObjectName = elementObjectName as PopulatingElementObjectName;
         var templateSelector = templateObjectName!.AssociatedSelector as ElementTemplateSelectorString;
 
         var templateDeclaring = $"const {templateObjectName.Name} = {getElementTemplateCallingFunc()};";

@@ -2,7 +2,7 @@
 
 namespace Vitraux.JsCodeGeneration.QueryElements
 {
-    internal interface IJsQueryFromTemplateElementsDeclaringGeneratorContext
+    internal interface IJsQueryPopulatingElementsDeclaringGeneratorContext
     {
         IQueryElementsDeclaringJsCodeGenerator GetStrategy(PopulatingAppendToElementSelection selectionBy);
     }

@@ -13,7 +13,7 @@ internal class ElementNamesGenerator : IElementNamesGenerator
         var objectName = $"elements{indexAsPostfix}";
 
         return selector is ElementTemplateSelectorString templateSelector
-            ? new ElementTemplateObjectName(objectName, $"{objectName}_appendTo", templateSelector)
+            ? new PopulatingElementObjectName(objectName, $"{objectName}_appendTo", templateSelector)
             : new ElementObjectName(objectName, selector);
     }
 }

@@ -18,11 +18,11 @@ internal class TargetElementTemplateUpdateValueJsCodeGenerator(
 {
     public string GenerateJsCode(TargetElement targetElement, IEnumerable<ElementObjectName> associatedElements, string valueObjectName)
         => associatedElements
-            .Cast<ElementTemplateObjectName>()
+            .Cast<PopulatingElementObjectName>()
             .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(CreateUpdateByTemplateFunctionCall(targetElement, ae, valueObjectName)))
             .ToString();
 
-    private string CreateUpdateByTemplateFunctionCall(TargetElement targetElement, ElementTemplateObjectName elementTemplateObjectName, string valueObjectName)
+    private string CreateUpdateByTemplateFunctionCall(TargetElement targetElement, PopulatingElementObjectName elementTemplateObjectName, string valueObjectName)
     {
         var templateSelector = elementTemplateObjectName.AssociatedSelector as ElementTemplateSelectorString;
 

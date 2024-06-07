@@ -71,7 +71,7 @@ globalThis.vitraux = {
 
         async getFetchedElement(uri, elementsObjectName) {
             const element = this.elements["document"][elementsObjectName]
-                ?? this.storeFetchedElement(uri, elementsObjectName);
+                ?? await this.storeFetchedElement(uri, elementsObjectName);
 
             return element;
         },

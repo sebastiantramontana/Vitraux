@@ -2,9 +2,9 @@
 
 namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
-internal record class ElementTemplateObjectName : ElementObjectName
+internal record class PopulatingElementObjectName : ElementObjectName
 {
-    internal ElementTemplateObjectName(string name, string appendToName, ElementTemplateSelectorString associatedSelector)
+    internal PopulatingElementObjectName(string name, string appendToName, PopulatingElementSelectorBase associatedSelector)
         : base(name, associatedSelector)
     {
         AppendToName = appendToName;

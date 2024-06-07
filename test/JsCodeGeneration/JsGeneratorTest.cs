@@ -185,11 +185,14 @@ namespace Vitraux.Test.JsCodeGeneration
             var generatorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
             var generatorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
             var getStoredTemplateCall = new GetStoredTemplateCall();
+            var getFetchedElementCall = new GetFetchedElementCall();
             var storageElementJsLineGeneratorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
             var storageElementJsLineGeneratorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
-            var storageFromTemplateElementJsLineGenerator = new StorageFromTemplateElementJsLineGenerator(storageElementJsLineGeneratorById, storageElementJsLineGeneratorByQuerySelector);
-            var generatorByTemplate = new StorageElementJsLineGeneratorByTemplate(getStoredTemplateCall, storageFromTemplateElementJsLineGenerator);
-            var storageElementLineGenerator = new StorageElementJsLineGenerator(generatorById, generatorByQuerySelector, generatorByTemplate);
+            var storagePopulatingAppendToElementJsLineGenerator = new StoragePopulatingAppendToElementJsLineGenerator(storageElementJsLineGeneratorById, storageElementJsLineGeneratorByQuerySelector);
+            var storagePopulatingElementJsLineGenerator = new StoragePopulatingElementJsLineGenerator(storagePopulatingAppendToElementJsLineGenerator);
+            var generatorByTemplate = new StorageElementJsLineGeneratorByTemplate(getStoredTemplateCall, storagePopulatingElementJsLineGenerator);
+            var generatorByFetch = new StorageElementJsLineGeneratorByFetch(getFetchedElementCall, storagePopulatingElementJsLineGenerator);
+            var storageElementLineGenerator = new StorageElementJsLineGenerator(generatorById, generatorByQuerySelector, generatorByTemplate, generatorByFetch);
             var storageElementsBuilder = new StoreElementsJsCodeBuilder(storageElementLineGenerator);
             var initializer = new QueryElementsOnlyOnceAtStartup(storageElementsBuilder, jsCodeExecutor);
             var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsCodeGenerator();
@@ -201,14 +204,16 @@ namespace Vitraux.Test.JsCodeGeneration
             IQueryElementsJsCodeBuilder builder,
             IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
             IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
-            IQueryTemplateCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
+            IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
         {
             var declaringOnlyOncenDemandByIdGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator(getStoredElementByIdAsArrayCall);
             var declaringOnlyOnceOnDemandByQuerySelectorGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsCodeGenerator(getStoredElementsByQuerySelectorCall);
             var getStoredTemplateCall = new GetStoredTemplateCall();
-            var jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext = new JsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator);
+            var getFetchedElementCall = new GetFetchedElementCall();
+            var jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext = new JsQueryPopulatingElementsDeclaringOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator);
             var declaringOnlyOnceOnDemandByTemplateGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(getStoredTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
-            var onDemandGeneratorContext = new JsQueryElementsOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator, declaringOnlyOnceOnDemandByTemplateGenerator);
+            var declaringOnlyOnceOnDemandByFetchGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByFetchJsCodeGenerator(getFetchedElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
+            var onDemandGeneratorContext = new JsQueryElementsOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator, declaringOnlyOnceOnDemandByTemplateGenerator, declaringOnlyOnceOnDemandByFetchGenerator);
             var declaringOnlyOnceOnDemandGenerator = new QueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator(onDemandGeneratorContext);
 
             return new QueryElementsOnlyOnceOnDemandJsCodeGenerator(builder, declaringOnlyOnceOnDemandGenerator);
@@ -218,14 +223,16 @@ namespace Vitraux.Test.JsCodeGeneration
             IQueryElementsJsCodeBuilder builder,
             IGetElementByIdAsArrayCall getElementByIdAsArrayCall,
             IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall,
-            IQueryTemplateCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
+            IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
         {
             var declaringAlwaysByIdGenerator = new QueryElementsDeclaringAlwaysByIdJsCodeGenerator(getElementByIdAsArrayCall);
             var declaringAlwaysByQuerySelectorGenerator = new QueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator(getElementsByQuerySelectorCall);
             var getTemplateCall = new GetTemplateCall();
-            var jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext = new JsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator);
+            var fetchElementCall = new FetchElementCall();
+            var jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext = new JsQueryPopulatingElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator);
             var declaringAlwaysByTemplateGenerator = new QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(getTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
-            var alwaysGeneratorContext = new JsQueryElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator, declaringAlwaysByTemplateGenerator);
+            var declaringAlwaysByFetchGenerator = new QueryElementsDeclaringAlwaysByFetchJsCodeGenerator(fetchElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
+            var alwaysGeneratorContext = new JsQueryElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator, declaringAlwaysByTemplateGenerator, declaringAlwaysByFetchGenerator);
             var declaringAlwaysGenerator = new QueryElementsDeclaringAlwaysCodeGenerator(alwaysGeneratorContext);
 
             return new QueryElementsAlwaysJsCodeGenerator(declaringAlwaysGenerator, builder);

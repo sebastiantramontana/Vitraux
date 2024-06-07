@@ -2,9 +2,9 @@
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration;
 
-internal class StorageFromTemplateElementJsLineGenerator(
+internal class StoragePopulatingAppendToElementJsLineGenerator(
     IStorageElementJsLineGeneratorById generatorById,
-    IStorageElementJsLineGeneratorByQuerySelector generatorByQuerySelector) : IStorageFromTemplateElementJsLineGenerator
+    IStorageElementJsLineGeneratorByQuerySelector generatorByQuerySelector) : IStoragePopulatingAppendToElementJsLineGenerator
 {
     public string Generate(PopulatingAppendToElementSelectorBase selector, string elementObjectName, string parentObjectName)
         => selector.SelectionBy switch

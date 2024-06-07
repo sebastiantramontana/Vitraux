@@ -4,6 +4,6 @@ namespace Vitraux.JsCodeGeneration.QueryElements
 {
     internal interface IQueryAppendToElementsDeclaringByTemplateJsCodeGenerator
     {
-        string GenerateAppendToJsCode(string appendToObjectName, PopulatingAppendToElementSelectorBase elementToAppend, IJsQueryFromTemplateElementsDeclaringGeneratorContext jsGeneratorContext);
+        string GenerateAppendToJsCode(string appendToObjectName, PopulatingAppendToElementSelectorBase elementToAppend, IJsQueryPopulatingElementsDeclaringGeneratorContext jsGeneratorContext);
     }
 }

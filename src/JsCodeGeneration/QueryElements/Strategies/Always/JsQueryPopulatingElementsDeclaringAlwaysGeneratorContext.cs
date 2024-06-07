@@ -2,16 +2,16 @@
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
-internal class JsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext(
+internal class JsQueryPopulatingElementsDeclaringAlwaysGeneratorContext(
     IQueryElementsDeclaringAlwaysByIdJsCodeGenerator jsQueryElementsByIdGenerator,
     IQueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator jsQueryElementsByQuerySelectorGenerator)
-    : IJsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext
+    : IJsQueryPopulatingElementsDeclaringAlwaysGeneratorContext
 {
     public IQueryElementsDeclaringJsCodeGenerator GetStrategy(PopulatingAppendToElementSelection selectionBy)
         => selectionBy switch
         {
             PopulatingAppendToElementSelection.Id => jsQueryElementsByIdGenerator,
             PopulatingAppendToElementSelection.QuerySelector => jsQueryElementsByQuerySelectorGenerator,
-            _ => throw new NotImplementedException($"IQueryElementsDeclaringJsCodeGenerator not implemented for FromTemplateElementSelection: {selectionBy}")
+            _ => throw new NotImplementedException($"IQueryElementsDeclaringJsCodeGenerator not implemented for PopulatingAppendToElementSelection: {selectionBy}")
         };
 }
