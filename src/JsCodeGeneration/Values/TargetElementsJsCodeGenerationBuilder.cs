@@ -8,7 +8,7 @@ namespace Vitraux.JsCodeGeneration.Values;
 
 internal class TargetElementsJsCodeGenerationBuilder(
     ITargetElementDirectUpdateValueJsCodeGenerator targetElementDirectJsCodeGenerator,
-    ITargetElementTemplateUpdateValueJsCodeGenerator targetTemplatetJsCodeGenerator)
+    ITargetByPopulatingElementsUpdateValueJsCodeGenerator targetPopulatingJsCodeGenerator)
     : ITargetElementsJsCodeGenerationBuilder
 {
     public string Build(ValueObjectName value, IEnumerable<ElementObjectName> elements)
@@ -26,6 +26,6 @@ internal class TargetElementsJsCodeGenerationBuilder(
         => elements.Where(e => e.AssociatedSelector == targetElement.Selector);
 
     private ITargetElementUpdateValueJsCodeGenerator GetCodeGeneratorBySelector(ElementSelectorBase selector)
-        => (selector is ElementTemplateSelectorString) ? targetTemplatetJsCodeGenerator : targetElementDirectJsCodeGenerator;
+        => (selector is PopulatingElementSelectorBase) ? targetPopulatingJsCodeGenerator : targetElementDirectJsCodeGenerator;
 
 }

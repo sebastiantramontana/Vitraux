@@ -27,6 +27,9 @@ namespace Vitraux.Test.JsCodeGeneration
                                             const elements1_appendTo = globalThis.vitraux.storedElements.elements.document.elements1_appendTo;
                                             const elements2 = globalThis.vitraux.storedElements.elements.document.elements2;
                                             const elements3 = globalThis.vitraux.storedElements.elements.document.elements3;
+                                            const elements3_appendTo = globalThis.vitraux.storedElements.elements.document.elements3_appendTo;
+                                            const elements4 = globalThis.vitraux.storedElements.elements.document.elements4;
+                                            const elements5 = globalThis.vitraux.storedElements.elements.document.elements5;
                                             """;
 
         const string expectedCodeOnDemand = """
@@ -34,7 +37,10 @@ namespace Vitraux.Test.JsCodeGeneration
                                             const elements1 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
                                             const elements1_appendTo = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
                                             const elements2 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petwoner-address > div', 'elements2');
-                                            const elements3 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements3');
+                                            const elements3 = await globalThis.vitraux.storedElements.getFetchedElement('https://mysite.com/htmlparts/phoneblock', 'elements3');
+                                            const elements3_appendTo = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petowner-phonenumber', 'elements3_appendTo');
+                                            const elements4 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'elements4');
+                                            const elements5 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements5');
                                             """;
 
         const string expectedCodeAlways = """
@@ -42,7 +48,10 @@ namespace Vitraux.Test.JsCodeGeneration
                                           const elements1 = globalThis.vitraux.storedElements.getTemplate('petowner-address-template');
                                           const elements1_appendTo = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-parent');
                                           const elements2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petwoner-address > div');
-                                          const elements3 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
+                                          const elements3 = await globalThis.vitraux.storedElements.fetchElement('https://mysite.com/htmlparts/phoneblock');
+                                          const elements3_appendTo = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petowner-phonenumber');
+                                          const elements4 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-phonenumber-id');
+                                          const elements5 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
                                           """;
 
         const string expectedExecutedCodeForAtStart = """
@@ -50,7 +59,10 @@ namespace Vitraux.Test.JsCodeGeneration
                                                     globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
                                                     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
                                                     globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petwoner-address > div', 'elements2');
-                                                    globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements3');
+                                                    await globalThis.vitraux.storedElements.getFetchedElement('https://mysite.com/htmlparts/phoneblock', 'elements3');
+                                                    globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petowner-phonenumber', 'elements3_appendTo');
+                                                    globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'elements4');
+                                                    globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements5');
                                                     """;
 
         const string expectedCodeForValues = """
@@ -62,10 +74,20 @@ namespace Vitraux.Test.JsCodeGeneration
                                                 globalThis.vitraux.updating.UpdateByPopulatingElements(
                                                 elements1,
                                                 elements1_appendTo,
-                                                (templateContent) => globalThis.vitraux.storedElements.getElementsByQuerySelector(templateContent, '.petowner-address-target'),
-                                                (targetTemplateChildElements) => globalThis.vitraux.updating.setElementsContent(targetTemplateChildElements, vm.value1));
+                                                (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-address-target'),
+                                                (targetChildElements) => globalThis.vitraux.updating.setElementsContent(targetChildElements, vm.value1));
 
                                                 globalThis.vitraux.updating.setElementsAttribute(elements2, 'data-petowner-address', vm.value1);
+                                            }
+
+                                            if(vm.value2) {
+                                                globalThis.vitraux.updating.UpdateByPopulatingElements(
+                                                elements3,
+                                                elements3_appendTo,
+                                                (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-phonenumber-target'),
+                                                (targetChildElements) => globalThis.vitraux.updating.setElementsAttribute(targetChildElements, 'data-phonenumber', vm.value2));
+
+                                                globalThis.vitraux.updating.setElementsContent(elements4, vm.value2);
                                             }
                                             """;
 
@@ -149,8 +171,8 @@ namespace Vitraux.Test.JsCodeGeneration
             var builder = new QueryElementsJsCodeBuilder();
             var getStoredElementByIdAsArrayCall = new GetStoredElementByIdAsArrayCall();
             var getStoredElementsByQuerySelectorCall = new GetStoredElementsByQuerySelectorCall();
-            var queryAppendToElementsDeclaringByTemplateJsCodeGenerator = new QueryAppendToElementsDeclaringByTemplateJsCodeGenerator();
-            var queryTemplateCallingJsBuiltInFunctionCodeGenerator = new QueryTemplateCallingJsBuiltInFunctionCodeGenerator(queryAppendToElementsDeclaringByTemplateJsCodeGenerator);
+            var queryAppendToElementsDeclaringByTemplateJsCodeGenerator = new QueryAppendToElementsDeclaringByPopulatingJsCodeGenerator();
+            var queryTemplateCallingJsBuiltInFunctionCodeGenerator = new QueryPopulatingCallingJsBuiltInFunctionCodeGenerator(queryAppendToElementsDeclaringByTemplateJsCodeGenerator);
 
             var atStartGenerator = CreateAtStartGenerator(builder, jsCodeExecutor, getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall);
             var onDemandGenerator = CreateOnDemandGenerator(builder, getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator);
@@ -168,13 +190,13 @@ namespace Vitraux.Test.JsCodeGeneration
             var contentCodeGenerator = new ElementPlaceContentJsCodeGenerator(setElementsContentCall);
 
             var codeFormatting = new CodeFormatting();
-
+            var toChildQueryFunctionCall = new ToChildQueryFunctionCall(getElementsByQuerySelectorCall);
             var updateByPopulatingElementsCall = new UpdateByPopulatingElementsCall(codeFormatting);
-            var updateByTemplateCall = new UpdateByTemplateCall(updateByPopulatingElementsCall);
+            var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall);
 
             var targetElementDirectUpdateJsCodeGeneration = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator, codeFormatting);
-            var targetElementTemplateUpdateJsCodeGeneration = new TargetElementTemplateUpdateValueJsCodeGenerator(updateByTemplateCall, getElementsByQuerySelectorCall, setElementsAttributeCall, setElementsContentCall, codeFormatting);
-            var targetElementsJsCodeGenerationBuilder = new TargetElementsJsCodeGenerationBuilder(targetElementDirectUpdateJsCodeGeneration, targetElementTemplateUpdateJsCodeGeneration);
+            var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall,codeFormatting);
+            var targetElementsJsCodeGenerationBuilder = new TargetElementsJsCodeGenerationBuilder(targetElementDirectUpdateJsCodeGeneration, targetByPopulatingElementsUpdateValueJsCodeGenerator);
             var valueCheckJsCodeGeneration = new ValueCheckJsCodeGeneration();
             var valuesJsCodeGenerationBuilder = new ValuesJsCodeGenerationBuilder(valueCheckJsCodeGeneration, targetElementsJsCodeGenerationBuilder);
             return new ValuesJsCodeGenerator(valuesJsCodeGenerationBuilder);

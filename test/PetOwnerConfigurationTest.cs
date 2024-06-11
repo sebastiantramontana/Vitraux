@@ -1,6 +1,7 @@
 ﻿using Vitraux.Helpers;
 using Vitraux.Modeling.Building.ModelMappers;
 using Vitraux.Modeling.Building.Selectors.Elements;
+using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Building.Selectors.Insertion;
 using Vitraux.Modeling.Models;
 using Vitraux.Test.Example;
@@ -16,21 +17,33 @@ public class PetOwnerConfigurationTest
     [Test]
     public void TestMapping()
     {
-        ValueModel nameValue = TestHelper.CreateValueModel((PetOwner a) => a.Name,
+        //Name value
+        var nameValue = TestHelper.CreateValueModel((PetOwner a) => a.Name,
         [
             TestHelper.CreateTargetElement(new ElementIdSelectorString("petowner-name"), TestHelper.CreateContentElementPlace())
         ]);
 
-        Vitraux.Modeling.Building.Selectors.Elements.Populating.ElementTemplateSelectorString templateForValue2 = TestHelper.CreateElementTemplateSelectorToId("petowner-address-template", "petowner-parent", ".petowner-address-target");
+        //Address value
+        var addressTemplate = TestHelper.CreateElementTemplateSelectorToId("petowner-address-template", "petowner-parent", ".petowner-address-target");
 
-        ValueModel addressValue = TestHelper.CreateValueModel((PetOwner a) => a.Address,
+        var addressValue = TestHelper.CreateValueModel((PetOwner a) => a.Address,
         [
-            TestHelper.CreateTargetElement(templateForValue2, TestHelper.CreateContentElementPlace()),
+            TestHelper.CreateTargetElement(addressTemplate, TestHelper.CreateContentElementPlace()),
             TestHelper.CreateTargetElement(new ElementQuerySelectorString(".petwoner-address > div"), TestHelper.CreateAttributeElementPlace("data-petowner-address"))
         ]);
 
-        CollectionTableModel petsCollection = TestHelper.CreateCollectionTableModel(
-            (PetOwner a) => a.pets,
+        //PhoneNumber value
+        var phoneUri = new Uri("https://mysite.com/htmlparts/phoneblock");
+        var phoneFetch = TestHelper.CreateElementFetchSelectorToQuery(phoneUri, ".petowner-phonenumber", ".petowner-phonenumber-target");
+
+        var phoneNumberValue = TestHelper.CreateValueModel((PetOwner a) => a.PhoneNumber,
+        [
+            TestHelper.CreateTargetElement(phoneFetch, TestHelper.CreateAttributeElementPlace("data-phonenumber")),
+            TestHelper.CreateTargetElement(new ElementIdSelectorString("petowner-phonenumber-id"), TestHelper.CreateContentElementPlace())
+        ]);
+
+        var petsCollection = TestHelper.CreateCollectionTableModel(
+            (PetOwner a) => a.Pets,
             new ElementIdSelectorString("pets-table"),
             new TemplateInsertionSelectorString("pet-row-template"),
             [
@@ -80,10 +93,12 @@ public class PetOwnerConfigurationTest
 
         PetOwnerConfiguration sut = new(dataUriConverter);
 
-        IModelMappingData data = sut.ConfigureMapping(new ModelMapperRoot<PetOwner>());
+        var data = sut.ConfigureMapping(new ModelMapperRoot<PetOwner>());
 
+        Assert.That(data.Values.Count(), Is.EqualTo(3));
         TestHelper.AssertValueModel(data.Values.ElementAt(0), nameValue, false);
         TestHelper.AssertValueModel(data.Values.ElementAt(1), addressValue, false);
+        TestHelper.AssertValueModel(data.Values.ElementAt(2), phoneNumberValue, false);
         TestHelper.AssertCollectionElementModel(data.CollectionElements.Cast<CollectionTableModel>().ElementAt(0), petsCollection);
     }
 

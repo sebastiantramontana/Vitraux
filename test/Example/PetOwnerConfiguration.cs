@@ -21,7 +21,14 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                     .ToContent
                 .ToElements.ByQuery(".petwoner-address > div")
                     .ToAttribute("data-petowner-address")
-            .MapCollection(po => po.pets)
+            .MapValue(po => po.PhoneNumber)
+                .ByPopulatingElements.ByQuery(".petowner-phonenumber")
+                    .FromFetch(new Uri("https://mysite.com/htmlparts/phoneblock"))
+                    .ToChildren.ByQuery(".petowner-phonenumber-target")
+                    .ToAttribute("data-phonenumber")
+                .ToElements.ById("petowner-phonenumber-id")
+                    .ToContent
+            .MapCollection(po => po.Pets)
                 .ToTable.ById("pets-table")
                 .ByPopulatingRows.FromTemplate("pet-row-template")
                     .MapValue(pet => pet.Name)

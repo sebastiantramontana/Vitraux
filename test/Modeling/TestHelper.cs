@@ -34,6 +34,20 @@ namespace Vitraux.Test.Modeling
                 TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
             };
 
+        public static ElementFetchSelectorUri CreateElementFetchSelectorToId(Uri uri, string elementToAppendId, string toChildQuerySelector)
+            => new(uri)
+            {
+                ElementToAppend = new PopulatingAppendToElementIdSelectorString(elementToAppendId),
+                TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
+            };
+
+        public static ElementFetchSelectorUri CreateElementFetchSelectorToQuery(Uri uri, string elementToAppendQuerySelector, string toChildQuerySelector)
+            => new(uri)
+            {
+                ElementToAppend = new PopulatingAppendToElementQuerySelectorString(elementToAppendQuerySelector),
+                TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
+            };
+
         public static TargetElement CreateTargetElement(ElementSelectorBase selector, ElementPlace place)
             => new(selector) { Place = place };
 
