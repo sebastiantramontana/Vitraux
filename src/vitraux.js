@@ -119,6 +119,25 @@ globalThis.vitraux = {
 
                 vitraux.appendChild(appendToElement, clonedElement);
             }
+        },
+
+        UpdateTable(table, row, updateCallback, collection) {
+            const tbody = table.tBodies[0];
+            const clonedTbody = tbody.cloneNode(false);
+
+            for (const collectionItem of collection) {
+                this.addNewRow(clonedTbody, row, updateCallback, collectionItem);
+            }
+
+            tbody.replaceWith(clonedTbody);
+        },
+
+        addNewRow(tbody, row, updateCallback, collectionItem) {
+            const clonedRow = row.cloneNode(true);
+
+            updateCallback(clonedRow, collectionItem);
+
+            tbody.appendChild(clonedRow);
         }
     },
 
