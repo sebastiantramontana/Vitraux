@@ -8,8 +8,8 @@ internal class ValuesJsCodeGenerationBuilder(
     ITargetElementsJsCodeGenerationBuilder targetElementJsBuilder)
     : IValuesJsCodeGenerationBuilder
 {
-    public string Build(IEnumerable<ValueObjectName> values, IEnumerable<ElementObjectName> elements)
+    public string BuildJsCode(string parentObjectName, IEnumerable<ValueObjectName> values, IEnumerable<ElementObjectName> elements)
         => values
-            .Aggregate(new StringBuilder(), (sb, value) => sb.AppendLine(valueCheck.GenerateJsCode(value.Name, targetElementJsBuilder.Build(value, elements))))
+            .Aggregate(new StringBuilder(), (sb, value) => sb.AppendLine(valueCheck.GenerateJsCode(parentObjectName, value.Name, targetElementJsBuilder.Build(value, elements))))
             .ToString();
 }

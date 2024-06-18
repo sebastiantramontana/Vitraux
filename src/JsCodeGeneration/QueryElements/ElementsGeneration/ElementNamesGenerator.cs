@@ -5,12 +5,12 @@ namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
 internal class ElementNamesGenerator : IElementNamesGenerator
 {
-    public IEnumerable<ElementObjectName> Generate(IEnumerable<ElementSelectorBase> selectors)
-        => selectors.Select((selector, indexAsPostfix) => CreateElementObjectName(indexAsPostfix, selector));
+    public IEnumerable<ElementObjectName> Generate(string namePrefix, IEnumerable<ElementSelectorBase> selectors)
+        => selectors.Select((selector, indexAsPostfix) => CreateElementObjectName(namePrefix, indexAsPostfix, selector));
 
-    private static ElementObjectName CreateElementObjectName(int indexAsPostfix, ElementSelectorBase selector)
+    private static ElementObjectName CreateElementObjectName(string namePrefix, int indexAsPostfix, ElementSelectorBase selector)
     {
-        var objectName = $"elements{indexAsPostfix}";
+        var objectName = $"{namePrefix}elements{indexAsPostfix}";
 
         return selector is PopulatingElementSelectorBase templateSelector
             ? new PopulatingElementObjectName(objectName, $"{objectName}_appendTo", templateSelector)

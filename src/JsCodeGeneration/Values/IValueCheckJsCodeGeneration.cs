@@ -2,5 +2,5 @@
 
 internal interface IValueCheckJsCodeGeneration
 {
-    string GenerateJsCode(string valueObjectName, string jsCodeBlock);
+    string GenerateJsCode(string objectParentName, string valueObjectName, string jsCodeBlock);
 }

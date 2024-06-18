@@ -161,7 +161,7 @@ namespace Vitraux.Test.JsCodeGeneration
             var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(jsCodeExecutor, getElementByIdAsArrayCall, getElementsByQuerySelectorCall);
             var elementNamesGenerator = new ElementNamesGenerator();
             var valueNamesGenerator = new ValueNamesGenerator();
-            var valueJsCodeGenerator = CreateValuesJsCodeGenerator(getElementsByQuerySelectorCall);
+            var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall);
 
             return new JsGenerator<PetOwner>(queryElementsGeneratorByStrategyContext, elementNamesGenerator, valueNamesGenerator, valueJsCodeGenerator);
         }
@@ -181,7 +181,7 @@ namespace Vitraux.Test.JsCodeGeneration
             return new QueryElementsJsCodeGeneratorByStrategyContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
         }
 
-        private static ValuesJsCodeGenerator CreateValuesJsCodeGenerator(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall)
+        private static IValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall)
         {
             var setElementsAttributeCall = new SetElementsAttributeCall();
             var attributeCodeGenerator = new ElementPlaceAttributeJsCodeGenerator(setElementsAttributeCall);
@@ -195,11 +195,10 @@ namespace Vitraux.Test.JsCodeGeneration
             var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall);
 
             var targetElementDirectUpdateJsCodeGeneration = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator, codeFormatting);
-            var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall,codeFormatting);
+            var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall, codeFormatting);
             var targetElementsJsCodeGenerationBuilder = new TargetElementsJsCodeGenerationBuilder(targetElementDirectUpdateJsCodeGeneration, targetByPopulatingElementsUpdateValueJsCodeGenerator);
             var valueCheckJsCodeGeneration = new ValueCheckJsCodeGeneration();
-            var valuesJsCodeGenerationBuilder = new ValuesJsCodeGenerationBuilder(valueCheckJsCodeGeneration, targetElementsJsCodeGenerationBuilder);
-            return new ValuesJsCodeGenerator(valuesJsCodeGenerationBuilder);
+            return new ValuesJsCodeGenerationBuilder(valueCheckJsCodeGeneration, targetElementsJsCodeGenerationBuilder);
         }
 
         private static QueryElementsOnlyOnceAtStartJsCodeGenerator CreateAtStartGenerator(IQueryElementsJsCodeBuilder builder, IJsCodeExecutor jsCodeExecutor, IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall, IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall)
