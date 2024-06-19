@@ -2,7 +2,7 @@
 
 namespace Vitraux.JsCodeGeneration.Values;
 
-internal interface ITargetElementsJsCodeGenerationBuilder
+internal interface ITargetElementsValueJsCodeGenerationBuilder
 {
     string Build(ValueObjectName value, IEnumerable<ElementObjectName> elements);
 }

@@ -2,7 +2,7 @@
 
 namespace Vitraux.JsCodeGeneration.Values;
 
-internal class ValueCheckJsCodeGeneration : IValueCheckJsCodeGeneration
+internal class PropertyCheckerJsCodeGeneration : IPropertyCheckerJsCodeGeneration
 {
     public string GenerateJsCode(string objectParentName, string valueObjectName, string jsCodeBlock)
         => new StringBuilder()

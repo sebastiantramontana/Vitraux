@@ -6,13 +6,15 @@ using Vitraux.Modeling.Models;
 
 namespace Vitraux.JsCodeGeneration.Values;
 
-internal class TargetElementsJsCodeGenerationBuilder(
+internal class TargetElementsValueJsCodeGenerationBuilder(
     ITargetElementDirectUpdateValueJsCodeGenerator targetElementDirectJsCodeGenerator,
     ITargetByPopulatingElementsUpdateValueJsCodeGenerator targetPopulatingJsCodeGenerator)
-    : ITargetElementsJsCodeGenerationBuilder
+    : ITargetElementsValueJsCodeGenerationBuilder
 {
     public string Build(ValueObjectName value, IEnumerable<ElementObjectName> elements)
-        => value.AssociatedValue.TargetElements
+        => value
+            .AssociatedValue
+            .TargetElements
             .Aggregate(new StringBuilder(), (sb, te) =>
             {
                 var associatedElements = GetElementNamesAssociatedToTargetElement(elements, te);

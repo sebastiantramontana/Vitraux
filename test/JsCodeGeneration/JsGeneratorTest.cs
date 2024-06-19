@@ -194,11 +194,11 @@ namespace Vitraux.Test.JsCodeGeneration
             var updateByPopulatingElementsCall = new UpdateByPopulatingElementsCall(codeFormatting);
             var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall);
 
-            var targetElementDirectUpdateJsCodeGeneration = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator, codeFormatting);
+            var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator, codeFormatting);
             var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall, codeFormatting);
-            var targetElementsJsCodeGenerationBuilder = new TargetElementsJsCodeGenerationBuilder(targetElementDirectUpdateJsCodeGeneration, targetByPopulatingElementsUpdateValueJsCodeGenerator);
-            var valueCheckJsCodeGeneration = new ValueCheckJsCodeGeneration();
-            return new ValuesJsCodeGenerationBuilder(valueCheckJsCodeGeneration, targetElementsJsCodeGenerationBuilder);
+            var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsCodeGenerationBuilder(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator);
+            var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration();
+            return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
         }
 
         private static QueryElementsOnlyOnceAtStartJsCodeGenerator CreateAtStartGenerator(IQueryElementsJsCodeBuilder builder, IJsCodeExecutor jsCodeExecutor, IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall, IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall)
