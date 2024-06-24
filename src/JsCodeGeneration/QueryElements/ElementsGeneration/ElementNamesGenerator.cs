@@ -5,6 +5,9 @@ namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
 internal class ElementNamesGenerator : IElementNamesGenerator
 {
+    public IEnumerable<ElementObjectName> Generate(IEnumerable<ElementSelectorBase> selectors)
+        => Generate(string.Empty, selectors);
+
     public IEnumerable<ElementObjectName> Generate(string namePrefix, IEnumerable<ElementSelectorBase> selectors)
         => selectors.Select((selector, indexAsPostfix) => CreateElementObjectName(namePrefix, indexAsPostfix, selector));
 

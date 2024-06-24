@@ -105,8 +105,7 @@ namespace Vitraux.Test.JsCodeGeneration
             var modelMapper = new ModelMapperRoot<PetOwner>();
             var data = personaConfig.ConfigureMapping(modelMapper);
 
-            var actualCode = sut.GenerateJsCode(data, new ConfigurationBehavior(queryElementStrategy, false));
-
+            var actualCode = sut.GenerateJsCode(data, queryElementStrategy);
             var expectedCode = expectedQueryElementsCode + Environment.NewLine + Environment.NewLine + expectedCodeForValues;
 
             Assert.That(actualCode, Is.EqualTo(expectedCode));
@@ -153,17 +152,19 @@ namespace Vitraux.Test.JsCodeGeneration
             Assert.That(element.Text, Is.EqualTo("text changed"));
         }
 
-        private static JsGenerator<PetOwner> CreateSut(IJsCodeExecutor jsCodeExecutor)
+        private static RootJsGenerator<PetOwner> CreateSut(IJsCodeExecutor jsCodeExecutor)
         {
             var getElementByIdAsArrayCall = new GetElementByIdAsArrayCall();
             var getElementsByQuerySelectorCall = new GetElementsByQuerySelectorCall();
 
             var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(jsCodeExecutor, getElementByIdAsArrayCall, getElementsByQuerySelectorCall);
+            var uniqueSelectorsFilter = new UniqueSelectorsFilter();
             var elementNamesGenerator = new ElementNamesGenerator();
             var valueNamesGenerator = new ValueNamesGenerator();
             var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall);
+            var jsGenerator = new JsGenerator<PetOwner>(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, valueJsCodeGenerator);
 
-            return new JsGenerator<PetOwner>(queryElementsGeneratorByStrategyContext, elementNamesGenerator, valueNamesGenerator, valueJsCodeGenerator);
+            return new RootJsGenerator<PetOwner>(uniqueSelectorsFilter, elementNamesGenerator, queryElementsGeneratorByStrategyContext, jsGenerator);
         }
 
         private static QueryElementsJsCodeGeneratorByStrategyContext CreateQueryElementsJsCodeGeneratorByStrategyContext(IJsCodeExecutor jsCodeExecutor, IGetElementByIdAsArrayCall getElementByIdAsArrayCall, IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall)
