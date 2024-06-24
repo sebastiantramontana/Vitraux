@@ -22,23 +22,23 @@ namespace Vitraux.Test.JsCodeGeneration
     public class JsGeneratorTest
     {
         const string expectedCodeAtStart = """
-                                            const elements0 = globalThis.vitraux.storedElements.elements.document.elements0;
-                                            const elements1 = globalThis.vitraux.storedElements.elements.document.elements1;
-                                            const elements1_appendTo = globalThis.vitraux.storedElements.elements.document.elements1_appendTo;
-                                            const elements2 = globalThis.vitraux.storedElements.elements.document.elements2;
-                                            const elements3 = globalThis.vitraux.storedElements.elements.document.elements3;
-                                            const elements3_appendTo = globalThis.vitraux.storedElements.elements.document.elements3_appendTo;
-                                            const elements4 = globalThis.vitraux.storedElements.elements.document.elements4;
-                                            const elements5 = globalThis.vitraux.storedElements.elements.document.elements5;
+                                            const elements0 = globalThis.vitraux.storedElements.elements.elements0;
+                                            const elements1 = globalThis.vitraux.storedElements.elements.elements1;
+                                            const elements1_appendTo = globalThis.vitraux.storedElements.elements.elements1_appendTo;
+                                            const elements2 = globalThis.vitraux.storedElements.elements.elements2;
+                                            const elements3 = globalThis.vitraux.storedElements.elements.elements3;
+                                            const elements3_appendTo = globalThis.vitraux.storedElements.elements.elements3_appendTo;
+                                            const elements4 = globalThis.vitraux.storedElements.elements.elements4;
+                                            const elements5 = globalThis.vitraux.storedElements.elements.elements5;
                                             """;
 
         const string expectedCodeOnDemand = """
                                             const elements0 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'elements0');
                                             const elements1 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
                                             const elements1_appendTo = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
-                                            const elements2 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petwoner-address > div', 'elements2');
+                                            const elements2 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'elements2');
                                             const elements3 = await globalThis.vitraux.storedElements.getFetchedElement('https://mysite.com/htmlparts/phoneblock', 'elements3');
-                                            const elements3_appendTo = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petowner-phonenumber', 'elements3_appendTo');
+                                            const elements3_appendTo = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'elements3_appendTo');
                                             const elements4 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'elements4');
                                             const elements5 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements5');
                                             """;
@@ -58,9 +58,9 @@ namespace Vitraux.Test.JsCodeGeneration
                                                     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'elements0');
                                                     globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
                                                     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
-                                                    globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petwoner-address > div', 'elements2');
+                                                    globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'elements2');
                                                     await globalThis.vitraux.storedElements.getFetchedElement('https://mysite.com/htmlparts/phoneblock', 'elements3');
-                                                    globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, 'document', '.petowner-phonenumber', 'elements3_appendTo');
+                                                    globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'elements3_appendTo');
                                                     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'elements4');
                                                     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements5');
                                                     """;

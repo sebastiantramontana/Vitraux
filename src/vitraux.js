@@ -11,7 +11,7 @@ globalThis.vitraux = {
         },
 
         getStoredElementByIdAsArray(id, elementObjectName) {
-            const elementArray = this.elements["document"][elementObjectName]
+            const elementArray = this.elements[elementObjectName]
                 ?? this.storeElementByIdAsArray(id, elementObjectName);
 
             return elementArray;
@@ -19,7 +19,7 @@ globalThis.vitraux = {
 
         storeElementByIdAsArray(id, elementObjectName) {
             const elementArray = this.getElementByIdAsArray(id);
-            this.elements["document"][elementObjectName] = elementArray;
+            this.elements[elementObjectName] = elementArray;
 
             return elementArray;
         },
@@ -28,16 +28,16 @@ globalThis.vitraux = {
             return parent.querySelectorAll(querySelector);
         },
 
-        getStoredElementsByQuerySelector(parentObj, parentObjName, querySelector, elementsObjectName) {
-            const elements = this.elements[parentObjName][elementsObjectName]
-                ?? this.storeElementsByQuerySelector(parentObj, parentObjName, querySelector, elementsObjectName);
+        getStoredElementsByQuerySelector(parentObj, querySelector, elementsObjectName) {
+            const elements = this.elements[elementsObjectName]
+                ?? this.storeElementsByQuerySelector(parentObj, querySelector, elementsObjectName);
 
             return elements;
         },
 
-        storeElementsByQuerySelector(parentObj, parentObjName, querySelector, elementsObjectName) {
+        storeElementsByQuerySelector(parentObj, querySelector, elementsObjectName) {
             const elements = this.getElementsByQuerySelector(parentObj, querySelector);
-            this.elements[parentObjName][elementsObjectName] = elements;
+            this.elements[elementsObjectName] = elements;
 
             return elements;
         },
@@ -47,7 +47,7 @@ globalThis.vitraux = {
         },
 
         getStoredTemplate(id, elementsObjectName) {
-            const template = this.elements["document"][elementsObjectName]
+            const template = this.elements[elementsObjectName]
                 ?? this.storeTemplate(id, elementsObjectName);
 
             return template;
@@ -55,7 +55,7 @@ globalThis.vitraux = {
 
         storeTemplate(id, elementsObjectName) {
             const template = this.getTemplate(id);
-            this.elements["document"][elementsObjectName] = template;
+            this.elements[elementsObjectName] = template;
 
             return template;
         },
@@ -70,7 +70,7 @@ globalThis.vitraux = {
         },
 
         async getFetchedElement(uri, elementsObjectName) {
-            const element = this.elements["document"][elementsObjectName]
+            const element = this.elements[elementsObjectName]
                 ?? await this.storeFetchedElement(uri, elementsObjectName);
 
             return element;
@@ -78,7 +78,7 @@ globalThis.vitraux = {
 
         async storeFetchedElement(uri, elementsObjectName) {
             const element = await this.fetchElement(uri);
-            this.elements["document"][elementsObjectName] = element;
+            this.elements[elementsObjectName] = element;
 
             return element;
         }

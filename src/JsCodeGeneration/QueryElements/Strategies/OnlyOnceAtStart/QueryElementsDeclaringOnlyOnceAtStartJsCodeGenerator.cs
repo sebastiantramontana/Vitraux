@@ -8,12 +8,12 @@ internal class QueryElementsDeclaringOnlyOnceAtStartJsCodeGenerator : IQueryElem
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
     {
         var elementCodeBuilder = new StringBuilder();
-        elementCodeBuilder.Append($"const {elementObjectName.Name} = globalThis.vitraux.storedElements.elements.{parentObjectName}.{elementObjectName.Name};");
+        elementCodeBuilder.Append($"const {elementObjectName.Name} = globalThis.vitraux.storedElements.elements.{elementObjectName.Name};");
 
         if (elementObjectName is PopulatingElementObjectName populatingObjectName)
         {
             elementCodeBuilder.AppendLine();
-            elementCodeBuilder.Append($"const {populatingObjectName.AppendToName} = globalThis.vitraux.storedElements.elements.{parentObjectName}.{populatingObjectName.AppendToName};");
+            elementCodeBuilder.Append($"const {populatingObjectName.AppendToName} = globalThis.vitraux.storedElements.elements.{populatingObjectName.AppendToName};");
         }
 
         return elementCodeBuilder.ToString();
