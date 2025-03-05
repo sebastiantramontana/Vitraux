@@ -2,14 +2,14 @@
 
 namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 
-internal class UpdateByPopulatingElementsCall(ICodeFormatting codeFormatting) : IUpdateByPopulatingElementsCall
+internal class UpdateValueByPopulatingElementsCall(ICodeFormatter codeFormatting) : IUpdateValueByPopulatingElementsCall
 {
     public string Generate(string elementObjectName, string appendToElementsObjectName, string toChildQueryFunctionCall, string updateElementChildFunctionCall)
         => new StringBuilder()
-            .AppendLine($"globalThis.vitraux.updating.UpdateByPopulatingElements(")
+            .AppendLine($"globalThis.vitraux.updating.UpdateValueByPopulatingElements(")
             .AppendLine(codeFormatting.Indent($"{elementObjectName},"))
             .AppendLine(codeFormatting.Indent($"{appendToElementsObjectName},"))
             .AppendLine(codeFormatting.Indent($"{toChildQueryFunctionCall},"))
-            .AppendLine(codeFormatting.Indent($"{updateElementChildFunctionCall});"))
+            .Append(codeFormatting.Indent($"{updateElementChildFunctionCall})"))
             .ToString();
 }

@@ -6,20 +6,20 @@ namespace Vitraux.JsCodeGeneration.Values;
 
 internal class TargetElementDirectUpdateValueJsCodeGenerator(
     IElementPlaceAttributeJsCodeGenerator attributeGenerator,
-    IElementPlaceContentJsCodeGenerator contentGenerator,
-    ICodeFormatting codeFormatting)
+    IElementPlaceContentJsCodeGenerator contentGenerator)
     : ITargetElementDirectUpdateValueJsCodeGenerator
 {
-    public string GenerateJsCode(TargetElement targetElement, IEnumerable<ElementObjectName> associatedElements, string valueObjectName)
+    public string GenerateJsCode(TargetElement targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName)
         => associatedElements
-            .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(GeneratePlaceJsCode(targetElement.Place, ae.Name, valueObjectName)))
-            .ToString();
+            .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(GeneratePlaceJsCode(targetElement.Place, ae.Name, parentValueObjectName, valueObjectName)))
+            .ToString()
+            .TrimEnd();
 
-    private string GeneratePlaceJsCode(ElementPlace elementPlace, string elementObjectName, string valueObjectName)
+    private string GeneratePlaceJsCode(ElementPlace elementPlace, string elementObjectName, string parentValueObjectName, string valueObjectName)
         => elementPlace.ElementPlacing switch
         {
-            ElementPlacing.Attribute => codeFormatting.Indent(attributeGenerator.Generate(elementPlace.Value, elementObjectName, valueObjectName)),
-            ElementPlacing.Content => codeFormatting.Indent(contentGenerator.Generate(elementObjectName, valueObjectName)),
+            ElementPlacing.Attribute => attributeGenerator.Generate(elementPlace.Value, elementObjectName, parentValueObjectName, valueObjectName),
+            ElementPlacing.Content => contentGenerator.Generate(elementObjectName, parentValueObjectName, valueObjectName),
             _ => throw new NotImplementedException($"ElementPlacing {elementPlace.ElementPlacing} not implemented in TargetElementJsCodeGeneration"),
         };
 }

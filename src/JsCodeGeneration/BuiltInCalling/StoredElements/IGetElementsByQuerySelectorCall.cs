@@ -2,6 +2,6 @@
 {
     internal interface IGetElementsByQuerySelectorCall
     {
-        string Generate(string parentObjectName, string querySelector);
+        string Generate(string parentElementObjectName, string querySelector);
     }
 }

@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.Values;
 
 internal interface ITargetElementsValueJsCodeGenerationBuilder
 {
-    string Build(ValueObjectName value, IEnumerable<ElementObjectName> elements);
+    string Build(string parentValueObjectName, ValueObjectName value, IEnumerable<ElementObjectName> elements);
 }

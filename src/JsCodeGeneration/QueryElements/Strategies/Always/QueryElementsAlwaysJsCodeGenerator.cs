@@ -7,8 +7,8 @@ internal class QueryElementsAlwaysJsCodeGenerator(
     IQueryElementsJsCodeBuilder builder)
     : IQueryElementsAlwaysJsCodeGenerator
 {
-    public string GenerateJsCode(IEnumerable<ElementObjectName> elements, string parentObjectName)
-        => builder.BuildJsCode(generator, elements, parentObjectName);
+    public string GenerateJsCode(IEnumerable<ElementObjectName> elements, string parentElementObjectName)
+        => builder.BuildJsCode(generator, elements, parentElementObjectName);
 }
 
 

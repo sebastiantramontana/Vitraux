@@ -6,7 +6,11 @@ namespace Vitraux.Modeling.Models;
 
 internal record class CollectionElementModel(Delegate CollectionFunc)
 {
-    internal ElementSelectorBase ElementSelector { get; set; } = default!;
-    internal InsertionSelectorBase InsertionSelector { get; set; } = default!;
+    internal CollectionSelector CollectionSelector { get; set; } = default!;
     internal IModelMappingData ModelMappingData { get; set; } = default!;
+}
+
+internal record class CollectionSelector(ElementSelectorBase AppendToElementSelector)
+{
+    internal InsertionSelectorBase InsertionSelector { get; set; } = default!;
 }

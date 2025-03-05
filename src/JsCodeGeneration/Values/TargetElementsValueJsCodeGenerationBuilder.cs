@@ -11,7 +11,7 @@ internal class TargetElementsValueJsCodeGenerationBuilder(
     ITargetByPopulatingElementsUpdateValueJsCodeGenerator targetPopulatingJsCodeGenerator)
     : ITargetElementsValueJsCodeGenerationBuilder
 {
-    public string Build(ValueObjectName value, IEnumerable<ElementObjectName> elements)
+    public string Build(string parentValueObjectName, ValueObjectName value, IEnumerable<ElementObjectName> elements)
         => value
             .AssociatedValue
             .TargetElements
@@ -20,9 +20,12 @@ internal class TargetElementsValueJsCodeGenerationBuilder(
                 var associatedElements = GetElementNamesAssociatedToTargetElement(elements, te);
                 var generator = GetCodeGeneratorBySelector(te.Selector);
 
-                return sb.Append(generator.GenerateJsCode(te, associatedElements, value.Name));
+                return sb
+                    .AppendLine(generator.GenerateJsCode(te, associatedElements, parentValueObjectName, value.Name))
+                    .AppendLine();
             })
-            .ToString();
+            .ToString()
+            .TrimEnd();
 
     private static IEnumerable<ElementObjectName> GetElementNamesAssociatedToTargetElement(IEnumerable<ElementObjectName> elements, TargetElement targetElement)
         => elements.Where(e => e.AssociatedSelector == targetElement.Selector);

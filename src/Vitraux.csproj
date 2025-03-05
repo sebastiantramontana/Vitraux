@@ -17,4 +17,8 @@
 		</Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="JsCodeGeneration\QueryElements\Strategies\OnlyOnceAtStart\ElementsStorage\JsLineGeneration\Collection\" />
+	</ItemGroup>
+
 </Project>

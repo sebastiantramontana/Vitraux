@@ -6,10 +6,10 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
 internal class QueryElementsDeclaringAlwaysByFetchJsCodeGenerator(
     IFetchElementCall fetchElementCall,
-    IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryElementsDeclaringByTemplateCallingJsBuilt,
+    IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryElementsDeclaringByPopulatingCallingJsBuilt,
     IJsQueryPopulatingElementsDeclaringAlwaysGeneratorContext queryGeneratorContext)
     : IQueryElementsDeclaringAlwaysByFetchJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, () => fetchElementCall.Generate((elementObjectName.AssociatedSelector as ElementFetchSelectorUri).Uri), queryGeneratorContext);
+        => queryElementsDeclaringByPopulatingCallingJsBuilt.GenerateJsCode(elementObjectName, fetchElementCall.Generate((elementObjectName.AssociatedSelector as ElementFetchSelectorUri).Uri), queryGeneratorContext);
 }

@@ -5,11 +5,11 @@ using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 internal class QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(
-    IGetStoredTemplateCall getStoredElementByTemplateAsArrayCall,
+    IGetStoredTemplateCall getStoredElementByTemplateCall,
     IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryElementsDeclaringByPopulatingCallingJsBuilt,
     IJsQueryPopulatingElementsDeclaringOnlyOnceOnDemandGeneratorContext queryGeneratorContext)
     : IQueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => queryElementsDeclaringByPopulatingCallingJsBuilt.GenerateJsCode(elementObjectName, () => getStoredElementByTemplateAsArrayCall.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId, elementObjectName.Name), queryGeneratorContext);
+        => queryElementsDeclaringByPopulatingCallingJsBuilt.GenerateJsCode(elementObjectName, getStoredElementByTemplateCall.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId, elementObjectName.Name), queryGeneratorContext);
 }

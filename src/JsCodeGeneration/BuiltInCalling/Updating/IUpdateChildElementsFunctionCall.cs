@@ -4,6 +4,6 @@ namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 
 internal interface IUpdateChildElementsFunctionCall
 {
-    string Generate(TargetElement toChildTargetElement, string valueObjectName);
+    string Generate(TargetElement toChildTargetElement, string parentValueObjectName, string valueObjectName);
 }
 

@@ -4,7 +4,7 @@ namespace Vitraux.JsCodeGeneration.QueryElements;
 
 internal interface IQueryElementsJsCodeBuilder
 {
-    string BuildJsCode(IQueryElementsDeclaringJsCodeGenerator declaringJsCodeGenerator, IEnumerable<ElementObjectName> selectors, string parentObjectName);
+    string BuildJsCode(IQueryElementsDeclaringJsCodeGenerator declaringJsCodeGenerator, IEnumerable<ElementObjectName> selectors, string parentElementObjectName);
 }
 
 

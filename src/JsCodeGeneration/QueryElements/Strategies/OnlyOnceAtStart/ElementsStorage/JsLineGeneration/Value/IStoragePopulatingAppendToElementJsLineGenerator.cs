@@ -1,6 +1,6 @@
 ﻿using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 
-namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration;
+namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 
 internal interface IStoragePopulatingAppendToElementJsLineGenerator
 {

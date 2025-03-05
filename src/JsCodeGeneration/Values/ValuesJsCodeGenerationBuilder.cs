@@ -10,6 +10,7 @@ internal class ValuesJsCodeGenerationBuilder(
 {
     public string BuildJsCode(string parentObjectName, IEnumerable<ValueObjectName> values, IEnumerable<ElementObjectName> elements)
         => values
-            .Aggregate(new StringBuilder(), (sb, value) => sb.AppendLine(propertyChecker.GenerateJsCode(parentObjectName, value.Name, targetElementsValueJsBuilder.Build(value, elements))))
-            .ToString();
+            .Aggregate(new StringBuilder(), (sb, value) => sb.AppendLine(propertyChecker.GenerateJsCode(parentObjectName, value.Name, targetElementsValueJsBuilder.Build(parentObjectName, value, elements))))
+            .ToString()
+            .TrimEnd();
 }

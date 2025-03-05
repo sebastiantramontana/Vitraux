@@ -50,11 +50,11 @@ internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<Co
         IElementQuerySelectorBuilder<IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>, TViewModel>.ByQuery(string query)
         => SetElementSelectorToCurrentCollectionElement(new ElementQuerySelectorString(query));
 
-    IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>> 
+    IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>
         IDocumentElementSelectorBuilder<IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>, TViewModel>.ById(Func<TViewModel, string> idFunc)
         => SetElementSelectorToCurrentCollectionElement(new ElementIdSelectorDelegate(idFunc));
 
-    IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>> 
+    IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>
         IElementQuerySelectorBuilder<IPopulationToNextElementSelector<IModelMapperCollection<TViewModel, TModelMapperBack>>, TViewModel>.ByQuery(Func<TViewModel, string> queryFunc)
         => SetElementSelectorToCurrentCollectionElement(new ElementQuerySelectorDelegate(queryFunc));
 
@@ -86,7 +86,7 @@ internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<Co
 
     private MapCollectionBuilder<TViewModel, TModelMapperBack> SetElementSelectorToCurrentCollectionElement(ElementSelectorBase selector)
     {
-        _currentCollectionElement.ElementSelector = selector;
+        _currentCollectionElement.CollectionSelector = new CollectionSelector(selector);
         return this;
     }
 
@@ -95,7 +95,7 @@ internal class MapCollectionBuilder<TViewModel, TModelMapperBack>(ICollection<Co
         ModelMapperCollection<TViewModel, TModelMapperBack> modelMapper = new(modelMapperBack);
 
         _currentCollectionElement.ModelMappingData = modelMapper;
-        _currentCollectionElement.InsertionSelector = insertionSelector;
+        _currentCollectionElement.CollectionSelector.InsertionSelector = insertionSelector;
 
         return modelMapper;
     }

@@ -108,12 +108,12 @@ globalThis.vitraux = {
                 element.setAttribute(attribute, value);
         },
 
-        UpdateByPopulatingElements(element, appendToElements, toChildQueryFunction, updateChildElementsFunction) {
-            if (!element)
+        UpdateValueByPopulatingElements(elementToInsert, appendToElements, toChildQueryFunction, updateChildElementsFunction) {
+            if (!elementToInsert)
                 return;
 
             for (const appendToElement of appendToElements) {
-                const clonedElement = element.cloneNode(true);
+                const clonedElement = elementToInsert.cloneNode(true);
                 targetChildElements = toChildQueryFunction(clonedElement);
                 updateChildElementsFunction(targetChildElements);
 
@@ -121,23 +121,35 @@ globalThis.vitraux = {
             }
         },
 
-        UpdateTable(table, row, updateCallback, collection) {
-            const tbody = table.tBodies[0];
-            const clonedTbody = tbody.cloneNode(false);
+        UpdateTable(tables, rowToInsert, updateCallback, collection) {
+            for (const table of tables) {
+                const newTbody = document.createElement("tbody");
 
-            for (const collectionItem of collection) {
-                this.addNewRow(clonedTbody, row, updateCallback, collectionItem);
+                for (const collectionItem of collection) {
+                    this.addNewRow(newTbody, rowToInsert, updateCallback, collectionItem);
+                }
+
+                table.tBodies[0].replaceWith(newTbody);
             }
+        },
 
-            tbody.replaceWith(clonedTbody);
+        UpdateCollectionByPopulatingElements(appendToElements, elementToInsert, updateCallback, collection) {
+            for (const appendToElement of appendToElements) {
+                for (const collectionItem of collection) {
+                    this.addNewElement(appendToElement, elementToInsert, updateCallback, collectionItem);
+                }
+            }
         },
 
         addNewRow(tbody, row, updateCallback, collectionItem) {
-            const clonedRow = row.cloneNode(true);
+            this.addNewElement(tbody, row, updateCallback, collectionItem);
+        },
 
-            updateCallback(clonedRow, collectionItem);
+        addNewElement(appendToElement, elementToInsert, updateCallback, collectionItem) {
+            const clonedElement = elementToInsert.cloneNode(true);
+            updateCallback(clonedElement, collectionItem);
 
-            tbody.appendChild(clonedRow);
+            appendToElement.appendChild(clonedElement);
         }
     },
 

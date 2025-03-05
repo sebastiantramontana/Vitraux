@@ -8,25 +8,25 @@ using Vitraux.Modeling.Models;
 namespace Vitraux.JsCodeGeneration.Values;
 
 internal class TargetByPopulatingElementsUpdateValueJsCodeGenerator(
-    IUpdateByPopulatingElementsCall updateByPopulatingElementsCall,
+    IUpdateValueByPopulatingElementsCall updateByPopulatingElementsCall,
     IToChildQueryFunctionCall toChildQueryFunctionCall,
-    IUpdateChildElementsFunctionCall updateChildElementsFunctionCall,
-    ICodeFormatting codeFormatting)
+    IUpdateChildElementsFunctionCall updateChildElementsFunctionCall)
     : ITargetByPopulatingElementsUpdateValueJsCodeGenerator
 {
-    public string GenerateJsCode(TargetElement targetElement, IEnumerable<ElementObjectName> associatedElements, string valueObjectName) 
+    public string GenerateJsCode(TargetElement targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName)
         => associatedElements
                 .Cast<PopulatingElementObjectName>()
-                .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(CreateUpdateByPopulatingElementsFunctionCall(targetElement, ae, valueObjectName)))
-                .ToString();
+                .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(CreateUpdateByPopulatingElementsFunctionCall(targetElement, ae, parentValueObjectName, valueObjectName)))
+                .ToString()
+                .TrimEnd();
 
-    private string CreateUpdateByPopulatingElementsFunctionCall(TargetElement targetElement, PopulatingElementObjectName populatingElementObjectName, string valueObjectName)
+    private string CreateUpdateByPopulatingElementsFunctionCall(TargetElement targetElement, PopulatingElementObjectName populatingElementObjectName, string parentValueObjectName, string valueObjectName)
     {
         var populatingSelector = populatingElementObjectName.AssociatedSelector as PopulatingElementSelectorBase;
         var toChildQueryFunctionCallCode = toChildQueryFunctionCall.Generate((populatingSelector!.TargetChildElement as ElementQuerySelectorString).Query);
-        var updateChildElementsFunctionCallCode = updateChildElementsFunctionCall.Generate(targetElement, valueObjectName);
+        var updateChildElementsFunctionCallCode = updateChildElementsFunctionCall.Generate(targetElement, parentValueObjectName, valueObjectName);
         var updateByPopulatingElementsCallCode = updateByPopulatingElementsCall.Generate(populatingElementObjectName.Name, populatingElementObjectName.AppendToName, toChildQueryFunctionCallCode, updateChildElementsFunctionCallCode);
 
-        return codeFormatting.Indent(updateByPopulatingElementsCallCode);
+        return $"{updateByPopulatingElementsCallCode};";
     }
 }

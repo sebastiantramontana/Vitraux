@@ -9,11 +9,11 @@ internal class QueryElementsOnlyOnceAtStartJsCodeGenerator(
     IQueryElementsOnlyOnceAtStartup initializer
     ) : IQueryElementsOnlyOnceAtStartJsCodeGenerator
 {
-    public string GenerateJsCode(IEnumerable<ElementObjectName> elements, string parentObjectName)
+    public string GenerateJsCode(IEnumerable<ElementObjectName> elements, IEnumerable<CollectionElementObjectName> collectionElementObjectNames, string parentElementObjectName)
     {
-        initializer.StoreElementsInAdvance(elements, parentObjectName);
+        initializer.StoreElementsInAdvance(elements, collectionElementObjectNames, parentElementObjectName);
 
-        return builder.BuildJsCode(declaringGenerator, elements, parentObjectName);
+        return builder.BuildJsCode(declaringGenerator, elements, parentElementObjectName);
     }
 }
 

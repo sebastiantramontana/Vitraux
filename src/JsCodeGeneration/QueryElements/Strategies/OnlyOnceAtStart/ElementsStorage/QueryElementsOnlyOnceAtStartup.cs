@@ -4,6 +4,6 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 
 internal class QueryElementsOnlyOnceAtStartup(IStoreElementsJsCodeBuilder codeBuilder, IJsCodeExecutor codeExecutor) : IQueryElementsOnlyOnceAtStartup
 {
-    public void StoreElementsInAdvance(IEnumerable<ElementObjectName> elements, string parentObjectName)
+    public void StoreElementsInAdvance(IEnumerable<ElementObjectName> elements, IEnumerable<CollectionElementObjectName> collectionElementObjectNames, string parentObjectName)
         => codeExecutor.Excute(codeBuilder.Build(elements, parentObjectName));
 }

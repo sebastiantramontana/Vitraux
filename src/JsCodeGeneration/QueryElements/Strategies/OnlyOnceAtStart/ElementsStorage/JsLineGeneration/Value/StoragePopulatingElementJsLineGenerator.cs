@@ -2,7 +2,7 @@
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 
-namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration;
+namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 
 internal class StoragePopulatingElementJsLineGenerator(IStoragePopulatingAppendToElementJsLineGenerator storagePopulatingAppendToJsLineGenerator)
     : IStoragePopulatingElementJsLineGenerator

@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 
 internal interface IQueryElementsOnlyOnceAtStartup
 {
-    void StoreElementsInAdvance(IEnumerable<ElementObjectName> elements, string parentObjectName);
+    void StoreElementsInAdvance(IEnumerable<ElementObjectName> elements, IEnumerable<CollectionElementObjectName> collectionElementObjectNames, string parentObjectName);
 }

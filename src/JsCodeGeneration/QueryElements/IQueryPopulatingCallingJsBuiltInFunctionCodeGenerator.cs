@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.QueryElements;
 
 internal interface IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator
 {
-    string GenerateJsCode(ElementObjectName elementObjectName, Func<string> getElementTemplateCallingFunc, IJsQueryPopulatingElementsDeclaringGeneratorContext queryGeneratorContext);
+    string GenerateJsCode(ElementObjectName elementObjectName, string getElementTemplateCallingJsCode, IJsQueryPopulatingElementsDeclaringGeneratorContext queryGeneratorContext);
 }

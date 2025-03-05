@@ -8,7 +8,8 @@ internal class QueryElementsJsCodeBuilder : IQueryElementsJsCodeBuilder
     public string BuildJsCode(IQueryElementsDeclaringJsCodeGenerator declaringJsCodeGenerator, IEnumerable<ElementObjectName> generatedElements, string parentObjectName)
         => generatedElements
             .Aggregate(new StringBuilder(), (sb, element) => sb.AppendLine(BuildElementDeclarationCode(declaringJsCodeGenerator, element, parentObjectName)))
-            .ToString();
+            .ToString()
+            .TrimEnd();
 
     private static string BuildElementDeclarationCode(IQueryElementsDeclaringJsCodeGenerator declaringJsCodeGenerator, ElementObjectName element, string parentObjectName)
         => declaringJsCodeGenerator.GenerateJsCode(parentObjectName, element);

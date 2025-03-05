@@ -11,5 +11,5 @@ internal class QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(
     : IQueryElementsDeclaringAlwaysByTemplateJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, () => getTemplateCall.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId), queryGeneratorContext);
+        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, getTemplateCall.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId), queryGeneratorContext);
 }

@@ -71,21 +71,21 @@ namespace Vitraux.Test.JsCodeGeneration
                                             }
 
                                             if(vm.value1) {
-                                                globalThis.vitraux.updating.UpdateByPopulatingElements(
-                                                elements1,
-                                                elements1_appendTo,
-                                                (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-address-target'),
-                                                (targetChildElements) => globalThis.vitraux.updating.setElementsContent(targetChildElements, vm.value1));
+                                                globalThis.vitraux.updating.UpdateValueByPopulatingElements(
+                                                    elements1,
+                                                    elements1_appendTo,
+                                                    (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-address-target'),
+                                                    (targetChildElements) => globalThis.vitraux.updating.setElementsContent(targetChildElements, vm.value1));
 
                                                 globalThis.vitraux.updating.setElementsAttribute(elements2, 'data-petowner-address', vm.value1);
                                             }
 
                                             if(vm.value2) {
-                                                globalThis.vitraux.updating.UpdateByPopulatingElements(
-                                                elements3,
-                                                elements3_appendTo,
-                                                (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-phonenumber-target'),
-                                                (targetChildElements) => globalThis.vitraux.updating.setElementsAttribute(targetChildElements, 'data-phonenumber', vm.value2));
+                                                globalThis.vitraux.updating.UpdateValueByPopulatingElements(
+                                                    elements3,
+                                                    elements3_appendTo,
+                                                    (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-phonenumber-target'),
+                                                    (targetChildElements) => globalThis.vitraux.updating.setElementsAttribute(targetChildElements, 'data-phonenumber', vm.value2));
 
                                                 globalThis.vitraux.updating.setElementsContent(elements4, vm.value2);
                                             }
@@ -152,7 +152,7 @@ namespace Vitraux.Test.JsCodeGeneration
             Assert.That(element.Text, Is.EqualTo("text changed"));
         }
 
-        private static RootJsGenerator<PetOwner> CreateSut(IJsCodeExecutor jsCodeExecutor)
+        private static RootJsGenerator CreateSut(IJsCodeExecutor jsCodeExecutor)
         {
             var getElementByIdAsArrayCall = new GetElementByIdAsArrayCall();
             var getElementsByQuerySelectorCall = new GetElementsByQuerySelectorCall();
@@ -161,10 +161,14 @@ namespace Vitraux.Test.JsCodeGeneration
             var uniqueSelectorsFilter = new UniqueSelectorsFilter();
             var elementNamesGenerator = new ElementNamesGenerator();
             var valueNamesGenerator = new ValueNamesGenerator();
-            var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall);
-            var jsGenerator = new JsGenerator<PetOwner>(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, valueJsCodeGenerator);
+            var collectionNamesGenerator = new CollectionNamesGenerator();
+            var codeFormatter = new CodeFormatter();
+            var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(codeFormatter);
+            var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall, propertyCheckerJsCodeGeneration, codeFormatter);
+            var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
+            var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, collectionsJsCodeGenerationBuilder, queryElementsGeneratorByStrategyContext);
 
-            return new RootJsGenerator<PetOwner>(uniqueSelectorsFilter, elementNamesGenerator, queryElementsGeneratorByStrategyContext, jsGenerator);
+            return new RootJsGenerator(jsGenerator);
         }
 
         private static QueryElementsJsCodeGeneratorByStrategyContext CreateQueryElementsJsCodeGeneratorByStrategyContext(IJsCodeExecutor jsCodeExecutor, IGetElementByIdAsArrayCall getElementByIdAsArrayCall, IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall)
@@ -182,7 +186,18 @@ namespace Vitraux.Test.JsCodeGeneration
             return new QueryElementsJsCodeGeneratorByStrategyContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
         }
 
-        private static IValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall)
+        private static ICollectionsJsCodeGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
+        {
+            var randomStringGenerator = new RandomStringGenerator();
+            var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(randomStringGenerator, codeFormatter);
+            var updateCollectionByPopulatingElementsCall = new UpdateCollectionByPopulatingElementsCall();
+            var updateTableCall = new UpdateTableCall();
+            var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator);
+
+            return new CollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, updateCollectionJsCodeGenerator);
+        }
+
+        private static IValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall, IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
         {
             var setElementsAttributeCall = new SetElementsAttributeCall();
             var attributeCodeGenerator = new ElementPlaceAttributeJsCodeGenerator(setElementsAttributeCall);
@@ -190,15 +205,14 @@ namespace Vitraux.Test.JsCodeGeneration
             var setElementsContentCall = new SetElementsContentCall();
             var contentCodeGenerator = new ElementPlaceContentJsCodeGenerator(setElementsContentCall);
 
-            var codeFormatting = new CodeFormatting();
             var toChildQueryFunctionCall = new ToChildQueryFunctionCall(getElementsByQuerySelectorCall);
-            var updateByPopulatingElementsCall = new UpdateByPopulatingElementsCall(codeFormatting);
+            var updateByPopulatingElementsCall = new UpdateValueByPopulatingElementsCall(codeFormatter);
             var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall);
 
-            var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator, codeFormatting);
-            var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall, codeFormatting);
+            var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator);
+            var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall);
             var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsCodeGenerationBuilder(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator);
-            var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration();
+
             return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
         }
 
@@ -212,9 +226,9 @@ namespace Vitraux.Test.JsCodeGeneration
             var storageElementJsLineGeneratorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
             var storagePopulatingAppendToElementJsLineGenerator = new StoragePopulatingAppendToElementJsLineGenerator(storageElementJsLineGeneratorById, storageElementJsLineGeneratorByQuerySelector);
             var storagePopulatingElementJsLineGenerator = new StoragePopulatingElementJsLineGenerator(storagePopulatingAppendToElementJsLineGenerator);
-            var generatorByTemplate = new StorageElementJsLineGeneratorByTemplate(getStoredTemplateCall, storagePopulatingElementJsLineGenerator);
+            var generatorPopulatingByTemplate = new StorageElementJsLineGeneratorPopulatingElementsByTemplate(getStoredTemplateCall, storagePopulatingElementJsLineGenerator);
             var generatorByFetch = new StorageElementJsLineGeneratorByFetch(getFetchedElementCall, storagePopulatingElementJsLineGenerator);
-            var storageElementLineGenerator = new StorageElementJsLineGenerator(generatorById, generatorByQuerySelector, generatorByTemplate, generatorByFetch);
+            var storageElementLineGenerator = new StorageElementValueJsLineGenerator(generatorById, generatorByQuerySelector, generatorPopulatingByTemplate, generatorByFetch);
             var storageElementsBuilder = new StoreElementsJsCodeBuilder(storageElementLineGenerator);
             var initializer = new QueryElementsOnlyOnceAtStartup(storageElementsBuilder, jsCodeExecutor);
             var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsCodeGenerator();

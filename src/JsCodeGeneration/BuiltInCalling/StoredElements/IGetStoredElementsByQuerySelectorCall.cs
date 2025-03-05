@@ -2,6 +2,6 @@
 {
     internal interface IGetStoredElementsByQuerySelectorCall
     {
-        string Generate(string parentObjectName, string querySelector, string elementObjectName);
+        string Generate(string parentElementObjectName, string querySelector, string elementObjectName);
     }
 }

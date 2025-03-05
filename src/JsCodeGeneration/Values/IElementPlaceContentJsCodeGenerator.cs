@@ -2,5 +2,5 @@
 
 internal interface IElementPlaceContentJsCodeGenerator
 {
-    string Generate(string elementObjectName, string valueObjectName);
+    string Generate(string elementObjectName, string parentValueObjectName, string valueObjectName);
 }

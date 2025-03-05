@@ -62,8 +62,8 @@ namespace Vitraux.Test.Modeling
             Assert.That(actualCollection, Is.TypeOf(expectedCollection.GetType()));
 
             AssertDelegate(actualCollection.CollectionFunc, expectedCollection.CollectionFunc);
-            AssertSelector(actualCollection.ElementSelector, expectedCollection.ElementSelector);
-            AssertRowSelector(actualCollection.InsertionSelector, expectedCollection.InsertionSelector);
+            AssertSelector(actualCollection.CollectionSelector.ElementSelector, expectedCollection.CollectionSelector.ElementSelector);
+            AssertRowSelector(actualCollection.CollectionSelector.InsertionSelector, expectedCollection.CollectionSelector.InsertionSelector);
             AssertModelMappingData(actualCollection.ModelMappingData, expectedCollection.ModelMappingData);
         }
 
@@ -145,8 +145,11 @@ namespace Vitraux.Test.Modeling
         private static TCollectionElementModel FillCollectionElementModel<TCollectionElementModel>(TCollectionElementModel collectionElementModel, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
             where TCollectionElementModel : CollectionElementModel
         {
-            collectionElementModel.ElementSelector = elementSelector;
-            collectionElementModel.InsertionSelector = insertionSelector;
+            collectionElementModel.CollectionSelector = new(elementSelector)
+            {
+                InsertionSelector = insertionSelector
+            };
+
             collectionElementModel.ModelMappingData = new ModelMappingDataFake(values, collectionElements);
 
             return collectionElementModel;

@@ -2,5 +2,5 @@
 
 internal interface IElementPlaceAttributeJsCodeGenerator
 {
-    string Generate(string attribute, string elementObjectName, string valueObjectName);
+    string Generate(string attribute, string elementObjectName, string parentValueObjectName, string valueObjectName);
 }

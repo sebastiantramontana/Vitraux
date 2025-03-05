@@ -8,12 +8,12 @@ internal class QueryPopulatingCallingJsBuiltInFunctionCodeGenerator(
     IQueryAppendToElementsDeclaringByPopulatingJsCodeGenerator appendToDeclaringGenerator)
     : IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator
 {
-    public string GenerateJsCode(ElementObjectName elementObjectName, Func<string> getPopulatingElementsCallingFunc, IJsQueryPopulatingElementsDeclaringGeneratorContext queryGeneratorContext)
+    public string GenerateJsCode(ElementObjectName elementObjectName, string getPopulatingElementsCallingJsCode, IJsQueryPopulatingElementsDeclaringGeneratorContext queryGeneratorContext)
     {
         var populatingElementObjectName = elementObjectName as PopulatingElementObjectName;
         var populatingSelector = populatingElementObjectName!.AssociatedSelector as PopulatingElementSelectorBase;
 
-        var populatingDeclaring = $"const {populatingElementObjectName.Name} = {getPopulatingElementsCallingFunc()};";
+        var populatingDeclaring = $"const {populatingElementObjectName.Name} = {getPopulatingElementsCallingJsCode};";
         var appendToDeclaring = appendToDeclaringGenerator.GenerateAppendToJsCode(populatingElementObjectName.AppendToName, populatingSelector!.ElementToAppend, queryGeneratorContext);
 
         return new StringBuilder()

@@ -7,10 +7,10 @@ internal class UpdateChildElementsFunctionCall(
     ISetElementsContentCall setElementsContentCall) 
     : IUpdateChildElementsFunctionCall
 {
-    public string Generate(TargetElement toChildTargetElement, string valueObjectName)
+    public string Generate(TargetElement toChildTargetElement, string parentValueObjectName, string valueObjectName)
     {
         const string targetTemplateChildElements = "targetChildElements";
-        var fullValueObject = $"vm.{valueObjectName}";
+        var fullValueObject = $"{parentValueObjectName}.{valueObjectName}";
 
         return $"({targetTemplateChildElements}) => " +
             toChildTargetElement.Place.ElementPlacing switch

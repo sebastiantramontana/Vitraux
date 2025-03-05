@@ -10,6 +10,6 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandByFetchJsCodeGenerator(
     IJsQueryPopulatingElementsDeclaringOnlyOnceOnDemandGeneratorContext queryGeneratorContext)
     : IQueryElementsDeclaringOnlyOnceOnDemandByFetchJsCodeGenerator
 {
-    public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => queryElementsDeclaringByPopulatingCallingJsBuilt.GenerateJsCode(elementObjectName, () => getFetchedElementCall.Generate((elementObjectName.AssociatedSelector as ElementFetchSelectorUri).Uri, elementObjectName.Name), queryGeneratorContext);
+    public string GenerateJsCode(string parentElementObjectName, ElementObjectName elementObjectName)
+        => queryElementsDeclaringByPopulatingCallingJsBuilt.GenerateJsCode(elementObjectName, getFetchedElementCall.Generate((elementObjectName.AssociatedSelector as ElementFetchSelectorUri).Uri, elementObjectName.Name), queryGeneratorContext);
 }
