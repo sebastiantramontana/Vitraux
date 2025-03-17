@@ -5,5 +5,5 @@ namespace Vitraux.JsCodeGeneration;
 
 internal interface IJsGenerator
 {
-    string GenerateJsCode(IModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix);
+    string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix);
 }

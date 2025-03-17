@@ -105,7 +105,7 @@ namespace Vitraux.Test.Modeling
             Assert.That(actualSelector, Is.EqualTo(expectedSelector));
         }
 
-        public static void AssertModelMappingData(IModelMappingData actualModelMappingData, IModelMappingData expectedModelMappingData)
+        public static void AssertModelMappingData(ModelMappingData actualModelMappingData, ModelMappingData expectedModelMappingData)
         {
             Assert.Multiple(() =>
             {

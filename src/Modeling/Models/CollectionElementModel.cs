@@ -7,7 +7,7 @@ namespace Vitraux.Modeling.Models;
 internal record class CollectionElementModel(Delegate CollectionFunc)
 {
     internal CollectionSelector CollectionSelector { get; set; } = default!;
-    internal IModelMappingData ModelMappingData { get; set; } = default!;
+    internal ModelMappingData ModelMappingData { get; set; } = default!;
 }
 
 internal record class CollectionSelector(ElementSelectorBase AppendToElementSelector)

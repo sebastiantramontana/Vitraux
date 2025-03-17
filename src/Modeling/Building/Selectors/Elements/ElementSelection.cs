@@ -5,5 +5,5 @@ internal enum ElementSelection
     Id,
     QuerySelector,
     Template,
-    Fetch
+    Uri
 }

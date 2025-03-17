@@ -1,11 +1,12 @@
-﻿using Vitraux.Modeling.Building.ElementBuilders;
+﻿using Vitraux.Modeling.Building.ElementBuilders.Collections;
+using Vitraux.Modeling.Building.ElementBuilders.Values;
 
 namespace Vitraux.Modeling.Building.ModelMappers;
 
-public interface IModelMapper<TViewModel, TElementBuilder, TModelMapperBack, TNextElementSelectorBuilder> : IModelMappingData
-    where TElementBuilder : IToElementsBuilder<TViewModel, TNextElementSelectorBuilder>
-    where TNextElementSelectorBuilder : IElementSelectorBuilder
+public interface IModelMapper<TViewModel>
 {
-    TElementBuilder MapValue<TReturn>(Func<TViewModel, TReturn> func);
-    IPopulationForCollectionBuilder<TReturn, TModelMapperBack> MapCollection<TReturn>(Func<TViewModel, IEnumerable<TReturn>> func);
+    IValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func);
+    ICollectionTargetBuilder<TItem, IModelMapper<TViewModel>> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func);
+
+    internal ModelMappingData Data { get; }
 }

@@ -9,28 +9,25 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new(QueryElementStrategy.OnlyOnceAtStart, true);
 
-    public IModelMappingData ConfigureMapping(IModelMapperRoot<PetOwner> modelMapper)
+    public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> modelMapper)
         => modelMapper
             .MapValue(po => po.Name)
-                .ToElements.ById("petowner-name")
-                .ToContent
+                .ToElements.ById("petowner-name").ToContent
             .MapValue(po => po.Address)
-                .ByPopulatingElements.ById("petowner-parent")
-                    .FromTemplate("petowner-address-template")
+                .ToElements.ById("petowner-parent")
+                    .Insert.FromTemplate("petowner-address-template")
                     .ToChildren.ByQuery(".petowner-address-target")
                     .ToContent
-                .ToElements.ByQuery(".petwoner-address > div")
-                    .ToAttribute("data-petowner-address")
+                .ToElements.ByQuery(".petwoner-address > div").ToAttribute("data-petowner-address")
             .MapValue(po => po.PhoneNumber)
-                .ByPopulatingElements.ByQuery(".petowner-phonenumber")
-                    .FromFetch(new Uri("https://mysite.com/htmlparts/phoneblock"))
+                .ToElements.ByQuery(".petowner-phonenumber")
+                    .Insert.FromUri(new Uri("https://mysite.com/htmlparts/phoneblock"))
                     .ToChildren.ByQuery(".petowner-phonenumber-target")
                     .ToAttribute("data-phonenumber")
-                .ToElements.ById("petowner-phonenumber-id")
-                    .ToContent
+                .ToElements.ById("petowner-phonenumber-id").ToContent
             .MapCollection(po => po.Pets)
-                .ToTable.ById("pets-table")
-                .ByPopulatingRows.FromTemplate("pet-row-template")
+                .ToTables.ById("pets-table")
+                .PopulatingRows.FromTemplate("pet-row-template")
                     .MapValue(pet => pet.Name)
                         .ToElements.ByQuery(".cell-pet-name").ToContent
                         .ToElements.ByQuery(".anchor-cell-pet-name").ToAttribute("href")

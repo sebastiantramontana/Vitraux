@@ -7,7 +7,7 @@ namespace Vitraux.JsCodeGeneration;
 
 internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
 {
-    public UniqueFilteredSelectors FilterDistinct(IModelMappingData modelMappingData)
+    public UniqueFilteredSelectors FilterDistinct(ModelMappingData modelMappingData)
     {
         var elementSelectors = GetElementSelectors(modelMappingData);
         var collectionSelectors = GetCollectionSelectorsDistinctByInsertion(modelMappingData);
@@ -15,7 +15,7 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
         return new UniqueFilteredSelectors(elementSelectors, collectionSelectors);
     }
 
-    private static IEnumerable<ElementSelectorBase> GetElementSelectors(IModelMappingData modelMappingData)
+    private static IEnumerable<ElementSelectorBase> GetElementSelectors(ModelMappingData modelMappingData)
         => modelMappingData
             .Values
             .SelectMany(v => v.TargetElements.Select(te => te.Selector))
@@ -23,7 +23,7 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
             .Distinct()
             .RunNow();
 
-    private static IEnumerable<CollectionSelector> GetCollectionSelectorsDistinctByInsertion(IModelMappingData modelMappingData)
+    private static IEnumerable<CollectionSelector> GetCollectionSelectorsDistinctByInsertion(ModelMappingData modelMappingData)
         => modelMappingData
             .CollectionElements
             .Select(c => c.CollectionSelector)

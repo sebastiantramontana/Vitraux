@@ -1,5 +1,5 @@
 using Vitraux.Modeling.Building.ElementBuilders;
-using Vitraux.Modeling.Building.Finallizables;
+using Vitraux.Modeling.Building.ElementBuilders.Values;
 using Vitraux.Modeling.Building.ModelMappers;
 using Vitraux.Modeling.Models;
 
@@ -23,7 +23,7 @@ namespace Vitraux.Test.Modeling.Building.ElementBuilders
             TestPlace(expectedPlace, sut => sut.ToAttribute("data-weight"));
         }
 
-        private static void TestPlace(ElementPlace expectedPlace, Func<IElementPlaceBuilder<ViewModelTest, IFinallizableRoot<ViewModelTest>>, IFinallizableRoot<ViewModelTest>> actFunc)
+        private static void TestPlace(ElementPlace expectedPlace, Func<IValueElementPlaceBuilder<ViewModelTest, IValueFinallizable<ViewModelTest>>, IValueFinallizable<ViewModelTest>> actFunc)
         {
             var valueModel = new ValueModel((ViewModelTest e) => e.Weigth);
             var modelMapper = new ModelMapperRoot<ViewModelTest>();

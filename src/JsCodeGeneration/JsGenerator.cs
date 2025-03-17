@@ -21,7 +21,7 @@ internal class JsGenerator(
     IQueryElementsJsCodeGeneratorByStrategyContext queryElementsJsCodeGeneratorContext)
     : IJsGenerator
 {
-    public string GenerateJsCode(IModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
+    public string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
     {
         var selectors = uniqueSelectorsFilter.FilterDistinct(modelMappingData);
         var allElementObjectNames = elementNamesGenerator.Generate(elementNamePrefix, selectors.ElementSelectors);
@@ -114,12 +114,12 @@ internal class UpdateCollectionJsCodeGenerator(
 
 internal interface IUpdateCollectionFunctionCallbackJsCodeGenerator
 {
-    UpdateCollectionFunctionCallbackInfo GenerateJsCode(IModelMappingData modelMappingData, IJsGenerator jsGenerator);
+    UpdateCollectionFunctionCallbackInfo GenerateJsCode(ModelMappingData modelMappingData, IJsGenerator jsGenerator);
 }
 
 internal class UpdateCollectionFunctionCallbackJsCodeGenerator(IRandomStringGenerator randomStringGenerator, ICodeFormatter codeFormatter) : IUpdateCollectionFunctionCallbackJsCodeGenerator
 {
-    public UpdateCollectionFunctionCallbackInfo GenerateJsCode(IModelMappingData modelMappingData, IJsGenerator jsGenerator)
+    public UpdateCollectionFunctionCallbackInfo GenerateJsCode(ModelMappingData modelMappingData, IJsGenerator jsGenerator)
     {
         const string CollectionItemObjectName = "collectionItem";
         const string ParentElementObjectName = "parent";

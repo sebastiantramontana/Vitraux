@@ -5,5 +5,5 @@ namespace Vitraux.JsCodeGeneration;
 
 internal interface IRootJsGenerator
 {
-    string GenerateJsCode(IModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy);
+    string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy);
 }

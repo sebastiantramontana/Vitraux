@@ -5,6 +5,6 @@ namespace Vitraux.JsCodeGeneration;
 
 internal class RootJsGenerator(IJsGenerator jsGenerator) : IRootJsGenerator
 {
-    public string GenerateJsCode(IModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy)
+    public string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy)
         => jsGenerator.GenerateJsCode(modelMappingData, queryElementStrategy, "vm", "document", string.Empty);
 }

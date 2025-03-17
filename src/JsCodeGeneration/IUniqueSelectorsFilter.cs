@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration;
 
 internal interface IUniqueSelectorsFilter
 {
-    UniqueFilteredSelectors FilterDistinct(IModelMappingData modelMappingData);
+    UniqueFilteredSelectors FilterDistinct(ModelMappingData modelMappingData);
 }

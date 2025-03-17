@@ -57,7 +57,7 @@ namespace Vitraux.Test.Modeling.Building
                 Assert.That(result1, Is.Not.Null);
                 Assert.That(result2, Is.Not.Null);
 
-                var modelMappingData = sut as IModelMappingData;
+                var modelMappingData = sut as ModelMappingData;
 
                 Assert.That(modelMappingData.Values.Count(), Is.EqualTo(2));
                 TestHelper.AssertValueModel(modelMappingData.Values.ElementAt(0), expectedValue1, false);

@@ -19,7 +19,7 @@ internal class StorageElementValueJsLineGenerator(
             ElementSelection.Id => generatorById.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementIdSelectorString).Id),
             ElementSelection.QuerySelector => generatorByQuerySelector.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementQuerySelectorString).Query, parentObjectName),
             ElementSelection.Template => generatorByTemplate.Generate((elementObjectName as PopulatingElementObjectName)!, parentObjectName),
-            ElementSelection.Fetch => generatorByFetch.Generate((elementObjectName as PopulatingElementObjectName)!, parentObjectName),
+            ElementSelection.Uri => generatorByFetch.Generate((elementObjectName as PopulatingElementObjectName)!, parentObjectName),
             _ => throw new NotImplementedException($"Selector type {elementObjectName.AssociatedSelector.SelectionBy} not implemented in {GetType().FullName} for OnlyOnceAtStart initialization"),
         };
 }

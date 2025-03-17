@@ -15,7 +15,7 @@ internal class JsQueryElementsOnlyOnceOnDemandGeneratorContext(
             ElementSelection.Id => jsQueryElementsByIdGenerator,
             ElementSelection.QuerySelector => jsQueryElementsByQuerySelectorGenerator,
             ElementSelection.Template => jsQueryElementsByTemplateGenerator,
-            ElementSelection.Fetch => jsQueryElementsByFetchGenerator,
+            ElementSelection.Uri => jsQueryElementsByFetchGenerator,
             _ => throw new NotImplementedException($"IQueryElementsDeclaringJsCodeGenerator not implemented for ElementSelector: {elementSelector}")
         };
 }
