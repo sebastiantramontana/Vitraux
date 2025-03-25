@@ -20,11 +20,15 @@ public interface IInnerCollectionFinallizable<TItemBack, TEndCollectionReturn> :
     TEndCollectionReturn EndCollection { get; }
 }
 
-public interface ICollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>
+public interface ICollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>
 {
     ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> ToElements { get; }
     ICollectionValueCustomJsBuilder<TItem, TValue, TEndCollectionReturn> ToJsFunction(string jsFunction);
-    ICollectionValueFinallizable<TItem, TValue, TEndCollectionReturn> ToOwnMapping { get; }
+}
+
+public interface ICollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn> : ICollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>
+{
+    ICollectionModelMapper<TItem, TEndCollectionReturn> ToOwnMapping { get; }
 }
 
 public interface ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn>
