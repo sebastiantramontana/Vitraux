@@ -1,3 +1,3 @@
 ﻿namespace Vitraux.Test.Example;
 
-public record PetOwner(string Name, string Address, string PhoneNumber, IEnumerable<Pet> Pets);
+public record class PetOwner(string Name, string Address, string PhoneNumber, Subscription Subscription, IEnumerable<Pet> Pets);

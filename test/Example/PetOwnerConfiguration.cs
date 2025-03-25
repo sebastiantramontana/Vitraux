@@ -24,6 +24,8 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                     .ToChildren.ByQuery(".petowner-phonenumber-target")
                     .ToAttribute("data-phonenumber")
                 .ToElements.ById("petowner-phonenumber-id").ToContent
+            .MapValue(po => po.Subscription)
+                .ToOwnMapping
             .MapCollection(po => po.Pets)
                 .ToTables.ById("pets-table")
                 .PopulatingRows.FromTemplate("pet-row-template")
