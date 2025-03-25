@@ -1,8 +1,8 @@
 ﻿using Vitraux.Modeling.Models;
 
-namespace Vitraux.Modeling.Building.ModelMappers;
+namespace Vitraux;
 
-internal record class ModelMappingData
+public record class ModelMappingData
 {
     internal IEnumerable<ValueModel> Values { get; } = [];
     internal IEnumerable<CollectionElementModel> CollectionElements { get; } = [];

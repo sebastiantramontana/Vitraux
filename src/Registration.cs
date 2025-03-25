@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vitraux.Modeling;
 
 namespace Vitraux
 {

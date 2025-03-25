@@ -2,4 +2,4 @@
 
 namespace Vitraux;
 
-public record class ConfigurationBehavior(QueryElementStrategy QueryElementStrategy, bool TrackChanges);
+public record class ConfigurationBehavior(QueryElementStrategy QueryElementStrategy, bool TrackChanges, bool CacheVMFunctions);

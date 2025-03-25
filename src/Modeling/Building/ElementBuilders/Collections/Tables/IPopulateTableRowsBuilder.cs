@@ -1,7 +1,7 @@
 ﻿namespace Vitraux.Modeling.Building.ElementBuilders.Collections.Tables;
 
-public interface IPopulateTableRowsBuilder<TItem, TViewModelBack>
+public interface IPopulateTableRowsBuilder<TItem, TEndCollectionReturn>
 {
-    ICollectionPopulateFromBuilder<TItem, TViewModelBack> PopulatingRows { get; }
+    ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> PopulatingRows { get; }
 }
 

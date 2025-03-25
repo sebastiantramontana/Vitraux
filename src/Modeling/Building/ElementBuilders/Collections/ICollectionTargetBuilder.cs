@@ -3,9 +3,8 @@ using Vitraux.Modeling.Building.ElementBuilders.Collections.Tables;
 
 namespace Vitraux.Modeling.Building.ElementBuilders.Collections;
 
-public interface ICollectionTargetBuilder<TItem, TModelMapperBack>
+public interface ICollectionTargetBuilder<TItem, TEndCollectionReturn>
 {
-    ITableSelectorBuilder<TItem, TModelMapperBack> ToTables { get; }
-    IContainerElementsSelectorBuilder<TItem, TModelMapperBack> ToContainerElements { get; }
+    ITableSelectorBuilder<TItem, TEndCollectionReturn> ToTables { get; }
+    IContainerElementsSelectorBuilder<TItem, TEndCollectionReturn> ToContainerElements { get; }
 }
-

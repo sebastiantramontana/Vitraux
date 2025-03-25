@@ -1,6 +1,4 @@
-﻿using Vitraux.Modeling.Building.ModelMappers;
-
-namespace Vitraux.JsCodeGeneration;
+﻿namespace Vitraux.JsCodeGeneration;
 
 internal interface IUniqueSelectorsFilter
 {

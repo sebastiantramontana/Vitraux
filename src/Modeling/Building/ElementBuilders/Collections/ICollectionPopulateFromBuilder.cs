@@ -1,42 +1,45 @@
-﻿using Vitraux.Modeling.Building.CustomJs;
-using Vitraux.Modeling.Building.ElementBuilders.Collections.ContainerElements;
-using Vitraux.Modeling.Building.ElementBuilders.Collections.Tables;
-using Vitraux.Modeling.Building.ElementBuilders.Values;
-using Vitraux.Modeling.Building.ModelMappers;
+﻿namespace Vitraux.Modeling.Building.ElementBuilders.Collections;
 
-namespace Vitraux.Modeling.Building.ElementBuilders.Collections;
-
-public interface ICollectionPopulateFromBuilder<TItem, TViewModelBack>
+public interface ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn>
 {
-    ICollectionModelMapper<TItem, TViewModelBack> FromTemplate(string id);
-    ICollectionModelMapper<TItem, TViewModelBack> FromTemplate(Func<TItem, string> idFunc);
-    ICollectionModelMapper<TItem, TViewModelBack> FromUri(Uri uri);
-    ICollectionModelMapper<TItem, TViewModelBack> FromUri(Func<TItem, Uri> uriFunc);
+    ICollectionModelMapper<TItem, TEndCollectionReturn> FromTemplate(string id);
+    ICollectionModelMapper<TItem, TEndCollectionReturn> FromTemplate(Func<TItem, string> idFunc);
+    ICollectionModelMapper<TItem, TEndCollectionReturn> FromUri(Uri uri);
+    ICollectionModelMapper<TItem, TEndCollectionReturn> FromUri(Func<TItem, Uri> uriFunc);
 }
 
-public interface ICollectionModelMapper<TViewModel, TModelMapperBack>
+public interface ICollectionModelMapper<TItem, TEndCollectionReturn>
 {
-    ICollectionValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func);
-    
-    
-    ICollectionTargetBuilder<TItem, TViewModel> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func);
-
-    //PROBAR TENER EndCollection ACA Y NO EN ICollectionFinallizable
-    TModelMapperBack EndCollection { get; }
-
+    ICollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn> MapValue<TValue>(Func<TItem, TValue> func);
+    ICollectionTargetBuilder<TInnerItem, IInnerCollectionFinallizable<TItem, TEndCollectionReturn>> MapCollection<TInnerItem>(Func<TItem, IEnumerable<TInnerItem>> func);
     internal ModelMappingData Data { get; }
 }
 
-public interface ICollectionValueTargetBuilder<TViewModel, TValue>
+public interface IInnerCollectionFinallizable<TItemBack, TEndCollectionReturn> : ICollectionModelMapper<TItemBack, TEndCollectionReturn>
 {
-    ICollectionValueElementSelectorBuilder<TViewModel, TValue> ToElements { get; }
-    ICustomJsBuilder<TViewModel, TValue> ToJs(string jsFunction);
-    IValueFinallizable<TViewModel, TValue> ToOwnMapping { get; }
+    TEndCollectionReturn EndCollection { get; }
 }
 
-//public interface ICollectionOfCollectionTargetBuilder<TItem, TViewModelBack>
-//{
-//    ITableSelectorBuilder<TItem, TViewModelBack> ToTables { get; }
-//    IContainerElementsSelectorBuilder<TItem, TViewModelBack> ToContainerElements { get; }
-//}
+public interface ICollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>
+{
+    ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> ToElements { get; }
+    ICollectionValueCustomJsBuilder<TItem, TValue, TEndCollectionReturn> ToJsFunction(string jsFunction);
+    //ICollectionFinallizable<TViewModel, TValue> ToOwnMapping { get; }
+}
 
+public interface ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn>
+{
+    ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ById(string id);
+    ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ById(Func<TValue, string> idFunc);
+    ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ById(Func<TItem, string> idFunc);
+    ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ByQuery(string query);
+    ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ByQuery(Func<TValue, string> queryFunc);
+    ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ByQuery(Func<TItem, string> queryFunc);
+}
+
+public interface ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn>
+{
+    //IRootInsertFromBuilder<TItem, TValue> Insert { get; }
+    ICollectionValueFinallizable<TItem, TValue, TEndCollectionReturn> ToContent { get; }
+    ICollectionValueFinallizable<TItem, TValue, TEndCollectionReturn> ToAttribute(string attribute);
+}

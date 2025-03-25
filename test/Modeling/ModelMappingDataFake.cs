@@ -1,5 +1,4 @@
 ﻿using Vitraux.JsCodeGeneration.QueryElements;
-using Vitraux.Modeling.Building.ModelMappers;
 using Vitraux.Modeling.Models;
 
 namespace Vitraux.Test.Modeling

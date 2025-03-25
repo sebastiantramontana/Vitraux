@@ -4,7 +4,6 @@ using Vitraux.JsCodeGeneration.Collections;
 using Vitraux.JsCodeGeneration.QueryElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.Values;
-using Vitraux.Modeling.Building.ModelMappers;
 using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Models;
 

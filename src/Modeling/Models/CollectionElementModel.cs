@@ -1,5 +1,4 @@
-﻿using Vitraux.Modeling.Building.ModelMappers;
-using Vitraux.Modeling.Building.Selectors.Elements;
+﻿using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Building.Selectors.Insertion;
 
 namespace Vitraux.Modeling.Models;

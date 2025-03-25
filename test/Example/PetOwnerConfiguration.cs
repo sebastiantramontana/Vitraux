@@ -1,27 +1,26 @@
 ﻿using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.QueryElements;
-using Vitraux.Modeling;
-using Vitraux.Modeling.Building.ModelMappers;
 
 namespace Vitraux.Test.Example;
 
 public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelConfiguration<PetOwner>
 {
-    public ConfigurationBehavior ConfigurationBehavior { get; } = new(QueryElementStrategy.OnlyOnceAtStart, true);
+    public ConfigurationBehavior ConfigurationBehavior { get; } = new(QueryElementStrategy.OnlyOnceAtStart, true, true);
 
     public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> modelMapper)
         => modelMapper
             .MapValue(po => po.Name)
                 .ToElements.ById("petowner-name").ToContent
+                .ToJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js"))
             .MapValue(po => po.Address)
-                .ToElements.ById("petowner-parent")
+                .ToElements.ById("petowner-address-parent")
                     .Insert.FromTemplate("petowner-address-template")
                     .ToChildren.ByQuery(".petowner-address-target")
-                    .ToContent
+                        .ToContent
                 .ToElements.ByQuery(".petwoner-address > div").ToAttribute("data-petowner-address")
             .MapValue(po => po.PhoneNumber)
                 .ToElements.ByQuery(".petowner-phonenumber")
-                    .Insert.FromUri(new Uri("https://mysite.com/htmlparts/phoneblock"))
+                    .Insert.FromUri(new Uri("./htmlpieces/phoneblock"))
                     .ToChildren.ByQuery(".petowner-phonenumber-target")
                     .ToAttribute("data-phonenumber")
                 .ToElements.ById("petowner-phonenumber-id").ToContent
@@ -33,19 +32,25 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                         .ToElements.ByQuery(".anchor-cell-pet-name").ToAttribute("href")
                         .ToElements.ByQuery(".another-anchor-cell-pet-name").ToAttribute("href")
                     .MapCollection(pet => pet.Vaccines)
-                        .ToTable.ById("inner-table-vaccines")
-                        .ByPopulatingRows.FromFetch(new Uri("http://mysite.com/htmlparts/row-vaccines.html"))
+                        .ToTables.ById("inner-table-vaccines")
+                        .PopulatingRows.FromUri(new Uri("./htmlpieces/row-vaccines.html"))
                             .MapValue(v => v.Name).ToElements.ByQuery(".div-vaccine").ToContent
                             .MapValue(v => v.DateApplied).ToElements.ByQuery(".span-vaccine-date").ToContent
+                            .MapCollection(v => v.Ingredients)
+                                .ToContainerElements.ByQuery("> ingredients-list")
+                                .FromTemplate("ingredients-template")
+                                    .MapValue(i => i).ToElements.ByQuery("ingredient-item").ToContent
+                            .EndCollection
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery(".pet-photo").ToAttribute("src")
                     .MapCollection(pet => pet.Antiparasitics)
-                        .ByPopulatingElements.ByQuery("inner-nav-antiparasitics")
-                        .FromFetch(new Uri("http://mysite.com/htmlparts/row-antiparasitics.html"))
+                        .ToContainerElements.ByQuery("inner-nav-antiparasitics")
+                        .FromUri(new Uri("./htmlpieces/row-antiparasitics.html"))
                             .MapValue(a => a.Name).ToElements.ByQuery(".div-antiparasitics").ToContent
                             .MapValue(a => a.DateApplied).ToElements.ByQuery(".span-antiparasitics-date").ToContent
                     .EndCollection
-            .EndCollection;
+            .EndCollection
+            .Build();
 
     private string ToDataUri(byte[] data) => dataUriConverter.ToDataUri(MimeImage.Png, data);
 }

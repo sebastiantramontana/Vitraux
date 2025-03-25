@@ -2,11 +2,11 @@
 
 namespace Vitraux.Modeling.Building.ElementBuilders.Collections.ContainerElements;
 
-public interface IContainerElementsSelectorBuilder<TItem, TViewModelBack>
+public interface IContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>
 {
-    ICollectionPopulateFromBuilder<TItem, TViewModelBack> ById(string id);
-    ICollectionPopulateFromBuilder<TItem, TViewModelBack> ById(Func<TItem, string> idFunc);
-    ICollectionPopulateFromBuilder<TItem, TViewModelBack> ByQuery(string query);
-    ICollectionPopulateFromBuilder<TItem, TViewModelBack> ByQuery(Func<TItem, string> queryFunc);
+    ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ById(string id);
+    ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ById(Func<TItem, string> idFunc);
+    ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ByQuery(string query);
+    ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ByQuery(Func<TItem, string> queryFunc);
 }
 

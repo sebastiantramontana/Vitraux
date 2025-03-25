@@ -1,10 +1,10 @@
 ﻿namespace Vitraux.Modeling.Building.ElementBuilders.Collections.Tables;
 
-public interface ITableSelectorBuilder<TItem, TViewModelBack>
+public interface ITableSelectorBuilder<TItem, TEndCollectionReturn>
 {
-    IPopulateTableRowsBuilder<TItem, TViewModelBack> ById(string id);
-    IPopulateTableRowsBuilder<TItem, TViewModelBack> ById(Func<TItem, string> idFunc);
-    IPopulateTableRowsBuilder<TItem, TViewModelBack> ByQuery(string query);
-    IPopulateTableRowsBuilder<TItem, TViewModelBack> ByQuery(Func<TItem, string> queryFunc);
+    IPopulateTableRowsBuilder<TItem, TEndCollectionReturn> ById(string id);
+    IPopulateTableRowsBuilder<TItem, TEndCollectionReturn> ById(Func<TItem, string> idFunc);
+    IPopulateTableRowsBuilder<TItem, TEndCollectionReturn> ByQuery(string query);
+    IPopulateTableRowsBuilder<TItem, TEndCollectionReturn> ByQuery(Func<TItem, string> queryFunc);
 }
 
