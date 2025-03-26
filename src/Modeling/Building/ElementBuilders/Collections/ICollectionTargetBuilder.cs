@@ -7,4 +7,5 @@ public interface ICollectionTargetBuilder<TItem, TEndCollectionReturn>
 {
     ITableSelectorBuilder<TItem, TEndCollectionReturn> ToTables { get; }
     IContainerElementsSelectorBuilder<TItem, TEndCollectionReturn> ToContainerElements { get; }
+    ICollectionCustomJsBuilder<TItem, TEndCollectionReturn> ToJsFunction(string jsFunction);
 }

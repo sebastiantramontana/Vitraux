@@ -27,6 +27,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
             .MapValue(po => po.Subscription)
                 .ToOwnMapping
             .MapCollection(po => po.Pets)
+                .ToJsFunction("pets.manage").FromModule(new Uri("./modules/pets.js"))
                 .ToTables.ById("pets-table")
                 .PopulatingRows.FromTemplate("pet-row-template")
                     .MapValue(pet => pet.Name)
@@ -46,6 +47,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery(".pet-photo").ToAttribute("src")
                     .MapCollection(pet => pet.Antiparasitics)
+                        .ToJsFunction("globalThis.manageAntiparasitics")
                         .ToContainerElements.ByQuery("inner-nav-antiparasitics")
                         .FromUri(new Uri("./htmlpieces/row-antiparasitics.html"))
                             .MapValue(a => a.Name).ToElements.ByQuery(".div-antiparasitics").ToContent
