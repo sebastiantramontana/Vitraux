@@ -29,5 +29,3 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
             .DistinctBy(c => c.InsertionSelector)
             .RunNow();
 }
-
-internal record UniqueFilteredSelectors(IEnumerable<ElementSelectorBase> ElementSelectors, IEnumerable<CollectionSelector> CollectionSelectors);
