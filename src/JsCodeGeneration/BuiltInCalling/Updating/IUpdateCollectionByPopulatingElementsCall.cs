@@ -1,7 +1,6 @@
-﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating
+﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+
+internal interface IUpdateCollectionByPopulatingElementsCall
 {
-    internal interface IUpdateCollectionByPopulatingElementsCall
-    {
-        string Generate(string appendToElementsArg, string elementToInsertArg, string updateCallbackArg, string collectionArg);
-    }
+    string Generate(string appendToElementsArg, string elementToInsertArg, string updateCallbackArg, string collectionArg);
 }

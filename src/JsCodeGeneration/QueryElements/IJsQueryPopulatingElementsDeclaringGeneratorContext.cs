@@ -1,9 +1,8 @@
 ﻿using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 
-namespace Vitraux.JsCodeGeneration.QueryElements
+namespace Vitraux.JsCodeGeneration.QueryElements;
+
+internal interface IJsQueryPopulatingElementsDeclaringGeneratorContext
 {
-    internal interface IJsQueryPopulatingElementsDeclaringGeneratorContext
-    {
-        IQueryElementsDeclaringJsCodeGenerator GetStrategy(PopulatingAppendToElementSelection selectionBy);
-    }
+    IQueryElementsDeclaringJsCodeGenerator GetStrategy(PopulatingAppendToElementSelection selectionBy);
 }

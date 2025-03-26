@@ -1,8 +1,7 @@
-﻿namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always
-{
+﻿namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
-    internal interface IJsQueryPopulatingElementsDeclaringAlwaysGeneratorContext
-        : IJsQueryPopulatingElementsDeclaringGeneratorContext
-    {
-    }
+
+internal interface IJsQueryPopulatingElementsDeclaringAlwaysGeneratorContext
+    : IJsQueryPopulatingElementsDeclaringGeneratorContext
+{
 }

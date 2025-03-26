@@ -1,10 +1,9 @@
-﻿namespace Vitraux
+﻿namespace Vitraux;
+
+internal class HtmlUpdater<TViewModel> : IHtmlUpdater<TViewModel>
 {
-    internal class HtmlUpdater<TViewModel> : IHtmlUpdater<TViewModel>
+    public void Update(TViewModel viewModel)
     {
-        public void Update(TViewModel viewModel)
-        {
-            throw new NotImplementedException();
-        }
+        throw new NotImplementedException();
     }
 }

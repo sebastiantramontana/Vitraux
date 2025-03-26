@@ -16,262 +16,261 @@ using Vitraux.Modeling.Building.ModelMappers;
 using Vitraux.Test.Example;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart;
 
-namespace Vitraux.Test.JsCodeGeneration
+namespace Vitraux.Test.JsCodeGeneration;
+
+[TestFixture]
+public class JsGeneratorTest
 {
-    [TestFixture]
-    public class JsGeneratorTest
+    const string expectedCodeAtStart = """
+                                        const elements0 = globalThis.vitraux.storedElements.elements.elements0;
+                                        const elements1 = globalThis.vitraux.storedElements.elements.elements1;
+                                        const elements1_appendTo = globalThis.vitraux.storedElements.elements.elements1_appendTo;
+                                        const elements2 = globalThis.vitraux.storedElements.elements.elements2;
+                                        const elements3 = globalThis.vitraux.storedElements.elements.elements3;
+                                        const elements3_appendTo = globalThis.vitraux.storedElements.elements.elements3_appendTo;
+                                        const elements4 = globalThis.vitraux.storedElements.elements.elements4;
+                                        const elements5 = globalThis.vitraux.storedElements.elements.elements5;
+                                        """;
+
+    const string expectedCodeOnDemand = """
+                                        const elements0 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'elements0');
+                                        const elements1 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
+                                        const elements1_appendTo = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
+                                        const elements2 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'elements2');
+                                        const elements3 = await globalThis.vitraux.storedElements.getFetchedElement('https://mysite.com/htmlparts/phoneblock', 'elements3');
+                                        const elements3_appendTo = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'elements3_appendTo');
+                                        const elements4 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'elements4');
+                                        const elements5 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements5');
+                                        """;
+
+    const string expectedCodeAlways = """
+                                      const elements0 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-name');
+                                      const elements1 = globalThis.vitraux.storedElements.getTemplate('petowner-address-template');
+                                      const elements1_appendTo = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-parent');
+                                      const elements2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petwoner-address > div');
+                                      const elements3 = await globalThis.vitraux.storedElements.fetchElement('https://mysite.com/htmlparts/phoneblock');
+                                      const elements3_appendTo = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petowner-phonenumber');
+                                      const elements4 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-phonenumber-id');
+                                      const elements5 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
+                                      """;
+
+    const string expectedExecutedCodeForAtStart = """
+                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'elements0');
+                                                globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
+                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
+                                                globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'elements2');
+                                                await globalThis.vitraux.storedElements.getFetchedElement('https://mysite.com/htmlparts/phoneblock', 'elements3');
+                                                globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'elements3_appendTo');
+                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'elements4');
+                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements5');
+                                                """;
+
+    const string expectedCodeForValues = """
+                                        if(vm.value0) {
+                                            globalThis.vitraux.updating.setElementsContent(elements0, vm.value0);
+                                        }
+
+                                        if(vm.value1) {
+                                            globalThis.vitraux.updating.UpdateValueByPopulatingElements(
+                                                elements1,
+                                                elements1_appendTo,
+                                                (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-address-target'),
+                                                (targetChildElements) => globalThis.vitraux.updating.setElementsContent(targetChildElements, vm.value1));
+
+                                            globalThis.vitraux.updating.setElementsAttribute(elements2, 'data-petowner-address', vm.value1);
+                                        }
+
+                                        if(vm.value2) {
+                                            globalThis.vitraux.updating.UpdateValueByPopulatingElements(
+                                                elements3,
+                                                elements3_appendTo,
+                                                (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-phonenumber-target'),
+                                                (targetChildElements) => globalThis.vitraux.updating.setElementsAttribute(targetChildElements, 'data-phonenumber', vm.value2));
+
+                                            globalThis.vitraux.updating.setElementsContent(elements4, vm.value2);
+                                        }
+                                        """;
+
+    [Test]
+    [TestCase(QueryElementStrategy.OnlyOnceAtStart, expectedCodeAtStart)]
+    [TestCase(QueryElementStrategy.OnlyOnceOnDemand, expectedCodeOnDemand)]
+    [TestCase(QueryElementStrategy.Always, expectedCodeAlways)]
+    public void GenerateCodeTest(QueryElementStrategy queryElementStrategy, string expectedQueryElementsCode)
     {
-        const string expectedCodeAtStart = """
-                                            const elements0 = globalThis.vitraux.storedElements.elements.elements0;
-                                            const elements1 = globalThis.vitraux.storedElements.elements.elements1;
-                                            const elements1_appendTo = globalThis.vitraux.storedElements.elements.elements1_appendTo;
-                                            const elements2 = globalThis.vitraux.storedElements.elements.elements2;
-                                            const elements3 = globalThis.vitraux.storedElements.elements.elements3;
-                                            const elements3_appendTo = globalThis.vitraux.storedElements.elements.elements3_appendTo;
-                                            const elements4 = globalThis.vitraux.storedElements.elements.elements4;
-                                            const elements5 = globalThis.vitraux.storedElements.elements.elements5;
-                                            """;
+        var executorMock = new Mock<IJsCodeExecutor>();
 
-        const string expectedCodeOnDemand = """
-                                            const elements0 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'elements0');
-                                            const elements1 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
-                                            const elements1_appendTo = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
-                                            const elements2 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'elements2');
-                                            const elements3 = await globalThis.vitraux.storedElements.getFetchedElement('https://mysite.com/htmlparts/phoneblock', 'elements3');
-                                            const elements3_appendTo = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'elements3_appendTo');
-                                            const elements4 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'elements4');
-                                            const elements5 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements5');
-                                            """;
+        var sut = CreateSut(executorMock.Object);
+        var personaConfig = new PetOwnerConfiguration(new DataUriConverter());
 
-        const string expectedCodeAlways = """
-                                          const elements0 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-name');
-                                          const elements1 = globalThis.vitraux.storedElements.getTemplate('petowner-address-template');
-                                          const elements1_appendTo = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-parent');
-                                          const elements2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petwoner-address > div');
-                                          const elements3 = await globalThis.vitraux.storedElements.fetchElement('https://mysite.com/htmlparts/phoneblock');
-                                          const elements3_appendTo = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petowner-phonenumber');
-                                          const elements4 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-phonenumber-id');
-                                          const elements5 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
-                                          """;
+        var modelMapper = new ModelMapperRoot<PetOwner>();
+        var data = personaConfig.ConfigureMapping(modelMapper);
 
-        const string expectedExecutedCodeForAtStart = """
-                                                    globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'elements0');
-                                                    globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'elements1');
-                                                    globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-parent', 'elements1_appendTo');
-                                                    globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'elements2');
-                                                    await globalThis.vitraux.storedElements.getFetchedElement('https://mysite.com/htmlparts/phoneblock', 'elements3');
-                                                    globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'elements3_appendTo');
-                                                    globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'elements4');
-                                                    globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'elements5');
-                                                    """;
+        var actualCode = sut.GenerateJsCode(data, queryElementStrategy);
+        var expectedCode = expectedQueryElementsCode + Environment.NewLine + Environment.NewLine + expectedCodeForValues;
 
-        const string expectedCodeForValues = """
-                                            if(vm.value0) {
-                                                globalThis.vitraux.updating.setElementsContent(elements0, vm.value0);
-                                            }
+        Assert.That(actualCode, Is.EqualTo(expectedCode));
 
-                                            if(vm.value1) {
-                                                globalThis.vitraux.updating.UpdateValueByPopulatingElements(
-                                                    elements1,
-                                                    elements1_appendTo,
-                                                    (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-address-target'),
-                                                    (targetChildElements) => globalThis.vitraux.updating.setElementsContent(targetChildElements, vm.value1));
+        if (queryElementStrategy == QueryElementStrategy.OnlyOnceAtStart)
+            executorMock.Verify(e => e.Excute(expectedExecutedCodeForAtStart), Times.Once);
+    }
 
-                                                globalThis.vitraux.updating.setElementsAttribute(elements2, 'data-petowner-address', vm.value1);
-                                            }
+    [Test]
+    public void SampleToTestGeneratedJsCode()
+    {
+        //Arrange
+        var html = """
+            <!DOCTYPE html>
 
-                                            if(vm.value2) {
-                                                globalThis.vitraux.updating.UpdateValueByPopulatingElements(
-                                                    elements3,
-                                                    elements3_appendTo,
-                                                    (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-phonenumber-target'),
-                                                    (targetChildElements) => globalThis.vitraux.updating.setElementsAttribute(targetChildElements, 'data-phonenumber', vm.value2));
+            <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta charset="utf-8" />
+                <title>Some Title</title>
+            </head>
+            <body>
+            <div id="test_id">text to change</div>
+            </body>
+            </html>
+            """;
 
-                                                globalThis.vitraux.updating.setElementsContent(elements4, vm.value2);
-                                            }
-                                            """;
+        var options = new ChromeOptions();
+        // Avoid opening a Chrome window browser: The test runs in memory
+        options.AddArguments("--disable-crash-reporter", "--enable-gpu", "--force-headless-for-tests", "--headless");
 
-        [Test]
-        [TestCase(QueryElementStrategy.OnlyOnceAtStart, expectedCodeAtStart)]
-        [TestCase(QueryElementStrategy.OnlyOnceOnDemand, expectedCodeOnDemand)]
-        [TestCase(QueryElementStrategy.Always, expectedCodeAlways)]
-        public void GenerateCodeTest(QueryElementStrategy queryElementStrategy, string expectedQueryElementsCode)
-        {
-            var executorMock = new Mock<IJsCodeExecutor>();
+        //Also: FireFoxDriver, EdgeDriver and SafariDriver
+        IWebDriver driver = new ChromeDriver(options);
 
-            var sut = CreateSut(executorMock.Object);
-            var personaConfig = new PetOwnerConfiguration(new DataUriConverter());
+        //Load a page with the desired html
+        driver.Navigate().GoToUrl("about:blank"); //First blank page...
+        var js = (IJavaScriptExecutor)driver;
+        js.ExecuteScript($"document.write(arguments[0]);", html); //then, write the html
 
-            var modelMapper = new ModelMapperRoot<PetOwner>();
-            var data = personaConfig.ConfigureMapping(modelMapper);
+        //Act
+        js.ExecuteScript("document.getElementById('test_id').innerHTML = 'text changed'");
 
-            var actualCode = sut.GenerateJsCode(data, queryElementStrategy);
-            var expectedCode = expectedQueryElementsCode + Environment.NewLine + Environment.NewLine + expectedCodeForValues;
+        //Assert
+        var element = driver.FindElement(By.Id("test_id"));
+        Assert.That(element.Text, Is.EqualTo("text changed"));
+    }
 
-            Assert.That(actualCode, Is.EqualTo(expectedCode));
+    private static RootJsGenerator CreateSut(IJsCodeExecutor jsCodeExecutor)
+    {
+        var getElementByIdAsArrayCall = new GetElementByIdAsArrayCall();
+        var getElementsByQuerySelectorCall = new GetElementsByQuerySelectorCall();
 
-            if (queryElementStrategy == QueryElementStrategy.OnlyOnceAtStart)
-                executorMock.Verify(e => e.Excute(expectedExecutedCodeForAtStart), Times.Once);
-        }
+        var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(jsCodeExecutor, getElementByIdAsArrayCall, getElementsByQuerySelectorCall);
+        var uniqueSelectorsFilter = new UniqueSelectorsFilter();
+        var elementNamesGenerator = new ElementNamesGenerator();
+        var valueNamesGenerator = new ValueNamesGenerator();
+        var collectionNamesGenerator = new CollectionNamesGenerator();
+        var codeFormatter = new CodeFormatter();
+        var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(codeFormatter);
+        var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall, propertyCheckerJsCodeGeneration, codeFormatter);
+        var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
+        var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, collectionsJsCodeGenerationBuilder, queryElementsGeneratorByStrategyContext);
 
-        [Test]
-        public void SampleToTestGeneratedJsCode()
-        {
-            //Arrange
-            var html = """
-                <!DOCTYPE html>
+        return new RootJsGenerator(jsGenerator);
+    }
 
-                <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-                <head>
-                    <meta charset="utf-8" />
-                    <title>Some Title</title>
-                </head>
-                <body>
-                <div id="test_id">text to change</div>
-                </body>
-                </html>
-                """;
+    private static QueryElementsJsCodeGeneratorByStrategyContext CreateQueryElementsJsCodeGeneratorByStrategyContext(IJsCodeExecutor jsCodeExecutor, IGetElementByIdAsArrayCall getElementByIdAsArrayCall, IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall)
+    {
+        var builder = new QueryElementsJsCodeBuilder();
+        var getStoredElementByIdAsArrayCall = new GetStoredElementByIdAsArrayCall();
+        var getStoredElementsByQuerySelectorCall = new GetStoredElementsByQuerySelectorCall();
+        var queryAppendToElementsDeclaringByTemplateJsCodeGenerator = new QueryAppendToElementsDeclaringByPopulatingJsCodeGenerator();
+        var queryTemplateCallingJsBuiltInFunctionCodeGenerator = new QueryPopulatingCallingJsBuiltInFunctionCodeGenerator(queryAppendToElementsDeclaringByTemplateJsCodeGenerator);
 
-            var options = new ChromeOptions();
-            // Avoid opening a Chrome window browser: The test runs in memory
-            options.AddArguments("--disable-crash-reporter", "--enable-gpu", "--force-headless-for-tests", "--headless");
+        var atStartGenerator = CreateAtStartGenerator(builder, jsCodeExecutor, getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall);
+        var onDemandGenerator = CreateOnDemandGenerator(builder, getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator);
+        var onAlwaysGenerator = CreateAlwaysGenerator(builder, getElementByIdAsArrayCall, getElementsByQuerySelectorCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator);
 
-            //Also: FireFoxDriver, EdgeDriver and SafariDriver
-            IWebDriver driver = new ChromeDriver(options);
+        return new QueryElementsJsCodeGeneratorByStrategyContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
+    }
 
-            //Load a page with the desired html
-            driver.Navigate().GoToUrl("about:blank"); //First blank page...
-            var js = (IJavaScriptExecutor)driver;
-            js.ExecuteScript($"document.write(arguments[0]);", html); //then, write the html
+    private static ICollectionsJsCodeGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
+    {
+        var randomStringGenerator = new RandomStringGenerator();
+        var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(randomStringGenerator, codeFormatter);
+        var updateCollectionByPopulatingElementsCall = new UpdateCollectionByPopulatingElementsCall();
+        var updateTableCall = new UpdateTableCall();
+        var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator);
 
-            //Act
-            js.ExecuteScript("document.getElementById('test_id').innerHTML = 'text changed'");
+        return new CollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, updateCollectionJsCodeGenerator);
+    }
 
-            //Assert
-            var element = driver.FindElement(By.Id("test_id"));
-            Assert.That(element.Text, Is.EqualTo("text changed"));
-        }
+    private static IValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall, IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
+    {
+        var setElementsAttributeCall = new SetElementsAttributeCall();
+        var attributeCodeGenerator = new ElementPlaceAttributeJsCodeGenerator(setElementsAttributeCall);
 
-        private static RootJsGenerator CreateSut(IJsCodeExecutor jsCodeExecutor)
-        {
-            var getElementByIdAsArrayCall = new GetElementByIdAsArrayCall();
-            var getElementsByQuerySelectorCall = new GetElementsByQuerySelectorCall();
+        var setElementsContentCall = new SetElementsContentCall();
+        var contentCodeGenerator = new ElementPlaceContentJsCodeGenerator(setElementsContentCall);
 
-            var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(jsCodeExecutor, getElementByIdAsArrayCall, getElementsByQuerySelectorCall);
-            var uniqueSelectorsFilter = new UniqueSelectorsFilter();
-            var elementNamesGenerator = new ElementNamesGenerator();
-            var valueNamesGenerator = new ValueNamesGenerator();
-            var collectionNamesGenerator = new CollectionNamesGenerator();
-            var codeFormatter = new CodeFormatter();
-            var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(codeFormatter);
-            var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall, propertyCheckerJsCodeGeneration, codeFormatter);
-            var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
-            var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, collectionsJsCodeGenerationBuilder, queryElementsGeneratorByStrategyContext);
+        var toChildQueryFunctionCall = new ToChildQueryFunctionCall(getElementsByQuerySelectorCall);
+        var updateByPopulatingElementsCall = new UpdateValueByPopulatingElementsCall(codeFormatter);
+        var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall);
 
-            return new RootJsGenerator(jsGenerator);
-        }
+        var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator);
+        var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall);
+        var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsCodeGenerationBuilder(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator);
 
-        private static QueryElementsJsCodeGeneratorByStrategyContext CreateQueryElementsJsCodeGeneratorByStrategyContext(IJsCodeExecutor jsCodeExecutor, IGetElementByIdAsArrayCall getElementByIdAsArrayCall, IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall)
-        {
-            var builder = new QueryElementsJsCodeBuilder();
-            var getStoredElementByIdAsArrayCall = new GetStoredElementByIdAsArrayCall();
-            var getStoredElementsByQuerySelectorCall = new GetStoredElementsByQuerySelectorCall();
-            var queryAppendToElementsDeclaringByTemplateJsCodeGenerator = new QueryAppendToElementsDeclaringByPopulatingJsCodeGenerator();
-            var queryTemplateCallingJsBuiltInFunctionCodeGenerator = new QueryPopulatingCallingJsBuiltInFunctionCodeGenerator(queryAppendToElementsDeclaringByTemplateJsCodeGenerator);
+        return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
+    }
 
-            var atStartGenerator = CreateAtStartGenerator(builder, jsCodeExecutor, getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall);
-            var onDemandGenerator = CreateOnDemandGenerator(builder, getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator);
-            var onAlwaysGenerator = CreateAlwaysGenerator(builder, getElementByIdAsArrayCall, getElementsByQuerySelectorCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator);
+    private static QueryElementsOnlyOnceAtStartJsCodeGenerator CreateAtStartGenerator(IQueryElementsJsCodeBuilder builder, IJsCodeExecutor jsCodeExecutor, IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall, IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall)
+    {
+        var generatorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
+        var generatorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
+        var getStoredTemplateCall = new GetStoredTemplateCall();
+        var getFetchedElementCall = new GetFetchedElementCall();
+        var storageElementJsLineGeneratorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
+        var storageElementJsLineGeneratorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
+        var storagePopulatingAppendToElementJsLineGenerator = new StoragePopulatingAppendToElementJsLineGenerator(storageElementJsLineGeneratorById, storageElementJsLineGeneratorByQuerySelector);
+        var storagePopulatingElementJsLineGenerator = new StoragePopulatingElementJsLineGenerator(storagePopulatingAppendToElementJsLineGenerator);
+        var generatorPopulatingByTemplate = new StorageElementJsLineGeneratorPopulatingElementsByTemplate(getStoredTemplateCall, storagePopulatingElementJsLineGenerator);
+        var generatorByFetch = new StorageElementJsLineGeneratorByFetch(getFetchedElementCall, storagePopulatingElementJsLineGenerator);
+        var storageElementLineGenerator = new StorageElementValueJsLineGenerator(generatorById, generatorByQuerySelector, generatorPopulatingByTemplate, generatorByFetch);
+        var storageElementsBuilder = new StoreElementsJsCodeBuilder(storageElementLineGenerator);
+        var initializer = new QueryElementsOnlyOnceAtStartup(storageElementsBuilder, jsCodeExecutor);
+        var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsCodeGenerator();
 
-            return new QueryElementsJsCodeGeneratorByStrategyContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
-        }
+        return new QueryElementsOnlyOnceAtStartJsCodeGenerator(builder, atStartDeclaringGenerator, initializer);
+    }
 
-        private static ICollectionsJsCodeGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
-        {
-            var randomStringGenerator = new RandomStringGenerator();
-            var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(randomStringGenerator, codeFormatter);
-            var updateCollectionByPopulatingElementsCall = new UpdateCollectionByPopulatingElementsCall();
-            var updateTableCall = new UpdateTableCall();
-            var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator);
+    private static QueryElementsOnlyOnceOnDemandJsCodeGenerator CreateOnDemandGenerator(
+        IQueryElementsJsCodeBuilder builder,
+        IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
+        IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
+        IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
+    {
+        var declaringOnlyOncenDemandByIdGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator(getStoredElementByIdAsArrayCall);
+        var declaringOnlyOnceOnDemandByQuerySelectorGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsCodeGenerator(getStoredElementsByQuerySelectorCall);
+        var getStoredTemplateCall = new GetStoredTemplateCall();
+        var getFetchedElementCall = new GetFetchedElementCall();
+        var jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext = new JsQueryPopulatingElementsDeclaringOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator);
+        var declaringOnlyOnceOnDemandByTemplateGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(getStoredTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
+        var declaringOnlyOnceOnDemandByFetchGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByFetchJsCodeGenerator(getFetchedElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
+        var onDemandGeneratorContext = new JsQueryElementsOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator, declaringOnlyOnceOnDemandByTemplateGenerator, declaringOnlyOnceOnDemandByFetchGenerator);
+        var declaringOnlyOnceOnDemandGenerator = new QueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator(onDemandGeneratorContext);
 
-            return new CollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, updateCollectionJsCodeGenerator);
-        }
+        return new QueryElementsOnlyOnceOnDemandJsCodeGenerator(builder, declaringOnlyOnceOnDemandGenerator);
+    }
 
-        private static IValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall, IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
-        {
-            var setElementsAttributeCall = new SetElementsAttributeCall();
-            var attributeCodeGenerator = new ElementPlaceAttributeJsCodeGenerator(setElementsAttributeCall);
+    private static QueryElementsAlwaysJsCodeGenerator CreateAlwaysGenerator(
+        IQueryElementsJsCodeBuilder builder,
+        IGetElementByIdAsArrayCall getElementByIdAsArrayCall,
+        IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall,
+        IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
+    {
+        var declaringAlwaysByIdGenerator = new QueryElementsDeclaringAlwaysByIdJsCodeGenerator(getElementByIdAsArrayCall);
+        var declaringAlwaysByQuerySelectorGenerator = new QueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator(getElementsByQuerySelectorCall);
+        var getTemplateCall = new GetTemplateCall();
+        var fetchElementCall = new FetchElementCall();
+        var jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext = new JsQueryPopulatingElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator);
+        var declaringAlwaysByTemplateGenerator = new QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(getTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
+        var declaringAlwaysByFetchGenerator = new QueryElementsDeclaringAlwaysByFetchJsCodeGenerator(fetchElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
+        var alwaysGeneratorContext = new JsQueryElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator, declaringAlwaysByTemplateGenerator, declaringAlwaysByFetchGenerator);
+        var declaringAlwaysGenerator = new QueryElementsDeclaringAlwaysCodeGenerator(alwaysGeneratorContext);
 
-            var setElementsContentCall = new SetElementsContentCall();
-            var contentCodeGenerator = new ElementPlaceContentJsCodeGenerator(setElementsContentCall);
-
-            var toChildQueryFunctionCall = new ToChildQueryFunctionCall(getElementsByQuerySelectorCall);
-            var updateByPopulatingElementsCall = new UpdateValueByPopulatingElementsCall(codeFormatter);
-            var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall);
-
-            var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator);
-            var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall);
-            var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsCodeGenerationBuilder(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator);
-
-            return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
-        }
-
-        private static QueryElementsOnlyOnceAtStartJsCodeGenerator CreateAtStartGenerator(IQueryElementsJsCodeBuilder builder, IJsCodeExecutor jsCodeExecutor, IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall, IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall)
-        {
-            var generatorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
-            var generatorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
-            var getStoredTemplateCall = new GetStoredTemplateCall();
-            var getFetchedElementCall = new GetFetchedElementCall();
-            var storageElementJsLineGeneratorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
-            var storageElementJsLineGeneratorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
-            var storagePopulatingAppendToElementJsLineGenerator = new StoragePopulatingAppendToElementJsLineGenerator(storageElementJsLineGeneratorById, storageElementJsLineGeneratorByQuerySelector);
-            var storagePopulatingElementJsLineGenerator = new StoragePopulatingElementJsLineGenerator(storagePopulatingAppendToElementJsLineGenerator);
-            var generatorPopulatingByTemplate = new StorageElementJsLineGeneratorPopulatingElementsByTemplate(getStoredTemplateCall, storagePopulatingElementJsLineGenerator);
-            var generatorByFetch = new StorageElementJsLineGeneratorByFetch(getFetchedElementCall, storagePopulatingElementJsLineGenerator);
-            var storageElementLineGenerator = new StorageElementValueJsLineGenerator(generatorById, generatorByQuerySelector, generatorPopulatingByTemplate, generatorByFetch);
-            var storageElementsBuilder = new StoreElementsJsCodeBuilder(storageElementLineGenerator);
-            var initializer = new QueryElementsOnlyOnceAtStartup(storageElementsBuilder, jsCodeExecutor);
-            var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsCodeGenerator();
-
-            return new QueryElementsOnlyOnceAtStartJsCodeGenerator(builder, atStartDeclaringGenerator, initializer);
-        }
-
-        private static QueryElementsOnlyOnceOnDemandJsCodeGenerator CreateOnDemandGenerator(
-            IQueryElementsJsCodeBuilder builder,
-            IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
-            IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
-            IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
-        {
-            var declaringOnlyOncenDemandByIdGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator(getStoredElementByIdAsArrayCall);
-            var declaringOnlyOnceOnDemandByQuerySelectorGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsCodeGenerator(getStoredElementsByQuerySelectorCall);
-            var getStoredTemplateCall = new GetStoredTemplateCall();
-            var getFetchedElementCall = new GetFetchedElementCall();
-            var jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext = new JsQueryPopulatingElementsDeclaringOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator);
-            var declaringOnlyOnceOnDemandByTemplateGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(getStoredTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
-            var declaringOnlyOnceOnDemandByFetchGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByFetchJsCodeGenerator(getFetchedElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
-            var onDemandGeneratorContext = new JsQueryElementsOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator, declaringOnlyOnceOnDemandByTemplateGenerator, declaringOnlyOnceOnDemandByFetchGenerator);
-            var declaringOnlyOnceOnDemandGenerator = new QueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator(onDemandGeneratorContext);
-
-            return new QueryElementsOnlyOnceOnDemandJsCodeGenerator(builder, declaringOnlyOnceOnDemandGenerator);
-        }
-
-        private static QueryElementsAlwaysJsCodeGenerator CreateAlwaysGenerator(
-            IQueryElementsJsCodeBuilder builder,
-            IGetElementByIdAsArrayCall getElementByIdAsArrayCall,
-            IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall,
-            IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
-        {
-            var declaringAlwaysByIdGenerator = new QueryElementsDeclaringAlwaysByIdJsCodeGenerator(getElementByIdAsArrayCall);
-            var declaringAlwaysByQuerySelectorGenerator = new QueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator(getElementsByQuerySelectorCall);
-            var getTemplateCall = new GetTemplateCall();
-            var fetchElementCall = new FetchElementCall();
-            var jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext = new JsQueryPopulatingElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator);
-            var declaringAlwaysByTemplateGenerator = new QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(getTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
-            var declaringAlwaysByFetchGenerator = new QueryElementsDeclaringAlwaysByFetchJsCodeGenerator(fetchElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
-            var alwaysGeneratorContext = new JsQueryElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator, declaringAlwaysByTemplateGenerator, declaringAlwaysByFetchGenerator);
-            var declaringAlwaysGenerator = new QueryElementsDeclaringAlwaysCodeGenerator(alwaysGeneratorContext);
-
-            return new QueryElementsAlwaysJsCodeGenerator(declaringAlwaysGenerator, builder);
-        }
+        return new QueryElementsAlwaysJsCodeGenerator(declaringAlwaysGenerator, builder);
     }
 }

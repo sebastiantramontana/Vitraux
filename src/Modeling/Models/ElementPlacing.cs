@@ -1,8 +1,7 @@
-﻿namespace Vitraux.Modeling.Models
+﻿namespace Vitraux.Modeling.Models;
+
+internal enum ElementPlacing
 {
-    internal enum ElementPlacing
-    {
-        Attribute,
-        Content
-    }
+    Attribute,
+    Content
 }

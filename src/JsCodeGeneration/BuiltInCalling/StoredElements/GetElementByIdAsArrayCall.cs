@@ -1,8 +1,7 @@
-﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements
+﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
+
+internal class GetElementByIdAsArrayCall : IGetElementByIdAsArrayCall
 {
-    internal class GetElementByIdAsArrayCall : IGetElementByIdAsArrayCall
-    {
-        public string Generate(string id)
-            => $"globalThis.vitraux.storedElements.getElementByIdAsArray('{id}')";
-    }
+    public string Generate(string id)
+        => $"globalThis.vitraux.storedElements.getElementByIdAsArray('{id}')";
 }

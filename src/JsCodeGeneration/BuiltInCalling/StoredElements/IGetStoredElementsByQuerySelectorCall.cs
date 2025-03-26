@@ -1,7 +1,6 @@
-﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements
+﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
+
+internal interface IGetStoredElementsByQuerySelectorCall
 {
-    internal interface IGetStoredElementsByQuerySelectorCall
-    {
-        string Generate(string parentElementObjectName, string querySelector, string elementObjectName);
-    }
+    string Generate(string parentElementObjectName, string querySelector, string elementObjectName);
 }

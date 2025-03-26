@@ -1,7 +1,6 @@
-﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements
+﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
+
+internal interface IGetElementByIdAsArrayCall
 {
-    internal interface IGetElementByIdAsArrayCall
-    {
-        string Generate(string id);
-    }
+    string Generate(string id);
 }
