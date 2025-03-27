@@ -1,13 +1,14 @@
 ﻿using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Building.Selectors.Insertion;
-using Vitraux.Modeling.Models;
+using Vitraux.Modeling.Data.Collections;
+using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.Test.Modeling;
 
 internal static class TestHelper
 {
-    public static ValueModel CreateValueModel(Delegate valueFunc, IEnumerable<TargetElement> targetElements)
+    public static ValueModel CreateValueModel(Delegate valueFunc, IEnumerable<ElementTarget> targetElements)
         => new(valueFunc)
         {
             TargetElements = targetElements.ToArray()
@@ -47,7 +48,7 @@ internal static class TestHelper
             TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
         };
 
-    public static TargetElement CreateTargetElement(ElementSelectorBase selector, ElementPlace place)
+    public static ElementTarget CreateTargetElement(ElementSelectorBase selector, ElementPlace place)
         => new(selector) { Place = place };
 
     public static ElementPlace CreateAttributeElementPlace(string attribute)
@@ -80,7 +81,7 @@ internal static class TestHelper
         });
     }
 
-    public static void AssertTargetElement(TargetElement actualTargetElement, TargetElement expectedTargetElement, bool canPlaceBeNull)
+    public static void AssertTargetElement(ElementTarget actualTargetElement, ElementTarget expectedTargetElement, bool canPlaceBeNull)
     {
         AssertPlace(actualTargetElement.Place, expectedTargetElement.Place, canPlaceBeNull);
         AssertSelector(actualTargetElement.Selector, expectedTargetElement.Selector);

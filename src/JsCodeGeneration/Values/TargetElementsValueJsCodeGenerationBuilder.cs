@@ -2,7 +2,7 @@
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Building.Selectors.Elements.Populating;
-using Vitraux.Modeling.Models;
+using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.JsCodeGeneration.Values;
 
@@ -27,7 +27,7 @@ internal class TargetElementsValueJsCodeGenerationBuilder(
             .ToString()
             .TrimEnd();
 
-    private static IEnumerable<ElementObjectName> GetElementNamesAssociatedToTargetElement(IEnumerable<ElementObjectName> elements, TargetElement targetElement)
+    private static IEnumerable<ElementObjectName> GetElementNamesAssociatedToTargetElement(IEnumerable<ElementObjectName> elements, ElementTarget targetElement)
         => elements.Where(e => e.AssociatedSelector == targetElement.Selector);
 
     private ITargetElementUpdateValueJsCodeGenerator GetCodeGeneratorBySelector(ElementSelectorBase selector)

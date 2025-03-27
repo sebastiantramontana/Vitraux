@@ -1,4 +1,4 @@
-﻿namespace Vitraux.Modeling.Models;
+﻿namespace Vitraux.Modeling.Data.Values;
 
 internal enum ElementPlacing
 {

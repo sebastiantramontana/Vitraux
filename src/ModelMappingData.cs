@@ -1,4 +1,5 @@
-﻿using Vitraux.Modeling.Models;
+﻿using Vitraux.Modeling.Data.Collections;
+using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux;
 

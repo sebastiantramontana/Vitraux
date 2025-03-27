@@ -1,8 +1,7 @@
 ﻿using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.Collections;
-using Vitraux.Modeling.Models;
+using Vitraux.Modeling.Data.Collections;
 
-namespace Vitraux.JsCodeGeneration.Values;
+namespace Vitraux.JsCodeGeneration.Collections;
 
 internal class CollectionNamesGenerator : ICollectionNamesGenerator
 {

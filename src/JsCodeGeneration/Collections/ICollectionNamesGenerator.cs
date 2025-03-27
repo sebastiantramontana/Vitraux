@@ -1,4 +1,4 @@
-﻿using Vitraux.Modeling.Models;
+﻿using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.JsCodeGeneration.Collections;
 

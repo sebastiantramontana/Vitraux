@@ -2,7 +2,7 @@
 using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Building.Selectors.Insertion;
-using Vitraux.Modeling.Models;
+using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 

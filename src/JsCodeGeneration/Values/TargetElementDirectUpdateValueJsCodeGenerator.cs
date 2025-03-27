@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Models;
+using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.JsCodeGeneration.Values;
 
@@ -9,7 +9,7 @@ internal class TargetElementDirectUpdateValueJsCodeGenerator(
     IElementPlaceContentJsCodeGenerator contentGenerator)
     : ITargetElementDirectUpdateValueJsCodeGenerator
 {
-    public string GenerateJsCode(TargetElement targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName)
+    public string GenerateJsCode(ElementTarget targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName)
         => associatedElements
             .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(GeneratePlaceJsCode(targetElement.Place, ae.Name, parentValueObjectName, valueObjectName)))
             .ToString()

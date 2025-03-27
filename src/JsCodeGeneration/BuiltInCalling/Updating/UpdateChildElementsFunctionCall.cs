@@ -1,4 +1,4 @@
-﻿using Vitraux.Modeling.Models;
+﻿using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 
@@ -7,7 +7,7 @@ internal class UpdateChildElementsFunctionCall(
     ISetElementsContentCall setElementsContentCall) 
     : IUpdateChildElementsFunctionCall
 {
-    public string Generate(TargetElement toChildTargetElement, string parentValueObjectName, string valueObjectName)
+    public string Generate(ElementTarget toChildTargetElement, string parentValueObjectName, string valueObjectName)
     {
         const string targetTemplateChildElements = "targetChildElements";
         var fullValueObject = $"{parentValueObjectName}.{valueObjectName}";
