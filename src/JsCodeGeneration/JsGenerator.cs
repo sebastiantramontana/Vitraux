@@ -105,7 +105,7 @@ internal class UpdateCollectionJsCodeGenerator(
 
     private string GetUpdateCall(PopulatingElementObjectName populatingElementObjectName, CollectionObjectName collectionObjectName, string updateFunctionCallbackName)
     {
-        return collectionObjectName.AssociatedCollection is CollectionTableData
+        return collectionObjectName.AssociatedCollection is CollectionTableTarget
                 ? $"{updateTableCall.Generate(populatingElementObjectName.AppendToName, populatingElementObjectName.Name, updateFunctionCallbackName, collectionObjectName.Name)};"
                 : $"{updateCollectionByPopulatingElementsCall.Generate(populatingElementObjectName.AppendToName, populatingElementObjectName.Name, updateFunctionCallbackName, collectionObjectName.Name)};";
     }

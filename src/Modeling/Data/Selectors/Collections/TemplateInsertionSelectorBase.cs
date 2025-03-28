@@ -1,3 +1,3 @@
-﻿namespace Vitraux.Modeling.Data.Selectors.Insertion;
+﻿namespace Vitraux.Modeling.Data.Selectors.Collections;
 
 internal abstract record class TemplateInsertionSelectorBase : InsertionSelectorBase;

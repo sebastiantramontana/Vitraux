@@ -2,5 +2,5 @@
 
 internal record class ValueData(Delegate ValueFunc)
 {
-    public IEnumerable<Target<ValueTarget>> Targets { get; set; } = [];
+    public IEnumerable<ValueTarget> Targets { get; set; } = [];
 }

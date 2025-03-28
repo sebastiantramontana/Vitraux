@@ -1,8 +1,8 @@
 ﻿using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Data.Collections;
+using Vitraux.Modeling.Data.Selectors.Collections;
 using Vitraux.Modeling.Data.Selectors.Elements;
 using Vitraux.Modeling.Data.Selectors.Elements.Populating;
-using Vitraux.Modeling.Data.Selectors.Insertion;
 using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.Test.Modeling;
@@ -15,7 +15,7 @@ internal static class TestHelper
             TargetElements = targetElements.ToArray()
         };
 
-    public static CollectionTableData CreateCollectionTableModel(Delegate collectionFunc, ElementSelectorBase tableSelector, InsertionSelectorBase rowSelector, IEnumerable<ValueData> values, IEnumerable<CollectionData> collectionElements)
+    public static CollectionTableTarget CreateCollectionTableModel(Delegate collectionFunc, ElementSelectorBase tableSelector, InsertionSelectorBase rowSelector, IEnumerable<ValueData> values, IEnumerable<CollectionData> collectionElements)
         => FillCollectionElementModel(new CollectionTableData(collectionFunc), tableSelector, rowSelector, values, collectionElements);
 
     public static CollectionData CreateCollectionElementModel(Delegate collectionFunc, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueData> values, IEnumerable<CollectionData> collectionElements)

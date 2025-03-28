@@ -25,22 +25,22 @@ internal class ElementNamesGenerator : IElementNamesGenerator
 
 internal interface ICollectionElementNamesGenerator
 {
-    IEnumerable<CollectionElementObjectName> GenerateInsertionNames(IEnumerable<CollectionSelector> selectors, IEnumerable<ElementObjectName> allElementObjectNames);
+    IEnumerable<CollectionElementObjectName> GenerateInsertionNames(IEnumerable<CollectionElementTarget> selectors, IEnumerable<ElementObjectName> allElementObjectNames);
 }
 
 internal class CollectionElementNamesGenerator : ICollectionElementNamesGenerator
 {
-    public IEnumerable<CollectionElementObjectName> GenerateInsertionNames(IEnumerable<CollectionSelector> selectors, IEnumerable<ElementObjectName> allElementObjectNames)
+    public IEnumerable<CollectionElementObjectName> GenerateInsertionNames(IEnumerable<CollectionElementTarget> selectors, IEnumerable<ElementObjectName> allElementObjectNames)
         => selectors
             .Select((selector, indexAsPostfix) => CreateElementObjectName(selector, allElementObjectNames))
             .RunNow();
 
-    private static CollectionElementObjectName CreateElementObjectName(CollectionSelector selector, IEnumerable<ElementObjectName> allElementObjectNames)
+    private static CollectionElementObjectName CreateElementObjectName(CollectionElementTarget selector, IEnumerable<ElementObjectName> allElementObjectNames)
     {
         var objectName = GetCollectionElementName(selector, allElementObjectNames);
         return new(objectName, $"{objectName}_insertFrom", selector);
     }
 
-    private static string GetCollectionElementName(CollectionSelector selector, IEnumerable<ElementObjectName> allElementObjectNames)
+    private static string GetCollectionElementName(CollectionElementTarget selector, IEnumerable<ElementObjectName> allElementObjectNames)
         => allElementObjectNames.Single(e => e.AssociatedSelector.Equals(selector.AppendToElementSelector)).Name;
 }

@@ -1,3 +1,3 @@
 ﻿namespace Vitraux.Modeling.Data;
 
-internal record class Target<T> where T : Target<T>;
+internal abstract record class Target<T> where T : Target<T>;

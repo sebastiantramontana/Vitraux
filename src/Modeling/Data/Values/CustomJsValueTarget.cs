@@ -1,3 +1,3 @@
 ﻿namespace Vitraux.Modeling.Data.Values;
 
-internal record class CustomJsValueTarget(string FunctionName) : CustomJsTarget<ValueTarget>(FunctionName);
+internal record class CustomJsValueTarget(string FunctionName) : CustomJsTargetBase<ValueTarget>(FunctionName);

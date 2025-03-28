@@ -1,3 +1,3 @@
 ﻿namespace Vitraux.Modeling.Data.Collections;
 
-internal record class CustomJsCollectionTarget(string FunctionName) : CustomJsTarget<CollectionTarget>(FunctionName);
+internal record class CustomJsCollectionTarget(string FunctionName) : CustomJsTargetBase<CollectionTarget>(FunctionName);

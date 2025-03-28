@@ -99,7 +99,7 @@ public class PetOwnerConfigurationTest
         TestHelper.AssertValueModel(data.Values.ElementAt(0), nameValue, false);
         TestHelper.AssertValueModel(data.Values.ElementAt(1), addressValue, false);
         TestHelper.AssertValueModel(data.Values.ElementAt(2), phoneNumberValue, false);
-        TestHelper.AssertCollectionElementModel(data.CollectionElements.Cast<CollectionTableData>().ElementAt(0), petsCollection);
+        TestHelper.AssertCollectionElementModel(data.CollectionElements.Cast<CollectionTableTarget>().ElementAt(0), petsCollection);
     }
 
     private string ToDataUri(byte[] data)

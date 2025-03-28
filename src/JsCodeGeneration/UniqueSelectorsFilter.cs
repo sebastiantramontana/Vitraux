@@ -22,7 +22,7 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
             .Distinct()
             .RunNow();
 
-    private static IEnumerable<CollectionSelector> GetCollectionSelectorsDistinctByInsertion(ModelMappingData modelMappingData)
+    private static IEnumerable<CollectionElementTarget> GetCollectionSelectorsDistinctByInsertion(ModelMappingData modelMappingData)
         => modelMappingData
             .CollectionElements
             .Select(c => c.CollectionSelector)
