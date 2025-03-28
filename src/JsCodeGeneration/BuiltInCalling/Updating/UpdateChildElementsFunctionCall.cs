@@ -4,7 +4,7 @@ namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 
 internal class UpdateChildElementsFunctionCall(
     ISetElementsAttributeCall setElementsAttributeCall,
-    ISetElementsContentCall setElementsContentCall) 
+    ISetElementsContentCall setElementsContentCall)
     : IUpdateChildElementsFunctionCall
 {
     public string Generate(ElementTarget toChildTargetElement, string parentValueObjectName, string valueObjectName)
@@ -13,11 +13,11 @@ internal class UpdateChildElementsFunctionCall(
         var fullValueObject = $"{parentValueObjectName}.{valueObjectName}";
 
         return $"({targetTemplateChildElements}) => " +
-            toChildTargetElement.Place.ElementPlacing switch
+            toChildTargetElement.Place switch
             {
-                ElementPlacing.Attribute => setElementsAttributeCall.Generate(targetTemplateChildElements, toChildTargetElement.Place.Value, fullValueObject),
-                ElementPlacing.Content => setElementsContentCall.Generate(targetTemplateChildElements, fullValueObject),
-                _ => throw new NotImplementedException($"{toChildTargetElement.Place.ElementPlacing} not implemented in {nameof(UpdateChildElementsFunctionCall)}"),
+                AttributeElementPlace => setElementsAttributeCall.Generate(targetTemplateChildElements, toChildTargetElement.Place.Value, fullValueObject),
+                ContentElementPlace => setElementsContentCall.Generate(targetTemplateChildElements, fullValueObject),
+                _ => throw new NotImplementedException($"{toChildTargetElement.Place.GetType().Name} not implemented in {nameof(UpdateChildElementsFunctionCall)}"),
             };
     }
 }

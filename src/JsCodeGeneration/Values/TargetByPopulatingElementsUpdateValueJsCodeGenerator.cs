@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Building.Selectors.Elements;
-using Vitraux.Modeling.Building.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Elements;
+using Vitraux.Modeling.Data.Selectors.Elements.Populating;
 using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.JsCodeGeneration.Values;

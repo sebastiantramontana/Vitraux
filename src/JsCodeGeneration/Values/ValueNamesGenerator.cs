@@ -5,7 +5,7 @@ namespace Vitraux.JsCodeGeneration.Values;
 
 internal class ValueNamesGenerator : IValueNamesGenerator
 {
-    public IEnumerable<ValueObjectName> Generate(IEnumerable<ValueModel> values)
+    public IEnumerable<ValueObjectName> Generate(IEnumerable<ValueData> values)
         => values
             .Select((value, indexAsPostfix) => new ValueObjectName($"value{indexAsPostfix}", value))
             .RunNow();

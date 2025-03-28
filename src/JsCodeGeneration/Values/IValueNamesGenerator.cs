@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.Values;
 
 internal interface IValueNamesGenerator
 {
-    IEnumerable<ValueObjectName> Generate(IEnumerable<ValueModel> values);
+    IEnumerable<ValueObjectName> Generate(IEnumerable<ValueData> values);
 }

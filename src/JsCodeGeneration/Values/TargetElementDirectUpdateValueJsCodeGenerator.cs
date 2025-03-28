@@ -16,10 +16,10 @@ internal class TargetElementDirectUpdateValueJsCodeGenerator(
             .TrimEnd();
 
     private string GeneratePlaceJsCode(ElementPlace elementPlace, string elementObjectName, string parentValueObjectName, string valueObjectName)
-        => elementPlace.ElementPlacing switch
+        => elementPlace switch
         {
-            ElementPlacing.Attribute => attributeGenerator.Generate(elementPlace.Value, elementObjectName, parentValueObjectName, valueObjectName),
-            ElementPlacing.Content => contentGenerator.Generate(elementObjectName, parentValueObjectName, valueObjectName),
-            _ => throw new NotImplementedException($"ElementPlacing {elementPlace.ElementPlacing} not implemented in TargetElementJsCodeGeneration"),
+            AttributeElementPlace attrPlace => attributeGenerator.Generate(attrPlace.Attribute, elementObjectName, parentValueObjectName, valueObjectName),
+            ContentElementPlace => contentGenerator.Generate(elementObjectName, parentValueObjectName, valueObjectName),
+            _ => throw new NotImplementedException($"ElementPlace {elementPlace.GetType().Name} not implemented in TargetElementJsCodeGeneration"),
         };
 }

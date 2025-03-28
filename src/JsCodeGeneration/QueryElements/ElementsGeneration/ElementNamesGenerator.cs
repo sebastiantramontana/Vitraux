@@ -1,8 +1,8 @@
 ﻿using Vitraux.Helpers;
-using Vitraux.Modeling.Building.Selectors.Elements;
-using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Building.Selectors.Insertion;
 using Vitraux.Modeling.Data.Collections;
+using Vitraux.Modeling.Data.Selectors.Elements;
+using Vitraux.Modeling.Data.Selectors.Elements.Populating;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 

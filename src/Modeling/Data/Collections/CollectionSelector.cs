@@ -1,5 +1,5 @@
-﻿using Vitraux.Modeling.Building.Selectors.Elements;
-using Vitraux.Modeling.Building.Selectors.Insertion;
+﻿using Vitraux.Modeling.Data.Selectors.Elements;
+using Vitraux.Modeling.Data.Selectors.Insertion;
 
 namespace Vitraux.Modeling.Data.Collections;
 

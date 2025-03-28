@@ -5,7 +5,7 @@ namespace Vitraux.JsCodeGeneration.Collections;
 
 internal class CollectionNamesGenerator : ICollectionNamesGenerator
 {
-    public IEnumerable<CollectionObjectName> Generate(IEnumerable<CollectionElementModel> collections)
+    public IEnumerable<CollectionObjectName> Generate(IEnumerable<CollectionData> collections)
         => collections
             .Select((col, indexAsPostfix) => new CollectionObjectName($"collection{indexAsPostfix}", col))
             .RunNow();

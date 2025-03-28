@@ -1,4 +1,4 @@
-﻿using Vitraux.Modeling.Building.Selectors.Elements;
+﻿using Vitraux.Modeling.Data.Selectors.Elements;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
@@ -10,11 +10,11 @@ internal class JsQueryElementsDeclaringAlwaysGeneratorContext(
     : IJsQueryElementsDeclaringAlwaysGeneratorContext
 {
     public IQueryElementsDeclaringJsCodeGenerator GetStrategy(ElementSelectorBase elementSelector)
-        => elementSelector.SelectionBy switch
+        => elementSelector switch
         {
-            ElementSelection.Id => jsQueryElementsByIdGenerator,
-            ElementSelection.QuerySelector => jsQueryElementsByQuerySelectorGenerator,
-            ElementSelection.Template => jsQueryElementsByTemplateGenerator,
+            ElementIdSelectorBase => jsQueryElementsByIdGenerator,
+            ElementQuerySelectorBase => jsQueryElementsByQuerySelectorGenerator,
+            ElementTemplateSelectorBase => jsQueryElementsByTemplateGenerator,
             ElementSelection.Uri => jsQueryElementsByFetchGenerator,
             _ => throw new NotImplementedException($"IQueryElementsDeclaringJsCodeGenerator not implemented for ElementSelector: {elementSelector}")
         };

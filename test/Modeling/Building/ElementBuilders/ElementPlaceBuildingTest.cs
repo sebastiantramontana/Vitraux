@@ -26,7 +26,7 @@ public class ElementPlaceBuildingTest
 
     private static void TestPlace(ElementPlace expectedPlace, Func<IRootValueElementPlaceBuilder<ViewModelTest, IRootValueFinallizable<ViewModelTest>>, IRootValueFinallizable<ViewModelTest>> actFunc)
     {
-        var valueModel = new ValueModel((ViewModelTest e) => e.Weigth);
+        var valueModel = new ValueData((ViewModelTest e) => e.Weigth);
         var modelMapper = new ModelMapperRoot<ViewModelTest>();
         var valueModelBuilder = new MapValueBuilder<ViewModelTest>(valueModel, modelMapper);
         var sut = valueModelBuilder

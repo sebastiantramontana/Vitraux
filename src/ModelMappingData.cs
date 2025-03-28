@@ -5,6 +5,6 @@ namespace Vitraux;
 
 public record class ModelMappingData
 {
-    internal IEnumerable<ValueModel> Values { get; } = [];
-    internal IEnumerable<CollectionElementModel> CollectionElements { get; } = [];
+    internal IEnumerable<ValueData> Values { get; } = [];
+    internal IEnumerable<CollectionData> CollectionElements { get; } = [];
 }

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Building.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Elements.Populating;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 

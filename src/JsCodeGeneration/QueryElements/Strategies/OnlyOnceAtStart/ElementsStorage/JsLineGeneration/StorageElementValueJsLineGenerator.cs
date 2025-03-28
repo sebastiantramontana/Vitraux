@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
-using Vitraux.Modeling.Building.Selectors.Elements;
-using Vitraux.Modeling.Building.Selectors.Insertion;
+using Vitraux.Modeling.Data.Selectors.Elements;
+using Vitraux.Modeling.Data.Selectors.Insertion;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration;
 
@@ -40,7 +40,7 @@ internal class StorageElementCollectionJsLineGenerator(
 
     private string GenerateByTemplate(CollectionElementObjectName elementObjectName, string parentObjectName)
     {
-        var templateId = (elementObjectName.AssociatedCollectionSelector.InsertionSelector as TemplateInsertionSelectorString)!.TemplateId;
+        var templateId = (elementObjectName.AssociatedCollectionSelector.InsertionSelector as TemplateInsertionSelectorId)!.TemplateId;
         var templateElementObjectName = elementObjectName.InsertionElementName;
 
         return new StringBuilder()

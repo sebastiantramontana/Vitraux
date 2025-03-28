@@ -4,8 +4,8 @@ using Vitraux.JsCodeGeneration.Collections;
 using Vitraux.JsCodeGeneration.QueryElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.Values;
-using Vitraux.Modeling.Building.Selectors.Elements;
 using Vitraux.Modeling.Data.Collections;
+using Vitraux.Modeling.Data.Selectors.Elements;
 
 namespace Vitraux.JsCodeGeneration;
 
@@ -105,7 +105,7 @@ internal class UpdateCollectionJsCodeGenerator(
 
     private string GetUpdateCall(PopulatingElementObjectName populatingElementObjectName, CollectionObjectName collectionObjectName, string updateFunctionCallbackName)
     {
-        return collectionObjectName.AssociatedCollection is CollectionTableModel
+        return collectionObjectName.AssociatedCollection is CollectionTableData
                 ? $"{updateTableCall.Generate(populatingElementObjectName.AppendToName, populatingElementObjectName.Name, updateFunctionCallbackName, collectionObjectName.Name)};"
                 : $"{updateCollectionByPopulatingElementsCall.Generate(populatingElementObjectName.AppendToName, populatingElementObjectName.Name, updateFunctionCallbackName, collectionObjectName.Name)};";
     }

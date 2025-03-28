@@ -1,6 +1,6 @@
 ﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Building.Selectors.Elements;
-using Vitraux.Modeling.Building.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Elements;
+using Vitraux.Modeling.Data.Selectors.Elements.Populating;
 
 namespace Vitraux.JsCodeGeneration.QueryElements;
 
@@ -8,7 +8,7 @@ internal class QueryAppendToElementsDeclaringByPopulatingJsCodeGenerator : IQuer
 {
     public string GenerateAppendToJsCode(string appendToObjectName, PopulatingAppendToElementSelectorBase elementToAppend, IJsQueryPopulatingElementsDeclaringGeneratorContext jsGeneratorContext)
         => jsGeneratorContext
-            .GetStrategy(elementToAppend.SelectionBy)
+            .GetStrategy(elementToAppend)
             .GenerateJsCode("document", MapElementObjectNameFromPopulatingSelector(appendToObjectName, elementToAppend));
 
     private static ElementObjectName MapElementObjectNameFromPopulatingSelector(string objectName, PopulatingAppendToElementSelectorBase fromTemplateElementSelector)
@@ -18,10 +18,10 @@ internal class QueryAppendToElementsDeclaringByPopulatingJsCodeGenerator : IQuer
     }
 
     private static ElementSelectorBase CreateElementSelectorFromPopulatingSelector(PopulatingAppendToElementSelectorBase selector)
-        => selector.SelectionBy switch
+        => selector switch
         {
-            PopulatingAppendToElementSelection.Id => new ElementIdSelectorString((selector as PopulatingAppendToElementIdSelectorString).Id),
-            PopulatingAppendToElementSelection.QuerySelector => new ElementQuerySelectorString((selector as PopulatingAppendToElementQuerySelectorString).Query),
-            _ => throw new NotImplementedException($"{selector.SelectionBy} not implemented"),
+            PopulatingAppendToElementIdSelectorString => new ElementIdSelectorString((selector as PopulatingAppendToElementIdSelectorString).Id),
+            PopulatingAppendToElementQuerySelectorString => new ElementQuerySelectorString((selector as PopulatingAppendToElementQuerySelectorString).Query),
+            _ => throw new NotImplementedException($"{selector.GetType().Name} not implemented"),
         };
 }

@@ -1,6 +1,6 @@
 ﻿using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Building.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Elements.Populating;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 

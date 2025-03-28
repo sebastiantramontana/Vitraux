@@ -1,3 +1,3 @@
 ﻿namespace Vitraux.Modeling.Data.Values;
 
-internal record class ContentElementPlace() : ElementPlace(ElementPlacing.Content, string.Empty);
+internal record class ContentElementPlace : ElementPlace;

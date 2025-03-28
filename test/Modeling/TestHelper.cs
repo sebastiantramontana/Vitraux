@@ -1,24 +1,25 @@
-﻿using Vitraux.Modeling.Building.Selectors.Elements;
-using Vitraux.Modeling.Building.Selectors.Elements.Populating;
-using Vitraux.Modeling.Building.Selectors.Insertion;
+﻿using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Data.Collections;
+using Vitraux.Modeling.Data.Selectors.Elements;
+using Vitraux.Modeling.Data.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Insertion;
 using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.Test.Modeling;
 
 internal static class TestHelper
 {
-    public static ValueModel CreateValueModel(Delegate valueFunc, IEnumerable<ElementTarget> targetElements)
+    public static ValueData CreateValueModel(Delegate valueFunc, IEnumerable<ElementTarget> targetElements)
         => new(valueFunc)
         {
             TargetElements = targetElements.ToArray()
         };
 
-    public static CollectionTableModel CreateCollectionTableModel(Delegate collectionFunc, ElementSelectorBase tableSelector, InsertionSelectorBase rowSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
-        => FillCollectionElementModel(new CollectionTableModel(collectionFunc), tableSelector, rowSelector, values, collectionElements);
+    public static CollectionTableData CreateCollectionTableModel(Delegate collectionFunc, ElementSelectorBase tableSelector, InsertionSelectorBase rowSelector, IEnumerable<ValueData> values, IEnumerable<CollectionData> collectionElements)
+        => FillCollectionElementModel(new CollectionTableData(collectionFunc), tableSelector, rowSelector, values, collectionElements);
 
-    public static CollectionElementModel CreateCollectionElementModel(Delegate collectionFunc, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
-        => FillCollectionElementModel(new CollectionElementModel(collectionFunc), elementSelector, insertionSelector, values, collectionElements);
+    public static CollectionData CreateCollectionElementModel(Delegate collectionFunc, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueData> values, IEnumerable<CollectionData> collectionElements)
+        => FillCollectionElementModel(new CollectionData(collectionFunc), elementSelector, insertionSelector, values, collectionElements);
 
     public static ElementTemplateSelectorString CreateElementTemplateSelectorToId(string templateId, string elementToAppendId, string toChildQuerySelector)
         => new(templateId)
@@ -34,14 +35,14 @@ internal static class TestHelper
             TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
         };
 
-    public static ElementFetchSelectorUri CreateElementFetchSelectorToId(Uri uri, string elementToAppendId, string toChildQuerySelector)
+    public static ElementUriSelectorUri CreateElementFetchSelectorToId(Uri uri, string elementToAppendId, string toChildQuerySelector)
         => new(uri)
         {
             ElementToAppend = new PopulatingAppendToElementIdSelectorString(elementToAppendId),
             TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
         };
 
-    public static ElementFetchSelectorUri CreateElementFetchSelectorToQuery(Uri uri, string elementToAppendQuerySelector, string toChildQuerySelector)
+    public static ElementUriSelectorUri CreateElementFetchSelectorToQuery(Uri uri, string elementToAppendQuerySelector, string toChildQuerySelector)
         => new(uri)
         {
             ElementToAppend = new PopulatingAppendToElementQuerySelectorString(elementToAppendQuerySelector),
@@ -57,7 +58,7 @@ internal static class TestHelper
     public static ElementPlace CreateContentElementPlace()
         => new ContentElementPlace();
 
-    public static void AssertCollectionElementModel(CollectionElementModel actualCollection, CollectionElementModel expectedCollection)
+    public static void AssertCollectionElementModel(CollectionData actualCollection, CollectionData expectedCollection)
     {
         Assert.That(actualCollection, Is.TypeOf(expectedCollection.GetType()));
 
@@ -67,7 +68,7 @@ internal static class TestHelper
         AssertModelMappingData(actualCollection.ModelMappingData, expectedCollection.ModelMappingData);
     }
 
-    public static void AssertValueModel(ValueModel actualValueModel, ValueModel expectedValueModel, bool canPlaceBeNull)
+    public static void AssertValueModel(ValueData actualValueModel, ValueData expectedValueModel, bool canPlaceBeNull)
     {
         Assert.Multiple(() =>
         {
@@ -142,8 +143,8 @@ internal static class TestHelper
     private static IEnumerable<Type> GetDelegateParameterTypes(Delegate @delegate)
         => @delegate.Method.GetParameters().Select(p => p.ParameterType);
 
-    private static TCollectionElementModel FillCollectionElementModel<TCollectionElementModel>(TCollectionElementModel collectionElementModel, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueModel> values, IEnumerable<CollectionElementModel> collectionElements)
-        where TCollectionElementModel : CollectionElementModel
+    private static TCollectionElementModel FillCollectionElementModel<TCollectionElementModel>(TCollectionElementModel collectionElementModel, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueData> values, IEnumerable<CollectionData> collectionElements)
+        where TCollectionElementModel : CollectionData
     {
         collectionElementModel.CollectionSelector = new(elementSelector)
         {

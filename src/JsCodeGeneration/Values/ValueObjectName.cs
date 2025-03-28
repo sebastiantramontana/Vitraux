@@ -2,4 +2,4 @@
 
 namespace Vitraux.JsCodeGeneration.Values;
 
-internal record class ValueObjectName(string Name, ValueModel AssociatedValue);
+internal record class ValueObjectName(string Name, ValueData AssociatedValue);

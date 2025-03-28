@@ -1,3 +1,0 @@
-﻿namespace Vitraux.Modeling.Building.Selectors.Elements.Populating;
-
-internal abstract record class PopulatingAppendToElementSelectorBase(PopulatingAppendToElementSelection SelectionBy);
