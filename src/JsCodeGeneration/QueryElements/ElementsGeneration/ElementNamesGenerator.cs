@@ -1,8 +1,8 @@
 ﻿using Vitraux.Helpers;
 using Vitraux.Modeling.Building.Selectors.Insertion;
 using Vitraux.Modeling.Data.Collections;
-using Vitraux.Modeling.Data.Selectors.Elements;
-using Vitraux.Modeling.Data.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Values;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
@@ -17,7 +17,7 @@ internal class ElementNamesGenerator : IElementNamesGenerator
     {
         var objectName = $"{namePrefix}elements{indexAsPostfix}";
 
-        return selector is PopulatingElementSelectorBase templateSelector
+        return selector is InsertElementSelectorBase templateSelector
             ? new PopulatingElementObjectName(objectName, $"{objectName}_appendTo", templateSelector)
             : new ElementObjectName(objectName, selector);
     }

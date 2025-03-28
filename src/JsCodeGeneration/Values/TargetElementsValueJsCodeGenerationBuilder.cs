@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Data.Selectors.Elements;
-using Vitraux.Modeling.Data.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Values;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.JsCodeGeneration.Values;
@@ -31,6 +31,6 @@ internal class TargetElementsValueJsCodeGenerationBuilder(
         => elements.Where(e => e.AssociatedSelector == targetElement.Selector);
 
     private ITargetElementUpdateValueJsCodeGenerator GetCodeGeneratorBySelector(ElementSelectorBase selector)
-        => (selector is PopulatingElementSelectorBase) ? targetPopulatingJsCodeGenerator : targetElementDirectJsCodeGenerator;
+        => (selector is InsertElementSelectorBase) ? targetPopulatingJsCodeGenerator : targetElementDirectJsCodeGenerator;
 
 }

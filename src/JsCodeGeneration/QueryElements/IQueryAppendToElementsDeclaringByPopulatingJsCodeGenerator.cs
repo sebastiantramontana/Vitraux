@@ -1,4 +1,4 @@
-﻿using Vitraux.Modeling.Data.Selectors.Elements.Populating;
+﻿using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements;
 

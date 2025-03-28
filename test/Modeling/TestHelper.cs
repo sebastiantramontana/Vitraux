@@ -1,8 +1,9 @@
 ﻿using Vitraux.Modeling.Building.Selectors.Elements.Populating;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Selectors.Collections;
-using Vitraux.Modeling.Data.Selectors.Elements;
-using Vitraux.Modeling.Data.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Elements.Insertions;
+using Vitraux.Modeling.Data.Selectors.Values;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.Test.Modeling;
@@ -21,28 +22,28 @@ internal static class TestHelper
     public static CollectionData CreateCollectionElementModel(Delegate collectionFunc, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueData> values, IEnumerable<CollectionData> collectionElements)
         => FillCollectionElementModel(new CollectionData(collectionFunc), elementSelector, insertionSelector, values, collectionElements);
 
-    public static ElementTemplateSelectorString CreateElementTemplateSelectorToId(string templateId, string elementToAppendId, string toChildQuerySelector)
+    public static InsertElementTemplateSelectorString CreateElementTemplateSelectorToId(string templateId, string elementToAppendId, string toChildQuerySelector)
         => new(templateId)
         {
             ElementToAppend = new PopulatingAppendToElementIdSelectorString(elementToAppendId),
             TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
         };
 
-    public static ElementTemplateSelectorString CreateElementTemplateSelectorToQuery(string templateId, string elementToAppendQuerySelector, string toChildQuerySelector)
+    public static InsertElementTemplateSelectorString CreateElementTemplateSelectorToQuery(string templateId, string elementToAppendQuerySelector, string toChildQuerySelector)
         => new(templateId)
         {
             ElementToAppend = new PopulatingAppendToElementQuerySelectorString(elementToAppendQuerySelector),
             TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
         };
 
-    public static ElementUriSelectorUri CreateElementFetchSelectorToId(Uri uri, string elementToAppendId, string toChildQuerySelector)
+    public static InsertElementUriSelectorUri CreateElementFetchSelectorToId(Uri uri, string elementToAppendId, string toChildQuerySelector)
         => new(uri)
         {
             ElementToAppend = new PopulatingAppendToElementIdSelectorString(elementToAppendId),
             TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
         };
 
-    public static ElementUriSelectorUri CreateElementFetchSelectorToQuery(Uri uri, string elementToAppendQuerySelector, string toChildQuerySelector)
+    public static InsertElementUriSelectorUri CreateElementFetchSelectorToQuery(Uri uri, string elementToAppendQuerySelector, string toChildQuerySelector)
         => new(uri)
         {
             ElementToAppend = new PopulatingAppendToElementQuerySelectorString(elementToAppendQuerySelector),

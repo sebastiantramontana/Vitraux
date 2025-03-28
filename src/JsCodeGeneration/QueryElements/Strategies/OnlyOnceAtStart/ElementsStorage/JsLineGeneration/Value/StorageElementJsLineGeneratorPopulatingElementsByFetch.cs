@@ -1,6 +1,6 @@
 ﻿using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Data.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 
@@ -11,7 +11,7 @@ internal class StorageElementJsLineGeneratorPopulatingElementsByFetch(
 {
     public string Generate(PopulatingElementObjectName fetchedObjectName, string parentObjectToAppend)
     {
-        var fetchSelector = fetchedObjectName!.AssociatedSelector as ElementUriSelectorUri;
+        var fetchSelector = fetchedObjectName!.AssociatedSelector as InsertElementUriSelectorUri;
         var storedElementCall = $"{getFetchedElementCall.Generate(fetchSelector!.Uri, fetchedObjectName.Name)};";
 
         return storagePopulatingElementJsLineGenerator.Generate(storedElementCall, fetchedObjectName, parentObjectToAppend);

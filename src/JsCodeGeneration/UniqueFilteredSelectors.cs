@@ -1,5 +1,5 @@
 ﻿using Vitraux.Modeling.Data.Collections;
-using Vitraux.Modeling.Data.Selectors.Elements;
+using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.JsCodeGeneration;
 

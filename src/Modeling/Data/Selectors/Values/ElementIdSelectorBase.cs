@@ -1,3 +1,3 @@
-﻿namespace Vitraux.Modeling.Data.Selectors.Elements;
+﻿namespace Vitraux.Modeling.Data.Selectors.Values;
 
 internal abstract record class ElementIdSelectorBase : ElementSelectorBase;

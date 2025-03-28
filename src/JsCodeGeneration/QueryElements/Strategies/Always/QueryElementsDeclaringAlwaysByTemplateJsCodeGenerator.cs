@@ -1,6 +1,6 @@
 ﻿using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Data.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
@@ -11,5 +11,5 @@ internal class QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(
     : IQueryElementsDeclaringAlwaysByTemplateJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, getTemplateCall.Generate((elementObjectName.AssociatedSelector as ElementTemplateSelectorString).TemplateId), queryGeneratorContext);
+        => queryElementsDeclaringByTemplateCallingJsBuilt.GenerateJsCode(elementObjectName, getTemplateCall.Generate((elementObjectName.AssociatedSelector as InsertElementTemplateSelectorString).TemplateId), queryGeneratorContext);
 }

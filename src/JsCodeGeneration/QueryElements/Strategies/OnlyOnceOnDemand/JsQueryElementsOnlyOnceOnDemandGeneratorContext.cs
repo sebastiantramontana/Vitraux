@@ -1,4 +1,4 @@
-﻿using Vitraux.Modeling.Data.Selectors.Elements;
+﻿using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 

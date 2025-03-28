@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-using Vitraux.Modeling.Data.Selectors.Elements.Populating;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 
@@ -9,7 +9,7 @@ internal class StoragePopulatingElementJsLineGenerator(IStoragePopulatingAppendT
 {
     public string Generate(string storedPopulatingElementCall, PopulatingElementObjectName populatingObjectName, string parentObjectToAppend)
     {
-        var associatedPopulatingSelector = populatingObjectName!.AssociatedSelector as PopulatingElementSelectorBase;
+        var associatedPopulatingSelector = populatingObjectName!.AssociatedSelector as InsertElementSelectorBase;
 
         return new StringBuilder()
             .AppendLine(storedPopulatingElementCall)
