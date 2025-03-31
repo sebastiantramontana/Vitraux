@@ -1,4 +1,4 @@
-﻿namespace Vitraux.Modeling.Building.ElementBuilders.Collections;
+﻿namespace Vitraux.Modeling.Building.ElementBuilders.Collections.CollectionValues;
 
 public interface ICollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn> : ICollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>
 {
