@@ -22,14 +22,14 @@ internal static class TestHelper
     public static CollectionData CreateCollectionElementModel(Delegate collectionFunc, ElementSelectorBase elementSelector, InsertionSelectorBase insertionSelector, IEnumerable<ValueData> values, IEnumerable<CollectionData> collectionElements)
         => FillCollectionElementModel(new CollectionData(collectionFunc), elementSelector, insertionSelector, values, collectionElements);
 
-    public static InsertElementTemplateSelectorString CreateElementTemplateSelectorToId(string templateId, string elementToAppendId, string toChildQuerySelector)
+    public static InsertElementTemplateSelectorId CreateElementTemplateSelectorToId(string templateId, string elementToAppendId, string toChildQuerySelector)
         => new(templateId)
         {
             ElementToAppend = new PopulatingAppendToElementIdSelectorString(elementToAppendId),
             TargetChildElement = new ElementQuerySelectorString(toChildQuerySelector)
         };
 
-    public static InsertElementTemplateSelectorString CreateElementTemplateSelectorToQuery(string templateId, string elementToAppendQuerySelector, string toChildQuerySelector)
+    public static InsertElementTemplateSelectorId CreateElementTemplateSelectorToQuery(string templateId, string elementToAppendQuerySelector, string toChildQuerySelector)
         => new(templateId)
         {
             ElementToAppend = new PopulatingAppendToElementQuerySelectorString(elementToAppendQuerySelector),

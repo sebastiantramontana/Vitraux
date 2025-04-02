@@ -1,5 +1,5 @@
-﻿using Vitraux.Modeling.Building.ElementBuilders.Collections;
-using Vitraux.Modeling.Building.ElementBuilders.Values.Root;
+﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Values.Root;
 
 namespace Vitraux;
 

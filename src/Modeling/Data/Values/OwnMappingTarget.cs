@@ -1,3 +1,3 @@
 ﻿namespace Vitraux.Modeling.Data.Values;
 
-internal record class OwnMappingTarget : ValueTarget;
+internal record class OwnMappingTarget : IValueTarget;

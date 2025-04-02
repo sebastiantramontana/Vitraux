@@ -3,7 +3,7 @@ using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.Modeling.Data.Collections;
 
-internal record class CollectionElementTarget(ElementSelectorBase AppendToElementSelector) : CollectionTarget
+internal record class CollectionElementTarget(ElementSelectorBase AppendToElementSelector) : ICollectionTarget
 {
     internal InsertionSelectorBase InsertionSelector { get; set; } = default!;
 }

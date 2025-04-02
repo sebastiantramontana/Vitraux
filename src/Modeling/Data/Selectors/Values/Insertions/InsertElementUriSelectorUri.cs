@@ -1,4 +1,3 @@
 ﻿namespace Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
-internal record class InsertElementUriSelectorUri(ElementSelectorBase ElementToAppend, Uri Uri) 
-    : InsertElementUriSelectorBase(ElementToAppend);
+internal record class InsertElementUriSelectorUri(Uri Uri) : InsertElementUriSelectorBase;
