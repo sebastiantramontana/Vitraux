@@ -16,7 +16,7 @@ internal class StorageElementValueJsLineGenerator(
     public string Generate(ElementObjectName elementObjectName, string parentObjectName)
         => elementObjectName.AssociatedSelector.SelectionBy switch
         {
-            ElementSelection.Id => generatorById.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementIdSelectorString).Id),
+            ElementSelection.Id => generatorById.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementIdSelectorIdString).Id),
             ElementSelection.QuerySelector => generatorByQuerySelector.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementQuerySelectorString).Query, parentObjectName),
             ElementSelection.Template => generatorByTemplate.Generate((elementObjectName as PopulatingElementObjectName)!, parentObjectName),
             ElementSelection.Uri => generatorByFetch.Generate((elementObjectName as PopulatingElementObjectName)!, parentObjectName),
@@ -51,7 +51,7 @@ internal class StorageElementCollectionJsLineGenerator(
 
     private string GenerateByFetch(CollectionElementObjectName elementObjectName, string parentObjectName)
     {
-        var uri = (elementObjectName.AssociatedCollectionSelector.InsertionSelector as FetchInsertionSelectorUri)!.Uri;
+        var uri = (elementObjectName.AssociatedCollectionSelector.InsertionSelector as UriInsertionSelectorUri)!.Uri;
         var templateElementObjectName = elementObjectName.InsertionElementName;
 
         return new StringBuilder()

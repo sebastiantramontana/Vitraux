@@ -1,12 +1,13 @@
 ﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Values.Root;
+using Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Implementations.ElementBuilders.Values.Root;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux;
 
-public class ModelMapper<TViewModel> : IModelMapper<TViewModel>
+internal class ModelMapper<TViewModel> : IModelMapper<TViewModel>
 {
     private readonly List<ValueData> _values = [];
     private readonly List<CollectionData> _collections = [];
@@ -24,7 +25,7 @@ public class ModelMapper<TViewModel> : IModelMapper<TViewModel>
         var collection = new CollectionData(func);
         _collections.Add(collection);
 
-        return _collectionTargetBuilderFactory.Create<TViewModel, TItem>(collection);
+        return new CollectionTargetBuilder<TItem, IModelMapper<TViewModel>>(collection, this);
     }
 
     public ModelMappingData Build() => new(_values, _collections);
