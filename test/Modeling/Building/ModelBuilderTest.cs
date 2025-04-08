@@ -1,8 +1,3 @@
-using Microsoft.Playwright;
-using Vitraux.Modeling.Building.Selectors.Elements;
-using Vitraux.Modeling.Building.Selectors.Elements.Populating;
-using Vitraux.Modeling.Models;
-
 namespace Vitraux.Test.Modeling.Building;
 
 [Parallelizable(ParallelScope.All)]
@@ -39,14 +34,14 @@ public class ModelMapperTest
             TargetChildElement = new ElementQuerySelectorString(".children")
         };
 
-        var expectedValue1 = TestHelper.CreateValueModel(func1,
+        var expectedValue1 = TestHelper.CreateValueData(func1,
             [
                 TestHelper.CreateTargetElement(new ElementIdSelectorString("test-id"), TestHelper.CreateContentElementPlace()),
                 TestHelper.CreateTargetElement(querySelector, TestHelper.CreateAttributeElementPlace("data-name")),
                 TestHelper.CreateTargetElement(templateSelector, TestHelper.CreateContentElementPlace())
             ]);
 
-        var expectedValue2 = TestHelper.CreateValueModel(func2,
+        var expectedValue2 = TestHelper.CreateValueData(func2,
             [
                 TestHelper.CreateTargetElement(querySelector, TestHelper.CreateAttributeElementPlace("data-age"))
             ]);

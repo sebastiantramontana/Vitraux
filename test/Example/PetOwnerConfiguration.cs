@@ -1,5 +1,4 @@
 ﻿using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.QueryElements;
 
 namespace Vitraux.Test.Example;
 
@@ -22,7 +21,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                 .ToElements.ByQuery(".petowner-phonenumber")
                     .Insert.FromUri(new Uri("./htmlpieces/phoneblock"))
                     .ToChildren.ByQuery(".petowner-phonenumber-target")
-                    .ToAttribute("data-phonenumber")
+                        .ToAttribute("data-phonenumber")
                 .ToElements.ById("petowner-phonenumber-id").ToContent
             .MapValue(po => po.Subscription)
                 .ToOwnMapping
@@ -54,7 +53,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                             .MapValue(a => a.DateApplied).ToElements.ByQuery(".span-antiparasitics-date").ToContent
                     .EndCollection
             .EndCollection
-            .Build();
+            .Data;
 
     private string ToDataUri(byte[] data) => dataUriConverter.ToDataUri(MimeImage.Png, data);
 }

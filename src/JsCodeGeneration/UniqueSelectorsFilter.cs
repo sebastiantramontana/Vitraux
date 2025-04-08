@@ -18,13 +18,13 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
         => modelMappingData
             .Values
             .SelectMany(v => v.TargetElements.Select(te => te.Selector))
-            .Concat(modelMappingData.CollectionElements.Select(c => c.CollectionSelector.AppendToElementSelector))
+            .Concat(modelMappingData.Collections.Select(c => c.CollectionSelector.AppendToElementSelector))
             .Distinct()
             .RunNow();
 
     private static IEnumerable<CollectionElementTarget> GetCollectionSelectorsDistinctByInsertion(ModelMappingData modelMappingData)
         => modelMappingData
-            .CollectionElements
+            .Collections
             .Select(c => c.CollectionSelector)
             .DistinctBy(c => c.InsertionSelector)
             .RunNow();

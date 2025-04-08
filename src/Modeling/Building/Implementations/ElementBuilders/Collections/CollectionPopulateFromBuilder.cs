@@ -25,6 +25,6 @@ internal class CollectionPopulateFromBuilder<TItem, TEndCollectionReturn>(
     {
         collectionElementTarget.InsertionSelector = insertionSelector;
 
-        return new CollectionModelMapper<TItem, TEndCollectionReturn>(endCollectionReturn);
+        return new CollectionModelMapper<TItem, TEndCollectionReturn>(endCollectionReturn, collectionElementTarget.Data);
     }
 }

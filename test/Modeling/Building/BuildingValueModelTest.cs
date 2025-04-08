@@ -24,13 +24,13 @@ public class BuildingValueModelTest
 
         var func1 = (ViewModelTest e) => e.Name;
 
-        var actualvalue = TestHelper.CreateValueModel(func1,
+        var actualvalue = TestHelper.CreateValueData(func1,
         [
             TestHelper.CreateTargetElement(selector1, TestHelper.CreateContentElementPlace()),
             TestHelper.CreateTargetElement(selector2, TestHelper.CreateAttributeElementPlace("data-name"))
         ]);
 
-        var expectedValue = TestHelper.CreateValueModel(func1,
+        var expectedValue = TestHelper.CreateValueData(func1,
         [
             TestHelper.CreateTargetElement(selector1, TestHelper.CreateContentElementPlace()),
             TestHelper.CreateTargetElement(selector2, TestHelper.CreateAttributeElementPlace("data-name")),

@@ -7,5 +7,5 @@ public interface IModelMapper<TViewModel>
 {
     IRootValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func);
     ICollectionTargetBuilder<TItem, IModelMapper<TViewModel>> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func);
-    ModelMappingData Build();
+    ModelMappingData Data { get; }
 }

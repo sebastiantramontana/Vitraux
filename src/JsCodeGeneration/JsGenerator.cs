@@ -27,7 +27,7 @@ internal class JsGenerator(
         var collectionElementObjectNames = collectionElementNamesGenerator.GenerateInsertionNames(selectors.CollectionSelectors, allElementObjectNames);
 
         var valueNames = valueNamesGenerator.Generate(modelMappingData.Values);
-        var collectionNames = collectionNamesGenerator.Generate(modelMappingData.CollectionElements);
+        var collectionNames = collectionNamesGenerator.Generate(modelMappingData.Collections);
 
         return new StringBuilder()
             .AppendLine(GenerateQueryElementsJsCode(queryElementStrategy, allElementObjectNames, collectionElementObjectNames, parentElementObjectName))

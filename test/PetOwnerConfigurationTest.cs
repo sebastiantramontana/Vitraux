@@ -1,11 +1,10 @@
 ﻿using Vitraux.Helpers;
-using Vitraux.Modeling.Building.ModelMappers;
-using Vitraux.Modeling.Building.Selectors.Elements;
-using Vitraux.Modeling.Building.Selectors.Elements.Populating;
-using Vitraux.Modeling.Building.Selectors.Insertion;
 using Vitraux.Modeling.Data.Collections;
+using Vitraux.Modeling.Data.Selectors.Collections;
+using Vitraux.Modeling.Data.Selectors.Values;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
+using Vitraux.Modeling.Data.Values;
 using Vitraux.Test.Example;
-using Vitraux.Test.Modeling;
 
 namespace Vitraux.Test;
 
@@ -17,93 +16,288 @@ public class PetOwnerConfigurationTest
     [Test]
     public void TestMapping()
     {
-        //Name value
-        var nameValue = TestHelper.CreateValueModel((PetOwner a) => a.Name,
-        [
-            TestHelper.CreateTargetElement(new ElementIdSelectorString("petowner-name"), TestHelper.CreateContentElementPlace())
-        ]);
-
-        //Address value
-        var addressTemplate = TestHelper.CreateElementTemplateSelectorToId("petowner-address-template", "petowner-parent", ".petowner-address-target");
-
-        var addressValue = TestHelper.CreateValueModel((PetOwner a) => a.Address,
-        [
-            TestHelper.CreateTargetElement(addressTemplate, TestHelper.CreateContentElementPlace()),
-            TestHelper.CreateTargetElement(new ElementQuerySelectorString(".petwoner-address > div"), TestHelper.CreateAttributeElementPlace("data-petowner-address"))
-        ]);
-
-        //PhoneNumber value
-        var phoneUri = new Uri("https://mysite.com/htmlparts/phoneblock");
-        var phoneFetch = TestHelper.CreateElementFetchSelectorToQuery(phoneUri, ".petowner-phonenumber", ".petowner-phonenumber-target");
-
-        var phoneNumberValue = TestHelper.CreateValueModel((PetOwner a) => a.PhoneNumber,
-        [
-            TestHelper.CreateTargetElement(phoneFetch, TestHelper.CreateAttributeElementPlace("data-phonenumber")),
-            TestHelper.CreateTargetElement(new ElementIdSelectorString("petowner-phonenumber-id"), TestHelper.CreateContentElementPlace())
-        ]);
-
-        var petsCollection = TestHelper.CreateCollectionTableModel(
-            (PetOwner a) => a.Pets,
-            new ElementIdSelectorString("pets-table"),
-            new TemplateInsertionSelectorString("pet-row-template"),
-            [
-                TestHelper.CreateValueModel((Pet m) => m.Name,
-                [
-                    TestHelper.CreateTargetElement(new ElementQuerySelectorString(".cell-pet-name"),TestHelper.CreateContentElementPlace()),
-                    TestHelper.CreateTargetElement(new ElementQuerySelectorString(".anchor-cell-pet-name"),TestHelper.CreateAttributeElementPlace("href")),
-                    TestHelper.CreateTargetElement(new ElementQuerySelectorString(".another-anchor-cell-pet-name"),TestHelper.CreateAttributeElementPlace("href")),
-                ]),
-                TestHelper.CreateValueModel((Pet m) => ToDataUri(m.Photo),
-                [
-                    TestHelper.CreateTargetElement(new ElementQuerySelectorString(".pet-photo"), TestHelper.CreateAttributeElementPlace("src")),
-                ])
-            ],
-            [
-                TestHelper.CreateCollectionTableModel(
-                (Pet m) => m.Vaccines,
-                new ElementIdSelectorString("inner-table-vaccines"),
-                new FetchInsertionSelectorUri(new Uri("http://mysite.com/htmlparts/row-vaccines.html")),
-                [
-                    TestHelper.CreateValueModel((Vaccine v) => v.Name,
-                    [
-                        TestHelper.CreateTargetElement(new ElementQuerySelectorString(".div-vaccine"),TestHelper.CreateContentElementPlace())
-                    ]),
-                    TestHelper.CreateValueModel((Vaccine v) => v.DateApplied,
-                    [
-                        TestHelper.CreateTargetElement(new ElementQuerySelectorString(".span-vaccine-date"),TestHelper.CreateContentElementPlace())
-                    ])
-                ],
-                []),
-                TestHelper.CreateCollectionElementModel(
-                (Pet m) => m.Antiparasitics,
-                new ElementQuerySelectorString("inner-nav-antiparasitics"),
-                new FetchInsertionSelectorUri(new Uri("http://mysite.com/htmlparts/row-antiparasitics.html")),
-                [
-                    TestHelper.CreateValueModel((Antiparasitic v) => v.Name,
-                    [
-                        TestHelper.CreateTargetElement(new ElementQuerySelectorString(".div-antiparasitics"),TestHelper.CreateContentElementPlace())
-                    ]),
-                    TestHelper.CreateValueModel((Antiparasitic v) => v.DateApplied,
-                    [
-                        TestHelper.CreateTargetElement(new ElementQuerySelectorString(".span-antiparasitics-date"),TestHelper.CreateContentElementPlace())
-                    ])
-                ],
-                [])
-            ]);
+        var expectedData = CreatePetOwnerData();
 
         PetOwnerConfiguration sut = new(dataUriConverter);
 
-        var data = sut.ConfigureMapping(new ModelMapperRoot<PetOwner>());
+        var actualData = sut.ConfigureMapping(new ModelMapper<PetOwner>());
 
-        Assert.That(data.Values.Count(), Is.EqualTo(3));
-        TestHelper.AssertValueModel(data.Values.ElementAt(0), nameValue, false);
-        TestHelper.AssertValueModel(data.Values.ElementAt(1), addressValue, false);
-        TestHelper.AssertValueModel(data.Values.ElementAt(2), phoneNumberValue, false);
-        TestHelper.AssertCollectionElementModel(data.CollectionElements.Cast<CollectionTableTarget>().ElementAt(0), petsCollection);
+        _ = actualData.Should().BeEquivalentTo(expectedData);
     }
 
     private string ToDataUri(byte[] data)
+        => dataUriConverter.ToDataUri(MimeImage.Png, data);
+
+    private ModelMappingData CreatePetOwnerData()
     {
-        return dataUriConverter.ToDataUri(MimeImage.Png, data);
+        var petOwnerData = new ModelMappingData();
+
+        var nameValue = CreateNameValueData();
+        var addressValue = CreateAddressValueData();
+        var phoneNumberValue = CreatePhoneNumberValueData();
+        var suscriptionValue = CreateSubscriptionValueData();
+        var petsCollection = CreatePetsCollectionData();
+
+        petOwnerData.AddValue(nameValue);
+        petOwnerData.AddValue(addressValue);
+        petOwnerData.AddValue(phoneNumberValue);
+        petOwnerData.AddValue(suscriptionValue);
+        petOwnerData.AddCollection(petsCollection);
+
+        return petOwnerData;
+    }
+
+    private CollectionData CreatePetsCollectionData()
+    {
+        var petsCollection = new CollectionData((PetOwner p) => p.Pets);
+
+        var petsTarget1 = new CustomJsCollectionTarget("pets.manage")
+        {
+            ModuleFrom = new Uri("./modules/pets.js")
+        };
+
+        var petsTarget2 = new CollectionTableTarget(new ElementIdSelectorString("pets-table"))
+        {
+            InsertionSelector = new TemplateInsertionSelectorId("pet-row-template"),
+            Data = CreatePetsTableData()
+        };
+
+        petsCollection.AddTarget(petsTarget1);
+        petsCollection.AddTarget(petsTarget2);
+        return petsCollection;
+    }
+
+    private static ValueData CreateSubscriptionValueData()
+    {
+        var suscriptionValue = new ValueData((PetOwner p) => p.Subscription);
+        var suscriptionTarget = new OwnMappingTarget();
+
+        suscriptionValue.AddTarget(suscriptionTarget);
+        return suscriptionValue;
+    }
+
+    private static ValueData CreatePhoneNumberValueData()
+    {
+        var phoneNumberValue = new ValueData((PetOwner p) => p.PhoneNumber);
+        var phoneUri = new Uri("./htmlpieces/phoneblock");
+
+        var targetPhone1 = new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".petowner-phonenumber"),
+            Place = new AttributeElementPlace("data-phonenumber"),
+            Insertion = new InsertElementUriSelectorUri(phoneUri)
+            {
+                TargetChildElement = new ElementQuerySelectorString(".petowner-phonenumber-target")
+            }
+        };
+
+        var targetPhone2 = new ElementTarget
+        {
+            Selector = new ElementIdSelectorString("petowner-phonenumber-id"),
+            Place = ContentElementPlace.Instance
+        };
+
+        phoneNumberValue.AddTarget(targetPhone1);
+        phoneNumberValue.AddTarget(targetPhone2);
+        return phoneNumberValue;
+    }
+
+    private static ValueData CreateAddressValueData()
+    {
+        var addressValue = new ValueData((PetOwner p) => p.Address);
+
+        var targetAddress1 = new ElementTarget
+        {
+            Selector = new ElementIdSelectorString("petowner-address-parent"),
+            Insertion = new InsertElementTemplateSelectorId("petowner-address-template")
+            {
+                TargetChildElement = new ElementQuerySelectorString(".petowner-address-target")
+            },
+            Place = ContentElementPlace.Instance
+        };
+
+        var targetAddress2 = new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".petwoner-address > div"),
+            Place = new AttributeElementPlace("data-petowner-address")
+        };
+
+        addressValue.AddTarget(targetAddress1);
+        addressValue.AddTarget(targetAddress2);
+        return addressValue;
+    }
+
+    private static ValueData CreateNameValueData()
+    {
+        var nameValue = new ValueData((PetOwner p) => p.Name);
+        var targetName1 = new ElementTarget
+        {
+            Selector = new ElementIdSelectorString("petowner-name"),
+            Place = ContentElementPlace.Instance
+        };
+
+        var targetName2 = new CustomJsValueTarget("poNameFunction") { ModuleFrom = new Uri("./modules/po.js") };
+
+        nameValue.AddTarget(targetName1);
+        nameValue.AddTarget(targetName2);
+        return nameValue;
+    }
+
+    private ModelMappingData CreatePetsTableData()
+    {
+        var petsTableData = new ModelMappingData();
+
+        var petNameValue = CreatePetNameValue();
+        var petVaccinesCollection = CreatePetVaccinesCollection();
+        var petPhotoValue = CreatePetPhoto();
+        var antiparasiticsCollection = CreatePetAntiparasiticsCollection();
+
+        petsTableData.AddValue(petNameValue);
+        petsTableData.AddCollection(petVaccinesCollection);
+        petsTableData.AddValue(petPhotoValue);
+        petsTableData.AddCollection(antiparasiticsCollection);
+
+        return petsTableData;
+    }
+
+    private static ValueData CreatePetNameValue()
+    {
+        var petNameValue = new ValueData((Pet p) => p.Name);
+
+        petNameValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".cell-pet-name"),
+            Place = ContentElementPlace.Instance
+        });
+
+        petNameValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".anchor-cell-pet-name"),
+            Place = new AttributeElementPlace("href")
+        });
+
+        petNameValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".another-anchor-cell-pet-name"),
+            Place = new AttributeElementPlace("href")
+        });
+
+        return petNameValue;
+    }
+
+    private static CollectionData CreatePetVaccinesCollection()
+    {
+        var vaccinesCollection = new CollectionData((Pet pet) => pet.Vaccines);
+        var vaccineTarget = new CollectionTableTarget(new ElementIdSelectorString("inner-table-vaccines"))
+        {
+            InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-vaccines.html")),
+            Data = CreateVaccinesTableData()
+        };
+
+        return vaccinesCollection;
+    }
+
+    private static ModelMappingData CreateVaccinesTableData()
+    {
+        var vaccinesTableData = new ModelMappingData();
+
+        var vaccineNameValue = new ValueData((Vaccine v) => v.Name);
+
+        vaccineNameValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".div-vaccine"),
+            Place = ContentElementPlace.Instance
+        });
+
+        var vaccineDateAppliedValue = new ValueData((Vaccine v) => v.DateApplied);
+        vaccineDateAppliedValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".span-vaccine-date"),
+            Place = ContentElementPlace.Instance
+        });
+
+        var vaccinesIngredientsCollection = new CollectionData((Vaccine v) => v.Ingredients);
+        var ingredientsTarget = new CollectionElementTarget(new ElementQuerySelectorString("> ingredients-list"))
+        {
+            InsertionSelector = new TemplateInsertionSelectorId("ingredients-template"),
+            Data = CreateIngredientsData()
+        };
+
+        vaccinesTableData.AddValue(vaccineNameValue);
+        vaccinesTableData.AddValue(vaccineDateAppliedValue);
+        vaccinesTableData.AddCollection(vaccinesIngredientsCollection);
+
+        return vaccinesTableData;
+    }
+
+    private static ModelMappingData CreateIngredientsData()
+    {
+        ModelMappingData ingredientsData = new ModelMappingData();
+
+        var ingredientValue = new ValueData((string i) => i);
+        ingredientValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString("ingredient-item"),
+            Place = ContentElementPlace.Instance
+        });
+
+        ingredientsData.AddValue(ingredientValue);
+
+        return ingredientsData;
+    }
+
+    private ValueData CreatePetPhoto()
+    {
+        var petPhotoValue = new ValueData((Pet p) => ToDataUri(p.Photo));
+
+        petPhotoValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".pet-photo"),
+            Place = new AttributeElementPlace("src")
+        });
+
+        return petPhotoValue;
+    }
+
+    private static CollectionData CreatePetAntiparasiticsCollection()
+    {
+        var antiparasiticsCollection = new CollectionData((Pet pet) => pet.Antiparasitics);
+
+        var antiparasiticsCustomJsTarget = new CustomJsCollectionTarget("globalThis.manageAntiparasitics");
+        var antiparasiticsCollectionElementTarget = new CollectionElementTarget(new ElementQuerySelectorString("inner-nav-antiparasitics"))
+        {
+            InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-antiparasitics.html")),
+            Data = CreateAntiparasiticsCollectionElementData()
+        };
+
+        antiparasiticsCollection.AddTarget(antiparasiticsCustomJsTarget);
+        antiparasiticsCollection.AddTarget(antiparasiticsCollectionElementTarget);
+
+        return antiparasiticsCollection;
+    }
+
+    private static ModelMappingData CreateAntiparasiticsCollectionElementData()
+    {
+        var antiparasiticsTableData = new ModelMappingData();
+
+        var antiparasiticNameValue = new ValueData((Antiparasitic a) => a.Name);
+
+        antiparasiticNameValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".div-antiparasitics"),
+            Place = ContentElementPlace.Instance
+        });
+
+        var antiparasiticDateValue = new ValueData((Antiparasitic a) => a.DateApplied);
+        antiparasiticDateValue.AddTarget(new ElementTarget
+        {
+            Selector = new ElementQuerySelectorString(".span-antiparasitics-date"),
+            Place = ContentElementPlace.Instance
+        });
+
+        antiparasiticsTableData.AddValue(antiparasiticNameValue);
+        antiparasiticsTableData.AddValue(antiparasiticDateValue);
+
+        return antiparasiticsTableData;
     }
 }
