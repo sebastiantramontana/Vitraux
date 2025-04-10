@@ -1,7 +1,4 @@
-﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
-using Vitraux.Modeling.Building.ElementBuilders.Values;
-
-namespace Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.ContainerElements;
+﻿namespace Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.ContainerElements;
 
 public interface IContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>
 {

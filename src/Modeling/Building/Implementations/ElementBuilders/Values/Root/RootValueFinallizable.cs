@@ -14,11 +14,11 @@ internal class RootValueFinallizable<TViewModel, TValue>(
     public ICollectionTargetBuilder<TItem, IModelMapper<TViewModel>> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func)
         => modelMapperWrapped.MapCollection(func);
 
-    public ModelMappingData Build()
-        => modelMapperWrapped.Build();
-
     public IRootValueElementSelectorBuilder<TViewModel, TValue> ToElements
         => multiTargetBuilderWrapped.ToElements;
+
+    public ModelMappingData Data 
+        => modelMapperWrapped.Data;
 
     public IRootValueCustomJsBuilder<TViewModel, TValue> ToJsFunction(string jsFunction)
         => multiTargetBuilderWrapped.ToJsFunction(jsFunction);

@@ -21,6 +21,6 @@ internal class RootCollectionTargetBuilder<TItem, TViewModelBack>(CollectionData
         var target = new CustomJsCollectionTarget(jsFunction);
         collectionData.AddTarget(target);
 
-        return new CollectionCustomJsBuilder<TItem, IModelMapper<TViewModelBack>>(target, collectionData, endCollectionReturn);
+        return new RootCollectionCustomJsBuilder<TItem, TViewModelBack>(target, collectionData, endCollectionReturn);
     }
 }

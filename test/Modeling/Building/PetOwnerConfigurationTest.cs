@@ -1,4 +1,5 @@
-﻿using Vitraux.Helpers;
+﻿using FluentAssertions;
+using Vitraux.Helpers;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Selectors.Collections;
 using Vitraux.Modeling.Data.Selectors.Values;
@@ -6,14 +7,13 @@ using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 using Vitraux.Modeling.Data.Values;
 using Vitraux.Test.Example;
 
-namespace Vitraux.Test;
+namespace Vitraux.Test.Modeling.Building;
 
-[TestFixture]
 public class PetOwnerConfigurationTest
 {
     private readonly DataUriConverter dataUriConverter = new();
 
-    [Test]
+    [Fact]
     public void TestMapping()
     {
         var expectedData = CreatePetOwnerData();
@@ -22,11 +22,14 @@ public class PetOwnerConfigurationTest
 
         var actualData = sut.ConfigureMapping(new ModelMapper<PetOwner>());
 
-        _ = actualData.Should().BeEquivalentTo(expectedData);
+        var actualDataSerialized = VitrauxDataSerializer.Serialize(actualData, 0);
+        var expectedDataSerialized = VitrauxDataSerializer.Serialize(expectedData, 0);
+
+        actualDataSerialized.Should().Be(expectedDataSerialized);
     }
 
     private string ToDataUri(byte[] data)
-        => dataUriConverter.ToDataUri(MimeImage.Png, data);
+         => dataUriConverter.ToDataUri(MimeImage.Png, data);
 
     private ModelMappingData CreatePetOwnerData()
     {
@@ -53,14 +56,15 @@ public class PetOwnerConfigurationTest
 
         var petsTarget1 = new CustomJsCollectionTarget("pets.manage")
         {
-            ModuleFrom = new Uri("./modules/pets.js")
+            ModuleFrom = new Uri("./modules/pets.js", UriKind.Relative)
         };
 
         var petsTarget2 = new CollectionTableTarget(new ElementIdSelectorString("pets-table"))
         {
             InsertionSelector = new TemplateInsertionSelectorId("pet-row-template"),
-            Data = CreatePetsTableData()
         };
+
+        FillPetsTableData(petsTarget2.Data);
 
         petsCollection.AddTarget(petsTarget1);
         petsCollection.AddTarget(petsTarget2);
@@ -79,7 +83,7 @@ public class PetOwnerConfigurationTest
     private static ValueData CreatePhoneNumberValueData()
     {
         var phoneNumberValue = new ValueData((PetOwner p) => p.PhoneNumber);
-        var phoneUri = new Uri("./htmlpieces/phoneblock");
+        var phoneUri = new Uri("./htmlpieces/phoneblock", UriKind.Relative);
 
         var targetPhone1 = new ElementTarget
         {
@@ -136,17 +140,15 @@ public class PetOwnerConfigurationTest
             Place = ContentElementPlace.Instance
         };
 
-        var targetName2 = new CustomJsValueTarget("poNameFunction") { ModuleFrom = new Uri("./modules/po.js") };
+        var targetName2 = new CustomJsValueTarget("poNameFunction") { ModuleFrom = new Uri("./modules/po.js", UriKind.Relative) };
 
         nameValue.AddTarget(targetName1);
         nameValue.AddTarget(targetName2);
         return nameValue;
     }
 
-    private ModelMappingData CreatePetsTableData()
+    private void FillPetsTableData(ModelMappingData petsTableData)
     {
-        var petsTableData = new ModelMappingData();
-
         var petNameValue = CreatePetNameValue();
         var petVaccinesCollection = CreatePetVaccinesCollection();
         var petPhotoValue = CreatePetPhoto();
@@ -156,8 +158,6 @@ public class PetOwnerConfigurationTest
         petsTableData.AddCollection(petVaccinesCollection);
         petsTableData.AddValue(petPhotoValue);
         petsTableData.AddCollection(antiparasiticsCollection);
-
-        return petsTableData;
     }
 
     private static ValueData CreatePetNameValue()
@@ -190,17 +190,18 @@ public class PetOwnerConfigurationTest
         var vaccinesCollection = new CollectionData((Pet pet) => pet.Vaccines);
         var vaccineTarget = new CollectionTableTarget(new ElementIdSelectorString("inner-table-vaccines"))
         {
-            InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-vaccines.html")),
-            Data = CreateVaccinesTableData()
+            InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-vaccines.html", UriKind.Relative)),
         };
+
+        vaccinesCollection.AddTarget(vaccineTarget);
+
+        FillVaccinesTableData(vaccineTarget.Data);
 
         return vaccinesCollection;
     }
 
-    private static ModelMappingData CreateVaccinesTableData()
+    private static void FillVaccinesTableData(ModelMappingData vaccinesTableData)
     {
-        var vaccinesTableData = new ModelMappingData();
-
         var vaccineNameValue = new ValueData((Vaccine v) => v.Name);
 
         vaccineNameValue.AddTarget(new ElementTarget
@@ -220,20 +221,19 @@ public class PetOwnerConfigurationTest
         var ingredientsTarget = new CollectionElementTarget(new ElementQuerySelectorString("> ingredients-list"))
         {
             InsertionSelector = new TemplateInsertionSelectorId("ingredients-template"),
-            Data = CreateIngredientsData()
         };
+
+        vaccinesIngredientsCollection.AddTarget(ingredientsTarget);
+
+        FillIngredientsData(ingredientsTarget.Data);
 
         vaccinesTableData.AddValue(vaccineNameValue);
         vaccinesTableData.AddValue(vaccineDateAppliedValue);
         vaccinesTableData.AddCollection(vaccinesIngredientsCollection);
-
-        return vaccinesTableData;
     }
 
-    private static ModelMappingData CreateIngredientsData()
+    private static void FillIngredientsData(ModelMappingData ingredientsData)
     {
-        ModelMappingData ingredientsData = new ModelMappingData();
-
         var ingredientValue = new ValueData((string i) => i);
         ingredientValue.AddTarget(new ElementTarget
         {
@@ -242,8 +242,6 @@ public class PetOwnerConfigurationTest
         });
 
         ingredientsData.AddValue(ingredientValue);
-
-        return ingredientsData;
     }
 
     private ValueData CreatePetPhoto()
@@ -266,9 +264,10 @@ public class PetOwnerConfigurationTest
         var antiparasiticsCustomJsTarget = new CustomJsCollectionTarget("globalThis.manageAntiparasitics");
         var antiparasiticsCollectionElementTarget = new CollectionElementTarget(new ElementQuerySelectorString("inner-nav-antiparasitics"))
         {
-            InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-antiparasitics.html")),
-            Data = CreateAntiparasiticsCollectionElementData()
+            InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-antiparasitics.html", UriKind.Relative)),
         };
+
+        FillAntiparasiticsCollectionElementData(antiparasiticsCollectionElementTarget.Data);
 
         antiparasiticsCollection.AddTarget(antiparasiticsCustomJsTarget);
         antiparasiticsCollection.AddTarget(antiparasiticsCollectionElementTarget);
@@ -276,12 +275,9 @@ public class PetOwnerConfigurationTest
         return antiparasiticsCollection;
     }
 
-    private static ModelMappingData CreateAntiparasiticsCollectionElementData()
+    private static void FillAntiparasiticsCollectionElementData(ModelMappingData antiparasiticsTableData)
     {
-        var antiparasiticsTableData = new ModelMappingData();
-
         var antiparasiticNameValue = new ValueData((Antiparasitic a) => a.Name);
-
         antiparasiticNameValue.AddTarget(new ElementTarget
         {
             Selector = new ElementQuerySelectorString(".div-antiparasitics"),
@@ -297,7 +293,5 @@ public class PetOwnerConfigurationTest
 
         antiparasiticsTableData.AddValue(antiparasiticNameValue);
         antiparasiticsTableData.AddValue(antiparasiticDateValue);
-
-        return antiparasiticsTableData;
     }
 }

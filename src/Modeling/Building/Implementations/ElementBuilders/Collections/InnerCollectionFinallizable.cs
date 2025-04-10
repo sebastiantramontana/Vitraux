@@ -19,9 +19,6 @@ internal class InnerCollectionFinallizable<TItemBack, TItemActual, TEndCollectio
     public ICollectionValueTargetBuilder<TItemBack, TValue, TEndCollectionReturn> MapValue<TValue>(Func<TItemBack, TValue> func)
         => modelMapperWrapped.MapValue(func);
 
-    ModelMappingData ICollectionModelMapper<TItemBack, TEndCollectionReturn>.Build()
-        => modelMapperWrapped.Build();
-
     public ICollectionCustomJsBuilder<TItemActual, IInnerCollectionFinallizable<TItemBack, TItemActual, TEndCollectionReturn>> ToJsFunction(string jsFunction)
         => targetBuilderWrapped.ToJsFunction(jsFunction);
 
