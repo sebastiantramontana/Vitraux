@@ -8,39 +8,34 @@ namespace Vitraux.JsCodeGeneration;
 
 internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
 {
-    public IEnumerable<SelectorBase> FilterDistinct(ModelMappingData modelMappingData) 
+    public IEnumerable<SelectorBase> FilterDistinct(ModelMappingData modelMappingData)
         => GetValueSelectors(modelMappingData)
             .Concat(GetCollectionSelectors(modelMappingData))
             .Distinct()
             .RunNow();
 
     private static IEnumerable<SelectorBase> GetValueSelectors(ModelMappingData modelMappingData)
-        => modelMappingData
-            .Values
-            .SelectMany(GetTargetsFromData<IValueTarget, ElementValueTarget>)
-            .SelectMany(GetSelectorsFromElementTarget)
-            .Distinct()
-            .RunNow();
+        => GetSelectors<IValueTarget, ElementValueTarget>(modelMappingData.Values, GetSelectorsFromElementTarget);
 
     private static IEnumerable<SelectorBase> GetCollectionSelectors(ModelMappingData modelMappingData)
-        => modelMappingData
-            .Collections
-            .SelectMany(GetTargetsFromData<ICollectionTarget, CollectionElementTarget>)
-            .SelectMany(GetSelectorsFromCollectionElementTarget)
-            .Distinct()
-            .RunNow();
+        => GetSelectors<ICollectionTarget, CollectionElementTarget>(modelMappingData.Collections, GetSelectorsFromCollectionElementTarget);
 
-    private static IEnumerable<ITargetReturn> GetTargetsFromData<TTargetBase, ITargetReturn>(DelegateDataBase<TTargetBase> data)
+    private static IEnumerable<SelectorBase> GetSelectors<TTargetBase, TTargetReturn>(IEnumerable<DelegateDataBase<TTargetBase>> data, Func<TTargetReturn, IEnumerable<SelectorBase>> selectorFunc)
         where TTargetBase : ITarget
-        where ITargetReturn : TTargetBase
+        where TTargetReturn : TTargetBase
+        => data
+            .SelectMany(GetTargetsFromData<TTargetBase, TTargetReturn>)
+            .SelectMany(selectorFunc);
+
+    private static IEnumerable<TTargetReturn> GetTargetsFromData<TTargetBase, TTargetReturn>(DelegateDataBase<TTargetBase> data)
+        where TTargetBase : ITarget
+        where TTargetReturn : TTargetBase
         => data
             .Targets
-            .OfType<ITargetReturn>()
-            .RunNow();
+            .OfType<TTargetReturn>();
 
     private static IEnumerable<SelectorBase> GetSelectorsFromCollectionElementTarget(CollectionElementTarget collectionElementTarget)
         => [collectionElementTarget.AppendToElementSelector, collectionElementTarget.InsertionSelector];
-
 
     private static IEnumerable<SelectorBase> GetSelectorsFromElementTarget(ElementValueTarget elementTarget)
         => [elementTarget.Selector, .. TotSafeEnumerable(elementTarget.Insertion)];
