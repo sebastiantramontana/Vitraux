@@ -5,5 +5,5 @@ namespace Vitraux.JsCodeGeneration.Values;
 
 internal interface ITargetElementUpdateValueJsCodeGenerator
 {
-    string GenerateJsCode(ElementTarget targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName);
+    string GenerateJsCode(ElementValueTarget targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName);
 }

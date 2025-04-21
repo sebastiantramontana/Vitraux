@@ -6,7 +6,7 @@ using Vitraux.Modeling.Data.Values;
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Values.Root.Insertions;
 
 internal class RootChildrenSelectorBuilder<TViewModel, TValue>(
-    ElementTarget target,
+    ElementValueTarget target,
     IModelMapper<TViewModel> modelMapper,
     IRootValueMultiTargetBuilder<TViewModel, TValue> multiTargetBuilder)
     : IRootChildrenSelectorBuilder<TViewModel, TValue>

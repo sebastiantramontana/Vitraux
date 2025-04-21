@@ -34,7 +34,7 @@ public static class VitrauxDataSerializer
                 {
                     sb.AppendLine("[");
 
-                    IEnumerable enumerable = (value as IEnumerable)!;
+                    var enumerable = (value as IEnumerable)!;
 
                     foreach (var item in enumerable)
                     {

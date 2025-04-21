@@ -13,14 +13,14 @@ internal class TargetByPopulatingElementsUpdateValueJsCodeGenerator(
     IUpdateChildElementsFunctionCall updateChildElementsFunctionCall)
     : ITargetByPopulatingElementsUpdateValueJsCodeGenerator
 {
-    public string GenerateJsCode(ElementTarget targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName)
+    public string GenerateJsCode(ElementValueTarget targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName)
         => associatedElements
                 .Cast<InsertElementObjectName>()
                 .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(CreateUpdateByPopulatingElementsFunctionCall(targetElement, ae, parentValueObjectName, valueObjectName)))
                 .ToString()
                 .TrimEnd();
 
-    private string CreateUpdateByPopulatingElementsFunctionCall(ElementTarget targetElement, InsertElementObjectName populatingElementObjectName, string parentValueObjectName, string valueObjectName)
+    private string CreateUpdateByPopulatingElementsFunctionCall(ElementValueTarget targetElement, InsertElementObjectName populatingElementObjectName, string parentValueObjectName, string valueObjectName)
     {
         var populatingSelector = populatingElementObjectName.AssociatedSelector as InsertElementSelectorBase;
         var toChildQueryFunctionCallCode = toChildQueryFunctionCall.Generate((populatingSelector!.TargetChildElement as ElementQuerySelectorString).Query);

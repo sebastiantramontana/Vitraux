@@ -85,7 +85,7 @@ public class PetOwnerConfigurationTest
         var phoneNumberValue = new ValueData((PetOwner p) => p.PhoneNumber);
         var phoneUri = new Uri("./htmlpieces/phoneblock", UriKind.Relative);
 
-        var targetPhone1 = new ElementTarget
+        var targetPhone1 = new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".petowner-phonenumber"),
             Place = new AttributeElementPlace("data-phonenumber"),
@@ -95,7 +95,7 @@ public class PetOwnerConfigurationTest
             }
         };
 
-        var targetPhone2 = new ElementTarget
+        var targetPhone2 = new ElementValueTarget
         {
             Selector = new ElementIdSelectorString("petowner-phonenumber-id"),
             Place = ContentElementPlace.Instance
@@ -110,7 +110,7 @@ public class PetOwnerConfigurationTest
     {
         var addressValue = new ValueData((PetOwner p) => p.Address);
 
-        var targetAddress1 = new ElementTarget
+        var targetAddress1 = new ElementValueTarget
         {
             Selector = new ElementIdSelectorString("petowner-address-parent"),
             Insertion = new InsertElementTemplateSelectorId("petowner-address-template")
@@ -120,7 +120,7 @@ public class PetOwnerConfigurationTest
             Place = ContentElementPlace.Instance
         };
 
-        var targetAddress2 = new ElementTarget
+        var targetAddress2 = new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".petwoner-address > div"),
             Place = new AttributeElementPlace("data-petowner-address")
@@ -134,7 +134,7 @@ public class PetOwnerConfigurationTest
     private static ValueData CreateNameValueData()
     {
         var nameValue = new ValueData((PetOwner p) => p.Name);
-        var targetName1 = new ElementTarget
+        var targetName1 = new ElementValueTarget
         {
             Selector = new ElementIdSelectorString("petowner-name"),
             Place = ContentElementPlace.Instance
@@ -164,19 +164,19 @@ public class PetOwnerConfigurationTest
     {
         var petNameValue = new ValueData((Pet p) => p.Name);
 
-        petNameValue.AddTarget(new ElementTarget
+        petNameValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".cell-pet-name"),
             Place = ContentElementPlace.Instance
         });
 
-        petNameValue.AddTarget(new ElementTarget
+        petNameValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".anchor-cell-pet-name"),
             Place = new AttributeElementPlace("href")
         });
 
-        petNameValue.AddTarget(new ElementTarget
+        petNameValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".another-anchor-cell-pet-name"),
             Place = new AttributeElementPlace("href")
@@ -204,14 +204,14 @@ public class PetOwnerConfigurationTest
     {
         var vaccineNameValue = new ValueData((Vaccine v) => v.Name);
 
-        vaccineNameValue.AddTarget(new ElementTarget
+        vaccineNameValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".div-vaccine"),
             Place = ContentElementPlace.Instance
         });
 
         var vaccineDateAppliedValue = new ValueData((Vaccine v) => v.DateApplied);
-        vaccineDateAppliedValue.AddTarget(new ElementTarget
+        vaccineDateAppliedValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".span-vaccine-date"),
             Place = ContentElementPlace.Instance
@@ -235,7 +235,7 @@ public class PetOwnerConfigurationTest
     private static void FillIngredientsData(ModelMappingData ingredientsData)
     {
         var ingredientValue = new ValueData((string i) => i);
-        ingredientValue.AddTarget(new ElementTarget
+        ingredientValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString("ingredient-item"),
             Place = ContentElementPlace.Instance
@@ -248,7 +248,7 @@ public class PetOwnerConfigurationTest
     {
         var petPhotoValue = new ValueData((Pet p) => ToDataUri(p.Photo));
 
-        petPhotoValue.AddTarget(new ElementTarget
+        petPhotoValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".pet-photo"),
             Place = new AttributeElementPlace("src")
@@ -278,14 +278,14 @@ public class PetOwnerConfigurationTest
     private static void FillAntiparasiticsCollectionElementData(ModelMappingData antiparasiticsTableData)
     {
         var antiparasiticNameValue = new ValueData((Antiparasitic a) => a.Name);
-        antiparasiticNameValue.AddTarget(new ElementTarget
+        antiparasiticNameValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".div-antiparasitics"),
             Place = ContentElementPlace.Instance
         });
 
         var antiparasiticDateValue = new ValueData((Antiparasitic a) => a.DateApplied);
-        antiparasiticDateValue.AddTarget(new ElementTarget
+        antiparasiticDateValue.AddTarget(new ElementValueTarget
         {
             Selector = new ElementQuerySelectorString(".span-antiparasitics-date"),
             Place = ContentElementPlace.Instance

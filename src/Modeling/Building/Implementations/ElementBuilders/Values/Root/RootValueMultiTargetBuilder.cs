@@ -16,7 +16,7 @@ internal class RootValueMultiTargetBuilder<TViewModel, TValue>(
 
     private RootValueElementSelectorBuilder<TViewModel, TValue> BuildElementTarget()
     {
-        var newTarget = new ElementTarget();
+        var newTarget = new ElementValueTarget();
         valueData.AddTarget(newTarget);
 
         return new(newTarget, modelMapper, this);

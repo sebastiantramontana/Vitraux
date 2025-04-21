@@ -7,7 +7,7 @@ internal class UpdateChildElementsFunctionCall(
     ISetElementsContentCall setElementsContentCall)
     : IUpdateChildElementsFunctionCall
 {
-    public string Generate(ElementTarget toChildTargetElement, string parentValueObjectName, string valueObjectName)
+    public string Generate(ElementValueTarget toChildTargetElement, string parentValueObjectName, string valueObjectName)
     {
         const string targetTemplateChildElements = "targetChildElements";
         var fullValueObject = $"{parentValueObjectName}.{valueObjectName}";

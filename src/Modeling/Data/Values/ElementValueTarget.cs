@@ -3,7 +3,7 @@ using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.Modeling.Data.Values;
 
-internal record class ElementTarget : IValueTarget
+internal record class ElementValueTarget : IValueTarget
 {
     internal ElementSelectorBase Selector { get; set; } = default!;
     internal ElementPlace Place { get; set; } = default!;

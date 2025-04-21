@@ -6,7 +6,7 @@ using Vitraux.Modeling.Data.Values;
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.CollectionValues;
 
 internal class CollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn>(
-    ElementTarget target,
+    ElementValueTarget target,
     ICollectionModelMapper<TItem, TEndCollectionReturn> modelMapper,
     ICollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn> multiTargetBuilder,
     TEndCollectionReturn endCollectionReturn)

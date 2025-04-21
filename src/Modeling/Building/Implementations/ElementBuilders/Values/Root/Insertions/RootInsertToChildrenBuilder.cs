@@ -5,7 +5,7 @@ using Vitraux.Modeling.Data.Values;
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Values.Root.Insertions;
 
 internal class RootInsertToChildrenBuilder<TViewModel, TValue>(
-    ElementTarget target,
+    ElementValueTarget target,
     IModelMapper<TViewModel> modelMapper,
     IRootValueMultiTargetBuilder<TViewModel, TValue> multiTargetBuilder)
     : IRootInsertToChildrenBuilder<TViewModel, TValue>

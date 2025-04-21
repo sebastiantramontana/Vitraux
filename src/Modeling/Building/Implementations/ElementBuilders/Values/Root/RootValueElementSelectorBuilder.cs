@@ -5,7 +5,7 @@ using Vitraux.Modeling.Data.Values;
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Values.Root;
 
 internal class RootValueElementSelectorBuilder<TViewModel, TValue>(
-    ElementTarget target,
+    ElementValueTarget target,
     IModelMapper<TViewModel> modelMapper,
     IRootValueMultiTargetBuilder<TViewModel, TValue> multiTargetBuilder)
     : IRootValueElementSelectorBuilder<TViewModel, TValue>

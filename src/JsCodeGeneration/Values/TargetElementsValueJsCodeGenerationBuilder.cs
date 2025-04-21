@@ -27,7 +27,7 @@ internal class TargetElementsValueJsCodeGenerationBuilder(
             .ToString()
             .TrimEnd();
 
-    private static IEnumerable<ElementObjectName> GetElementNamesAssociatedToTargetElement(IEnumerable<ElementObjectName> elements, ElementTarget targetElement)
+    private static IEnumerable<ElementObjectName> GetElementNamesAssociatedToTargetElement(IEnumerable<ElementObjectName> elements, ElementValueTarget targetElement)
         => elements.Where(e => e.AssociatedSelector == targetElement.Selector);
 
     private ITargetElementUpdateValueJsCodeGenerator GetCodeGeneratorBySelector(ElementSelectorBase selector)

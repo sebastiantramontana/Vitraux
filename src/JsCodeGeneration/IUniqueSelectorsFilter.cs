@@ -1,6 +1,8 @@
-﻿namespace Vitraux.JsCodeGeneration;
+﻿using Vitraux.Modeling.Data.Selectors;
+
+namespace Vitraux.JsCodeGeneration;
 
 internal interface IUniqueSelectorsFilter
 {
-    UniqueFilteredSelectors FilterDistinct(ModelMappingData modelMappingData);
+    IEnumerable<SelectorBase> FilterDistinct(ModelMappingData modelMappingData);
 }

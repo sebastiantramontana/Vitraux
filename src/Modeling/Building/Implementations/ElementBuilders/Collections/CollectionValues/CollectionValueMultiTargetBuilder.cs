@@ -18,7 +18,7 @@ internal class CollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionRe
 
     private CollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> BuildElementTarget()
     {
-        var newTarget = new ElementTarget();
+        var newTarget = new ElementValueTarget();
         valueData.AddTarget(newTarget);
 
         return new(newTarget, modelMapper, this, endCollectionReturn);
