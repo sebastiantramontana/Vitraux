@@ -14,13 +14,13 @@ internal class StorageElementValueJsLineGenerator(
     : IStorageElementValueJsLineGenerator
 {
     public string Generate(ElementObjectName elementObjectName, string parentObjectName)
-        => elementObjectName.AssociatedSelector.SelectionBy switch
+        => elementObjectName.AssociatedSelector switch
         {
-            ElementSelection.Id => generatorById.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementIdSelectorIdString).Id),
-            ElementSelection.QuerySelector => generatorByQuerySelector.Generate(elementObjectName.Name, (elementObjectName.AssociatedSelector as ElementQuerySelectorString).Query, parentObjectName),
-            ElementSelection.Template => generatorByTemplate.Generate((elementObjectName as PopulatingElementObjectName)!, parentObjectName),
-            ElementSelection.Uri => generatorByFetch.Generate((elementObjectName as PopulatingElementObjectName)!, parentObjectName),
-            _ => throw new NotImplementedException($"Selector type {elementObjectName.AssociatedSelector.SelectionBy} not implemented in {GetType().FullName} for OnlyOnceAtStart initialization"),
+            ElementSelection.Id => generatorById.Generate(elementObjectName.JsObjName, (elementObjectName.AssociatedSelector as ElementIdSelectorIdString).Id),
+            ElementSelection.QuerySelector => generatorByQuerySelector.Generate(elementObjectName.JsObjName, (elementObjectName.AssociatedSelector as ElementQuerySelectorString).Query, parentObjectName),
+            ElementSelection.Template => generatorByTemplate.Generate((elementObjectName as InsertElementObjectName)!, parentObjectName),
+            ElementSelection.Uri => generatorByFetch.Generate((elementObjectName as InsertElementObjectName)!, parentObjectName),
+            _ => throw new NotImplementedException($"Selector type {elementObjectName.AssociatedSelector} not implemented in {GetType().FullName} for OnlyOnceAtStart initialization"),
         };
 }
 
@@ -30,17 +30,17 @@ internal class StorageElementCollectionJsLineGenerator(
 {
     public string Generate(CollectionElementObjectName elementObjectName, string parentObjectName)
     {
-        return elementObjectName.AssociatedCollectionSelector.InsertionSelector.From switch
+        return elementObjectName.AssociatedCollectionElementTarget.InsertionSelector.From switch
         {
             InsertionSelection.FromTemplate => GenerateByTemplate(elementObjectName, parentObjectName),
             InsertionSelection.FromFetch => throw new NotImplementedException(),
-            _ => throw new NotImplementedException($"InsertionSelection type {elementObjectName.AssociatedCollectionSelector.InsertionSelector.From} not implemented in {GetType().FullName} for OnlyOnceAtStart initialization"),
+            _ => throw new NotImplementedException($"InsertionSelection type {elementObjectName.AssociatedCollectionElementTarget.InsertionSelector.From} not implemented in {GetType().FullName} for OnlyOnceAtStart initialization"),
         };
     }
 
     private string GenerateByTemplate(CollectionElementObjectName elementObjectName, string parentObjectName)
     {
-        var templateId = (elementObjectName.AssociatedCollectionSelector.InsertionSelector as TemplateInsertionSelectorId)!.TemplateId;
+        var templateId = (elementObjectName.AssociatedCollectionElementTarget.InsertionSelector as TemplateInsertionSelectorId)!.TemplateId;
         var templateElementObjectName = elementObjectName.InsertionElementName;
 
         return new StringBuilder()
@@ -51,7 +51,7 @@ internal class StorageElementCollectionJsLineGenerator(
 
     private string GenerateByFetch(CollectionElementObjectName elementObjectName, string parentObjectName)
     {
-        var uri = (elementObjectName.AssociatedCollectionSelector.InsertionSelector as UriInsertionSelectorUri)!.Uri;
+        var uri = (elementObjectName.AssociatedCollectionElementTarget.InsertionSelector as UriInsertionSelectorUri)!.Uri;
         var templateElementObjectName = elementObjectName.InsertionElementName;
 
         return new StringBuilder()

@@ -6,5 +6,5 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 internal class QueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator(IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCalling) : IQueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => $"const {elementObjectName.Name} = {getStoredElementByIdAsArrayCalling.Generate((elementObjectName.AssociatedSelector as ElementIdSelectorIdString).Id, elementObjectName.Name)};";
+        => $"const {elementObjectName.JsObjName} = {getStoredElementByIdAsArrayCalling.Generate((elementObjectName.AssociatedSelector as ElementIdSelectorIdString).Id, elementObjectName.JsObjName)};";
 }

@@ -7,5 +7,5 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 internal class QueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCalling) : IQueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => $"const {elementObjectName.Name} = {getElementsByQuerySelectorCalling.Generate(parentObjectName, (elementObjectName.AssociatedSelector as ElementQuerySelectorString).Query)};";
+        => $"const {elementObjectName.JsObjName} = {getElementsByQuerySelectorCalling.Generate(parentObjectName, (elementObjectName.AssociatedSelector as ElementQuerySelectorString).Query)};";
 }

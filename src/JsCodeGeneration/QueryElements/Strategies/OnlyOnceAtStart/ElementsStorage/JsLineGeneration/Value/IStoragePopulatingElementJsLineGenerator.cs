@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 
 internal interface IStoragePopulatingElementJsLineGenerator
 {
-    string Generate(string storedPopulatingElementCall, PopulatingElementObjectName populatingObjectName, string parentObjectToAppend);
+    string Generate(string storedPopulatingElementCall, InsertElementObjectName populatingObjectName, string parentObjectToAppend);
 }

@@ -15,17 +15,17 @@ internal class TargetByPopulatingElementsUpdateValueJsCodeGenerator(
 {
     public string GenerateJsCode(ElementTarget targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName)
         => associatedElements
-                .Cast<PopulatingElementObjectName>()
+                .Cast<InsertElementObjectName>()
                 .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(CreateUpdateByPopulatingElementsFunctionCall(targetElement, ae, parentValueObjectName, valueObjectName)))
                 .ToString()
                 .TrimEnd();
 
-    private string CreateUpdateByPopulatingElementsFunctionCall(ElementTarget targetElement, PopulatingElementObjectName populatingElementObjectName, string parentValueObjectName, string valueObjectName)
+    private string CreateUpdateByPopulatingElementsFunctionCall(ElementTarget targetElement, InsertElementObjectName populatingElementObjectName, string parentValueObjectName, string valueObjectName)
     {
         var populatingSelector = populatingElementObjectName.AssociatedSelector as InsertElementSelectorBase;
         var toChildQueryFunctionCallCode = toChildQueryFunctionCall.Generate((populatingSelector!.TargetChildElement as ElementQuerySelectorString).Query);
         var updateChildElementsFunctionCallCode = updateChildElementsFunctionCall.Generate(targetElement, parentValueObjectName, valueObjectName);
-        var updateByPopulatingElementsCallCode = updateByPopulatingElementsCall.Generate(populatingElementObjectName.Name, populatingElementObjectName.AppendToName, toChildQueryFunctionCallCode, updateChildElementsFunctionCallCode);
+        var updateByPopulatingElementsCallCode = updateByPopulatingElementsCall.Generate(populatingElementObjectName.JsObjName, populatingElementObjectName.AppendToJsObjNameName, toChildQueryFunctionCallCode, updateChildElementsFunctionCallCode);
 
         return $"{updateByPopulatingElementsCallCode};";
     }

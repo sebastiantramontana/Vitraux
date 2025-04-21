@@ -8,10 +8,10 @@ internal class StorageElementJsLineGeneratorPopulatingElementsByTemplate(
     IStoragePopulatingElementJsLineGenerator storagePopulatingElementJsLineGenerator)
     : IStorageElementJsLineGeneratorPopulatingElementsByTemplate
 {
-    public string Generate(PopulatingElementObjectName templateObjectName, string parentObjectToAppend)
+    public string Generate(InsertElementObjectName templateObjectName, string parentObjectToAppend)
     {
         InsertElementTemplateSelectorId? templateSelector = templateObjectName!.AssociatedSelector as InsertElementTemplateSelectorId;
-        string storedElementCall = storageElementJsLineGeneratorByTemplate.Generate(templateSelector!.TemplateId, templateObjectName.Name);
+        string storedElementCall = storageElementJsLineGeneratorByTemplate.Generate(templateSelector!.TemplateId, templateObjectName.JsObjName);
 
         return storagePopulatingElementJsLineGenerator.Generate(storedElementCall, templateObjectName, parentObjectToAppend);
     }

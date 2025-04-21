@@ -11,8 +11,7 @@ namespace Vitraux.JsCodeGeneration;
 
 internal class JsGenerator(
     IUniqueSelectorsFilter uniqueSelectorsFilter,
-    IElementNamesGenerator elementNamesGenerator,
-    ICollectionElementNamesGenerator collectionElementNamesGenerator,
+    IJsObjectNamesGenerator jsObjectNamesGenerator,
     IValueNamesGenerator valueNamesGenerator,
     ICollectionNamesGenerator collectionNamesGenerator,
     IValuesJsCodeGenerationBuilder valuesJsCodeGenerationBuilder,
@@ -23,14 +22,13 @@ internal class JsGenerator(
     public string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
     {
         var selectors = uniqueSelectorsFilter.FilterDistinct(modelMappingData);
-        var allElementObjectNames = elementNamesGenerator.Generate(elementNamePrefix, selectors.ElementSelectors);
-        var collectionElementObjectNames = collectionElementNamesGenerator.GenerateInsertionNames(selectors.CollectionSelectors, allElementObjectNames);
+        var allJsObjectNames = jsObjectNamesGenerator.Generate(elementNamePrefix, selectors.ElementSelectors);
 
         var valueNames = valueNamesGenerator.Generate(modelMappingData.Values);
         var collectionNames = collectionNamesGenerator.Generate(modelMappingData.Collections);
 
         return new StringBuilder()
-            .AppendLine(GenerateQueryElementsJsCode(queryElementStrategy, allElementObjectNames, collectionElementObjectNames, parentElementObjectName))
+            .AppendLine(GenerateQueryElementsJsCode(queryElementStrategy, allJsObjectNames, parentElementObjectName))
             .AppendLine()
             .AppendLine(GenerateValuesJsCode(parentObjectName, valueNames, allElementObjectNames))
             .AppendLine()
@@ -49,9 +47,9 @@ internal class JsGenerator(
                 .BuildJsCode(parentObjectName, collectionNames, elements, this)
                 .TrimEnd();
 
-    private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<ElementObjectName> allElementObjectNames, IEnumerable<CollectionElementObjectName> collectionElementObjectNames, string parentElementObjectName)
+    private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsObjectNames, string parentElementObjectName)
         => queryElementsJsCodeGeneratorContext
-                    .GetStrategy(strategy) SEGUIR CON CADA UNA DE LAS STRATEGIES: collectionElementObjectNames!!!
+                    .GetStrategy(strategy) //SEGUIR CON CADA UNA DE LAS STRATEGIES: collectionElementObjectNames!!!
                     .GenerateJsCode(allElementObjectNames, collectionElementObjectNames, parentElementObjectName)
                     .TrimEnd();
 }
@@ -94,7 +92,7 @@ internal class UpdateCollectionJsCodeGenerator(
     public string GenerateJsCode(CollectionObjectName collectionObjectName, ElementObjectName element, IJsGenerator jsGenerator)
     {
         var callbackInfo = callbackJsCodeGenerator.GenerateJsCode(collectionObjectName.AssociatedCollection.ModelMappingData, jsGenerator);
-        var updateCall = GetUpdateCall(element as PopulatingElementObjectName, collectionObjectName, callbackInfo.FunctionName);
+        var updateCall = GetUpdateCall(element as InsertElementObjectName, collectionObjectName, callbackInfo.FunctionName);
 
         return new StringBuilder()
             .AppendLine(callbackInfo.JsCode)
@@ -103,11 +101,11 @@ internal class UpdateCollectionJsCodeGenerator(
             .ToString();
     }
 
-    private string GetUpdateCall(PopulatingElementObjectName populatingElementObjectName, CollectionObjectName collectionObjectName, string updateFunctionCallbackName)
+    private string GetUpdateCall(InsertElementObjectName populatingElementObjectName, CollectionObjectName collectionObjectName, string updateFunctionCallbackName)
     {
         return collectionObjectName.AssociatedCollection is CollectionTableTarget
-                ? $"{updateTableCall.Generate(populatingElementObjectName.AppendToName, populatingElementObjectName.Name, updateFunctionCallbackName, collectionObjectName.Name)};"
-                : $"{updateCollectionByPopulatingElementsCall.Generate(populatingElementObjectName.AppendToName, populatingElementObjectName.Name, updateFunctionCallbackName, collectionObjectName.Name)};";
+                ? $"{updateTableCall.Generate(populatingElementObjectName.AppendToJsObjNameName, populatingElementObjectName.JsObjName, updateFunctionCallbackName, collectionObjectName.Name)};"
+                : $"{updateCollectionByPopulatingElementsCall.Generate(populatingElementObjectName.AppendToJsObjNameName, populatingElementObjectName.JsObjName, updateFunctionCallbackName, collectionObjectName.Name)};";
     }
 }
 

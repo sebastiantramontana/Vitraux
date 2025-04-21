@@ -11,5 +11,5 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(
     : IQueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator
 {
     public string GenerateJsCode(string parentObjectName, ElementObjectName elementObjectName)
-        => queryElementsDeclaringByPopulatingCallingJsBuilt.GenerateJsCode(elementObjectName, getStoredElementByTemplateCall.Generate((elementObjectName.AssociatedSelector as InsertElementTemplateSelectorId).TemplateId, elementObjectName.Name), queryGeneratorContext);
+        => queryElementsDeclaringByPopulatingCallingJsBuilt.GenerateJsCode(elementObjectName, getStoredElementByTemplateCall.Generate((elementObjectName.AssociatedSelector as InsertElementTemplateSelectorId).TemplateId, elementObjectName.JsObjName), queryGeneratorContext);
 }

@@ -7,13 +7,13 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 internal class StoragePopulatingElementJsLineGenerator(IStoragePopulatingAppendToElementJsLineGenerator storagePopulatingAppendToJsLineGenerator)
     : IStoragePopulatingElementJsLineGenerator
 {
-    public string Generate(string storedPopulatingElementCall, PopulatingElementObjectName populatingObjectName, string parentObjectToAppend)
+    public string Generate(string storedPopulatingElementCall, InsertElementObjectName populatingObjectName, string parentObjectToAppend)
     {
         var associatedPopulatingSelector = populatingObjectName!.AssociatedSelector as InsertElementSelectorBase;
 
         return new StringBuilder()
             .AppendLine(storedPopulatingElementCall)
-            .Append(storagePopulatingAppendToJsLineGenerator.Generate(associatedPopulatingSelector!.ElementToAppend, populatingObjectName.AppendToName, parentObjectToAppend))
+            .Append(storagePopulatingAppendToJsLineGenerator.Generate(associatedPopulatingSelector!.ElementToAppend, populatingObjectName.AppendToJsObjNameName, parentObjectToAppend))
             .ToString();
     }
 }

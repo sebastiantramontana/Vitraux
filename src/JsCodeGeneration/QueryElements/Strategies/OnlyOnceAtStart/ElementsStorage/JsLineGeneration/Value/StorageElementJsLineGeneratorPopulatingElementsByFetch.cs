@@ -9,10 +9,10 @@ internal class StorageElementJsLineGeneratorPopulatingElementsByFetch(
     IStoragePopulatingElementJsLineGenerator storagePopulatingElementJsLineGenerator)
     : IStorageElementJsLineGeneratorPopulatingElementsByFetch
 {
-    public string Generate(PopulatingElementObjectName fetchedObjectName, string parentObjectToAppend)
+    public string Generate(InsertElementObjectName fetchedObjectName, string parentObjectToAppend)
     {
         var fetchSelector = fetchedObjectName!.AssociatedSelector as InsertElementUriSelectorUri;
-        var storedElementCall = $"{getFetchedElementCall.Generate(fetchSelector!.Uri, fetchedObjectName.Name)};";
+        var storedElementCall = $"{getFetchedElementCall.Generate(fetchSelector!.Uri, fetchedObjectName.JsObjName)};";
 
         return storagePopulatingElementJsLineGenerator.Generate(storedElementCall, fetchedObjectName, parentObjectToAppend);
     }

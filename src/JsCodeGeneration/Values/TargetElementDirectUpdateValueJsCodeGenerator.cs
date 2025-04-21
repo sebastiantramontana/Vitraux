@@ -11,7 +11,7 @@ internal class TargetElementDirectUpdateValueJsCodeGenerator(
 {
     public string GenerateJsCode(ElementTarget targetElement, IEnumerable<ElementObjectName> associatedElements, string parentValueObjectName, string valueObjectName)
         => associatedElements
-            .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(GeneratePlaceJsCode(targetElement.Place, ae.Name, parentValueObjectName, valueObjectName)))
+            .Aggregate(new StringBuilder(), (sb, ae) => sb.AppendLine(GeneratePlaceJsCode(targetElement.Place, ae.JsObjName, parentValueObjectName, valueObjectName)))
             .ToString()
             .TrimEnd();
 
