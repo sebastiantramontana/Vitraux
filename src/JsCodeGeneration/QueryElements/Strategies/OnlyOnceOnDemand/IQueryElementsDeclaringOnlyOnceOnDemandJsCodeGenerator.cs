@@ -1,5 +1,5 @@
 ﻿namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
-internal interface IQueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator : IQueryElementsDeclaringJsCodeGenerator
+internal interface IQueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator : IQueryElementsDeclaringJsGenerator
 {
 }

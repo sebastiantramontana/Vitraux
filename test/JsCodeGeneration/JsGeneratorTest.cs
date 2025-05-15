@@ -171,7 +171,7 @@ public class JsGeneratorTest
 
     //private static QueryElementsJsCodeGeneratorByStrategyContext CreateQueryElementsJsCodeGeneratorByStrategyContext(IJsCodeExecutor jsCodeExecutor, IGetElementByIdAsArrayCall getElementByIdAsArrayCall, IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall)
     //{
-    //    var builder = new QueryElementsJsCodeBuilder();
+    //    var builder = new QueryElementsJsGenerator();
     //    var getStoredElementByIdAsArrayCall = new GetStoredElementByIdAsArrayCall();
     //    var getStoredElementsByQuerySelectorCall = new GetStoredElementsByQuerySelectorCall();
     //    var queryAppendToElementsDeclaringByTemplateJsCodeGenerator = new QueryAppendToElementsDeclaringByPopulatingJsCodeGenerator();
@@ -214,7 +214,7 @@ public class JsGeneratorTest
     //    return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
     //}
 
-    //private static QueryElementsOnlyOnceAtStartJsCodeGenerator CreateAtStartGenerator(IQueryElementsJsCodeBuilder builder, IJsCodeExecutor jsCodeExecutor, IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall, IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall)
+    //private static QueryElementsOnlyOnceAtStartJsGenerator CreateAtStartGenerator(IQueryElementsJsGenerator builder, IJsCodeExecutor jsCodeExecutor, IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall, IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall)
     //{
     //    var generatorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
     //    var generatorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
@@ -224,29 +224,29 @@ public class JsGeneratorTest
     //    var storageElementJsLineGeneratorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
     //    var storagePopulatingAppendToElementJsLineGenerator = new StoragePopulatingAppendToElementJsLineGenerator(storageElementJsLineGeneratorById, storageElementJsLineGeneratorByQuerySelector);
     //    var storagePopulatingElementJsLineGenerator = new StoragePopulatingElementJsLineGenerator(storagePopulatingAppendToElementJsLineGenerator);
-    //    var generatorPopulatingByTemplate = new StorageElementJsLineGeneratorPopulatingElementsByTemplate(getStoredTemplateCall, storagePopulatingElementJsLineGenerator);
+    //    var generatorPopulatingByTemplate = new StorageElementJsLineGeneratorInsertElementsByTemplate(getStoredTemplateCall, storagePopulatingElementJsLineGenerator);
     //    var generatorByFetch = new StorageElementJsLineGeneratorByFetch(getFetchedElementCall, storagePopulatingElementJsLineGenerator);
     //    var storageElementLineGenerator = new StorageElementValueJsLineGenerator(generatorById, generatorByQuerySelector, generatorPopulatingByTemplate, generatorByFetch);
     //    var storageElementsBuilder = new StoreElementsJsCodeBuilder(storageElementLineGenerator);
     //    var initializer = new QueryElementsOnlyOnceAtStartup(storageElementsBuilder, jsCodeExecutor);
-    //    var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsCodeGenerator();
+    //    var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsGenerator();
 
-    //    return new QueryElementsOnlyOnceAtStartJsCodeGenerator(builder, atStartDeclaringGenerator, initializer);
+    //    return new QueryElementsOnlyOnceAtStartJsGenerator(builder, atStartDeclaringGenerator, initializer);
     //}
 
     //private static QueryElementsOnlyOnceOnDemandJsCodeGenerator CreateOnDemandGenerator(
-    //    IQueryElementsJsCodeBuilder builder,
+    //    IQueryElementsJsGenerator builder,
     //    IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
     //    IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
     //    IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
     //{
-    //    var declaringOnlyOncenDemandByIdGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator(getStoredElementByIdAsArrayCall);
-    //    var declaringOnlyOnceOnDemandByQuerySelectorGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsCodeGenerator(getStoredElementsByQuerySelectorCall);
+    //    var declaringOnlyOncenDemandByIdGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator(getStoredElementByIdAsArrayCall);
+    //    var declaringOnlyOnceOnDemandByQuerySelectorGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsGenerator(getStoredElementsByQuerySelectorCall);
     //    var getStoredTemplateCall = new GetStoredTemplateCall();
     //    var getFetchedElementCall = new GetFetchedElementCall();
     //    var jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext = new JsQueryPopulatingElementsDeclaringOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator);
-    //    var declaringOnlyOnceOnDemandByTemplateGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator(getStoredTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
-    //    var declaringOnlyOnceOnDemandByFetchGenerator = new QueryElementsDeclaringOnlyOnceOnDemandByFetchJsCodeGenerator(getFetchedElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
+    //    var declaringOnlyOnceOnDemandByTemplateGenerator = new QueryElementsDeclaringOnlyOnceOnDemandValueByTemplateJsGenerator(getStoredTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
+    //    var declaringOnlyOnceOnDemandByFetchGenerator = new QueryElementsDeclaringOnlyOnceOnDemandValueByUriJsGenerator(getFetchedElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringOnlyOnceOnDemandGeneratorContext);
     //    var onDemandGeneratorContext = new JsQueryElementsOnlyOnceOnDemandGeneratorContext(declaringOnlyOncenDemandByIdGenerator, declaringOnlyOnceOnDemandByQuerySelectorGenerator, declaringOnlyOnceOnDemandByTemplateGenerator, declaringOnlyOnceOnDemandByFetchGenerator);
     //    var declaringOnlyOnceOnDemandGenerator = new QueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator(onDemandGeneratorContext);
 
@@ -254,18 +254,18 @@ public class JsGeneratorTest
     //}
 
     //private static QueryElementsAlwaysJsCodeGenerator CreateAlwaysGenerator(
-    //    IQueryElementsJsCodeBuilder builder,
+    //    IQueryElementsJsGenerator builder,
     //    IGetElementByIdAsArrayCall getElementByIdAsArrayCall,
     //    IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall,
     //    IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator queryTemplateCallingJsBuiltInFunctionCodeGenerator)
     //{
-    //    var declaringAlwaysByIdGenerator = new QueryElementsDeclaringAlwaysByIdJsCodeGenerator(getElementByIdAsArrayCall);
-    //    var declaringAlwaysByQuerySelectorGenerator = new QueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator(getElementsByQuerySelectorCall);
+    //    var declaringAlwaysByIdGenerator = new QueryElementsDeclaringAlwaysByIdJsGenerator(getElementByIdAsArrayCall);
+    //    var declaringAlwaysByQuerySelectorGenerator = new QueryElementsDeclaringAlwaysByQuerySelectorJsGenerator(getElementsByQuerySelectorCall);
     //    var getTemplateCall = new GetTemplateCall();
     //    var fetchElementCall = new FetchElementCall();
     //    var jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext = new JsQueryPopulatingElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator);
-    //    var declaringAlwaysByTemplateGenerator = new QueryElementsDeclaringAlwaysByTemplateJsCodeGenerator(getTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
-    //    var declaringAlwaysByFetchGenerator = new QueryElementsDeclaringAlwaysByFetchJsCodeGenerator(fetchElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
+    //    var declaringAlwaysByTemplateGenerator = new QueryElementsDeclaringAlwaysValueByTemplateJsGenerator(getTemplateCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
+    //    var declaringAlwaysByFetchGenerator = new QueryElementsDeclaringAlwaysValueByUriJsGenerator(fetchElementCall, queryTemplateCallingJsBuiltInFunctionCodeGenerator, jsQueryFromTemplateElementsDeclaringAlwaysGeneratorContext);
     //    var alwaysGeneratorContext = new JsQueryElementsDeclaringAlwaysGeneratorContext(declaringAlwaysByIdGenerator, declaringAlwaysByQuerySelectorGenerator, declaringAlwaysByTemplateGenerator, declaringAlwaysByFetchGenerator);
     //    var declaringAlwaysGenerator = new QueryElementsDeclaringAlwaysCodeGenerator(alwaysGeneratorContext);
 

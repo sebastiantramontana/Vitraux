@@ -6,6 +6,6 @@ internal class QueryElementsOnlyOnceAtStartup(
     IStoreElementsJsCodeGenerator codeGenerator,
     IJsCodeExecutor codeExecutor) : IQueryElementsOnlyOnceAtStartup
 {
-    public void StoreElementsInAdvance(IEnumerable<ElementObjectName> elements, IEnumerable<CollectionElementObjectName> collectionElementObjectNames, string parentObjectName)
-        => codeExecutor.Excute(codeGenerator.Generate(elements, parentObjectName));
+    public void StoreElementsInAdvance(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
+        => codeExecutor.Excute(codeGenerator.Generate(jsObjectNames, parentObjectName));
 }

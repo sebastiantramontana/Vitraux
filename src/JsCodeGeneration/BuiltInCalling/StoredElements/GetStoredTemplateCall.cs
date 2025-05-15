@@ -2,6 +2,6 @@
 
 internal class GetStoredTemplateCall : IGetStoredTemplateCall
 {
-    public string Generate(string id, string elementObjectName)
-        => $"globalThis.vitraux.storedElements.getStoredTemplate('{id}', '{elementObjectName}')";
+    public string Generate(string id, string jsElementObjectName)
+        => $"globalThis.vitraux.storedElements.getStoredTemplate('{id}', '{jsElementObjectName}')";
 }

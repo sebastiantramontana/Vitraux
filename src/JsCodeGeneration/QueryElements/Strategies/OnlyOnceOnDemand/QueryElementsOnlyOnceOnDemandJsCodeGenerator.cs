@@ -3,10 +3,10 @@
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 internal class QueryElementsOnlyOnceOnDemandJsCodeGenerator(
-    IQueryElementsJsCodeBuilder builder,
-    IQueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator generator)
+    IQueryElementsJsGenerator generator,
+    IQueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator onlyOnceOnDemandGenerator)
     : IQueryElementsOnlyOnceOnDemandJsCodeGenerator
 {
-    public string GenerateJsCode(IEnumerable<ElementObjectName> elements, string parentElementObjectName)
-        => builder.BuildJsCode(generator, elements, parentElementObjectName);
+    public string GenerateJsCode(IEnumerable<JsObjectName> jsObjectNames, string parentElementObjectName)
+        => generator.GenerateJsCode(onlyOnceOnDemandGenerator, jsObjectNames, parentElementObjectName);
 }

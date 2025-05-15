@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 
 internal interface IStoreElementsJsCodeGenerator
 {
-    string Generate(IEnumerable<ElementObjectName> valueElements, IEnumerable<CollectionElementObjectName> collectionElementObjectNames, string parentObjectName);
+    string Generate(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName);
 }

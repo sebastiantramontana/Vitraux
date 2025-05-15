@@ -3,5 +3,3 @@
 internal interface IQueryElementsOnlyOnceOnDemandJsCodeGenerator : IQueryElementsJsCodeGenerator
 {
 }
-
-

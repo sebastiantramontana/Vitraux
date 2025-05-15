@@ -1,8 +1,8 @@
-﻿using Vitraux.Modeling.Data.Selectors.Values;
+﻿using Vitraux.Modeling.Data.Selectors;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
 internal interface IJsQueryElementsDeclaringAlwaysGeneratorContext
 {
-    IQueryElementsDeclaringJsCodeGenerator GetStrategy(ElementSelectorBase elementSelector);
+    IQueryElementsDeclaringJsGenerator GetStrategy(SelectorBase selector);
 }

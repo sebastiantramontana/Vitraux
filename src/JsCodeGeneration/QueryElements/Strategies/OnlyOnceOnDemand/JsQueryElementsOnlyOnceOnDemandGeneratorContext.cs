@@ -1,21 +1,28 @@
-﻿using Vitraux.Modeling.Data.Selectors.Values;
+﻿using Vitraux.Modeling.Data.Selectors;
+using Vitraux.Modeling.Data.Selectors.Collections;
+using Vitraux.Modeling.Data.Selectors.Values;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 internal class JsQueryElementsOnlyOnceOnDemandGeneratorContext(
-    IQueryElementsDeclaringOnlyOnceOnDemandByIdJsCodeGenerator jsQueryElementsByIdGenerator,
-    IQueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsCodeGenerator jsQueryElementsByQuerySelectorGenerator,
-    IQueryElementsDeclaringOnlyOnceOnDemandByTemplateJsCodeGenerator jsQueryElementsByTemplateGenerator,
-    IQueryElementsDeclaringOnlyOnceOnDemandByFetchJsCodeGenerator jsQueryElementsByFetchGenerator)
+    IQueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator jsQueryElementsByIdGenerator,
+    IQueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsGenerator jsQueryElementsByQuerySelectorGenerator,
+    IQueryElementsDeclaringOnlyOnceOnDemandValueByTemplateJsGenerator jsQueryElementsValueByTemplateGenerator,
+    IQueryElementsDeclaringOnlyOnceOnDemandValueByUriJsGenerator jsQueryElementsValueByUriGenerator,
+    IQueryElementsDeclaringOnlyOnceOnDemandCollectionByTemplateJsGenerator jsQueryElementsCollectionByTemplateGenerator,
+    IQueryElementsDeclaringOnlyOnceOnDemandCollectionByUriJsGenerator jsQueryElementsCollectionByUriGenerator)
     : IJsQueryElementsOnlyOnceOnDemandGeneratorContext
 {
-    public IQueryElementsDeclaringJsCodeGenerator GetStrategy(ElementSelectorBase elementSelector)
-        => elementSelector.SelectionBy switch
+    public IQueryElementsDeclaringJsGenerator GetStrategy(SelectorBase selector)
+        => selector switch
         {
-            ElementSelection.Id => jsQueryElementsByIdGenerator,
-            ElementSelection.QuerySelector => jsQueryElementsByQuerySelectorGenerator,
-            ElementSelection.Template => jsQueryElementsByTemplateGenerator,
-            ElementSelection.Uri => jsQueryElementsByFetchGenerator,
-            _ => throw new NotImplementedException($"IQueryElementsDeclaringJsCodeGenerator not implemented for ElementSelector: {elementSelector}")
+            ElementIdSelectorBase => jsQueryElementsByIdGenerator,
+            ElementQuerySelectorBase => jsQueryElementsByQuerySelectorGenerator,
+            InsertElementTemplateSelectorBase => jsQueryElementsValueByTemplateGenerator,
+            InsertElementUriSelectorBase => jsQueryElementsValueByUriGenerator,
+            TemplateInsertionSelectorBase => jsQueryElementsCollectionByTemplateGenerator,
+            UriInsertionSelectorBase => jsQueryElementsCollectionByUriGenerator,
+            _ => throw new NotImplementedException($"Selector: {selector} not implemented in {GetType().FullName}")
         };
 }

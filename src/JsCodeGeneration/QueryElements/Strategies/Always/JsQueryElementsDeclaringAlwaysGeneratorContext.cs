@@ -1,21 +1,28 @@
-﻿using Vitraux.Modeling.Data.Selectors.Values;
+﻿using Vitraux.Modeling.Data.Selectors;
+using Vitraux.Modeling.Data.Selectors.Collections;
+using Vitraux.Modeling.Data.Selectors.Values;
+using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
 internal class JsQueryElementsDeclaringAlwaysGeneratorContext(
-    IQueryElementsDeclaringAlwaysByIdJsCodeGenerator jsQueryElementsByIdGenerator,
-    IQueryElementsDeclaringAlwaysByQuerySelectorJsCodeGenerator jsQueryElementsByQuerySelectorGenerator,
-    IQueryElementsDeclaringAlwaysByTemplateJsCodeGenerator jsQueryElementsByTemplateGenerator,
-    IQueryElementsDeclaringAlwaysByFetchJsCodeGenerator jsQueryElementsByFetchGenerator)
+    IQueryElementsDeclaringAlwaysByIdJsGenerator jsQueryElementsByIdGenerator,
+    IQueryElementsDeclaringAlwaysByQuerySelectorJsGenerator jsQueryElementsByQuerySelectorGenerator,
+    IQueryElementsDeclaringAlwaysValueByTemplateJsGenerator jsQueryElementsValueByTemplateGenerator,
+    IQueryElementsDeclaringAlwaysValueByUriJsGenerator jsQueryElementsValueByUrihGenerator,
+    IQueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator jsQueryElementsCollectionByTemplateGenerator,
+    IQueryElementsDeclaringAlwaysCollectionByUriJsGenerator jsQueryElementsCollectionByUriGenerator)
     : IJsQueryElementsDeclaringAlwaysGeneratorContext
 {
-    public IQueryElementsDeclaringJsCodeGenerator GetStrategy(ElementSelectorBase elementSelector)
-        => elementSelector switch
+    public IQueryElementsDeclaringJsGenerator GetStrategy(SelectorBase selector)
+        => selector switch
         {
             ElementIdSelectorBase => jsQueryElementsByIdGenerator,
             ElementQuerySelectorBase => jsQueryElementsByQuerySelectorGenerator,
-            ElementTemplateSelectorBase => jsQueryElementsByTemplateGenerator,
-            ElementSelection.Uri => jsQueryElementsByFetchGenerator,
-            _ => throw new NotImplementedException($"IQueryElementsDeclaringJsCodeGenerator not implemented for ElementSelector: {elementSelector}")
+            InsertElementTemplateSelectorBase => jsQueryElementsValueByTemplateGenerator,
+            InsertElementUriSelectorBase => jsQueryElementsValueByUrihGenerator,
+            TemplateInsertionSelectorBase => jsQueryElementsCollectionByTemplateGenerator,
+            UriInsertionSelectorBase => jsQueryElementsCollectionByUriGenerator,
+            _ => throw new NotImplementedException($"Selector type {selector} not implemented in {GetType().FullName}"),
         };
 }

@@ -3,5 +3,3 @@
 internal interface IQueryElementsAlwaysJsCodeGenerator : IQueryElementsJsCodeGenerator
 {
 }
-
-

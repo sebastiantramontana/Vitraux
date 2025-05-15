@@ -1,22 +1,31 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Collections;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
+using Vitraux.Modeling.Data.Selectors.Collections;
+using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage;
 
-internal class StoreElementsJsCodeGenerator(IStorageElementValueJsLineGenerator lineGenerator) : IStoreElementsJsCodeGenerator
+internal class StoreElementsJsCodeGenerator(
+    IStorageElementValueJsLineGenerator valueJsLineGenerator,
+    IStorageElementCollectionJsLineGenerator collectionJsLineGenerator)
+    : IStoreElementsJsCodeGenerator
 {
-    public string Generate(IEnumerable<ElementObjectName> valueElements, IEnumerable<CollectionElementObjectName> collectionElementObjectNames, string parentObjectName)
-        => GenerateValuesElementJsCode(new StringBuilder(), valueElements, parentObjectName)
+    public string Generate(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
+        => GenerateJsLines(new StringBuilder(), jsObjectNames, parentObjectName)
             .ToString()
             .TrimEnd();
 
-    private StringBuilder GenerateValuesElementJsCode(StringBuilder stringBuilder, IEnumerable<ElementObjectName> valueElements, string parentObjectName)
-        => valueElements
-            .Aggregate(stringBuilder, (sb, element) => sb.AppendLine(lineGenerator.Generate(element, parentObjectName)));
+    private StringBuilder GenerateJsLines(StringBuilder stringBuilder, IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
+        => jsObjectNames
+            .Aggregate(stringBuilder, (sb, jsObjectName) => sb.AppendLine(GenerateJsLine(jsObjectName, parentObjectName)));
 
-    private StringBuilder GenerateCollectionsElementJsCode(StringBuilder stringBuilder, IEnumerable<CollectionElementObjectName> collectionElementObjectNames, string parentObjectName)
-        => collectionElementObjectNames
-            .Aggregate(stringBuilder, (sb, element) => sb.AppendLine(lineGenerator.Generate(element, parentObjectName)));
-
+    private string GenerateJsLine(JsObjectName jsObjectName, string parentObjectName)
+        => jsObjectName.AssociatedSelector switch
+        {
+            ElementSelectorBase => valueJsLineGenerator.Generate(jsObjectName, parentObjectName),
+            InsertionSelectorBase => collectionJsLineGenerator.Generate(jsObjectName),
+            _ => throw new NotImplementedException($"Selector type {jsObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+        };
 }

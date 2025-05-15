@@ -1,0 +1,5 @@
+﻿namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
+
+internal interface IQueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator : IQueryElementsDeclaringJsGenerator
+{
+}

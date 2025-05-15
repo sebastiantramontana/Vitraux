@@ -1,8 +1,0 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-
-namespace Vitraux.JsCodeGeneration.QueryElements;
-
-internal interface IQueryPopulatingCallingJsBuiltInFunctionCodeGenerator
-{
-    string GenerateJsCode(ElementObjectName elementObjectName, string getElementTemplateCallingJsCode, IJsQueryPopulatingElementsDeclaringGeneratorContext queryGeneratorContext);
-}

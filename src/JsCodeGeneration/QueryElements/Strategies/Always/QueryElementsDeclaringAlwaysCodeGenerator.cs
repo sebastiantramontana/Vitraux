@@ -4,8 +4,8 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
 internal class QueryElementsDeclaringAlwaysCodeGenerator(IJsQueryElementsDeclaringAlwaysGeneratorContext context) : IQueryElementsDeclaringAlwaysCodeGenerator
 {
-    public string GenerateJsCode(string parentElementObjectName, ElementObjectName elementObjectName)
+    public string GenerateJsCode(string parentElementObjectName, JsObjectName jsObjectName)
         => context
-            .GetStrategy(elementObjectName.AssociatedSelector)
-            .GenerateJsCode(parentElementObjectName, elementObjectName);
+            .GetStrategy(jsObjectName.AssociatedSelector)
+            .GenerateJsCode(parentElementObjectName, jsObjectName);
 }

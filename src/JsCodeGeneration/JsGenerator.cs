@@ -16,7 +16,7 @@ internal class JsGenerator(
     ICollectionNamesGenerator collectionNamesGenerator,
     IValuesJsCodeGenerationBuilder valuesJsCodeGenerationBuilder,
     ICollectionsJsCodeGenerationBuilder collectionsJsCodeGenerationBuilder,
-    IQueryElementsJsCodeGeneratorByStrategyContext queryElementsJsCodeGeneratorContext)
+    IQueryElementsJsCodeGeneratorContext queryElementsJsCodeGeneratorContext)
     : IJsGenerator
 {
     public string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
@@ -51,7 +51,7 @@ internal class JsGenerator(
     private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsObjectNames, string parentElementObjectName)
         => queryElementsJsCodeGeneratorContext
                     .GetStrategy(strategy) //SEGUIR CON CADA UNA DE LAS STRATEGIES: collectionElementObjectNames!!!
-                    .GenerateJsCode(allElementObjectNames, collectionElementObjectNames, parentElementObjectName)
+                    .GenerateJsCode(allJsObjectNames, parentElementObjectName)
                     .TrimEnd();
 }
 

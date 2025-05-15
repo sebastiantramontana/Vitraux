@@ -5,10 +5,10 @@ using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 namespace Vitraux.JsCodeGeneration.QueryElements;
 
 internal class QueryElementsJsCodeGeneratorByStrategyContext(
-    IQueryElementsOnlyOnceAtStartJsCodeGenerator atStartGenerator,
+    IQueryElementsOnlyOnceAtStartJsGenerator atStartGenerator,
     IQueryElementsOnlyOnceOnDemandJsCodeGenerator onDemandGenerator,
     IQueryElementsAlwaysJsCodeGenerator alwaysGenerator)
-    : IQueryElementsJsCodeGeneratorByStrategyContext
+    : IQueryElementsJsCodeGeneratorContext
 {
     public IQueryElementsJsCodeGenerator GetStrategy(QueryElementStrategy strategy)
     => strategy switch
