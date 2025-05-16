@@ -11,7 +11,8 @@ internal class JsQueryElementsDeclaringAlwaysGeneratorContext(
     IQueryElementsDeclaringAlwaysValueByTemplateJsGenerator jsQueryElementsValueByTemplateGenerator,
     IQueryElementsDeclaringAlwaysValueByUriJsGenerator jsQueryElementsValueByUrihGenerator,
     IQueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator jsQueryElementsCollectionByTemplateGenerator,
-    IQueryElementsDeclaringAlwaysCollectionByUriJsGenerator jsQueryElementsCollectionByUriGenerator)
+    IQueryElementsDeclaringAlwaysCollectionByUriJsGenerator jsQueryElementsCollectionByUriGenerator,
+    INotImplementedSelector notImplementedSelector)
     : IJsQueryElementsDeclaringAlwaysGeneratorContext
 {
     public IQueryElementsDeclaringJsGenerator GetStrategy(SelectorBase selector)
@@ -23,6 +24,6 @@ internal class JsQueryElementsDeclaringAlwaysGeneratorContext(
             InsertElementUriSelectorBase => jsQueryElementsValueByUrihGenerator,
             TemplateInsertionSelectorBase => jsQueryElementsCollectionByTemplateGenerator,
             UriInsertionSelectorBase => jsQueryElementsCollectionByUriGenerator,
-            _ => throw new NotImplementedException($"Selector type {selector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<IQueryElementsDeclaringJsGenerator>(selector)
         };
 }

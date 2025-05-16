@@ -3,7 +3,9 @@ using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 
-internal class StorageElementJsLineGeneratorInsertElementsByUri(IStorageElementJsLineGeneratorByUri lineGeneratorByUri)
+internal class StorageElementJsLineGeneratorInsertElementsByUri(
+    IStorageElementJsLineGeneratorByUri lineGeneratorByUri,
+    INotImplementedSelector notImplementedSelector)
     : IStorageElementJsLineGeneratorInsertElementsByUri
 {
     public string Generate(JsObjectName fetchedJsObjectName)
@@ -11,6 +13,6 @@ internal class StorageElementJsLineGeneratorInsertElementsByUri(IStorageElementJ
         {
             InsertElementUriSelectorUri uriSelector => lineGeneratorByUri.Generate(uriSelector.Uri, fetchedJsObjectName.Name),
             InsertElementUriSelectorDelegate => string.Empty,
-            _ => throw new NotImplementedException($"Selector type {fetchedJsObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<string>(fetchedJsObjectName.AssociatedSelector)
         };
 }

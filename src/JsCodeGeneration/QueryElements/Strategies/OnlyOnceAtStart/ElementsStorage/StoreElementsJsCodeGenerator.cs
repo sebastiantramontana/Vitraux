@@ -9,7 +9,8 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 
 internal class StoreElementsJsCodeGenerator(
     IStorageElementValueJsLineGenerator valueJsLineGenerator,
-    IStorageElementCollectionJsLineGenerator collectionJsLineGenerator)
+    IStorageElementCollectionJsLineGenerator collectionJsLineGenerator,
+    INotImplementedSelector notImplementedSelector)
     : IStoreElementsJsCodeGenerator
 {
     public string Generate(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
@@ -26,6 +27,6 @@ internal class StoreElementsJsCodeGenerator(
         {
             ElementSelectorBase => valueJsLineGenerator.Generate(jsObjectName, parentObjectName),
             InsertionSelectorBase => collectionJsLineGenerator.Generate(jsObjectName),
-            _ => throw new NotImplementedException($"Selector type {jsObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
         };
 }

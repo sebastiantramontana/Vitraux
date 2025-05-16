@@ -4,7 +4,9 @@ using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
-internal class QueryElementsDeclaringAlwaysByQuerySelectorJsGenerator(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCalling)
+internal class QueryElementsDeclaringAlwaysByQuerySelectorJsGenerator(
+    IGetElementsByQuerySelectorCall getElementsByQuerySelectorCalling,
+    INotImplementedSelector notImplementedSelector)
     : IQueryElementsDeclaringAlwaysByQuerySelectorJsGenerator
 {
     public string GenerateJsCode(string parentElementObjectName, JsObjectName jsObjectName)
@@ -12,7 +14,7 @@ internal class QueryElementsDeclaringAlwaysByQuerySelectorJsGenerator(IGetElemen
         {
             ElementQuerySelectorString elementQuerySelector => GenerateJsLineByQueryString(jsObjectName.Name, parentElementObjectName, elementQuerySelector.Query),
             ElementQuerySelectorDelegate => string.Empty,
-            _ => throw new NotImplementedException($"Selector type {jsObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
         };
 
     private string GenerateJsLineByQueryString(string jsObjectName, string parentElementObjectName, string query)

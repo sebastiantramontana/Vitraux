@@ -8,7 +8,8 @@ internal class StorageElementValueJsLineGenerator(
     IStorageElementJsLineGeneratorElementsById generatorById,
     IStorageElementJsLineGeneratorElementsByQuery generatorByQuerySelector,
     IStorageElementJsLineGeneratorInsertElementsByTemplate generatorByTemplate,
-    IStorageElementJsLineGeneratorInsertElementsByUri generatorByUri)
+    IStorageElementJsLineGeneratorInsertElementsByUri generatorByUri,
+    INotImplementedSelector notImplementedSelector)
     : IStorageElementValueJsLineGenerator
 {
     public string Generate(JsObjectName jsObjectName, string parentObjectName)
@@ -18,6 +19,6 @@ internal class StorageElementValueJsLineGenerator(
             ElementQuerySelectorBase => generatorByQuerySelector.Generate(jsObjectName, parentObjectName),
             InsertElementTemplateSelectorBase => generatorByTemplate.Generate(jsObjectName),
             InsertElementUriSelectorBase => generatorByUri.Generate(jsObjectName),
-            _ => throw new NotImplementedException($"Selector type {jsObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
         };
 }

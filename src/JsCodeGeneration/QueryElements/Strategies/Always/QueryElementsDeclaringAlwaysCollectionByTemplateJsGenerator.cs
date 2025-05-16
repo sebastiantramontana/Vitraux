@@ -4,7 +4,9 @@ using Vitraux.Modeling.Data.Selectors.Collections;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
-internal class QueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator(IGetTemplateCall getTemplateCall)
+internal class QueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator(
+    IGetTemplateCall getTemplateCall,
+    INotImplementedSelector notImplementedSelector)
     : IQueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator
 {
     public string GenerateJsCode(string parentObjectName, JsObjectName jsObjectName)
@@ -12,7 +14,7 @@ internal class QueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator(IGetT
         {
             TemplateInsertionSelectorId templateSelectorId => GenerateJsById(jsObjectName.Name, templateSelectorId.TemplateId),
             TemplateInsertionSelectorDelegate => string.Empty,
-            _ => throw new NotImplementedException($"Selector type {jsObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
         };
 
     private string GenerateJsById(string jsObjectName, string templateId)

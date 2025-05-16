@@ -5,7 +5,9 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 
 internal class StorageElementCollectionJsLineGenerator(
     IStorageElementCollectionJsLineGeneratorByTemplate jsLineGeneratorByTemplate,
-    IStorageElementCollectionJsLineGeneratorByUri jsLineGeneratorByUri): IStorageElementCollectionJsLineGenerator
+    IStorageElementCollectionJsLineGeneratorByUri jsLineGeneratorByUri,
+    INotImplementedSelector notImplementedSelector)
+    : IStorageElementCollectionJsLineGenerator
 {
     public string Generate(JsObjectName collectionObjectName)
     {
@@ -13,7 +15,7 @@ internal class StorageElementCollectionJsLineGenerator(
         {
             TemplateInsertionSelectorBase => jsLineGeneratorByTemplate.Generate(collectionObjectName),
             UriInsertionSelectorBase => jsLineGeneratorByUri.Generate(collectionObjectName),
-            _ => throw new NotImplementedException($"InsertionSelection type {collectionObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<string>(collectionObjectName.AssociatedSelector)
         };
     }
 }

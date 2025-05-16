@@ -4,7 +4,9 @@ using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
-internal class QueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator(IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCalling) 
+internal class QueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator(
+    IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCalling,
+    INotImplementedSelector notImplementedSelector)
     : IQueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator
 {
     public string GenerateJsCode(string parentObjectName, JsObjectName jsObjectName)
@@ -12,7 +14,7 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator(IGetStoredE
         {
             ElementIdSelectorString selector => GenerateJsLineByIdString(jsObjectName.Name, selector.Id),
             ElementIdSelectorDelegate => string.Empty,
-            _ => throw new NotImplementedException($"Selector type {jsObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
         };
 
     private string GenerateJsLineByIdString(string jsObjectName, string id)

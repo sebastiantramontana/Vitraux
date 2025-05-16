@@ -5,7 +5,8 @@ using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 internal class QueryElementsDeclaringOnlyOnceOnDemandValueByTemplateJsGenerator(
-    IGetStoredTemplateCall getStoredElementByTemplateCall)
+    IGetStoredTemplateCall getStoredElementByTemplateCall,
+    INotImplementedSelector notImplementedSelector)
     : IQueryElementsDeclaringOnlyOnceOnDemandValueByTemplateJsGenerator
 {
     public string GenerateJsCode(string parentObjectName, JsObjectName jsObjectName)
@@ -13,7 +14,7 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandValueByTemplateJsGenerator(
         {
             InsertElementTemplateSelectorId templateSelectorId => GenerateJsById(jsObjectName.Name, templateSelectorId),
             InsertElementTemplateSelectorDelegate => string.Empty,
-            _ => throw new NotImplementedException($"Selector type {jsObjectName.AssociatedSelector} not implemented in {GetType().FullName}"),
+            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
         };
 
     private string GenerateJsById(string jsObjectName, InsertElementTemplateSelectorId templateSelectorId)
