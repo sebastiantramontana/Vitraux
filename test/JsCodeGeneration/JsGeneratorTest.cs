@@ -198,18 +198,18 @@ public class JsGeneratorTest
     //private static IValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall, IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
     //{
     //    var setElementsAttributeCall = new SetElementsAttributeCall();
-    //    var attributeCodeGenerator = new ElementPlaceAttributeJsCodeGenerator(setElementsAttributeCall);
+    //    var attributeCodeGenerator = new ElementPlaceAttributeJsGenerator(setElementsAttributeCall);
 
     //    var setElementsContentCall = new SetElementsContentCall();
-    //    var contentCodeGenerator = new ElementPlaceContentJsCodeGenerator(setElementsContentCall);
+    //    var contentCodeGenerator = new ElementPlaceContentJsGenerator(setElementsContentCall);
 
     //    var toChildQueryFunctionCall = new ToChildQueryFunctionCall(getElementsByQuerySelectorCall);
     //    var updateByPopulatingElementsCall = new UpdateValueByPopulatingElementsCall(codeFormatter);
     //    var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall);
 
-    //    var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementDirectUpdateValueJsCodeGenerator(attributeCodeGenerator, contentCodeGenerator);
-    //    var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetByPopulatingElementsUpdateValueJsCodeGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall);
-    //    var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsCodeGenerationBuilder(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator);
+    //    var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementsDirectUpdateValueJsGenerator(attributeCodeGenerator, contentCodeGenerator);
+    //    var targetByPopulatingElementsUpdateValueJsCodeGenerator = new InsertionTargetElementsUpdateValueJsGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall);
+    //    var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsGenerator(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator);
 
     //    return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
     //}

@@ -1,11 +1,12 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+﻿using Vitraux.Helpers;
+using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 
 internal class StorageElementJsLineGeneratorInsertElementsByTemplate(
     IStorageElementJsLineGeneratorByTemplate storageElementJsLineGeneratorByTemplate,
-    INotImplementedSelector notImplementedSelector)
+    INotImplementedCaseGuard notImplementedSelector)
     : IStorageElementJsLineGeneratorInsertElementsByTemplate
 {
     public string Generate(JsObjectName jsObjectName)
@@ -13,6 +14,6 @@ internal class StorageElementJsLineGeneratorInsertElementsByTemplate(
         {
             InsertElementTemplateSelectorId templateSelector => storageElementJsLineGeneratorByTemplate.Generate(templateSelector.TemplateId, jsObjectName.Name),
             InsertElementTemplateSelectorDelegate => string.Empty,
-            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
+            _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 }

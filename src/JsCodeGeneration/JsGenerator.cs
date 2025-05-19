@@ -50,7 +50,7 @@ internal class JsGenerator(
 
     private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsObjectNames, string parentElementObjectName)
         => queryElementsJsCodeGeneratorContext
-                    .GetStrategy(strategy) //SEGUIR CON CADA UNA DE LAS STRATEGIES: collectionElementObjectNames!!!
+                    .GetStrategy(strategy)
                     .GenerateJsCode(allJsObjectNames, parentElementObjectName)
                     .TrimEnd();
 }

@@ -1,4 +1,5 @@
-﻿using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
+﻿using Vitraux.Helpers;
+using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Data.Selectors.Values;
 
@@ -6,7 +7,7 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 internal class QueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator(
     IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCalling,
-    INotImplementedSelector notImplementedSelector)
+    INotImplementedCaseGuard notImplementedSelector)
     : IQueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator
 {
     public string GenerateJsCode(string parentObjectName, JsObjectName jsObjectName)
@@ -14,7 +15,7 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandByIdJsGenerator(
         {
             ElementIdSelectorString selector => GenerateJsLineByIdString(jsObjectName.Name, selector.Id),
             ElementIdSelectorDelegate => string.Empty,
-            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
+            _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 
     private string GenerateJsLineByIdString(string jsObjectName, string id)

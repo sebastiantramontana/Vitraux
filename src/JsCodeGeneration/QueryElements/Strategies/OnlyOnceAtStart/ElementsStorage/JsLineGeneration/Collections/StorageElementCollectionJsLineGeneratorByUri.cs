@@ -1,11 +1,12 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+﻿using Vitraux.Helpers;
+using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Data.Selectors.Collections;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Collections;
 
 internal class StorageElementCollectionJsLineGeneratorByUri(
     IStorageElementJsLineGeneratorByUri storageElementJsLineGeneratorByUri,
-    INotImplementedSelector notImplementedSelector)
+    INotImplementedCaseGuard notImplementedSelector)
     : IStorageElementCollectionJsLineGeneratorByUri
 {
     public string Generate(JsObjectName collectionObjectName)
@@ -13,6 +14,6 @@ internal class StorageElementCollectionJsLineGeneratorByUri(
         {
             UriInsertionSelectorUri uriSelector => storageElementJsLineGeneratorByUri.Generate(uriSelector.Uri, collectionObjectName.Name),
             UriInsertionSelectorDelegate => string.Empty,
-            _ => notImplementedSelector.ThrowNotImplementedException<string>(collectionObjectName.AssociatedSelector)
+            _ => notImplementedSelector.ThrowException<string>(collectionObjectName.AssociatedSelector)
         };
 }

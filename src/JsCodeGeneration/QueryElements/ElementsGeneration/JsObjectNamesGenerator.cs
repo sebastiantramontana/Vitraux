@@ -6,7 +6,7 @@ using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
-internal class JsObjectNamesGenerator(INotImplementedSelector notImplementedSelector) : IJsObjectNamesGenerator
+internal class JsObjectNamesGenerator(INotImplementedCaseGuard notImplementedSelector) : IJsObjectNamesGenerator
 {
     public IEnumerable<JsObjectName> Generate(string namePrefix, IEnumerable<SelectorBase> selectors)
         => selectors
@@ -23,7 +23,7 @@ internal class JsObjectNamesGenerator(INotImplementedSelector notImplementedSele
             ElementSelectorBase => "element",
             InsertElementSelectorBase => "from",
             InsertionSelectorBase => "coll",
-            _ => notImplementedSelector.ThrowNotImplementedException<string>(selector)
+            _ => notImplementedSelector.ThrowException<string>(selector)
         };
 
     private static string GenerateObjectName(string namePrefix, string readableName, int indexAsPostfix)

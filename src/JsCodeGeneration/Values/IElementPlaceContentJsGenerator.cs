@@ -1,6 +1,6 @@
 ﻿namespace Vitraux.JsCodeGeneration.Values;
 
-internal interface IElementPlaceContentJsCodeGenerator
+internal interface IElementPlaceContentJsGenerator
 {
     string Generate(string elementObjectName, string parentValueObjectName, string valueObjectName);
 }

@@ -5,12 +5,12 @@ namespace Vitraux.JsCodeGeneration.Values;
 
 internal class ValuesJsCodeGenerationBuilder(
     IPropertyCheckerJsCodeGeneration propertyChecker,
-    ITargetElementsValueJsCodeGenerationBuilder targetElementsValueJsBuilder)
+    ITargetElementsValueJsGenerator targetElementsValueJsBuilder)
     : IValuesJsCodeGenerationBuilder
 {
-    public string BuildJsCode(string parentObjectName, IEnumerable<ValueObjectName> values, IEnumerable<ElementObjectName> elements)
+    public string BuildJsCode(string parentObjectName, IEnumerable<ValueObjectName> values, IEnumerable<JsObjectName> jsObjectNames)
         => values
-            .Aggregate(new StringBuilder(), (sb, value) => sb.AppendLine(propertyChecker.GenerateJsCode(parentObjectName, value.Name, targetElementsValueJsBuilder.Build(parentObjectName, value, elements))))
+            .Aggregate(new StringBuilder(), (sb, value) => sb.AppendLine(propertyChecker.GenerateJsCode(parentObjectName, value.Name, targetElementsValueJsBuilder.GenerateJs(parentObjectName, value, jsObjectNames))))
             .ToString()
             .TrimEnd();
 }

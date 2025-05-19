@@ -1,4 +1,5 @@
-﻿using Vitraux.Modeling.Data.Selectors;
+﻿using Vitraux.Helpers;
+using Vitraux.Modeling.Data.Selectors;
 using Vitraux.Modeling.Data.Selectors.Collections;
 using Vitraux.Modeling.Data.Selectors.Values;
 using Vitraux.Modeling.Data.Selectors.Values.Insertions;
@@ -12,7 +13,7 @@ internal class JsQueryElementsDeclaringAlwaysGeneratorContext(
     IQueryElementsDeclaringAlwaysValueByUriJsGenerator jsQueryElementsValueByUrihGenerator,
     IQueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator jsQueryElementsCollectionByTemplateGenerator,
     IQueryElementsDeclaringAlwaysCollectionByUriJsGenerator jsQueryElementsCollectionByUriGenerator,
-    INotImplementedSelector notImplementedSelector)
+    INotImplementedCaseGuard notImplementedSelector)
     : IJsQueryElementsDeclaringAlwaysGeneratorContext
 {
     public IQueryElementsDeclaringJsGenerator GetStrategy(SelectorBase selector)
@@ -24,6 +25,6 @@ internal class JsQueryElementsDeclaringAlwaysGeneratorContext(
             InsertElementUriSelectorBase => jsQueryElementsValueByUrihGenerator,
             TemplateInsertionSelectorBase => jsQueryElementsCollectionByTemplateGenerator,
             UriInsertionSelectorBase => jsQueryElementsCollectionByUriGenerator,
-            _ => notImplementedSelector.ThrowNotImplementedException<IQueryElementsDeclaringJsGenerator>(selector)
+            _ => notImplementedSelector.ThrowException<IQueryElementsDeclaringJsGenerator>(selector)
         };
 }

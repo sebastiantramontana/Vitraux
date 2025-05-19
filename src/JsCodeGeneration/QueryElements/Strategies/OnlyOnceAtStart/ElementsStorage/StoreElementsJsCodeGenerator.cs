@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Collections;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
@@ -10,7 +11,7 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 internal class StoreElementsJsCodeGenerator(
     IStorageElementValueJsLineGenerator valueJsLineGenerator,
     IStorageElementCollectionJsLineGenerator collectionJsLineGenerator,
-    INotImplementedSelector notImplementedSelector)
+    INotImplementedCaseGuard notImplementedSelector)
     : IStoreElementsJsCodeGenerator
 {
     public string Generate(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
@@ -27,6 +28,6 @@ internal class StoreElementsJsCodeGenerator(
         {
             ElementSelectorBase => valueJsLineGenerator.Generate(jsObjectName, parentObjectName),
             InsertionSelectorBase => collectionJsLineGenerator.Generate(jsObjectName),
-            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
+            _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 }

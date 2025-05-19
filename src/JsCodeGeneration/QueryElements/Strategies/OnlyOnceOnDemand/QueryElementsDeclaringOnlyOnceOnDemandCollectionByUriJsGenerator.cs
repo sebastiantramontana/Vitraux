@@ -1,4 +1,5 @@
-﻿using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
+﻿using Vitraux.Helpers;
+using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
@@ -6,7 +7,7 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 internal class QueryElementsDeclaringOnlyOnceOnDemandCollectionByUriJsGenerator(
     IGetFetchedElementCall getFetchedElementCall,
-    INotImplementedSelector notImplementedSelector)
+    INotImplementedCaseGuard notImplementedSelector)
     : IQueryElementsDeclaringOnlyOnceOnDemandCollectionByUriJsGenerator
 {
     public string GenerateJsCode(string parentObjectName, JsObjectName jsObjectName)
@@ -14,7 +15,7 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandCollectionByUriJsGenerator(
         {
             InsertElementUriSelectorUri uriSelector => GenerateJsByUri(jsObjectName.Name, uriSelector),
             InsertElementUriSelectorDelegate => string.Empty,
-            _ => notImplementedSelector.ThrowNotImplementedException<string>(jsObjectName.AssociatedSelector)
+            _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 
     private string GenerateJsByUri(string jsObjectName, InsertElementUriSelectorUri uriSelector)
