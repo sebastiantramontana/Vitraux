@@ -108,13 +108,13 @@ globalThis.vitraux = {
                 element.setAttribute(attribute, value);
         },
 
-        UpdateValueByPopulatingElements(elementToInsert, appendToElements, toChildQueryFunction, updateChildElementsFunction) {
+        UpdateValueByInsertingElements(elementToInsert, appendToElements, queryChildrenFunction, updateChildElementsFunction) {
             if (!elementToInsert)
                 return;
 
             for (const appendToElement of appendToElements) {
                 const clonedElement = elementToInsert.cloneNode(true);
-                targetChildElements = toChildQueryFunction(clonedElement);
+                targetChildElements = queryChildrenFunction(clonedElement);
                 updateChildElementsFunction(targetChildElements);
 
                 vitraux.appendChild(appendToElement, clonedElement);

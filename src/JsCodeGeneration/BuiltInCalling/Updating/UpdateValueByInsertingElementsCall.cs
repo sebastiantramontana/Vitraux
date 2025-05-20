@@ -1,0 +1,15 @@
+﻿using System.Text;
+
+namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+
+internal class UpdateValueByInsertingElementsCall(ICodeFormatter codeFormatting) : IUpdateValueByInsertingElementsCall
+{
+    public string Generate(string elementToInsertObjectName, string appendToElementsObjectName, string queryChildrenFunctionCall, string updateChildElementsFunctionCall)
+        => new StringBuilder()
+            .AppendLine($"globalThis.vitraux.updating.UpdateValueByInsertingElements(")
+            .AppendLine(codeFormatting.Indent($"{elementToInsertObjectName},"))
+            .AppendLine(codeFormatting.Indent($"{appendToElementsObjectName},"))
+            .AppendLine(codeFormatting.Indent($"{queryChildrenFunctionCall},"))
+            .Append(codeFormatting.Indent($"{updateChildElementsFunctionCall})"))
+            .ToString();
+}

@@ -22,7 +22,7 @@ internal class RootChildrenSelectorBuilder<TViewModel, TValue>(
 
     private RootChildrenPlaceBuilder<TViewModel, TValue> SetChildQuerySelector(ElementQuerySelectorBase elementQuerySelector)
     {
-        target.Insertion!.TargetChildElement = elementQuerySelector;
+        target.Insertion!.TargetChildElementsSelector = elementQuerySelector;
         return new RootChildrenPlaceBuilder<TViewModel, TValue>(target, modelMapper, multiTargetBuilder);
     }
 }

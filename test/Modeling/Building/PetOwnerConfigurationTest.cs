@@ -91,7 +91,7 @@ public class PetOwnerConfigurationTest
             Place = new AttributeElementPlace("data-phonenumber"),
             Insertion = new InsertElementUriSelectorUri(phoneUri)
             {
-                TargetChildElement = new ElementQuerySelectorString(".petowner-phonenumber-target")
+                TargetChildElementsSelector = new ElementQuerySelectorString(".petowner-phonenumber-target")
             }
         };
 
@@ -115,7 +115,7 @@ public class PetOwnerConfigurationTest
             Selector = new ElementIdSelectorString("petowner-address-parent"),
             Insertion = new InsertElementTemplateSelectorId("petowner-address-template")
             {
-                TargetChildElement = new ElementQuerySelectorString(".petowner-address-target")
+                TargetChildElementsSelector = new ElementQuerySelectorString(".petowner-address-target")
             },
             Place = ContentElementPlace.Instance
         };

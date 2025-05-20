@@ -1,5 +1,8 @@
-﻿namespace Vitraux.JsCodeGeneration.Values;
+﻿using Vitraux.Modeling.Data.Values;
 
-internal interface ITargetElementsDirectUpdateValueJsGenerator : ITargetElementsUpdateValueJsGenerator
+namespace Vitraux.JsCodeGeneration.Values;
+
+internal interface ITargetElementsDirectUpdateValueJsGenerator
 {
+    string GenerateJs(string jsObjectName, ElementPlace place, string parentValueObjectName, string valueObjectName);
 }

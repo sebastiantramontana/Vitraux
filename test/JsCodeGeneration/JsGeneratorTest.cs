@@ -204,11 +204,11 @@ public class JsGeneratorTest
     //    var contentCodeGenerator = new ElementPlaceContentJsGenerator(setElementsContentCall);
 
     //    var toChildQueryFunctionCall = new ToChildQueryFunctionCall(getElementsByQuerySelectorCall);
-    //    var updateByPopulatingElementsCall = new UpdateValueByPopulatingElementsCall(codeFormatter);
+    //    var updateByPopulatingElementsCall = new UpdateValueByInsertingElementsCall(codeFormatter);
     //    var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall);
 
     //    var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementsDirectUpdateValueJsGenerator(attributeCodeGenerator, contentCodeGenerator);
-    //    var targetByPopulatingElementsUpdateValueJsCodeGenerator = new InsertionTargetElementsUpdateValueJsGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall);
+    //    var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetElementsUpdateValueInsertJsGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall);
     //    var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsGenerator(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator);
 
     //    return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);

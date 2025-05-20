@@ -2,5 +2,5 @@
 
 internal abstract record class InsertElementSelectorBase : SelectorBase
 {
-    internal ElementQuerySelectorBase TargetChildElement { get; set; } = default!;
+    internal ElementQuerySelectorBase TargetChildElementsSelector { get; set; } = default!;
 }

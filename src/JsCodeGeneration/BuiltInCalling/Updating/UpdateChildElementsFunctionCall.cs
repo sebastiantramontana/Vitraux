@@ -1,23 +1,25 @@
-﻿using Vitraux.Modeling.Data.Values;
+﻿using Vitraux.Helpers;
+using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 
 internal class UpdateChildElementsFunctionCall(
     ISetElementsAttributeCall setElementsAttributeCall,
-    ISetElementsContentCall setElementsContentCall)
+    ISetElementsContentCall setElementsContentCall,
+    INotImplementedCaseGuard notImplementedCaseGuard)
     : IUpdateChildElementsFunctionCall
 {
-    public string Generate(ElementValueTarget toChildTargetElement, string parentValueObjectName, string valueObjectName)
+    public string Generate(ElementPlace chilElementsPlace, string parentValueObjectName, string valueObjectName)
     {
         const string targetTemplateChildElements = "targetChildElements";
-        var fullValueObject = $"{parentValueObjectName}.{valueObjectName}";
+        var fullValueObjectName = $"{parentValueObjectName}.{valueObjectName}";
 
         return $"({targetTemplateChildElements}) => " +
-            toChildTargetElement.Place switch
+            chilElementsPlace switch
             {
-                AttributeElementPlace => setElementsAttributeCall.Generate(targetTemplateChildElements, toChildTargetElement.Place.Value, fullValueObject),
-                ContentElementPlace => setElementsContentCall.Generate(targetTemplateChildElements, fullValueObject),
-                _ => throw new NotImplementedException($"{toChildTargetElement.Place.GetType().Name} not implemented in {nameof(UpdateChildElementsFunctionCall)}"),
+                AttributeElementPlace attributeElementPlace => setElementsAttributeCall.Generate(targetTemplateChildElements, attributeElementPlace.Attribute, fullValueObjectName),
+                ContentElementPlace => setElementsContentCall.Generate(targetTemplateChildElements, fullValueObjectName),
+                _ => notImplementedCaseGuard.ThrowException<string>(chilElementsPlace)
             };
     }
 }
