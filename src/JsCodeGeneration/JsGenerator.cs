@@ -15,7 +15,7 @@ internal class JsGenerator(
     IValueNamesGenerator valueNamesGenerator,
     ICollectionNamesGenerator collectionNamesGenerator,
     IValuesJsCodeGenerationBuilder valuesJsCodeGenerationBuilder,
-    ICollectionsJsCodeGenerationBuilder collectionsJsCodeGenerationBuilder,
+    //ICollectionsJsCodeGenerationBuilder collectionsJsCodeGenerationBuilder,
     IQueryElementsJsCodeGeneratorContext queryElementsJsCodeGeneratorContext)
     : IJsGenerator
 {
@@ -44,9 +44,10 @@ internal class JsGenerator(
                 .TrimEnd();
 
     private string GenerateCollectionJsCode(string parentObjectName, IEnumerable<CollectionObjectName> collectionNames, IEnumerable<JsObjectName> allJsObjectNames)
-        => collectionsJsCodeGenerationBuilder
-                .BuildJsCode(parentObjectName, collectionNames, allJsObjectNames, this)
-                .TrimEnd();
+        => string.Empty;
+        //=> collectionsJsCodeGenerationBuilder
+        //        .BuildJsCode(parentObjectName, collectionNames, allJsObjectNames, this)
+        //        .TrimEnd();
 
     private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsObjectNames, string parentElementObjectName)
         => queryElementsJsCodeGeneratorContext
@@ -55,98 +56,98 @@ internal class JsGenerator(
                     .TrimEnd();
 }
 
-internal interface ICollectionsJsCodeGenerationBuilder
-{
-    string BuildJsCode(string parentObjectName, IEnumerable<CollectionObjectName> collectionObjectNames, IEnumerable<ElementObjectName> elements, IJsGenerator jsGenerator);
-}
+//internal interface ICollectionsJsCodeGenerationBuilder
+//{
+//    string BuildJsCode(string parentObjectName, IEnumerable<CollectionObjectName> collectionObjectNames, IEnumerable<ElementObjectName> elements, IJsGenerator jsGenerator);
+//}
 
-internal class CollectionsJsCodeGenerationBuilder(
-    IPropertyCheckerJsCodeGeneration propertyChecker,
-    IUpdateCollectionJsCodeGenerator updateCollectionJsCodeGenerator)
-    : ICollectionsJsCodeGenerationBuilder
-{
-    public string BuildJsCode(string parentObjectName, IEnumerable<CollectionObjectName> collections, IEnumerable<ElementObjectName> elements, IJsGenerator jsGenerator)
-        => collections
-                .Aggregate(new StringBuilder(), (sb, collection) =>
-                {
-                    var associatedElements = GetElementNamesAssociatedToCollection(elements, collection.AssociatedCollection.CollectionSelector);
-                    return associatedElements.Aggregate(sb, (sb, associatedElement) => sb.AppendLine(propertyChecker.GenerateJsCode(parentObjectName, collection.Name, updateCollectionJsCodeGenerator.GenerateJsCode(collection, associatedElement, jsGenerator))));
-                })
-                .ToString()
-                .TrimEnd();
+//internal class CollectionsJsCodeGenerationBuilder(
+//    IPropertyCheckerJsCodeGeneration propertyChecker,
+//    IUpdateCollectionJsCodeGenerator updateCollectionJsCodeGenerator)
+//    : ICollectionsJsCodeGenerationBuilder
+//{
+//    public string BuildJsCode(string parentObjectName, IEnumerable<CollectionObjectName> collections, IEnumerable<ElementObjectName> elements, IJsGenerator jsGenerator)
+//        => collections
+//                .Aggregate(new StringBuilder(), (sb, collection) =>
+//                {
+//                    var associatedElements = GetElementNamesAssociatedToCollection(elements, collection.AssociatedCollection.CollectionSelector);
+//                    return associatedElements.Aggregate(sb, (sb, associatedElement) => sb.AppendLine(propertyChecker.GenerateJsCode(parentObjectName, collection.Name, updateCollectionJsCodeGenerator.GenerateJsCode(collection, associatedElement, jsGenerator))));
+//                })
+//                .ToString()
+//                .TrimEnd();
 
-    private static IEnumerable<ElementObjectName> GetElementNamesAssociatedToCollection(IEnumerable<ElementObjectName> elements, ElementSelectorBase appendToSelector)
-        => elements.Where(e => e.AssociatedSelector == appendToSelector);
-}
+//    private static IEnumerable<ElementObjectName> GetElementNamesAssociatedToCollection(IEnumerable<ElementObjectName> elements, ElementSelectorBase appendToSelector)
+//        => elements.Where(e => e.AssociatedSelector == appendToSelector);
+//}
 
-internal interface IUpdateCollectionJsCodeGenerator
-{
-    string GenerateJsCode(CollectionObjectName collectionObjectName, ElementObjectName element, IJsGenerator jsGenerator);
-}
+//internal interface IUpdateCollectionJsCodeGenerator
+//{
+//    string GenerateJsCode(CollectionObjectName collectionObjectName, ElementObjectName element, IJsGenerator jsGenerator);
+//}
 
-internal class UpdateCollectionJsCodeGenerator(
-    IUpdateTableCall updateTableCall,
-    IUpdateCollectionByPopulatingElementsCall updateCollectionByPopulatingElementsCall,
-    IUpdateCollectionFunctionCallbackJsCodeGenerator callbackJsCodeGenerator)
-    : IUpdateCollectionJsCodeGenerator
-{
-    public string GenerateJsCode(CollectionObjectName collectionObjectName, ElementObjectName element, IJsGenerator jsGenerator)
-    {
-        var callbackInfo = callbackJsCodeGenerator.GenerateJsCode(collectionObjectName.AssociatedCollection.ModelMappingData, jsGenerator);
-        var updateCall = GetUpdateCall(element as InsertElementObjectName, collectionObjectName, callbackInfo.FunctionName);
+//internal class UpdateCollectionJsCodeGenerator(
+//    IUpdateTableCall updateTableCall,
+//    IUpdateCollectionByPopulatingElementsCall updateCollectionByPopulatingElementsCall,
+//    IUpdateCollectionFunctionCallbackJsCodeGenerator callbackJsCodeGenerator)
+//    : IUpdateCollectionJsCodeGenerator
+//{
+//    public string GenerateJsCode(CollectionObjectName collectionObjectName, ElementObjectName element, IJsGenerator jsGenerator)
+//    {
+//        var callbackInfo = callbackJsCodeGenerator.GenerateJsCode(collectionObjectName.AssociatedCollection.ModelMappingData, jsGenerator);
+//        var updateCall = GetUpdateCall(element as InsertElementObjectName, collectionObjectName, callbackInfo.FunctionName);
 
-        return new StringBuilder()
-            .AppendLine(callbackInfo.JsCode)
-            .AppendLine()
-            .Append(updateCall)
-            .ToString();
-    }
+//        return new StringBuilder()
+//            .AppendLine(callbackInfo.JsCode)
+//            .AppendLine()
+//            .Append(updateCall)
+//            .ToString();
+//    }
 
-    private string GetUpdateCall(InsertElementObjectName populatingElementObjectName, CollectionObjectName collectionObjectName, string updateFunctionCallbackName)
-    {
-        return collectionObjectName.AssociatedCollection is CollectionTableTarget
-                ? $"{updateTableCall.Generate(populatingElementObjectName.AppendToJsObjNameName, populatingElementObjectName.JsObjName, updateFunctionCallbackName, collectionObjectName.Name)};"
-                : $"{updateCollectionByPopulatingElementsCall.Generate(populatingElementObjectName.AppendToJsObjNameName, populatingElementObjectName.JsObjName, updateFunctionCallbackName, collectionObjectName.Name)};";
-    }
-}
+//    private string GetUpdateCall(InsertElementObjectName populatingElementObjectName, CollectionObjectName collectionObjectName, string updateFunctionCallbackName)
+//    {
+//        return collectionObjectName.AssociatedCollection is CollectionTableTarget
+//                ? $"{updateTableCall.Generate(populatingElementObjectName.AppendToJsObjNameName, populatingElementObjectName.JsObjName, updateFunctionCallbackName, collectionObjectName.Name)};"
+//                : $"{updateCollectionByPopulatingElementsCall.Generate(populatingElementObjectName.AppendToJsObjNameName, populatingElementObjectName.JsObjName, updateFunctionCallbackName, collectionObjectName.Name)};";
+//    }
+//}
 
-internal interface IUpdateCollectionFunctionCallbackJsCodeGenerator
-{
-    UpdateCollectionFunctionCallbackInfo GenerateJsCode(ModelMappingData modelMappingData, IJsGenerator jsGenerator);
-}
+//internal interface IUpdateCollectionFunctionCallbackJsCodeGenerator
+//{
+//    UpdateCollectionFunctionCallbackInfo GenerateJsCode(ModelMappingData modelMappingData, IJsGenerator jsGenerator);
+//}
 
-internal class UpdateCollectionFunctionCallbackJsCodeGenerator(IRandomStringGenerator randomStringGenerator, ICodeFormatter codeFormatter) : IUpdateCollectionFunctionCallbackJsCodeGenerator
-{
-    public UpdateCollectionFunctionCallbackInfo GenerateJsCode(ModelMappingData modelMappingData, IJsGenerator jsGenerator)
-    {
-        const string CollectionItemObjectName = "collectionItem";
-        const string ParentElementObjectName = "parent";
+//internal class UpdateCollectionFunctionCallbackJsCodeGenerator(IRandomStringGenerator randomStringGenerator, ICodeFormatter codeFormatter) : IUpdateCollectionFunctionCallbackJsCodeGenerator
+//{
+//    public UpdateCollectionFunctionCallbackInfo GenerateJsCode(ModelMappingData modelMappingData, IJsGenerator jsGenerator)
+//    {
+//        const string CollectionItemObjectName = "collectionItem";
+//        const string ParentElementObjectName = "parent";
 
-        var randomFunctionNamePostfix = randomStringGenerator.Generate();
-        var functionName = $"updateCollection{randomFunctionNamePostfix}";
+//        var randomFunctionNamePostfix = randomStringGenerator.Generate();
+//        var functionName = $"updateCollection{randomFunctionNamePostfix}";
 
-        var jsCode = new StringBuilder()
-            .AppendLine($"const {functionName} = ({ParentElementObjectName}, {CollectionItemObjectName}) =>")
-            .AppendLine("{")
-            .AppendLine(codeFormatter.Indent(jsGenerator.GenerateJsCode(modelMappingData, QueryElementStrategy.Always, CollectionItemObjectName, ParentElementObjectName, $"_{randomFunctionNamePostfix}_")))
-            .Append('}')
-            .ToString();
+//        var jsCode = new StringBuilder()
+//            .AppendLine($"const {functionName} = ({ParentElementObjectName}, {CollectionItemObjectName}) =>")
+//            .AppendLine("{")
+//            .AppendLine(codeFormatter.Indent(jsGenerator.GenerateJsCode(modelMappingData, QueryElementStrategy.Always, CollectionItemObjectName, ParentElementObjectName, $"_{randomFunctionNamePostfix}_")))
+//            .Append('}')
+//            .ToString();
 
-        return new UpdateCollectionFunctionCallbackInfo(functionName, jsCode);
-    }
-}
+//        return new UpdateCollectionFunctionCallbackInfo(functionName, jsCode);
+//    }
+//}
 
-internal interface IRandomStringGenerator
-{
-    string Generate();
-}
+//internal interface IRandomStringGenerator
+//{
+//    string Generate();
+//}
 
-internal class RandomStringGenerator : IRandomStringGenerator
-{
-    public string Generate() => Guid.NewGuid().ToString("N");
-}
+//internal class RandomStringGenerator : IRandomStringGenerator
+//{
+//    public string Generate() => Guid.NewGuid().ToString("N");
+//}
 
-internal record class UpdateCollectionFunctionCallbackInfo(string FunctionName, string JsCode);
+//internal record class UpdateCollectionFunctionCallbackInfo(string FunctionName, string JsCode);
 
 
 

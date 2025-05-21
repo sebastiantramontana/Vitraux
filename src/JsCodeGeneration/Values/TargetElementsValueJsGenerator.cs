@@ -21,7 +21,7 @@ internal class TargetElementsValueJsGenerator(
                 var jsCode = target switch
                 {
                     ElementValueTarget elementValueTarget => GenerateJsByElementValueTarget(elementValueTarget, parentValueObjectName, valueObjectName.Name, jsObjectNames),
-                    CustomJsValueTarget customJsTarget => GenerateJsByCustomJsValueTarget(customJsTarget, valueObjectName.Name),
+                    CustomJsValueTarget customJsTarget => GenerateJsByCustomJsValueTarget(customJsTarget, parentValueObjectName, valueObjectName.Name),
                     OwnMappingTarget => GenerateJsByOwnMappingTarget(),
                     _ => notImplementedCaseGuard.ThrowException<string>(target)
                 };
@@ -50,8 +50,8 @@ internal class TargetElementsValueJsGenerator(
         return updateValueInsertJsGenerator.GenerateJs(elementValueTarget, elementToInsertObjectName, elementsToAppendObjectName, parentValueObjectName, valueObjectName);
     }
 
-    private static string GenerateJsByCustomJsValueTarget(CustomJsValueTarget customJsTarget, string valueObjName)
-        => $"{customJsTarget.FunctionName}({valueObjName});";
+    private static string GenerateJsByCustomJsValueTarget(CustomJsValueTarget customJsTarget, string parentValueObjectName, string valueObjName)
+        => $"{customJsTarget.FunctionName}({parentValueObjectName}.{valueObjName});";
 
     private static string GenerateJsByOwnMappingTarget()
         => string.Empty;
