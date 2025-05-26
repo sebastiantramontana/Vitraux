@@ -1,6 +1,4 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements;
-
-namespace Vitraux.JsCodeGeneration;
+﻿namespace Vitraux.JsCodeGeneration;
 
 internal class RootJsGenerator(IJsGenerator jsGenerator) : IRootJsGenerator
 {

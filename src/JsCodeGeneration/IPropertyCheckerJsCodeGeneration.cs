@@ -1,4 +1,4 @@
-﻿namespace Vitraux.JsCodeGeneration.Values;
+﻿namespace Vitraux.JsCodeGeneration;
 
 internal interface IPropertyCheckerJsCodeGeneration
 {

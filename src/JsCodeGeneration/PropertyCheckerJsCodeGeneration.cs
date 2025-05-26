@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Vitraux.JsCodeGeneration.Values;
+namespace Vitraux.JsCodeGeneration;
 
 internal class PropertyCheckerJsCodeGeneration(ICodeFormatter codeFormatter) : IPropertyCheckerJsCodeGeneration
 {
