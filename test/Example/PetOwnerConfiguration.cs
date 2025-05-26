@@ -19,7 +19,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                 .ToElements.ByQuery(".petwoner-address > div").ToAttribute("data-petowner-address")
             .MapValue(po => po.PhoneNumber)
                 .ToElements.ByQuery(".petowner-phonenumber")
-                    .Insert.FromUri(new Uri("./htmlpieces/phoneblock", UriKind.Relative))
+                    .Insert.FromUri(new Uri("./htmlpieces/phoneblock.html", UriKind.Relative))
                     .ToChildren.ByQuery(".petowner-phonenumber-target")
                         .ToAttribute("data-phonenumber")
                 .ToElements.ById("petowner-phonenumber-id").ToContent
@@ -34,20 +34,20 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                         .ToElements.ByQuery(".anchor-cell-pet-name").ToAttribute("href")
                         .ToElements.ByQuery(".another-anchor-cell-pet-name").ToAttribute("href")
                     .MapCollection(pet => pet.Vaccines)
-                        .ToTables.ById("inner-table-vaccines")
+                        .ToTables.ByQuery(".inner-table-vaccines")
                         .PopulatingRows.FromUri(new Uri("./htmlpieces/row-vaccines.html", UriKind.Relative))
                             .MapValue(v => v.Name).ToElements.ByQuery(".div-vaccine").ToContent
                             .MapValue(v => v.DateApplied).ToElements.ByQuery(".span-vaccine-date").ToContent
                             .MapCollection(v => v.Ingredients)
-                                .ToContainerElements.ByQuery("> ingredients-list")
+                                .ToContainerElements.ByQuery(".ingredients-list")
                                 .FromTemplate("ingredients-template")
-                                    .MapValue(i => i).ToElements.ByQuery("ingredient-item").ToContent
+                                    .MapValue(i => i).ToElements.ByQuery(".ingredient-item").ToContent
                             .EndCollection
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery(".pet-photo").ToAttribute("src")
                     .MapCollection(pet => pet.Antiparasitics)
                         .ToJsFunction("globalThis.manageAntiparasitics")
-                        .ToContainerElements.ByQuery("inner-nav-antiparasitics")
+                        .ToContainerElements.ByQuery(".inner-nav-antiparasitics")
                         .FromUri(new Uri("./htmlpieces/row-antiparasitics.html", UriKind.Relative))
                             .MapValue(a => a.Name).ToElements.ByQuery(".div-antiparasitics").ToContent
                             .MapValue(a => a.DateApplied).ToElements.ByQuery(".span-antiparasitics-date").ToContent

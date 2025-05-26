@@ -15,17 +15,17 @@ internal class CodeFormatter : ICodeFormatter
         return $"{indent}{ReindentCurrentCodeLines(code, indent)}";
     }
 
-    private string ReindentCurrentCodeLines(string code, string indent)
+    private static string ReindentCurrentCodeLines(string code, string indent)
         => code
             .Split(Environment.NewLine)
             .Aggregate((accumulatedLine, nextLine) => ConcatLines(accumulatedLine, nextLine, indent));
 
-    private string ConcatLines(string accumulatedLine, string nextLine, string indent)
+    private static string ConcatLines(string accumulatedLine, string nextLine, string indent)
     {
         var reindentedNextLine = ReindentLineByValidChars(nextLine, indent);
         return $"{accumulatedLine}{Environment.NewLine}{reindentedNextLine}";
     }
 
-    private string ReindentLineByValidChars(string line, string indent)
+    private static string ReindentLineByValidChars(string line, string indent)
         => string.IsNullOrWhiteSpace(line) ? string.Empty : $"{indent}{line}";
 }

@@ -27,5 +27,7 @@ internal class JsObjectNamesGenerator(INotImplementedCaseGuard notImplementedSel
         };
 
     private static string GenerateObjectName(string namePrefix, string readableName, int indexAsPostfix)
-        => $"{namePrefix}_{readableName}{indexAsPostfix}";
+        => string.IsNullOrWhiteSpace(namePrefix)
+            ? $"{readableName}{indexAsPostfix}"
+            : $"{namePrefix}_{readableName}{indexAsPostfix}";
 }

@@ -8,10 +8,10 @@ internal class DataUriConverter : IDataUriConverter
     public DataUri ToDataUri(MimeImage mime, IEnumerable<byte> data)
         => $"data:{MapMimeType(mime)};base64," + Convert.ToBase64String(data.ToArray());
 
-    public DataUri ToDataUri(MimeImage mime, Stream data)
+    public async Task<DataUri> ToDataUri(MimeImage mime, Stream data)
     {
         var bytes = new byte[data.Length];
-        data.ReadAsync(bytes, 0, (int)data.Length);
+        _ = await data.ReadAsync(bytes, 0, (int)data.Length);
 
         return ToDataUri(mime, bytes);
     }

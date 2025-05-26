@@ -51,7 +51,7 @@ internal class TargetElementsValueJsGenerator(
     }
 
     private static string GenerateJsByCustomJsValueTarget(CustomJsValueTarget customJsTarget, string parentValueObjectName, string valueObjName)
-        => $"{customJsTarget.FunctionName}({parentValueObjectName}.{valueObjName});";
+        => $"/*{customJsTarget.FunctionName}({parentValueObjectName}.{valueObjName});*/";
 
     private static string GenerateJsByOwnMappingTarget()
         => string.Empty;

@@ -2,5 +2,5 @@
 
 internal interface IPropertyCheckerJsCodeGeneration
 {
-    string GenerateJsCode(string objectParentName, string valueObjectName, string jsCodeBlock);
+    string GenerateJs(string objectParentName, string valueObjectName, string jsCodeBlock);
 }

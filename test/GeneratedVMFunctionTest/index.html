@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 2px;
+            text-align: left;
+        }
+    </style>
+    <script src="vitraux.js"></script>
+    <script src="generated-update-view.js"></script>
+    <script>
+        var petowner = {
+            value0: "John Doe",
+            value1: "123 Main St",
+            value2: "555-1234",
+            collection0:
+                [
+                    {
+                        value0: "Tobby",
+                        value1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAFzUkdCAK7OHOkAAAAEZ0FNQQAAsY8L/GEFAAAACXBIWXMAAADdAAAA3QFwU6IHAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA0VJREFUWEftls+LTlEcxu+MRIxpKCaUaJoiaiaNKCWSSWzEYv6DYSFZSZGFUZQpS2VhobFHmbDGIFmYYjFTZDEs/EioIYznczz3dt/3vefOe1ny1KdzznPO9/u97/1x3pP882pxW0V7xT7RbdCEuSZuYjSrsgtYLo6LFeKLuCcGRZ8o02NxSWwVC8WUOCdei6Y0X5wUn8VMAePiqNgplhn6eMwVxZCLnOQuFXfkhiBoWgyJ0x7/EOfFvJmImPMa1jImlhzkYkzu0seeFnspup2UZ0t7LFRpQqx1zITHvCvkpE+NQu0XPwXPu9eBpwTtAzEHrxmx1jEhh71eQW5qUKtGG8QnwcIBB7QLArid6/GqiBjHkqPd3oCgpRY1Mz0STJwN0ZL6vPG0t2xVFrHOMWgr1LBHzaBNAuO5aPU6xmP2D9iqLGKdY8wW/VZBLfrUTi57cMhr6K+190bMtV1ZxDpHyGk71LJH7eSVB52ep3/G3rCtII35jnk0G21lkrdFHBELbAVpPCxCTlv0O+1RO7nrQZcn+U5f2OsJEZbGB+1P2cokj52ONruTSOMe++Rssddlj9rJRQ+eCN7MHR6Phww5yWMbfiuu2MqE57k+W5nkpTskualBLcbUThaJ+zbyhO+3XvKzF7VesTlyOWcealI7iG+eLfSpSBesc/xfi1y5vNSgFjUbtFqwaNKxhdI8O90ascvQL90pNT8paKkR1TbBolHHNUhz/eKd1+XB6/eyBmlu1OuokYlNIa9VbvnjiOmCWPK7WyM85mJKc6Y1guovYKXb8H1G1Cb4JfXCYy6mNGdaI6j+Aj66LXxBrOuCvYKTTyr6eMzFlOZMaxRqj+CXjPjRNUhzHeKZ1/FPB/TxOrysQZob8TpqRMUbyv81L1TZyYdbzbmPPtBv83SDNMdJiZzkLv0KEKdagg47Piqt4ag17WFU5HJOcs+q7YIr/UrfOQql+VkvgBzORU76TYkTLMHfBQeIxc5XI/nRCyDGseRgTM5KOiG4coK/iduCW7lb8A+3VIQLcB+POdbcEcQQSw5y/ZE4110V/MuRrArEEEuOqErP6DmxX2wWfEIcPNj1uMWAPpj3gtMw2+5DwXP/rxIlyS8JhwIQeBm/8wAAAABJRU5ErkJggg==",
+                        collection0: [
+                            { value0: "Tobby Rabies", value1: "2023-01-01", collection0: [{ value0: "Ingredient1" }, { value0: "Ingredient2" }] },
+                            { value0: "Tobby Distemper", value1: "2023-02-01", collection0: [{ value0: "Ingredient3" }] }
+                        ],
+                        collection1: [{ value0: "Antiparasitic1", value1: "2024-12-01" }, { value0: "Antiparasitic2", value1: "2024-12-02" }]
+                    },
+                    {
+                        value0: "Toulouse",
+                        value1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAsQAAALEBxi1JjQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAVESURBVFiFrZdbbBRVGMd/30y325ZbS0u5CUJbMEpDooBBAbl4QeXFKEEpJt5iookxEF98EF9IvBCi4OWhDyZULg01QAIiIVGMCApIKmAFkWIhQGlLC7SlO7uzs/P5MLPd2bLbVuS87Dnn+873/53vnPlmFvpp+uuWVfrtBkeP1j6f1ef4jqm694uo/lzzTX+xsjWjX6ttr8C2TTo6avTY7oKMPu0d32NZYSzr0TsPEI+PBcCywsRubOhr1kO1S+m6McHztYfdDkBOv1ZVs7ff3v6a7v2yimmVjYTDcU6emMr1toKAr9wOQNYM6LGtJcRiJb0TCUewIgWITAdmELWGYdspwHjc1MNbH79jAFjxOuyYmTZnCIRyvX443IdYobu75o4AaP32u7nWsSAVW71OwVBIJnpo6sh77d1dY/Xwplf+NwA93Z+TSAjAmr3HeX3LIU+kqCjl4/c/2neSVzcdJMlAJPrebQNodXVIVYWbNx9Lzl25YdHSZZEQcEcW0/lnPddPHMXJDUE4j+bOCG3dUeKu6y3o6irTX+pGanV1CECb6sZoY+3L2lQ7KRNA2s3V7WvXYBhvAYXJLV3pjNBjO1Q8UEk0L5fmPXWAUjJ7IcNLx9NytJ6uqM3U0hGpQAUFnfREDjBy5rNMaDkDlAEdYM6WimWNWQEA9LvPwjhuBCeeyk5hIdxXCSJ0NtQT62ildP5Tnq3pH2i+nB6kdNwimbviRz1bNwpJtAUstVKxvCromn4EOz+chBXbT0H+Tc8qMG58rzhAbsko8kaPTy2aXAaTy8H0H5i8PIe25mrdsW6uTFl2FfRUQGKpXqzLD2qmFyI3LwbOBwwfdpOioj2MGj2k7+OWP2YC+WMmpO943DgoLYX2qw6W/S6Xzv+EKY6/x42ga33PEJbOAg4kl2atXtp6qBzMj4Hnsvn0aUdQVsqY2YfT4pyuKSaU2wx4BUR0lZRXrU/asxYiGT3nHKK/DVIchPN9xQHk3pc6gP0pIikO2vt/GSGLBw2gPKFaZ2a0iewKjAoHBaAtJ4ag8vCgAaCI1omzMgNoQ2A0ImjqJwORR0HD2e0ZhZ7MOK9YgYEGTdkBRBajCXCdgYXVBTdO1iNTgo/N9cEBKItwImB39plXQCG4j5TfLL16MNOHSWVAMq0SZn4bNh8rQbgHMQA3INQD9jWI94Ad2IgmQEwAEzfnoQwhF6S68vuAAJjxRwABwwveK5SE0UA/Od9bUuambebs5ruA+f6wnYulRwYGEJnn/ZrpQr15F9IygwuGmTTNS49lvAF4RtGvZeHCtEuVGUCZ7S++NQNi+POBS5A6AlAeTNYD/XtLGcgq3yuC637aV+oWAFU1SF4aIwfcYKrVW9L3brgBACigfXKFnq4pxjC2Af6Hq74vU168NCAAbT9MAob2jkVSu01mgH4yAGC1L8G+eh6Y6c/spHz5J7doZQSIJaaTiAU8Qv4zDuALGQaof5TqAyTvgCYgfn01rj0UNwGwjZj5goikFaDsACT+wGoFx0oBqA/gOt5YclKXU+PeUSHg2mC1QtzK8y6qrKP8TJVMW2ZnEocMf0xk4tPn9MKuBqyWSi+w4Qnm+ADqQCLhQzgegAI9lz0AIxTFvhHHHPKmTF2xMZtwVgAAJkZncGHINtzYEtxYiIQB7jBAIdLikxqeoBPzjkgMl1D+KayOr2T6O+szxs3QBvw7pRd3LyDWs49wUYh4dxNm3mlEDRy7GDN8PwnLRcJvMym6USR7qm8bAEAbt61GdCWGO0cmV/0FoGc3D0dC9RjSIGXLnvmvwsn2L7Q6LEzKRwz0AAAAAElFTkSuQmCC",
+                        collection0: [
+                            { value0: "Toulouse Rabies", value1: "2023-01-02", collection0: [{ value0: "Ingredient1a" }, { value0: "Ingredient2a" }] },
+                            { value0: "Toulouse Distemper", value1: "2023-02-02", collection0: [{ value0: "Ingredient3a" }] }
+                        ],
+                        collection1: [{ value0: "Antiparasitic1a", value1: "2023-11-01" }, { value0: "Antiparasitic2a", value1: "2023-11-02" }]
+                    }
+                ]
+        }
+        
+        addEventListener("DOMContentLoaded", function () {
+            const getPetownerButton = document.getElementById("get-petowner-button");
+
+            getPetownerButton.addEventListener("click", async function () {
+                await updateView(petowner);
+            });
+        });
+
+        //<a href="https://www.flaticon.com/free-icons/dog" title="dog icons">Dog icons created by Freepik - Flaticon</a>
+    </script>
+</head>
+
+<body>
+    <h1>Petowner example</h1>
+    <div>
+        <div><button id="get-petowner-button">Get petowner information</button></div>
+        <div>Petowner information</div>
+        <div>
+            <div><span>Name:&nbsp;</span><span id="petowner-name"></span></div>
+            <div><span>Address:&nbsp;</span><span id="petowner-address-parent"></span></div>
+            <div class="petwoner-address">
+                <div data-petowner-address="">div with attribute data-petowner-address</div>
+            </div>
+            <div>
+                <span>Phone number:&nbsp;</span>
+                <div id="petowner-phonenumber-id"></div>
+                <div class="petowner-phonenumber"></div>
+            </div>
+        </div>
+        <div>Pets information</div>
+        <table id="pets-table">
+            <thead>
+                <tr>
+                    <th>Pet Name</th>
+                    <th>Vaccines</th>
+                    <th>Photo</th>
+                    <th>Antiparasitics</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <template id="petowner-address-template">
+        <span class="petowner-address-target"></span>
+    </template>
+
+    <template id="pet-row-template">
+        <tr>
+            <td>
+                <div class="cell-pet-name"></div>
+                <a class="anchor-cell-pet-name" href="" onclick="event.preventDefault();">This anchor goes to nowhere,
+                    see the href</a>
+                <a class="anchor-cell-pet-name" href="" onclick="event.preventDefault();">This anchor goes to nowhere
+                    too, see the href</a>
+                <a class="another-anchor-cell-pet-name" href="" onclick="event.preventDefault();">Another anchor going
+                    to nowhere, see the href</a>
+            </td>
+            <td>
+                <table class="inner-table-vaccines">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Date&nbsp;Applied</th>
+                            <th>Ingredients</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </td>
+            <td><img class="pet-photo" src="" /></td>
+            <td>
+                <nav class="inner-nav-antiparasitics"></nav>
+            </td>
+        </tr>
+    </template>
+
+    <template id="ingredients-template">
+        <li class="ingredient-item"></li>
+    </template>
+</body>
+
+</html>

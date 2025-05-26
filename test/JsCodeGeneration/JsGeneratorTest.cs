@@ -186,8 +186,10 @@ public class JsGeneratorTest
                                                                        propertyCheckerJsCodeGeneration,
                                                                        codeFormatter,
                                                                        notImplementedCaseGuard);
-        //var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
-        var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, /*collectionsJsCodeGenerationBuilder,*/ queryElementsGeneratorByStrategyContext);
+
+        var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
+
+        var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, collectionsJsCodeGenerationBuilder, queryElementsGeneratorByStrategyContext);
 
         return new RootJsGenerator(jsGenerator);
     }
@@ -227,16 +229,16 @@ public class JsGeneratorTest
         return new QueryElementsJsCodeGeneratorByStrategyContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
     }
 
-    //private static ICollectionsJsCodeGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
-    //{
-    //    var randomStringGenerator = new RandomStringGenerator();
-    //    var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(randomStringGenerator, codeFormatter);
-    //    var updateCollectionByPopulatingElementsCall = new UpdateCollectionByPopulatingElementsCall();
-    //    var updateTableCall = new UpdateTableCall();
-    //    var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator);
+    private static ICollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
+    {
+        var randomStringGenerator = new CollectionUpdateFunctionNameGenerator();
+        var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(randomStringGenerator, codeFormatter);
+        var updateCollectionByPopulatingElementsCall = new UpdateCollectionByPopulatingElementsCall();
+        var updateTableCall = new UpdateTableCall();
+        var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator);
 
-    //    return new CollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, updateCollectionJsCodeGenerator);
-    //}
+        return new CollectionsJsGenerationBuilder(propertyCheckerJsCodeGeneration, updateCollectionJsCodeGenerator);
+    }
 
     private static IValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(
         IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall,
