@@ -12,7 +12,7 @@ internal class CodeFormatter : ICodeFormatter
         const char WhiteSpace = ' ';
 
         var indent = new string(WhiteSpace, NumberOfSpacesForIndentation);
-        return $"{indent}{ReindentCurrentCodeLines(code, indent)}";
+        return $"{indent}{ReindentCurrentCodeLines(code, indent)}".TrimEnd();
     }
 
     private static string ReindentCurrentCodeLines(string code, string indent)

@@ -7,7 +7,7 @@ internal class PropertyCheckerJsCodeGeneration(ICodeFormatter codeFormatter) : I
     public string GenerateJs(string objectParentName, string valueObjectName, string jsCodeBlock)
         => new StringBuilder()
             .AppendLine($"if({objectParentName}.{valueObjectName}) {{")
-            .AppendLine(codeFormatter.Indent(jsCodeBlock).TrimEnd())
+            .AppendLine(codeFormatter.Indent(jsCodeBlock))
             .AppendLine("}")
             .ToString();
 }

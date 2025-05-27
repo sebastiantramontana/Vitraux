@@ -145,12 +145,11 @@ globalThis.vitraux = {
                     newElements.push(newElement);
                 }
 
-                appendToElement.replaceChildren(newElements);
+                vitraux.replaceChildren(appendToElement, newElements);
             }
         },
 
         async addNewRow(tbody, row, updateCallback, collectionItem) {
-
             const newElement = await this.updateCollectionElement(row, updateCallback, collectionItem)
             tbody.appendChild(newElement);
         },
@@ -168,23 +167,35 @@ globalThis.vitraux = {
         func();
     },
 
-    appendOnlyChild(parentElement, childElement) {
-        const rootElement = this.tryAttachShadow(parentElement);
+    replaceChildren(parentElement, childElements) {
+        const rootElement = vitraux.tryAttachShadow(parentElement);
+        rootElement.replaceChildren(...childElements);
+    },
 
-        if (rootElement.firstElementChild)
-            rootElement.replaceChildren(childElement);
-        else
-            rootElement.appendChild(childElement);
+    appendOnlyChild(parentElement, childElement) {
+        this.replaceChildren(parentElement, [childElement]);
     },
 
     tryAttachShadow(element) {
         return this.supportShadowDom(element)
-            ? element.attachShadow({ mode: "open" })
+            ? this.getAttachedShadow(element)
             : element;
     },
 
+    getAttachedShadow(element) {
+        return (!element.shadowRoot)
+            ? element.attachShadow({ mode: "open" })
+            : element.shadowRoot;
+    },
+
     supportShadowDom(element) {
-        const supportedTagNames = [
+        if (!element || element.nodeType !== Node.ELEMENT_NODE)
+            return false;
+
+        if (element.shadowRoot)
+            return true;
+
+        const supportedTagNames = new Set([
             "article",
             "aside",
             "blockquote",
@@ -202,8 +213,10 @@ globalThis.vitraux = {
             "nav",
             "p",
             "section",
-            "span"];
+            "span"]);
 
-        return supportedTagNames.some((tn) => tn === element.tagName);
+        const tag = element.tagName.toLowerCase();
+
+        return supportedTagNames.has(tag) || (tag.includes('-') && customElements.get(tag));
     }
 };
