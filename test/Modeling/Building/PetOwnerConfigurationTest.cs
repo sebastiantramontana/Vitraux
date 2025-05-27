@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Vitraux.Helpers;
+﻿using Vitraux.Helpers;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Selectors.Collections;
 using Vitraux.Modeling.Data.Selectors.Values;
@@ -25,7 +24,7 @@ public class PetOwnerConfigurationTest
         var actualDataSerialized = VitrauxDataSerializer.Serialize(actualData, 0);
         var expectedDataSerialized = VitrauxDataSerializer.Serialize(expectedData, 0);
 
-        actualDataSerialized.Should().Be(expectedDataSerialized);
+        Assert.Equal(expectedDataSerialized, actualDataSerialized);
     }
 
     private string ToDataUri(byte[] data)

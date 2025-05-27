@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Moq;
+﻿using Moq;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
 using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
@@ -204,7 +203,7 @@ public class JsGeneratorTest
         var actualCode = sut.GenerateJsCode(data, queryElementStrategy);
         var expectedCode = expectedQueryElementsCode + Environment.NewLine + Environment.NewLine + expectedCodeForUpdating;
 
-        actualCode.Should().Be(expectedCode);
+        Assert.Equal(expectedCode, actualCode);
 
         if (queryElementStrategy == QueryElementStrategy.OnlyOnceAtStart)
             executorMock.Verify(e => e.Excute(expectedExecutedCodeForAtStart), Times.Once);
@@ -275,7 +274,7 @@ public class JsGeneratorTest
                                                                        notImplementedCaseGuard);
 
         var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
-        
+
         var promiseJsGenerator = new PromiseJsGenerator();
 
         var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, collectionsJsCodeGenerationBuilder, queryElementsGeneratorByStrategyContext, promiseJsGenerator);

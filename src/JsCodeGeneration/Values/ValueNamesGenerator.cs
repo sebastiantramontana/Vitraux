@@ -1,5 +1,4 @@
-﻿using Vitraux.Helpers;
-using Vitraux.Modeling.Data.Values;
+﻿using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.JsCodeGeneration.Values;
 
@@ -8,7 +7,5 @@ internal class ValueNamesGenerator : IValueNamesGenerator
     const string ValueObjectNamePrefix = "v";
 
     public IEnumerable<ValueObjectName> Generate(IEnumerable<ValueData> values)
-        => values
-            .Select((value, indexAsPostfix) => new ValueObjectName($"{ValueObjectNamePrefix}{indexAsPostfix}", value))
-            .RunNow();
+        => values.Select((value, indexAsPostfix) => new ValueObjectName($"{ValueObjectNamePrefix}{indexAsPostfix}", value));
 }

@@ -13,13 +13,11 @@ internal class JsObjectNamesGenerator(INotImplementedCaseGuard notImplementedSel
     const string CollectionElementObjectNamePrefix = "c";
 
     public IEnumerable<JsObjectName> Generate(string namePrefix, IEnumerable<SelectorBase> selectors)
-        => selectors
-            .Select((selector, indexAsPostfix) =>
+        => selectors.Select((selector, indexAsPostfix) =>
             {
                 var readableName = GetReadableNameBySelector(selector);
                 return new JsObjectName(GenerateObjectName(namePrefix, readableName, indexAsPostfix), selector);
-            })
-            .RunNow();
+            });
 
     private string GetReadableNameBySelector(SelectorBase selector)
         => selector switch

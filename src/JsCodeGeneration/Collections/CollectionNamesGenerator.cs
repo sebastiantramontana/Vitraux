@@ -1,5 +1,4 @@
-﻿using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.JsCodeGeneration.Collections;
@@ -9,9 +8,7 @@ internal class CollectionNamesGenerator : ICollectionNamesGenerator
     const string CollectionObjectNamePrefix = "c";
 
     public IEnumerable<CollectionObjectName> Generate(IEnumerable<CollectionData> collections, IEnumerable<JsObjectName> allJsObjectNames)
-        => collections
-            .Select((col, indexAsPostfix) => CreateCollectionObjectName(GenerateObjName(indexAsPostfix), col, allJsObjectNames))
-            .RunNow();
+        => collections.Select((col, indexAsPostfix) => CreateCollectionObjectName(GenerateObjName(indexAsPostfix), col, allJsObjectNames));
 
     private static string GenerateObjName(int indexAsPostfix)
         => $"{CollectionObjectNamePrefix}{indexAsPostfix}";

@@ -1,5 +1,4 @@
-﻿using Vitraux.Helpers;
-using Vitraux.Modeling.Data;
+﻿using Vitraux.Modeling.Data;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Selectors;
 using Vitraux.Modeling.Data.Values;
@@ -11,8 +10,7 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
     public IEnumerable<SelectorBase> FilterDistinct(ModelMappingData modelMappingData)
         => GetValueSelectors(modelMappingData)
             .Concat(GetCollectionSelectors(modelMappingData))
-            .Distinct()
-            .RunNow();
+            .Distinct();
 
     private static IEnumerable<SelectorBase> GetValueSelectors(ModelMappingData modelMappingData)
         => GetSelectors<IValueTarget, ElementValueTarget>(modelMappingData.Values, GetSelectorsFromElementTarget);
