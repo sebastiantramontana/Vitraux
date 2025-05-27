@@ -12,11 +12,13 @@ namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elem
 internal class StoreElementsJsCodeGenerator(
     IStorageElementValueJsLineGenerator valueJsLineGenerator,
     IStorageElementCollectionJsLineGenerator collectionJsLineGenerator,
+    IPromiseJsGenerator promiseJsGenerator,
     INotImplementedCaseGuard notImplementedSelector)
     : IStoreElementsJsCodeGenerator
 {
     public string Generate(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
         => GenerateJsLines(new StringBuilder(), jsObjectNames, parentObjectName)
+            .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
             .ToString()
             .TrimEnd();
 

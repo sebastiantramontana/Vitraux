@@ -11,7 +11,6 @@ async function initializeElementsForOnlyOnceAtStart() {
     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'e6');
     globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'e7');
     globalThis.vitraux.storedElements.getStoredTemplate('pet-row-template', 'c8');
-
     return Promise.resolve();
 }
 

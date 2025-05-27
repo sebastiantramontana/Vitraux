@@ -14,13 +14,12 @@ internal class JsGenerator(
     ICollectionNamesGenerator collectionNamesGenerator,
     IValuesJsCodeGenerationBuilder valuesJsCodeGenerationBuilder,
     ICollectionsJsGenerationBuilder collectionsJsCodeGenerationBuilder,
-    IQueryElementsJsCodeGeneratorContext queryElementsJsCodeGeneratorContext)
+    IQueryElementsJsCodeGeneratorContext queryElementsJsCodeGeneratorContext,
+    IPromiseJsGenerator promiseJsGenerator)
     : IJsGenerator
 {
     public string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
     {
-        const string ReturnedResolvedPromise = "return Promise.resolve();";
-
         var selectors = uniqueSelectorsFilter.FilterDistinct(modelMappingData);
         var allJsObjectNames = jsObjectNamesGenerator.Generate(elementNamePrefix, selectors);
 
@@ -34,7 +33,7 @@ internal class JsGenerator(
             .TryAppendLineForReadability()
             .Append(GenerateCollectionJsCode(parentObjectName, collectionNames))
             .TryAppendLineForReadability()
-            .Append(ReturnedResolvedPromise)
+            .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
             .ToString()
             .TrimEnd();
     }

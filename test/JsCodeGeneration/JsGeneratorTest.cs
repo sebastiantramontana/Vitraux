@@ -68,6 +68,7 @@ public class JsGeneratorTest
                                                 globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'e6');
                                                 globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'e7');
                                                 globalThis.vitraux.storedElements.getStoredTemplate('pet-row-template', 'c8');
+                                                return Promise.resolve();
                                                 """;
 
     const string expectedCodeForUpdating = """
@@ -274,8 +275,10 @@ public class JsGeneratorTest
                                                                        notImplementedCaseGuard);
 
         var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
+        
+        var promiseJsGenerator = new PromiseJsGenerator();
 
-        var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, collectionsJsCodeGenerationBuilder, queryElementsGeneratorByStrategyContext);
+        var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, collectionsJsCodeGenerationBuilder, queryElementsGeneratorByStrategyContext, promiseJsGenerator);
 
         return new RootJsGenerator(jsGenerator);
     }
@@ -378,7 +381,9 @@ public class JsGeneratorTest
         var jsLineGeneratorCollectionByUri = new StorageElementCollectionJsLineGeneratorByUri(storageElementJsLineGeneratorByUri, notImplementedCaseGuard);
         var storageElementCollectionLineGenerator = new StorageElementCollectionJsLineGenerator(jsLineGeneratorCollectionByTemplate, jsLineGeneratorCollectionByUri, notImplementedCaseGuard);
 
-        var storageElementsGenerator = new StoreElementsJsCodeGenerator(storageElementValueLineGenerator, storageElementCollectionLineGenerator, notImplementedCaseGuard);
+        var promiseJsGenerator = new PromiseJsGenerator();
+
+        var storageElementsGenerator = new StoreElementsJsCodeGenerator(storageElementValueLineGenerator, storageElementCollectionLineGenerator, promiseJsGenerator, notImplementedCaseGuard);
         var initializer = new QueryElementsOnlyOnceAtStartup(storageElementsGenerator, jsCodeExecutor);
         var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsGenerator();
 

@@ -83,7 +83,7 @@ public class PetOwnerConfigurationTest
     private static ValueData CreatePhoneNumberValueData()
     {
         var phoneNumberValue = new ValueData((PetOwner p) => p.PhoneNumber);
-        var phoneUri = new Uri("./htmlpieces/phoneblock", UriKind.Relative);
+        var phoneUri = new Uri("./htmlpieces/phoneblock.html", UriKind.Relative);
 
         var targetPhone1 = new ElementValueTarget
         {
@@ -188,7 +188,7 @@ public class PetOwnerConfigurationTest
     private static CollectionData CreatePetVaccinesCollection()
     {
         var vaccinesCollection = new CollectionData((Pet pet) => pet.Vaccines);
-        var vaccineTarget = new CollectionTableTarget(new ElementIdSelectorString("inner-table-vaccines"))
+        var vaccineTarget = new CollectionTableTarget(new ElementQuerySelectorString(".inner-table-vaccines"))
         {
             InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-vaccines.html", UriKind.Relative)),
         };
@@ -218,7 +218,7 @@ public class PetOwnerConfigurationTest
         });
 
         var vaccinesIngredientsCollection = new CollectionData((Vaccine v) => v.Ingredients);
-        var ingredientsTarget = new CollectionElementTarget(new ElementQuerySelectorString("> ingredients-list"))
+        var ingredientsTarget = new CollectionElementTarget(new ElementQuerySelectorString(".ingredients-list"))
         {
             InsertionSelector = new TemplateInsertionSelectorId("ingredients-template"),
         };
@@ -237,7 +237,7 @@ public class PetOwnerConfigurationTest
         var ingredientValue = new ValueData((string i) => i);
         ingredientValue.AddTarget(new ElementValueTarget
         {
-            Selector = new ElementQuerySelectorString("ingredient-item"),
+            Selector = new ElementQuerySelectorString(".ingredient-item"),
             Place = ContentElementPlace.Instance
         });
 
@@ -262,7 +262,7 @@ public class PetOwnerConfigurationTest
         var antiparasiticsCollection = new CollectionData((Pet pet) => pet.Antiparasitics);
 
         var antiparasiticsCustomJsTarget = new CustomJsCollectionTarget("globalThis.manageAntiparasitics");
-        var antiparasiticsCollectionElementTarget = new CollectionElementTarget(new ElementQuerySelectorString("inner-nav-antiparasitics"))
+        var antiparasiticsCollectionElementTarget = new CollectionElementTarget(new ElementQuerySelectorString(".inner-nav-antiparasitics"))
         {
             InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-antiparasitics.html", UriKind.Relative)),
         };
