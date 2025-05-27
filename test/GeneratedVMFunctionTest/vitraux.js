@@ -64,10 +64,8 @@ globalThis.vitraux = {
             const response = await fetch(uri);
             const html = await response.text();
 
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const template = doc.querySelector("template");
-
+            const template = document.createElement("template");
+            template.innerHTML = html;
             return template?.content;
         },
 
