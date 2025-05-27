@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Vitraux.JsCodeGeneration.Formating;
 
 namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 

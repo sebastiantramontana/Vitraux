@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.Collections;
+using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.QueryElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.Values;
@@ -27,13 +28,13 @@ internal class JsGenerator(
         var collectionNames = collectionNamesGenerator.Generate(modelMappingData.Collections, allJsObjectNames);
 
         return new StringBuilder()
-            .AppendLine(GenerateQueryElementsJsCode(queryElementStrategy, allJsObjectNames, parentElementObjectName))
-            .AppendLine()
-            .AppendLine(GenerateValuesJsCode(parentObjectName, valueNames, allJsObjectNames))
-            .AppendLine()
-            .AppendLine(GenerateCollectionJsCode(parentObjectName, collectionNames))
-            .AppendLine()
-            .AppendLine(ReturnedResolvedPromise)
+            .Append(GenerateQueryElementsJsCode(queryElementStrategy, allJsObjectNames, parentElementObjectName))
+            .TryAppendLineForReadability()
+            .Append(GenerateValuesJsCode(parentObjectName, valueNames, allJsObjectNames))
+            .TryAppendLineForReadability()
+            .Append(GenerateCollectionJsCode(parentObjectName, collectionNames))
+            .TryAppendLineForReadability()
+            .Append(ReturnedResolvedPromise)
             .ToString()
             .TrimEnd();
     }

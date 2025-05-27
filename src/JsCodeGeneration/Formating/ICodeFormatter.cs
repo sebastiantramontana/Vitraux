@@ -1,4 +1,4 @@
-﻿namespace Vitraux.JsCodeGeneration;
+﻿namespace Vitraux.JsCodeGeneration.Formating;
 
 internal interface ICodeFormatter
 {

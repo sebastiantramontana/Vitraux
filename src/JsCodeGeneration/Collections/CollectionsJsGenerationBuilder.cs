@@ -16,7 +16,10 @@ internal class CollectionsJsGenerationBuilder(
                     {
                         var updateCollectionjsCode = updateCollectionJsCodeGenerator.GenerateJs(parentObjectName, collection.Name, associatedElement, jsGenerator);
                         var propertyCheckerJsCode = propertyChecker.GenerateJs(parentObjectName, collection.Name, updateCollectionjsCode);
-                        return sb2.AppendLine(propertyCheckerJsCode);
+
+                        return sb2
+                            .AppendLine(propertyCheckerJsCode)
+                            .AppendLine();
                     }))
             .ToString()
             .TrimEnd();

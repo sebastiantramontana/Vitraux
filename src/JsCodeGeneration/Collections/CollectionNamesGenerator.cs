@@ -6,10 +6,15 @@ namespace Vitraux.JsCodeGeneration.Collections;
 
 internal class CollectionNamesGenerator : ICollectionNamesGenerator
 {
+    const string CollectionObjectNamePrefix = "c";
+
     public IEnumerable<CollectionObjectName> Generate(IEnumerable<CollectionData> collections, IEnumerable<JsObjectName> allJsObjectNames)
         => collections
-            .Select((col, indexAsPostfix) => CreateCollectionObjectName($"collection{indexAsPostfix}", col, allJsObjectNames))
+            .Select((col, indexAsPostfix) => CreateCollectionObjectName(GenerateObjName(indexAsPostfix), col, allJsObjectNames))
             .RunNow();
+
+    private static string GenerateObjName(int indexAsPostfix)
+        => $"{CollectionObjectNamePrefix}{indexAsPostfix}";
 
     private static CollectionObjectName CreateCollectionObjectName(string collectionObjectName, CollectionData data, IEnumerable<JsObjectName> allJsObjectNames)
     {

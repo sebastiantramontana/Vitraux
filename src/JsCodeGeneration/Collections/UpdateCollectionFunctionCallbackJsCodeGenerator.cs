@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Vitraux.JsCodeGeneration.Formating;
 
 namespace Vitraux.JsCodeGeneration.Collections;
 
@@ -8,8 +9,8 @@ internal class UpdateCollectionFunctionCallbackJsCodeGenerator(
 {
     public UpdateCollectionFunctionCallbackInfo GenerateJsCode(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IJsGenerator jsGenerator)
     {
-        const string CollectionItemObjectName = "collectionItem";
-        const string ParentElementObjectName = "parent";
+        const string CollectionItemObjectName = "item";
+        const string ParentElementObjectName = "p";
 
         var functionName = collectionUpdateFunctionNameGenerator.Generate(parentObjectName, collectionObjectName, elementObjectPairNames.AppendToJsObjectName, elementObjectPairNames.ElementToInsertJsObjectName);
         var elementNamePrefix = $"{parentObjectName.Replace('.', '_')}_{collectionObjectName}";

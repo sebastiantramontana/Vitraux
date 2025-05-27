@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Vitraux.JsCodeGeneration.Formating;
 
 namespace Vitraux.JsCodeGeneration;
 
@@ -8,6 +9,6 @@ internal class PropertyCheckerJsCodeGeneration(ICodeFormatter codeFormatter) : I
         => new StringBuilder()
             .AppendLine($"if({objectParentName}.{valueObjectName}) {{")
             .AppendLine(codeFormatter.Indent(jsCodeBlock))
-            .AppendLine("}")
+            .Append('}')
             .ToString();
 }

@@ -8,6 +8,10 @@ namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
 internal class JsObjectNamesGenerator(INotImplementedCaseGuard notImplementedSelector) : IJsObjectNamesGenerator
 {
+    const string ElementObjectNamePrefix = "e";
+    const string InsertedElementObjectNamePrefix = "f";
+    const string CollectionElementObjectNamePrefix = "c";
+
     public IEnumerable<JsObjectName> Generate(string namePrefix, IEnumerable<SelectorBase> selectors)
         => selectors
             .Select((selector, indexAsPostfix) =>
@@ -20,9 +24,9 @@ internal class JsObjectNamesGenerator(INotImplementedCaseGuard notImplementedSel
     private string GetReadableNameBySelector(SelectorBase selector)
         => selector switch
         {
-            ElementSelectorBase => "element",
-            InsertElementSelectorBase => "from",
-            InsertionSelectorBase => "coll",
+            ElementSelectorBase => ElementObjectNamePrefix,
+            InsertElementSelectorBase => InsertedElementObjectNamePrefix,
+            InsertionSelectorBase => CollectionElementObjectNamePrefix,
             _ => notImplementedSelector.ThrowException<string>(selector)
         };
 

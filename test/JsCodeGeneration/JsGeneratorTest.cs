@@ -1,103 +1,189 @@
-﻿using Moq;
-using FluentAssertions;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+﻿using FluentAssertions;
+using Moq;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
 using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+using Vitraux.JsCodeGeneration.Collections;
+using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.QueryElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
+using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration;
+using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Collections;
+using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 using Vitraux.JsCodeGeneration.Values;
 using Vitraux.Test.Example;
-using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart;
-using Vitraux.JsCodeGeneration.Collections;
-using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
-using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Collections;
 
 namespace Vitraux.Test.JsCodeGeneration;
 
 public class JsGeneratorTest
 {
     const string expectedCodeAtStart = """
-                                        const _element0 = globalThis.vitraux.storedElements.elements._element0;
-                                        const _element1 = globalThis.vitraux.storedElements.elements._element1;
-                                        const _from2 = globalThis.vitraux.storedElements.elements._from2;
-                                        const _element3 = globalThis.vitraux.storedElements.elements._element3;
-                                        const _element4 = globalThis.vitraux.storedElements.elements._element4;
-                                        const _from5 = globalThis.vitraux.storedElements.elements._from5;
-                                        const _element6 = globalThis.vitraux.storedElements.elements._element6;
-                                        const _element7 = globalThis.vitraux.storedElements.elements._element7;
-                                        const _coll8 = globalThis.vitraux.storedElements.elements._coll8;
+                                        const e0 = globalThis.vitraux.storedElements.elements.e0;
+                                        const e1 = globalThis.vitraux.storedElements.elements.e1;
+                                        const f2 = globalThis.vitraux.storedElements.elements.f2;
+                                        const e3 = globalThis.vitraux.storedElements.elements.e3;
+                                        const e4 = globalThis.vitraux.storedElements.elements.e4;
+                                        const f5 = globalThis.vitraux.storedElements.elements.f5;
+                                        const e6 = globalThis.vitraux.storedElements.elements.e6;
+                                        const e7 = globalThis.vitraux.storedElements.elements.e7;
+                                        const c8 = globalThis.vitraux.storedElements.elements.c8;
                                         """;
 
     const string expectedCodeOnDemand = """
-                                        const _element0 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', '_element0');
-                                        const _element1 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-address-parent', '_element1');
-                                        const _from2 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', '_from2');
-                                        const _element3 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', '_element3');
-                                        const _element4 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', '_element4');
-                                        const _from5 = await globalThis.vitraux.storedElements.getFetchedElement('./htmlpieces/phoneblock', '_from5');
-                                        const _element6 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', '_element6');
-                                        const _element7 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', '_element7');
-                                        const _coll8 = globalThis.vitraux.storedElements.getStoredTemplate('pet-row-template', '_coll8');
+                                        const e0 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'e0');
+                                        const e1 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-address-parent', 'e1');
+                                        const f2 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'f2');
+                                        const e3 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'e3');
+                                        const e4 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'e4');
+                                        const f5 = await globalThis.vitraux.storedElements.getFetchedElement('./htmlpieces/phoneblock.html', 'f5');
+                                        const e6 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'e6');
+                                        const e7 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'e7');
+                                        const c8 = globalThis.vitraux.storedElements.getStoredTemplate('pet-row-template', 'c8');
                                         """;
 
     const string expectedCodeAlways = """
-                                      const _element0 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-name');
-                                      const _element1 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-address-parent');
-                                      const _from2 = globalThis.vitraux.storedElements.getTemplate('petowner-address-template');
-                                      const _element3 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petwoner-address > div');
-                                      const _element4 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petowner-phonenumber');
-                                      const _from5 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/phoneblock');
-                                      const _element6 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-phonenumber-id');
-                                      const _element7 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
-                                      const _coll8 = globalThis.vitraux.storedElements.getTemplate('pet-row-template');
+                                      const e0 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-name');
+                                      const e1 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-address-parent');
+                                      const f2 = globalThis.vitraux.storedElements.getTemplate('petowner-address-template');
+                                      const e3 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petwoner-address > div');
+                                      const e4 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petowner-phonenumber');
+                                      const f5 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/phoneblock.html');
+                                      const e6 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-phonenumber-id');
+                                      const e7 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
+                                      const c8 = globalThis.vitraux.storedElements.getTemplate('pet-row-template');
                                       """;
 
     const string expectedExecutedCodeForAtStart = """
-                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', '_element0');
-                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-address-parent', '_element1');
-                                                globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', '_from2');
-                                                globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', '_element3');
-                                                globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', '_element4');
-                                                await globalThis.vitraux.storedElements.getFetchedElement('./htmlpieces/phoneblock', '_from5');
-                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', '_element6');
-                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', '_element7');
-                                                globalThis.vitraux.storedElements.getStoredTemplate('pet-row-template', '_coll8');
+                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'e0');
+                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-address-parent', 'e1');
+                                                globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'f2');
+                                                globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'e3');
+                                                globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'e4');
+                                                await globalThis.vitraux.storedElements.getFetchedElement('./htmlpieces/phoneblock.html', 'f5');
+                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'e6');
+                                                globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'e7');
+                                                globalThis.vitraux.storedElements.getStoredTemplate('pet-row-template', 'c8');
                                                 """;
 
-    const string expectedCodeForValues = """
-                                        if(vm.value0) {
-                                            globalThis.vitraux.updating.setElementsContent(_element0, vm.value0);
-                                            poNameFunction(vm.value0);
+    const string expectedCodeForUpdating = """
+                                        if(vm.v0) {
+                                            globalThis.vitraux.updating.setElementsContent(e0, vm.v0);
+                                            /*poNameFunction(vm.v0);*/
                                         }
 
-                                        if(vm.value1) {
+                                        if(vm.v1) {
                                             globalThis.vitraux.updating.UpdateValueByInsertingElements(
-                                                _from2,
-                                                _element1,
+                                                f2,
+                                                e1,
                                                 (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-address-target'),
-                                                (targetChildElements) => globalThis.vitraux.updating.setElementsContent(targetChildElements, vm.value1));
-                                            globalThis.vitraux.updating.setElementsAttribute(_element3, 'data-petowner-address', vm.value1);
+                                                (targetChildElements) => globalThis.vitraux.updating.setElementsContent(targetChildElements, vm.v1));
+                                            globalThis.vitraux.updating.setElementsAttribute(e3, 'data-petowner-address', vm.v1);
                                         }
 
-                                        if(vm.value2) {
+                                        if(vm.v2) {
                                             globalThis.vitraux.updating.UpdateValueByInsertingElements(
-                                                _from5,
-                                                _element4,
+                                                f5,
+                                                e4,
                                                 (content) => globalThis.vitraux.storedElements.getElementsByQuerySelector(content, '.petowner-phonenumber-target'),
-                                                (targetChildElements) => globalThis.vitraux.updating.setElementsAttribute(targetChildElements, 'data-phonenumber', vm.value2));
-                                            globalThis.vitraux.updating.setElementsContent(_element6, vm.value2);
+                                                (targetChildElements) => globalThis.vitraux.updating.setElementsAttribute(targetChildElements, 'data-phonenumber', vm.v2));
+                                            globalThis.vitraux.updating.setElementsContent(e6, vm.v2);
                                         }
 
-                                        if(vm.value3) {
+                                        if(vm.v3) {
 
                                         }
+
+                                        if(vm.c0) {
+                                            const uc_vm_c0_e7_c8 = async (p, item) =>
+                                            {
+                                                const vm_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.cell-pet-name');
+                                                const vm_c0_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.anchor-cell-pet-name');
+                                                const vm_c0_e2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.another-anchor-cell-pet-name');
+                                                const vm_c0_e3 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.pet-photo');
+                                                const vm_c0_e4 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.inner-table-vaccines');
+                                                const vm_c0_c5 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/row-vaccines.html');
+                                                const vm_c0_e6 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.inner-nav-antiparasitics');
+                                                const vm_c0_c7 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/row-antiparasitics.html');
+
+                                                if(item.v0) {
+                                                    globalThis.vitraux.updating.setElementsContent(vm_c0_e0, item.v0);
+                                                    globalThis.vitraux.updating.setElementsAttribute(vm_c0_e1, 'href', item.v0);
+                                                    globalThis.vitraux.updating.setElementsAttribute(vm_c0_e2, 'href', item.v0);
+                                                }
+
+                                                if(item.v1) {
+                                                    globalThis.vitraux.updating.setElementsAttribute(vm_c0_e3, 'src', item.v1);
+                                                }
+
+                                                if(item.c0) {
+                                                    const uc_item_c0_vm_c0_e4_vm_c0_c5 = async (p, item) =>
+                                                    {
+                                                        const item_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-vaccine');
+                                                        const item_c0_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-vaccine-date');
+                                                        const item_c0_e2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredients-list');
+                                                        const item_c0_c3 = globalThis.vitraux.storedElements.getTemplate('ingredients-template');
+
+                                                        if(item.v0) {
+                                                            globalThis.vitraux.updating.setElementsContent(item_c0_e0, item.v0);
+                                                        }
+
+                                                        if(item.v1) {
+                                                            globalThis.vitraux.updating.setElementsContent(item_c0_e1, item.v1);
+                                                        }
+
+                                                        if(item.c0) {
+                                                            const uc_item_c0_item_c0_e2_item_c0_c3 = async (p, item) =>
+                                                            {
+                                                                const item_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredient-item');
+
+                                                                if(item.v0) {
+                                                                    globalThis.vitraux.updating.setElementsContent(item_c0_e0, item.v0);
+                                                                }
+
+                                                                return Promise.resolve();
+                                                            }
+
+                                                            await globalThis.vitraux.updating.UpdateCollectionByPopulatingElements(item_c0_e2, item_c0_c3, uc_item_c0_item_c0_e2_item_c0_c3, item.c0);
+                                                        }
+
+                                                        return Promise.resolve();
+                                                    }
+
+                                                    await globalThis.vitraux.updating.UpdateTable(vm_c0_e4, vm_c0_c5, uc_item_c0_vm_c0_e4_vm_c0_c5, item.c0);
+                                                }
+
+                                                if(item.c1) {
+                                                    const uc_item_c1_vm_c0_e6_vm_c0_c7 = async (p, item) =>
+                                                    {
+                                                        const item_c1_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-antiparasitics');
+                                                        const item_c1_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-antiparasitics-date');
+
+                                                        if(item.v0) {
+                                                            globalThis.vitraux.updating.setElementsContent(item_c1_e0, item.v0);
+                                                        }
+
+                                                        if(item.v1) {
+                                                            globalThis.vitraux.updating.setElementsContent(item_c1_e1, item.v1);
+                                                        }
+
+                                                        return Promise.resolve();
+                                                    }
+
+                                                    await globalThis.vitraux.updating.UpdateCollectionByPopulatingElements(vm_c0_e6, vm_c0_c7, uc_item_c1_vm_c0_e6_vm_c0_c7, item.c1);
+                                                }
+
+                                                return Promise.resolve();
+                                            }
+
+                                            await globalThis.vitraux.updating.UpdateTable(e7, c8, uc_vm_c0_e7_c8, vm.c0);
+                                        }
+
+                                        return Promise.resolve();
                                         """;
 
     [Theory]
@@ -115,7 +201,7 @@ public class JsGeneratorTest
         var data = personaConfig.ConfigureMapping(modelMapper);
 
         var actualCode = sut.GenerateJsCode(data, queryElementStrategy);
-        var expectedCode = expectedQueryElementsCode + Environment.NewLine + Environment.NewLine + expectedCodeForValues;
+        var expectedCode = expectedQueryElementsCode + Environment.NewLine + Environment.NewLine + expectedCodeForUpdating;
 
         actualCode.Should().Be(expectedCode);
 
