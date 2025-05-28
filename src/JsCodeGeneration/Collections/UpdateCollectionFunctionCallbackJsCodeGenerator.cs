@@ -12,9 +12,9 @@ internal class UpdateCollectionFunctionCallbackJsCodeGenerator(
         const string CollectionItemObjectName = "item";
         const string ParentElementObjectName = "p";
 
-        var functionName = collectionUpdateFunctionNameGenerator.Generate(parentObjectName, collectionObjectName, elementObjectPairNames.AppendToJsObjectName, elementObjectPairNames.ElementToInsertJsObjectName);
+        var functionName = collectionUpdateFunctionNameGenerator.Generate();
         var elementNamePrefix = $"{parentObjectName.Replace('.', '_')}_{collectionObjectName}";
-        var generatedJs = jsGenerator.GenerateJsCode(elementObjectPairNames.Target.Data, QueryElementStrategy.Always, CollectionItemObjectName, ParentElementObjectName, elementNamePrefix);
+        var generatedJs = jsGenerator.GenerateJs(elementObjectPairNames.Target.Data, QueryElementStrategy.Always, CollectionItemObjectName, ParentElementObjectName, elementNamePrefix);
 
         var jsCode = new StringBuilder()
             .AppendLine($"const {functionName} = async ({ParentElementObjectName}, {CollectionItemObjectName}) =>")

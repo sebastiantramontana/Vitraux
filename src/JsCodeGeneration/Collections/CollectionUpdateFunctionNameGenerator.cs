@@ -2,11 +2,9 @@
 
 internal class CollectionUpdateFunctionNameGenerator : ICollectionUpdateFunctionNameGenerator
 {
+    private int _counter = -1;
     const string FunctionNamePrefix = "uc";
 
-    public string Generate(string parentObjectName, string collectionObjectName, string appendToJsObjectName, string elementToInsertJsObjectName)
-        => $"{FunctionNamePrefix}_{parentObjectName.Replace('.', '_')}_{collectionObjectName}_{appendToJsObjectName}_{elementToInsertJsObjectName}";
+    public string Generate()
+        => $"{FunctionNamePrefix}{Interlocked.Increment(ref _counter)}";
 }
-
-
-

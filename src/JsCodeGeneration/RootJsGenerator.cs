@@ -2,6 +2,6 @@
 
 internal class RootJsGenerator(IJsGenerator jsGenerator) : IRootJsGenerator
 {
-    public string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy)
-        => jsGenerator.GenerateJsCode(modelMappingData, queryElementStrategy, "vm", "document", string.Empty);
+    public string GenerateJs(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy)
+        => jsGenerator.GenerateJs(modelMappingData, queryElementStrategy, "vm", "document", string.Empty);
 }

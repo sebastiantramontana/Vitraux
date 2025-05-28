@@ -15,7 +15,6 @@ async function initializeElementsForOnlyOnceAtStart() {
 }
 
 async function updateView(vm) {
-
     const e0 = globalThis.vitraux.storedElements.elements.e0;
     const e1 = globalThis.vitraux.storedElements.elements.e1;
     const f2 = globalThis.vitraux.storedElements.elements.f2;
@@ -54,7 +53,7 @@ async function updateView(vm) {
     }
 
     if (vm.c0) {
-        const uc_vm_c0_e7_c8 = async (p, item) => {
+        const uc0 = async (p, item) => {
             const vm_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.cell-pet-name');
             const vm_c0_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.anchor-cell-pet-name');
             const vm_c0_e2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.another-anchor-cell-pet-name');
@@ -75,7 +74,7 @@ async function updateView(vm) {
             }
 
             if (item.c0) {
-                const uc_item_c0_vm_c0_e4_vm_c0_c5 = async (p, item) => {
+                const uc1 = async (p, item) => {
                     const item_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-vaccine');
                     const item_c0_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-vaccine-date');
                     const item_c0_e2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredients-list');
@@ -90,7 +89,7 @@ async function updateView(vm) {
                     }
 
                     if (item.c0) {
-                        const uc_item_c0_item_c0_e2_item_c0_c3 = async (p, item) => {
+                        const uc2 = async (p, item) => {
                             const item_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredient-item');
 
                             if (item.v0) {
@@ -100,17 +99,17 @@ async function updateView(vm) {
                             return Promise.resolve();
                         }
 
-                        await globalThis.vitraux.updating.UpdateCollectionByPopulatingElements(item_c0_e2, item_c0_c3, uc_item_c0_item_c0_e2_item_c0_c3, item.c0);
+                        await globalThis.vitraux.updating.UpdateCollectionByPopulatingElements(item_c0_e2, item_c0_c3, uc2, item.c0);
                     }
 
                     return Promise.resolve();
                 }
 
-                await globalThis.vitraux.updating.UpdateTable(vm_c0_e4, vm_c0_c5, uc_item_c0_vm_c0_e4_vm_c0_c5, item.c0);
+                await globalThis.vitraux.updating.UpdateTable(vm_c0_e4, vm_c0_c5, uc1, item.c0);
             }
 
             if (item.c1) {
-                const uc_item_c1_vm_c0_e6_vm_c0_c7 = async (p, item) => {
+                const uc3 = async (p, item) => {
                     const item_c1_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-antiparasitics');
                     const item_c1_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-antiparasitics-date');
 
@@ -125,13 +124,13 @@ async function updateView(vm) {
                     return Promise.resolve();
                 }
 
-                await globalThis.vitraux.updating.UpdateCollectionByPopulatingElements(vm_c0_e6, vm_c0_c7, uc_item_c1_vm_c0_e6_vm_c0_c7, item.c1);
+                await globalThis.vitraux.updating.UpdateCollectionByPopulatingElements(vm_c0_e6, vm_c0_c7, uc3, item.c1);
             }
 
             return Promise.resolve();
         }
 
-        await globalThis.vitraux.updating.UpdateTable(e7, c8, uc_vm_c0_e7_c8, vm.c0);
+        await globalThis.vitraux.updating.UpdateTable(e7, c8, uc0, vm.c0);
     }
 
     return Promise.resolve();

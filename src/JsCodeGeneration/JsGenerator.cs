@@ -18,7 +18,7 @@ internal class JsGenerator(
     IPromiseJsGenerator promiseJsGenerator)
     : IJsGenerator
 {
-    public string GenerateJsCode(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
+    public string GenerateJs(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
     {
         var selectors = uniqueSelectorsFilter.FilterDistinct(modelMappingData);
         var allJsObjectNames = jsObjectNamesGenerator.Generate(elementNamePrefix, selectors);
