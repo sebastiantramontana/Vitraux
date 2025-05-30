@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 2px;
+            text-align: left;
+        }
+    </style>
+    <script src="vitraux.js"></script>
+</head>
+
+<body>
+    <h1>Petowner example</h1>
+    <div>
+        <div>Petowner information</div>
+        <div>
+            <div><span>Name:&nbsp;</span><span id="petowner-name"></span></div>
+            <div><span>Address:&nbsp;</span><span id="petowner-address-parent"></span></div>
+            <div class="petwoner-address">
+                <div data-petowner-address="">div with attribute data-petowner-address</div>
+            </div>
+            <div>
+                <span>Phone number:&nbsp;</span>
+                <div id="petowner-phonenumber-id"></div>
+                <div class="petowner-phonenumber"></div>
+            </div>
+        </div>
+        <div>Pets information</div>
+        <table id="pets-table">
+            <thead>
+                <tr>
+                    <th>Pet Name</th>
+                    <th>Vaccines</th>
+                    <th>Photo</th>
+                    <th>Antiparasitics</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <template id="petowner-address-template">
+        <span class="petowner-address-target"></span>
+    </template>
+
+    <template id="pet-row-template">
+        <tr>
+            <td>
+                <div class="cell-pet-name"></div>
+                <a class="anchor-cell-pet-name" href="" onclick="event.preventDefault();">This anchor goes to nowhere,
+                    see the href</a>
+                <a class="anchor-cell-pet-name" href="" onclick="event.preventDefault();">This anchor goes to nowhere
+                    too, see the href</a>
+                <a class="another-anchor-cell-pet-name" href="" onclick="event.preventDefault();">Another anchor going
+                    to nowhere, see the href</a>
+            </td>
+            <td>
+                <table class="inner-table-vaccines">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Date&nbsp;Applied</th>
+                            <th>Ingredients</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </td>
+            <td><img class="pet-photo" src="" /></td>
+            <td>
+                <nav class="inner-nav-antiparasitics"></nav>
+            </td>
+        </tr>
+    </template>
+
+    <template id="ingredients-template">
+        <li class="ingredient-item"></li>
+    </template>
+</body>
+
+</html>
