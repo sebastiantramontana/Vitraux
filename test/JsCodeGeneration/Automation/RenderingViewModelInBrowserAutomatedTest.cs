@@ -4,13 +4,16 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Safari;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
 using Vitraux.Test.Example;
 
 namespace Vitraux.Test.JsCodeGeneration.Automation;
 
+[CollectionDefinition("AutomationTests", DisableParallelization = true)]
+public class AutomationTestsCollection { }
+
+[Collection("AutomationTests")]
 public class RenderingViewModelInBrowserAutomatedTest : IDisposable
 {
     private const string BaseUrl = "http://localhost:7541/";

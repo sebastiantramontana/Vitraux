@@ -14,12 +14,12 @@ internal class JsObjectNamesGenerator(INotImplementedCaseGuard notImplementedSel
 
     public IEnumerable<JsObjectName> Generate(string namePrefix, IEnumerable<SelectorBase> selectors)
         => selectors.Select((selector, indexAsPostfix) =>
-            {
-                var readableName = GetReadableNameBySelector(selector);
-                return new JsObjectName(GenerateObjectName(namePrefix, readableName, indexAsPostfix), selector);
-            });
+        {
+            var initialName = GetInitialNameBySelector(selector);
+            return new JsObjectName(GenerateObjectName(namePrefix, initialName, indexAsPostfix), selector);
+        });
 
-    private string GetReadableNameBySelector(SelectorBase selector)
+    private string GetInitialNameBySelector(SelectorBase selector)
         => selector switch
         {
             ElementSelectorBase => ElementObjectNamePrefix,
@@ -28,8 +28,8 @@ internal class JsObjectNamesGenerator(INotImplementedCaseGuard notImplementedSel
             _ => notImplementedSelector.ThrowException<string>(selector)
         };
 
-    private static string GenerateObjectName(string namePrefix, string readableName, int indexAsPostfix)
+    private static string GenerateObjectName(string namePrefix, string initialName, int indexAsPostfix)
         => string.IsNullOrWhiteSpace(namePrefix)
-            ? $"{readableName}{indexAsPostfix}"
-            : $"{namePrefix}_{readableName}{indexAsPostfix}";
+            ? $"{initialName}{indexAsPostfix}"
+            : $"{namePrefix}_{initialName}{indexAsPostfix}";
 }

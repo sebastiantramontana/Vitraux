@@ -34,7 +34,7 @@ internal static class RootJsGeneratorFactory
                                                                                                           notImplementedCaseGuard);
         var uniqueSelectorsFilter = new UniqueSelectorsFilter();
         var elementNamesGenerator = new JsObjectNamesGenerator(notImplementedCaseGuard);
-        var valueNamesGenerator = new ValueNamesGenerator();
+        var valueNamesGenerator = new ValueNamesGenerator(notImplementedCaseGuard);
         var collectionNamesGenerator = new CollectionNamesGenerator();
         var codeFormatter = new CodeFormatter();
         var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(codeFormatter);

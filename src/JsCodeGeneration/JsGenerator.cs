@@ -21,15 +21,15 @@ internal class JsGenerator(
     public string GenerateJs(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
     {
         var selectors = uniqueSelectorsFilter.FilterDistinct(modelMappingData);
-        var allJsObjectNames = jsObjectNamesGenerator.Generate(elementNamePrefix, selectors);
+        var allJsElementObjectNames = jsObjectNamesGenerator.Generate(elementNamePrefix, selectors);
 
-        var valueNames = valueNamesGenerator.Generate(modelMappingData.Values);
-        var collectionNames = collectionNamesGenerator.Generate(modelMappingData.Collections, allJsObjectNames);
+        var valueNames = valueNamesGenerator.Generate(modelMappingData.Values, allJsElementObjectNames);
+        var collectionNames = collectionNamesGenerator.Generate(modelMappingData.Collections, allJsElementObjectNames);
 
         return new StringBuilder()
-            .Append(GenerateQueryElementsJsCode(queryElementStrategy, allJsObjectNames, parentElementObjectName))
+            .Append(GenerateQueryElementsJsCode(queryElementStrategy, allJsElementObjectNames, parentElementObjectName))
             .TryAppendLineForReadability()
-            .Append(GenerateValuesJsCode(parentObjectName, valueNames, allJsObjectNames))
+            .Append(GenerateValuesJsCode(parentObjectName, valueNames))
             .TryAppendLineForReadability()
             .Append(GenerateCollectionJsCode(parentObjectName, collectionNames))
             .TryAppendLineForReadability()
@@ -39,9 +39,9 @@ internal class JsGenerator(
     }
 
 
-    private string GenerateValuesJsCode(string parentObjectName, IEnumerable<ValueObjectName> valueNames, IEnumerable<JsObjectName> allJsObjectNames)
+    private string GenerateValuesJsCode(string parentObjectName, IEnumerable<ValueObjectNameWithJsTargets> valueNames)
         => valuesJsCodeGenerationBuilder
-                .BuildJsCode(parentObjectName, valueNames, allJsObjectNames)
+                .BuildJsCode(parentObjectName, valueNames)
                 .TrimEnd();
 
     private string GenerateCollectionJsCode(string parentObjectName, IEnumerable<CollectionObjectName> collectionNames)
