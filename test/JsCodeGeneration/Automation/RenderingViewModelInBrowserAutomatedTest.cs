@@ -5,7 +5,6 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration;
 using Vitraux.Test.Example;
 
 namespace Vitraux.Test.JsCodeGeneration.Automation;
@@ -54,14 +53,14 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
         using var driver = driverFactory.Invoke();
         NavigatePage(driver);
 
-        var executorMock = MockIJsCodeExecutor(driver);
-
-        var rootJsGenerator = RootJsGeneratorFactory.Create(executorMock.Object);
+        var rootJsGenerator = RootJsGeneratorFactory.Create();
         var petOwnerMappingData = GetConfiguredPetOwnerMapping();
-        var vmJsCode = rootJsGenerator.GenerateJs(petOwnerMappingData, queryElementStrategy);
+        var generatedJsCode = rootJsGenerator.GenerateJs(petOwnerMappingData, queryElementStrategy);
+
+        ExecuteScriptAsAwaitableFunction("initialize", [], [], generatedJsCode.InitializeViewJs, driver);
 
         //Act
-        ExecuteScriptAsAwaitableFunction("updateView", ["vm"], [GetPetownerJson()], vmJsCode, driver);
+        ExecuteScriptAsAwaitableFunction("updateView", ["vm"], [GetPetownerJson()], generatedJsCode.UpdateViewJs, driver);
 
         //Assert
         var renderedName = GetRenderedName(driver);
@@ -123,16 +122,6 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
     {
         var fullUrlPage = new Uri(new Uri(BaseUrl), IndexPage);
         driver.Navigate().GoToUrl(fullUrlPage);
-    }
-
-    private static Mock<IJsCodeExecutor> MockIJsCodeExecutor(IWebDriver driver)
-    {
-        var executorMock = new Mock<IJsCodeExecutor>();
-        _ = executorMock
-            .Setup(e => e.Excute(It.IsAny<string>()))
-            .Callback<string>(jscode => ExecuteScriptAsAwaitableFunction("initialize", [], [], jscode, driver));
-
-        return executorMock;
     }
 
     private static ModelMappingData GetConfiguredPetOwnerMapping()

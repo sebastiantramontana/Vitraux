@@ -9,14 +9,14 @@ using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage;
 
-internal class StoreElementsJsCodeGenerator(
+internal class OnlyOnceAtStartInitializeJsGenerator(
     IStorageElementValueJsLineGenerator valueJsLineGenerator,
     IStorageElementCollectionJsLineGenerator collectionJsLineGenerator,
     IPromiseJsGenerator promiseJsGenerator,
     INotImplementedCaseGuard notImplementedSelector)
-    : IStoreElementsJsCodeGenerator
+    : IOnlyOnceAtStartInitializeJsGenerator
 {
-    public string Generate(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
+    public string GenerateJs(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
         => GenerateJsLines(new StringBuilder(), jsObjectNames, parentObjectName)
             .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
             .ToString()

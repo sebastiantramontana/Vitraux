@@ -7,43 +7,7 @@ namespace Vitraux.Test.JsCodeGeneration;
 
 public class JsGeneratorTest
 {
-    const string expectedCodeAtStart = """
-                                        const e0 = globalThis.vitraux.storedElements.elements.e0;
-                                        const e1 = globalThis.vitraux.storedElements.elements.e1;
-                                        const f2 = globalThis.vitraux.storedElements.elements.f2;
-                                        const e3 = globalThis.vitraux.storedElements.elements.e3;
-                                        const e4 = globalThis.vitraux.storedElements.elements.e4;
-                                        const f5 = globalThis.vitraux.storedElements.elements.f5;
-                                        const e6 = globalThis.vitraux.storedElements.elements.e6;
-                                        const e7 = globalThis.vitraux.storedElements.elements.e7;
-                                        const c8 = globalThis.vitraux.storedElements.elements.c8;
-                                        """;
-
-    const string expectedCodeOnDemand = """
-                                        const e0 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'e0');
-                                        const e1 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-address-parent', 'e1');
-                                        const f2 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'f2');
-                                        const e3 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'e3');
-                                        const e4 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'e4');
-                                        const f5 = await globalThis.vitraux.storedElements.getFetchedElement('./htmlpieces/phoneblock.html', 'f5');
-                                        const e6 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'e6');
-                                        const e7 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'e7');
-                                        const c8 = globalThis.vitraux.storedElements.getStoredTemplate('pet-row-template', 'c8');
-                                        """;
-
-    const string expectedCodeAlways = """
-                                      const e0 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-name');
-                                      const e1 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-address-parent');
-                                      const f2 = globalThis.vitraux.storedElements.getTemplate('petowner-address-template');
-                                      const e3 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petwoner-address > div');
-                                      const e4 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petowner-phonenumber');
-                                      const f5 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/phoneblock.html');
-                                      const e6 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-phonenumber-id');
-                                      const e7 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
-                                      const c8 = globalThis.vitraux.storedElements.getTemplate('pet-row-template');
-                                      """;
-
-    const string expectedExecutedCodeForAtStart = """
+    const string expectedInitializationJsForAtStart = """
                                                 globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'e0');
                                                 globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-address-parent', 'e1');
                                                 globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'f2');
@@ -56,7 +20,51 @@ public class JsGeneratorTest
                                                 return Promise.resolve();
                                                 """;
 
-    const string expectedCodeForUpdating = """
+    const string expectedInitializationJsForOnDemand = """
+                                                return Promise.resolve();
+                                                """;
+
+    const string expectedInitializationJsForAlways = """
+                                                return Promise.resolve();
+                                                """;
+
+    const string expectedQueryElementsJsAtStart = """
+                                        const e0 = globalThis.vitraux.storedElements.elements.e0;
+                                        const e1 = globalThis.vitraux.storedElements.elements.e1;
+                                        const f2 = globalThis.vitraux.storedElements.elements.f2;
+                                        const e3 = globalThis.vitraux.storedElements.elements.e3;
+                                        const e4 = globalThis.vitraux.storedElements.elements.e4;
+                                        const f5 = globalThis.vitraux.storedElements.elements.f5;
+                                        const e6 = globalThis.vitraux.storedElements.elements.e6;
+                                        const e7 = globalThis.vitraux.storedElements.elements.e7;
+                                        const c8 = globalThis.vitraux.storedElements.elements.c8;
+                                        """;
+
+    const string expectedQueryElementsJsOnDemand = """
+                                        const e0 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-name', 'e0');
+                                        const e1 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-address-parent', 'e1');
+                                        const f2 = globalThis.vitraux.storedElements.getStoredTemplate('petowner-address-template', 'f2');
+                                        const e3 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petwoner-address > div', 'e3');
+                                        const e4 = globalThis.vitraux.storedElements.getStoredElementsByQuerySelector(document, '.petowner-phonenumber', 'e4');
+                                        const f5 = await globalThis.vitraux.storedElements.getFetchedElement('./htmlpieces/phoneblock.html', 'f5');
+                                        const e6 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('petowner-phonenumber-id', 'e6');
+                                        const e7 = globalThis.vitraux.storedElements.getStoredElementByIdAsArray('pets-table', 'e7');
+                                        const c8 = globalThis.vitraux.storedElements.getStoredTemplate('pet-row-template', 'c8');
+                                        """;
+
+    const string expectedQueryElementsJsAlways = """
+                                      const e0 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-name');
+                                      const e1 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-address-parent');
+                                      const f2 = globalThis.vitraux.storedElements.getTemplate('petowner-address-template');
+                                      const e3 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petwoner-address > div');
+                                      const e4 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, '.petowner-phonenumber');
+                                      const f5 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/phoneblock.html');
+                                      const e6 = globalThis.vitraux.storedElements.getElementByIdAsArray('petowner-phonenumber-id');
+                                      const e7 = globalThis.vitraux.storedElements.getElementByIdAsArray('pets-table');
+                                      const c8 = globalThis.vitraux.storedElements.getTemplate('pet-row-template');
+                                      """;
+
+    const string expectedCommonUpdateViewJs = """
                                         if(vm.v0) {
                                             globalThis.vitraux.updating.setElementsContent(e0, vm.v0);
                                             /*poNameFunction(vm.v0);*/
@@ -173,28 +181,21 @@ public class JsGeneratorTest
                                         """;
 
     [Theory]
-    [InlineData(QueryElementStrategy.OnlyOnceAtStart, expectedCodeAtStart)]
-    [InlineData(QueryElementStrategy.OnlyOnceOnDemand, expectedCodeOnDemand)]
-    [InlineData(QueryElementStrategy.Always, expectedCodeAlways)]
-    public void GenerateCodeTest(QueryElementStrategy queryElementStrategy, string expectedQueryElementsCode)
+    [InlineData(QueryElementStrategy.OnlyOnceAtStart, expectedQueryElementsJsAtStart, expectedInitializationJsForAtStart)]
+    [InlineData(QueryElementStrategy.OnlyOnceOnDemand, expectedQueryElementsJsOnDemand, expectedInitializationJsForOnDemand)]
+    [InlineData(QueryElementStrategy.Always, expectedQueryElementsJsAlways, expectedInitializationJsForAlways)]
+    public void GenerateCodeTest(QueryElementStrategy queryElementStrategy, string expectedQueryElementsJs, string expectedInitializationJs)
     {
-        var executorMock = new Mock<IJsCodeExecutor>();
-
-        var sut = CreateSut(executorMock.Object);
+        var sut = RootJsGeneratorFactory.Create();
         var petownerConfig = new PetOwnerConfiguration(new DataUriConverter());
 
         var modelMapper = new ModelMapper<PetOwner>();
         var data = petownerConfig.ConfigureMapping(modelMapper);
 
-        var actualCode = sut.GenerateJs(data, queryElementStrategy);
-        var expectedCode = expectedQueryElementsCode + Environment.NewLine + Environment.NewLine + expectedCodeForUpdating;
+        var generatedJsCode = sut.GenerateJs(data, queryElementStrategy);
+        var expectedUpdateViewJs = expectedQueryElementsJs + Environment.NewLine + Environment.NewLine + expectedCommonUpdateViewJs;
 
-        Assert.Equal(expectedCode, actualCode);
-
-        if (queryElementStrategy == QueryElementStrategy.OnlyOnceAtStart)
-            executorMock.Verify(e => e.Excute(expectedExecutedCodeForAtStart), Times.Once);
+        Assert.Equal(expectedUpdateViewJs, generatedJsCode.UpdateViewJs);
+        Assert.Equal(expectedInitializationJs, generatedJsCode.InitializeViewJs);
     }
-
-    private static RootJsGenerator CreateSut(IJsCodeExecutor jsCodeExecutor)
-        => RootJsGeneratorFactory.Create(jsCodeExecutor);
 }

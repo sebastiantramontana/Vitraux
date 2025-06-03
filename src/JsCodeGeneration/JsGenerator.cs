@@ -1,57 +1,31 @@
-﻿using System.Text;
-using Vitraux.JsCodeGeneration.Collections;
-using Vitraux.JsCodeGeneration.Formating;
-using Vitraux.JsCodeGeneration.QueryElements;
+﻿using Vitraux.JsCodeGeneration.Collections;
+using Vitraux.JsCodeGeneration.Initialization;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.UpdateViews;
 using Vitraux.JsCodeGeneration.Values;
 
 namespace Vitraux.JsCodeGeneration;
 
 internal class JsGenerator(
-    IUniqueSelectorsFilter uniqueSelectorsFilter,
     IJsObjectNamesGenerator jsObjectNamesGenerator,
-    IValueNamesGenerator valueNamesGenerator,
-    ICollectionNamesGenerator collectionNamesGenerator,
-    IValuesJsCodeGenerationBuilder valuesJsCodeGenerationBuilder,
-    ICollectionsJsGenerationBuilder collectionsJsCodeGenerationBuilder,
-    IQueryElementsJsCodeGeneratorContext queryElementsJsCodeGeneratorContext,
-    IPromiseJsGenerator promiseJsGenerator)
+    IUpdateViewJsGenerator updateViewJsGenerator,
+    IInitializeJsGeneratorContext initializeJsGeneratorContext)
     : IJsGenerator
 {
-    public string GenerateJs(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
+    public GeneratedJsCode GenerateJs(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy, string parentObjectName, string parentElementObjectName, string elementNamePrefix)
     {
-        var selectors = uniqueSelectorsFilter.FilterDistinct(modelMappingData);
-        var allJsElementObjectNames = jsObjectNamesGenerator.Generate(elementNamePrefix, selectors);
+        var objectNamesGrouping = jsObjectNamesGenerator.Generate(modelMappingData, elementNamePrefix);
+        var initializeViewJs = GenerateInitilizeViewJsCode(queryElementStrategy, objectNamesGrouping.AllJsElementObjectNames, parentElementObjectName);
+        var updateViewJs = updateViewJsGenerator.GenerateJs(queryElementStrategy, objectNamesGrouping, parentObjectName, parentElementObjectName);
+        var valueObjects = objectNamesGrouping.ValueNames.Select(v => new ValueObjectNameWithData(v.Name, v.AssociatedData));
+        var collectionObjects = objectNamesGrouping.CollectionNames.Select(c => new CollectionObjectNameWithData(c.Name, c.AssociatedData));
 
-        var valueNames = valueNamesGenerator.Generate(modelMappingData.Values, allJsElementObjectNames);
-        var collectionNames = collectionNamesGenerator.Generate(modelMappingData.Collections, allJsElementObjectNames);
-
-        return new StringBuilder()
-            .Append(GenerateQueryElementsJsCode(queryElementStrategy, allJsElementObjectNames, parentElementObjectName))
-            .TryAppendLineForReadability()
-            .Append(GenerateValuesJsCode(parentObjectName, valueNames))
-            .TryAppendLineForReadability()
-            .Append(GenerateCollectionJsCode(parentObjectName, collectionNames))
-            .TryAppendLineForReadability()
-            .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
-            .ToString()
-            .TrimEnd();
+        return new(initializeViewJs, updateViewJs, valueObjects, collectionObjects);
     }
 
-
-    private string GenerateValuesJsCode(string parentObjectName, IEnumerable<ValueObjectNameWithJsTargets> valueNames)
-        => valuesJsCodeGenerationBuilder
-                .BuildJsCode(parentObjectName, valueNames)
+    private String GenerateInitilizeViewJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsElementObjectNames, string parentElementObjectName)
+        => initializeJsGeneratorContext.GetStrategy(strategy)
+                .GenerateJs(allJsElementObjectNames, parentElementObjectName)
                 .TrimEnd();
-
-    private string GenerateCollectionJsCode(string parentObjectName, IEnumerable<CollectionObjectName> collectionNames)
-        => collectionsJsCodeGenerationBuilder
-                .BuildJsCode(parentObjectName, collectionNames, this)
-                .TrimEnd();
-
-    private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsObjectNames, string parentElementObjectName)
-        => queryElementsJsCodeGeneratorContext
-                    .GetStrategy(strategy)
-                    .GenerateJsCode(allJsObjectNames, parentElementObjectName)
-                    .TrimEnd();
 }

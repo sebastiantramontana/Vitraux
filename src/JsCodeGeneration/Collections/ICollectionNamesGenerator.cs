@@ -5,5 +5,5 @@ namespace Vitraux.JsCodeGeneration.Collections;
 
 internal interface ICollectionNamesGenerator
 {
-    IEnumerable<CollectionObjectName> Generate(IEnumerable<CollectionData> collections, IEnumerable<JsObjectName> allJsObjectNames);
+    IEnumerable<FullCollectionObjectName> Generate(IEnumerable<CollectionData> collections, IEnumerable<JsObjectName> allJsObjectNames);
 }

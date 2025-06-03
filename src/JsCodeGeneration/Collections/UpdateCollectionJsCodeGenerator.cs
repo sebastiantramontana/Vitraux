@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+using Vitraux.JsCodeGeneration.UpdateViews;
 using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.JsCodeGeneration.Collections;
@@ -10,9 +11,9 @@ internal class UpdateCollectionJsCodeGenerator(
     IUpdateCollectionFunctionCallbackJsCodeGenerator callbackJsCodeGenerator)
     : IUpdateCollectionJsCodeGenerator
 {
-    public string GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IJsGenerator jsGenerator)
+    public string GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator)
     {
-        var callbackInfo = callbackJsCodeGenerator.GenerateJsCode(parentObjectName, collectionObjectName, elementObjectPairNames, jsGenerator);
+        var callbackInfo = callbackJsCodeGenerator.GenerateJs(parentObjectName, collectionObjectName, elementObjectPairNames, updateViewJsGenerator);
         var updateCall = GetUpdateCall(elementObjectPairNames, parentObjectName, collectionObjectName, callbackInfo.FunctionName);
 
         return new StringBuilder()

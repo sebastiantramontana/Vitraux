@@ -3,7 +3,7 @@ using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Selectors;
 using Vitraux.Modeling.Data.Values;
 
-namespace Vitraux.JsCodeGeneration;
+namespace Vitraux.JsCodeGeneration.JsObjectNames;
 
 internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
 {

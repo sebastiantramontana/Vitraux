@@ -4,6 +4,8 @@ using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 using Vitraux.JsCodeGeneration.Collections;
 using Vitraux.JsCodeGeneration.Formating;
+using Vitraux.JsCodeGeneration.Initialization;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.QueryElements;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
@@ -13,29 +15,36 @@ using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elements
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Collections;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
+using Vitraux.JsCodeGeneration.UpdateViews;
 using Vitraux.JsCodeGeneration.Values;
 
 namespace Vitraux.Test.JsCodeGeneration;
+
 internal static class RootJsGeneratorFactory
 {
-    internal static RootJsGenerator Create(IJsCodeExecutor jsCodeExecutor)
+    internal static RootJsGenerator Create()
     {
         var getElementByIdAsArrayCall = new GetElementByIdAsArrayCall();
+        var getStoredElementByIdAsArrayCall = new GetStoredElementByIdAsArrayCall();
         var getElementsByQuerySelectorCall = new GetElementsByQuerySelectorCall();
+        var getStoredElementsByQuerySelectorCall = new GetStoredElementsByQuerySelectorCall();
         var getStoredTemplateCall = new GetStoredTemplateCall();
         var getFetchedElementCall = new GetFetchedElementCall();
         var notImplementedCaseGuard = new NotImplementedCaseGuard();
 
-        var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(jsCodeExecutor,
-                                                                                                          getElementByIdAsArrayCall,
+        var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(getElementByIdAsArrayCall,
+                                                                                                          getStoredElementByIdAsArrayCall,
                                                                                                           getElementsByQuerySelectorCall,
+                                                                                                          getStoredElementsByQuerySelectorCall,
                                                                                                           getStoredTemplateCall,
                                                                                                           getFetchedElementCall,
                                                                                                           notImplementedCaseGuard);
         var uniqueSelectorsFilter = new UniqueSelectorsFilter();
-        var elementNamesGenerator = new JsObjectNamesGenerator(notImplementedCaseGuard);
+        var elementNamesGenerator = new JsElementObjectNamesGenerator(notImplementedCaseGuard);
         var valueNamesGenerator = new ValueNamesGenerator(notImplementedCaseGuard);
         var collectionNamesGenerator = new CollectionNamesGenerator();
+        var jsObjectNamesGenerator = new JsObjectNamesGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator);
+
         var codeFormatter = new CodeFormatter();
         var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(codeFormatter);
 
@@ -44,42 +53,43 @@ internal static class RootJsGeneratorFactory
                                                                        codeFormatter,
                                                                        notImplementedCaseGuard);
 
-        var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
+        var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter, jsObjectNamesGenerator);
 
         var promiseJsGenerator = new PromiseJsGenerator();
+        var updateViewJsGenerator = new UpdateViewJsGenerator(promiseJsGenerator,
+                                                              valueJsCodeGenerator,
+                                                              collectionsJsCodeGenerationBuilder,
+                                                              queryElementsGeneratorByStrategyContext);
+        var initializeJsGeneratorContext = CreateInitializeJsGeneratorContext(getStoredElementByIdAsArrayCall,
+                                                                              getStoredElementsByQuerySelectorCall,
+                                                                              getStoredTemplateCall,
+                                                                              getFetchedElementCall,
+                                                                              notImplementedCaseGuard,
+                                                                              promiseJsGenerator);
 
-        var jsGenerator = new JsGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator, valueJsCodeGenerator, collectionsJsCodeGenerationBuilder, queryElementsGeneratorByStrategyContext, promiseJsGenerator);
+        var jsGenerator = new JsGenerator(jsObjectNamesGenerator, updateViewJsGenerator, initializeJsGeneratorContext);
 
         return new RootJsGenerator(jsGenerator);
     }
 
     private static QueryElementsJsCodeGeneratorByStrategyContext CreateQueryElementsJsCodeGeneratorByStrategyContext(
-        IJsCodeExecutor jsCodeExecutor,
         IGetElementByIdAsArrayCall getElementByIdAsArrayCall,
+        IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
         IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall,
+        IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
         IGetStoredTemplateCall getStoredTemplateCall,
         IGetFetchedElementCall getFetchedElementCall,
         INotImplementedCaseGuard notImplementedCaseGuard)
     {
         var builder = new QueryElementsJsGenerator();
-        var getStoredElementByIdAsArrayCall = new GetStoredElementByIdAsArrayCall();
-        var getStoredElementsByQuerySelectorCall = new GetStoredElementsByQuerySelectorCall();
 
-        var atStartGenerator = CreateAtStartGenerator(builder,
-                                                      jsCodeExecutor,
-                                                      getStoredElementByIdAsArrayCall,
-                                                      getStoredElementsByQuerySelectorCall,
-                                                      getStoredTemplateCall,
-                                                      getFetchedElementCall,
-                                                      notImplementedCaseGuard);
-
+        var atStartGenerator = CreateAtStartGenerator(builder);
         var onDemandGenerator = CreateOnDemandGenerator(builder,
                                                         getStoredElementByIdAsArrayCall,
                                                         getStoredElementsByQuerySelectorCall,
                                                         getStoredTemplateCall,
                                                         getFetchedElementCall,
                                                         notImplementedCaseGuard);
-
         var onAlwaysGenerator = CreateAlwaysGenerator(builder,
                                                       getElementByIdAsArrayCall,
                                                       getElementsByQuerySelectorCall,
@@ -88,10 +98,10 @@ internal static class RootJsGeneratorFactory
         return new QueryElementsJsCodeGeneratorByStrategyContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
     }
 
-    private static ICollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
+    private static ICollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter, IJsObjectNamesGenerator jsObjectNamesGenerator)
     {
-        var randomStringGenerator = new CollectionUpdateFunctionNameGenerator();
-        var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(randomStringGenerator, codeFormatter);
+        var functionNameGenerator = new CollectionUpdateFunctionNameGenerator();
+        var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(functionNameGenerator, codeFormatter, jsObjectNamesGenerator);
         var updateCollectionByPopulatingElementsCall = new UpdateCollectionByPopulatingElementsCall();
         var updateTableCall = new UpdateTableCall();
         var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator);
@@ -122,9 +132,21 @@ internal static class RootJsGeneratorFactory
         return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
     }
 
-    private static QueryElementsOnlyOnceAtStartJsGenerator CreateAtStartGenerator(
-        IQueryElementsJsGenerator builder,
-        IJsCodeExecutor jsCodeExecutor,
+    private static IInitializeJsGeneratorContext CreateInitializeJsGeneratorContext(
+        IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
+        IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
+        IGetStoredTemplateCall getStoredTemplateCall,
+        IGetFetchedElementCall getFetchedElementCall,
+        INotImplementedCaseGuard notImplementedCaseGuard,
+        IPromiseJsGenerator promiseJsGenerator)
+    {
+        var onlyOnceAtStartInitializeJsGenerator = CreateOnlyOnceAtStartInitializeJsGenerator(getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall, getStoredTemplateCall, getFetchedElementCall, notImplementedCaseGuard);
+        var onlyOnceOnDemandInitializeJsGenerator = CreateOnlyOnceOnDemandInitializeJsGenerator(promiseJsGenerator);
+        var alwaysInitializeJsGenerator = CreateAlwaysInitializeJsGenerator(promiseJsGenerator);
+        return new InitializeJsGeneratorContext(onlyOnceAtStartInitializeJsGenerator, onlyOnceOnDemandInitializeJsGenerator, alwaysInitializeJsGenerator, notImplementedCaseGuard);
+    }
+
+    private static IOnlyOnceAtStartInitializeJsGenerator CreateOnlyOnceAtStartInitializeJsGenerator(
         IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
         IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
         IGetStoredTemplateCall getStoredTemplateCall,
@@ -141,11 +163,6 @@ internal static class RootJsGeneratorFactory
         var storageElementJsLineGeneratorInsertElementsByTemplate = new StorageElementJsLineGeneratorInsertElementsByTemplate(storageElementJsLineGeneratorByTemplate, notImplementedCaseGuard);
         var storageElementJsLineGeneratorInsertElementsByUri = new StorageElementJsLineGeneratorInsertElementsByUri(storageElementJsLineGeneratorByUri, notImplementedCaseGuard);
 
-        var storageElementValueLineGenerator = new StorageElementValueJsLineGenerator(storageElementJsLineGeneratorElementsById,
-                                                                                      storageElementJsLineGeneratorElementsByQuery,
-                                                                                      storageElementJsLineGeneratorInsertElementsByTemplate,
-                                                                                      storageElementJsLineGeneratorInsertElementsByUri,
-                                                                                      notImplementedCaseGuard);
 
         var jsLineGeneratorCollectionByTemplate = new StorageElementCollectionJsLineGeneratorByTemplate(storageElementJsLineGeneratorByTemplate, notImplementedCaseGuard);
         var jsLineGeneratorCollectionByUri = new StorageElementCollectionJsLineGeneratorByUri(storageElementJsLineGeneratorByUri, notImplementedCaseGuard);
@@ -153,11 +170,25 @@ internal static class RootJsGeneratorFactory
 
         var promiseJsGenerator = new PromiseJsGenerator();
 
-        var storageElementsGenerator = new StoreElementsJsCodeGenerator(storageElementValueLineGenerator, storageElementCollectionLineGenerator, promiseJsGenerator, notImplementedCaseGuard);
-        var initializer = new QueryElementsOnlyOnceAtStartup(storageElementsGenerator, jsCodeExecutor);
-        var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsGenerator();
+        var storageElementValueLineGenerator = new StorageElementValueJsLineGenerator(storageElementJsLineGeneratorElementsById,
+                                                                                      storageElementJsLineGeneratorElementsByQuery,
+                                                                                      storageElementJsLineGeneratorInsertElementsByTemplate,
+                                                                                      storageElementJsLineGeneratorInsertElementsByUri,
+                                                                                      notImplementedCaseGuard);
 
-        return new QueryElementsOnlyOnceAtStartJsGenerator(builder, atStartDeclaringGenerator, initializer);
+        return new OnlyOnceAtStartInitializeJsGenerator(storageElementValueLineGenerator, storageElementCollectionLineGenerator, promiseJsGenerator, notImplementedCaseGuard);
+    }
+
+    private static IOnlyOnceOnDemandInitializeJsGenerator CreateOnlyOnceOnDemandInitializeJsGenerator(IPromiseJsGenerator promiseJsGenerator)
+        => new OnlyOnceOnDemandInitializeJsGenerator(promiseJsGenerator);
+
+    private static IAlwaysInitializeJsGenerator CreateAlwaysInitializeJsGenerator(IPromiseJsGenerator promiseJsGenerator)
+        => new AlwaysInitializeJsGenerator(promiseJsGenerator);
+
+    private static QueryElementsOnlyOnceAtStartJsGenerator CreateAtStartGenerator(IQueryElementsJsGenerator builder)
+    {
+        var atStartDeclaringGenerator = new QueryElementsDeclaringOnlyOnceAtStartJsGenerator();
+        return new QueryElementsOnlyOnceAtStartJsGenerator(builder, atStartDeclaringGenerator);
     }
 
     private static QueryElementsOnlyOnceOnDemandJsCodeGenerator CreateOnDemandGenerator(

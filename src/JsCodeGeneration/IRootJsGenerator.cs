@@ -2,5 +2,5 @@
 
 internal interface IRootJsGenerator
 {
-    string GenerateJs(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy);
+    GeneratedJsCode GenerateJs(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy);
 }

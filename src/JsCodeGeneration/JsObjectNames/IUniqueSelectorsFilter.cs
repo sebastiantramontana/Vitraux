@@ -1,6 +1,6 @@
 ﻿using Vitraux.Modeling.Data.Selectors;
 
-namespace Vitraux.JsCodeGeneration;
+namespace Vitraux.JsCodeGeneration.JsObjectNames;
 
 internal interface IUniqueSelectorsFilter
 {

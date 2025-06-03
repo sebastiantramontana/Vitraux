@@ -6,7 +6,7 @@ using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
-internal class JsObjectNamesGenerator(INotImplementedCaseGuard notImplementedSelector) : IJsObjectNamesGenerator
+internal class JsElementObjectNamesGenerator(INotImplementedCaseGuard notImplementedSelector) : IJsElementObjectNamesGenerator
 {
     const string ElementObjectNamePrefix = "e";
     const string InsertedElementObjectNamePrefix = "f";
