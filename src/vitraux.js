@@ -1,7 +1,16 @@
 ﻿"use strict";
 
-globalThis.vitraux = {
+const vmUpdateFunctionKeyPrefix = "vitraux-vms-";
 
+class VitrauxInternalError extends Error {
+    constructor(message) {
+        const internalErrorTitle = "Vitraux Internal Error: ";
+
+        super(`${internalErrorTitle}${message}`);
+    }
+}
+
+globalThis.vitraux = {
     storedElements: {
         elements: {},
         getElementByIdAsArray(id) {
@@ -64,9 +73,8 @@ globalThis.vitraux = {
             const response = await fetch(uri);
             const html = await response.text();
 
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const template = doc.querySelector("template");
+            const template = document.createElement("template");
+            template.innerHTML = html.trim();
 
             return template?.content;
         },
@@ -86,137 +94,172 @@ globalThis.vitraux = {
         }
     },
     updating: {
-        vms: {},
-        createUpdateFunction(vmName, code) {
-            const func = new Function("vm", code);
+        vmFunctions: {
+            vms: {},
 
-            this.vms[vmName] = {
-                function: func
-            };
+            async executeInitializationView(code) {
+                const func = new Function(code);
+                await func();
+            },
+
+            getFullVMKey(vmKey) {
+                return vmUpdateFunctionKeyPrefix + vmKey;
+            },
+
+            isVersionedUpdateViewFunctionRegenerationNeeded(vmKey, version) {
+                if (!vmKey || !version)
+                    throw new VitrauxInternalError("vmKey and version must be set in isVersionedUpdateViewFunctionRegenerationNeeded!");
+
+                const vmFuncObjJson = localStorage.getItem(getFullVMKey(vmKey))
+
+                if (!vmFuncObjJson)
+                    return true;
+
+                const vmFuncObj = JSON.parse(funcObjJson);
+
+                return (vmFuncObj.version !== version);
+            },
+
+            createVersionedUpdateViewFunction(vmKey, version, code) {
+                if (!version)
+                    throw new VitrauxInternalError("Version must be set in createVersionedUpdateViewFunction!");
+
+                createUpdateViewFunction(vmKey, code);
+                storeUpdateViewFunction(vmKey, version, code);
+            },
+
+            createUpdateViewFunction(vmKey, code) {
+                this.vms[vmKey] = new Function("vm", code);
+            },
+
+            storeUpdateViewFunction(vmKey, version, code) {
+                const vmFuncObj = {
+                    code: code,
+                    version: version
+                };
+
+                localStorage.setItem(getFullVMKey(vmKey), JSON.stringify(vmFuncObj));
+            },
+
+            async executeUpdateViewFunction(vmKey, vm) {
+                const func = this.vms[vmKey].function;
+                await func(vm);
+            },
         },
+        dom: {
+            setElementsContent(elements, content) {
+                for (const element of elements)
+                    element.textContent = content;
+            },
 
-        executeUpdateFunction(vmName, vm) {
-            const func = this.vms[vmName].function;
-            func(vm);
-        },
+            setElementsAttribute(elements, attribute, value) {
+                for (const element of elements)
+                    element.setAttribute(attribute, value);
+            },
 
-        setElementsContent(elements, content) {
-            for (const element of elements)
-                element.textContent = content;
-        },
+            updateValueByInsertingElements(elementToInsert, appendToElements, queryChildrenFunction, updateChildElementsFunction) {
+                if (!elementToInsert)
+                    return;
 
-        setElementsAttribute(elements, attribute, value) {
-            for (const element of elements)
-                element.setAttribute(attribute, value);
-        },
+                for (const appendToElement of appendToElements) {
+                    const clonedElement = elementToInsert.cloneNode(true);
+                    const targetChildElements = queryChildrenFunction(clonedElement);
+                    updateChildElementsFunction(targetChildElements);
 
-        UpdateValueByInsertingElements(elementToInsert, appendToElements, queryChildrenFunction, updateChildElementsFunction) {
-            if (!elementToInsert)
-                return;
+                    this.appendOnlyChild(appendToElement, clonedElement);
+                }
+            },
 
-            for (const appendToElement of appendToElements) {
+            async updateTable(tables, rowToInsert, updateCallback, collection) {
+                for (const table of tables) {
+                    const newTbody = document.createElement("tbody");
+
+                    for (const collectionItem of collection) {
+                        await this.addNewRow(newTbody, rowToInsert, updateCallback, collectionItem);
+                    }
+
+                    table.tBodies[0].replaceWith(newTbody);
+                }
+            },
+
+            async updateCollectionByPopulatingElements(appendToElements, elementToInsert, updateCallback, collection) {
+                for (const appendToElement of appendToElements) {
+
+                    const newElements = [];
+
+                    for (const collectionItem of collection) {
+                        const newElement = await this.updateCollectionElement(elementToInsert, updateCallback, collectionItem);
+                        newElements.push(newElement);
+                    }
+
+                    this.replaceChildren(appendToElement, newElements);
+                }
+            },
+
+            async addNewRow(tbody, row, updateCallback, collectionItem) {
+                const newElement = await this.updateCollectionElement(row, updateCallback, collectionItem)
+                tbody.appendChild(newElement);
+            },
+
+            async updateCollectionElement(elementToInsert, updateCallback, collectionItem) {
                 const clonedElement = elementToInsert.cloneNode(true);
-                const targetChildElements = queryChildrenFunction(clonedElement);
-                updateChildElementsFunction(targetChildElements);
+                await updateCallback(clonedElement, collectionItem);
 
-                vitraux.appendOnlyChild(appendToElement, clonedElement);
+                return clonedElement;
+            },
+
+            replaceChildren(parentElement, childElements) {
+                const rootElement = this.tryAttachShadow(parentElement);
+                rootElement.replaceChildren(...childElements);
+            },
+
+            appendOnlyChild(parentElement, childElement) {
+                this.replaceChildren(parentElement, [childElement]);
+            },
+
+            tryAttachShadow(element) {
+                return this.supportShadowDom(element)
+                    ? this.getAttachedShadow(element)
+                    : element;
+            },
+
+            getAttachedShadow(element) {
+                return (!element.shadowRoot)
+                    ? element.attachShadow({ mode: "open" })
+                    : element.shadowRoot;
+            },
+
+            supportShadowDom(element) {
+                if (!element || element.nodeType !== Node.ELEMENT_NODE)
+                    return false;
+
+                if (element.shadowRoot)
+                    return true;
+
+                const supportedTagNames = new Set([
+                    "article",
+                    "aside",
+                    "blockquote",
+                    "body",
+                    "div",
+                    "footer",
+                    "h1",
+                    "h2",
+                    "h3",
+                    "h4",
+                    "h5",
+                    "h6",
+                    "header",
+                    "main",
+                    "nav",
+                    "p",
+                    "section",
+                    "span"]);
+
+                const tag = element.tagName.toLowerCase();
+
+                return supportedTagNames.has(tag) || (tag.includes('-') && customElements.get(tag));
             }
-        },
-
-        async UpdateTable(tables, rowToInsert, updateCallback, collection) {
-            for (const table of tables) {
-                const newTbody = document.createElement("tbody");
-
-                for (const collectionItem of collection) {
-                    await this.addNewRow(newTbody, rowToInsert, updateCallback, collectionItem);
-                }
-
-                table.tBodies[0].replaceWith(newTbody);
-            }
-        },
-
-        async UpdateCollectionByPopulatingElements(appendToElements, elementToInsert, updateCallback, collection) {
-            for (const appendToElement of appendToElements) {
-
-                const newElements = [];
-
-                for (const collectionItem of collection) {
-                    const newElement = await this.updateCollectionElement(elementToInsert, updateCallback, collectionItem);
-                    newElements.push(newElement);
-                }
-
-                vitraux.replaceChildren(appendToElement, newElements);
-            }
-        },
-
-        async addNewRow(tbody, row, updateCallback, collectionItem) {
-            const newElement = await this.updateCollectionElement(row, updateCallback, collectionItem)
-            tbody.appendChild(newElement);
-        },
-
-        async updateCollectionElement(elementToInsert, updateCallback, collectionItem) {
-            const clonedElement = elementToInsert.cloneNode(true);
-            await updateCallback(clonedElement, collectionItem);
-
-            return clonedElement;
         }
-    },
-
-    executeCode(code) {
-        const func = new Function(code);
-        func();
-    },
-
-    replaceChildren(parentElement, childElements) {
-        const rootElement = vitraux.tryAttachShadow(parentElement);
-        rootElement.replaceChildren(...childElements);
-    },
-
-    appendOnlyChild(parentElement, childElement) {
-        this.replaceChildren(parentElement, [childElement]);
-    },
-
-    tryAttachShadow(element) {
-        return this.supportShadowDom(element)
-            ? this.getAttachedShadow(element)
-            : element;
-    },
-
-    getAttachedShadow(element) {
-        return (!element.shadowRoot)
-            ? element.attachShadow({ mode: "open" })
-            : element.shadowRoot;
-    },
-
-    supportShadowDom(element) {
-        if (!element || element.nodeType !== Node.ELEMENT_NODE)
-            return false;
-
-        if (element.shadowRoot)
-            return true;
-
-        const supportedTagNames = new Set([
-            "article",
-            "aside",
-            "blockquote",
-            "body",
-            "div",
-            "footer",
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6",
-            "header",
-            "main",
-            "nav",
-            "p",
-            "section",
-            "span"]);
-
-        const tag = element.tagName.toLowerCase();
-
-        return supportedTagNames.has(tag) || (tag.includes('-') && customElements.get(tag));
     }
 };

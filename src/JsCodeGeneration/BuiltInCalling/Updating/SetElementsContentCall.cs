@@ -3,5 +3,5 @@
 internal class SetElementsContentCall : ISetElementsContentCall
 {
     public string Generate(string elementsArg, string contentArg)
-        => $"globalThis.vitraux.updating.setElementsContent({elementsArg}, {contentArg})";
+        => $"globalThis.vitraux.updating.dom.setElementsContent({elementsArg}, {contentArg})";
 }

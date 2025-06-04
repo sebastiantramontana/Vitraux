@@ -7,7 +7,7 @@ internal class UpdateValueByInsertingElementsCall(ICodeFormatter codeFormatting)
 {
     public string Generate(string elementToInsertObjectName, string appendToElementsObjectName, string queryChildrenFunctionCall, string updateChildElementsFunctionCall)
         => new StringBuilder()
-            .AppendLine($"globalThis.vitraux.updating.UpdateValueByInsertingElements(")
+            .AppendLine($"globalThis.vitraux.updating.dom.updateValueByInsertingElements(")
             .AppendLine(codeFormatting.Indent($"{elementToInsertObjectName},"))
             .AppendLine(codeFormatting.Indent($"{appendToElementsObjectName},"))
             .AppendLine(codeFormatting.Indent($"{queryChildrenFunctionCall},"))
