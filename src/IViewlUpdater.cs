@@ -1,6 +1,6 @@
 ﻿namespace Vitraux;
 
-public interface IHtmlUpdater<TViewModel>
+public interface IViewlUpdater<TViewModel>
 {
     void Update(TViewModel viewModel);
 }

@@ -1,6 +1,6 @@
 ﻿namespace Vitraux;
 
-internal class HtmlUpdater<TViewModel> : IHtmlUpdater<TViewModel>
+internal class ViewUpdater<TViewModel> : IViewlUpdater<TViewModel>
 {
     public void Update(TViewModel viewModel)
     {

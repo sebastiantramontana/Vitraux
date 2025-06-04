@@ -72,7 +72,7 @@ internal static class RootJsGeneratorFactory
         return new RootJsGenerator(jsGenerator);
     }
 
-    private static QueryElementsJsCodeGeneratorByStrategyContext CreateQueryElementsJsCodeGeneratorByStrategyContext(
+    private static QueryElementsJsCodeGeneratorContext CreateQueryElementsJsCodeGeneratorByStrategyContext(
         IGetElementByIdAsArrayCall getElementByIdAsArrayCall,
         IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
         IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall,
@@ -95,7 +95,7 @@ internal static class RootJsGeneratorFactory
                                                       getElementsByQuerySelectorCall,
                                                       notImplementedCaseGuard);
 
-        return new QueryElementsJsCodeGeneratorByStrategyContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
+        return new QueryElementsJsCodeGeneratorContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
     }
 
     private static ICollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter, IJsObjectNamesGenerator jsObjectNamesGenerator)

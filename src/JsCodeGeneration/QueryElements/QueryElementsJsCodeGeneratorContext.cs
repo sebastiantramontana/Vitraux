@@ -4,7 +4,7 @@ using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
 namespace Vitraux.JsCodeGeneration.QueryElements;
 
-internal class QueryElementsJsCodeGeneratorByStrategyContext(
+internal class QueryElementsJsCodeGeneratorContext(
     IQueryElementsOnlyOnceAtStartJsGenerator atStartGenerator,
     IQueryElementsOnlyOnceOnDemandJsCodeGenerator onDemandGenerator,
     IQueryElementsAlwaysJsCodeGenerator alwaysGenerator)
