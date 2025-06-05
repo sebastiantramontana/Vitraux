@@ -26,7 +26,6 @@ internal static class IoCRegistration
 
     private static IServiceCollection AddThisNamespace(this IServiceCollection serviceCollection)
         => serviceCollection
-            .AddSingleton<IJsGenerator, JsGenerator>()
             .AddSingleton<IPromiseJsGenerator, PromiseJsGenerator>()
             .AddSingleton<IPropertyCheckerJsCodeGeneration, PropertyCheckerJsCodeGeneration>()
             .AddSingleton<IRootJsGenerator, RootJsGenerator>();

@@ -67,9 +67,7 @@ internal static class RootJsGeneratorFactory
                                                                               notImplementedCaseGuard,
                                                                               promiseJsGenerator);
 
-        var jsGenerator = new JsGenerator(jsObjectNamesGenerator, updateViewJsGenerator, initializeJsGeneratorContext);
-
-        return new RootJsGenerator(jsGenerator);
+        return new RootJsGenerator(jsObjectNamesGenerator, initializeJsGeneratorContext, updateViewJsGenerator);
     }
 
     private static QueryElementsJsCodeGeneratorContext CreateQueryElementsJsCodeGeneratorByStrategyContext(
