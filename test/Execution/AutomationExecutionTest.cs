@@ -5,7 +5,7 @@ using Vitraux.Test.Example;
 
 namespace Vitraux.Test.Execution;
 
-public class PetownerAutomationExecutionTest
+public class AutomationExecutionTest
 {
     [Fact]
     public async Task IoCTest()
@@ -17,14 +17,17 @@ public class PetownerAutomationExecutionTest
         _ = container
                 .AddSingleton<IJSRuntime>(jsInProcessRuntime)
                 .AddVitraux()
-                .AddModelConfiguration<PetOwner, PetOwnerConfiguration>();
+                .AddModelConfiguration<PetOwner, PetOwnerConfiguration>()
+                .AddModelConfiguration<CustomerViewModel, CustomerViewModelConfiguration>();
 
         var serviceProvider = container.BuildServiceProvider();
 
         await serviceProvider.BuildVitraux();
 
-        var viewUpdater = serviceProvider.GetRequiredService<IViewlUpdater<PetOwner>>();
+        var viewUpdaterPetOwner = serviceProvider.GetRequiredService<IViewlUpdater<PetOwner>>();
+        var viewUpdaterCustomerViewModel = serviceProvider.GetRequiredService<IViewlUpdater<CustomerViewModel>>();
 
-        Assert.NotNull(viewUpdater);
+        Assert.NotNull(viewUpdaterPetOwner);
+        Assert.NotNull(viewUpdaterCustomerViewModel);
     }
 }
