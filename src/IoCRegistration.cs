@@ -2,16 +2,18 @@
 using Vitraux.Execution;
 using Vitraux.Execution.Building;
 using Vitraux.Helpers;
+using Vitraux.JsCodeGeneration;
 
 namespace Vitraux;
 
 public static class IoCRegistration
 {
-    public static IModelRegistrar AddVitraux(this IServiceCollection serviceCollection) 
+    public static IModelRegistrar AddVitraux(this IServiceCollection serviceCollection)
         => serviceCollection
             .AddExecution()
             .AddHelpers()
-            .AddModelRegistrar();
+            .AddJsCodeGeneration()
+            .CreateModelRegistrar();
 
     public static Task BuildVitraux(this IServiceProvider serviceProvider)
     {
@@ -19,6 +21,6 @@ public static class IoCRegistration
         return builder.Build();
     }
 
-    private static ModelRegistrar AddModelRegistrar(this IServiceCollection serviceCollection)
+    private static ModelRegistrar CreateModelRegistrar(this IServiceCollection serviceCollection)
         => new(serviceCollection);
 }

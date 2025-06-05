@@ -15,7 +15,7 @@ internal static class IoCRegistration
         => serviceCollection
             .AddSingleton<IFetchElementCall, FetchElementCall>()
             .AddSingleton<IGetElementByIdAsArrayCall, GetElementByIdAsArrayCall>()
-            .AddSingleton<IGetElementsByQuerySelectorCall, IGetElementsByQuerySelectorCall>()
+            .AddSingleton<IGetElementsByQuerySelectorCall, GetElementsByQuerySelectorCall>()
             .AddSingleton<IGetFetchedElementCall, GetFetchedElementCall>()
             .AddSingleton<IGetStoredElementByIdAsArrayCall, GetStoredElementByIdAsArrayCall>()
             .AddSingleton<IGetStoredElementsByQuerySelectorCall, GetStoredElementsByQuerySelectorCall>()
@@ -27,7 +27,7 @@ internal static class IoCRegistration
             .AddSingleton<ISetElementsAttributeCall, SetElementsAttributeCall>()
             .AddSingleton<ISetElementsContentCall, SetElementsContentCall>()
             .AddSingleton<IToChildQueryFunctionCall, ToChildQueryFunctionCall>()
-            .AddSingleton<IUpdateChildElementsFunctionCall, IUpdateChildElementsFunctionCall>()
+            .AddSingleton<IUpdateChildElementsFunctionCall, UpdateChildElementsFunctionCall>()
             .AddSingleton<IUpdateCollectionByPopulatingElementsCall, UpdateCollectionByPopulatingElementsCall>()
             .AddSingleton<IUpdateTableCall, UpdateTableCall>()
             .AddSingleton<IUpdateValueByInsertingElementsCall, UpdateValueByInsertingElementsCall>();

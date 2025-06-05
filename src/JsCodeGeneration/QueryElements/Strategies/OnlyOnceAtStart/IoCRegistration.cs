@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart;
 
@@ -8,7 +9,5 @@ internal static class IoCRegistration
         => serviceCollection
             .AddSingleton<IQueryElementsDeclaringOnlyOnceAtStartJsGenerator, QueryElementsDeclaringOnlyOnceAtStartJsGenerator>()
             .AddSingleton<IQueryElementsOnlyOnceAtStartJsGenerator, QueryElementsOnlyOnceAtStartJsGenerator>()
-
-        SEGUIR ACA
-
+            .AddElementsStorage();
 }
