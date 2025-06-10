@@ -1,6 +1,5 @@
-﻿namespace Vitraux.JsCodeGeneration.Collections;
+﻿using Vitraux.JsCodeGeneration.UpdateViews;
 
-internal record class UpdateCollectionFunctionCallbackInfo(string FunctionName, string JsCode);
+namespace Vitraux.JsCodeGeneration.Collections;
 
-
-
+internal record class UpdateCollectionFunctionCallbackInfo(string FunctionName, string JsCode, ViewModelSerializationData ViewModelSerializationData);

@@ -12,34 +12,38 @@ internal class UpdateViewJsGenerator(
     IPromiseJsGenerator promiseJsGenerator,
     IValuesJsCodeGenerationBuilder valuesJsCodeGenerationBuilder,
     ICollectionsJsGenerationBuilder collectionsJsCodeGenerationBuilder,
-    IQueryElementsJsCodeGeneratorContext queryElementsJsCodeGeneratorContext) 
+    IQueryElementsJsCodeGeneratorContext queryElementsJsCodeGeneratorContext)
     : IUpdateViewJsGenerator
 {
-    public string GenerateJs(
+    public UpdateViewInfo GenerateJs(
         QueryElementStrategy queryElementStrategy,
         JsObjectNamesGrouping objectNamesGrouping,
         string parentObjectName,
         string parentElementObjectName)
-        => new StringBuilder()
-            .Append(GenerateQueryElementsJsCode(queryElementStrategy, objectNamesGrouping.AllJsElementObjectNames, parentElementObjectName))
-            .TryAppendLineForReadability()
-            .Append(GenerateValuesJsCode(parentObjectName, objectNamesGrouping.ValueNames))
-            .TryAppendLineForReadability()
-            .Append(GenerateCollectionJsCode(parentObjectName, objectNamesGrouping.CollectionNames))
-            .TryAppendLineForReadability()
-            .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
-            .ToString()
-            .TrimEnd();
+    {
+        var builtValueJs = GenerateValuesJsCode(parentObjectName, objectNamesGrouping.ValueNames);
+        var builtCollectionJs = GenerateCollectionJsCode(parentObjectName, objectNamesGrouping.CollectionNames);
 
-    private string GenerateValuesJsCode(string parentObjectName, IEnumerable<ValueObjectNameWithJsTargets> valueNames)
-        => valuesJsCodeGenerationBuilder
-                .BuildJsCode(parentObjectName, valueNames)
+        var jsCode= new StringBuilder()
+                .Append(GenerateQueryElementsJsCode(queryElementStrategy, objectNamesGrouping.AllJsElementObjectNames, parentElementObjectName))
+                .TryAppendLineForReadability()
+                .Append(builtValueJs.JsCode)
+                .TryAppendLineForReadability()
+                .Append(builtCollectionJs.JsCode)
+                .TryAppendLineForReadability()
+                .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
+                .ToString()
                 .TrimEnd();
 
-    private string GenerateCollectionJsCode(string parentObjectName, IEnumerable<CollectionObjectNameWithElements> collectionNames)
-        => collectionsJsCodeGenerationBuilder
-                .BuildJsCode(parentObjectName, collectionNames, this)
-                .TrimEnd();
+        var viewModelSerializationData = new ViewModelSerializationData(builtValueJs.ValueViewModelSerializationsData, builtCollectionJs.CollectionViewModelSerializationsData);
+        return new UpdateViewInfo(jsCode, viewModelSerializationData);
+    }
+
+    private BuiltValueJs GenerateValuesJsCode(string parentObjectName, IEnumerable<FullValueObjectName> valueNames)
+        => valuesJsCodeGenerationBuilder.BuildJsCode(parentObjectName, valueNames);
+
+    private BuiltCollectionJs GenerateCollectionJsCode(string parentObjectName, IEnumerable<FullCollectionObjectName> collectionNames)
+        => collectionsJsCodeGenerationBuilder.BuildJsCode(parentObjectName, collectionNames, this);
 
     private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsObjectNames, string parentElementObjectName)
         => queryElementsJsCodeGeneratorContext

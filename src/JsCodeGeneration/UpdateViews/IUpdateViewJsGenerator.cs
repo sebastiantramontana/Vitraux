@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.UpdateViews;
 
 internal interface IUpdateViewJsGenerator
 {
-    string GenerateJs(QueryElementStrategy queryElementStrategy, JsObjectNamesGrouping objectNamesGrouping, string parentObjectName, string parentElementObjectName);
+    UpdateViewInfo GenerateJs(QueryElementStrategy queryElementStrategy, JsObjectNamesGrouping objectNamesGrouping, string parentObjectName, string parentElementObjectName);
 }

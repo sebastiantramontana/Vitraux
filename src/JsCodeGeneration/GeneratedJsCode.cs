@@ -1,6 +1,5 @@
-﻿using Vitraux.JsCodeGeneration.Collections;
-using Vitraux.JsCodeGeneration.Values;
+﻿using Vitraux.JsCodeGeneration.UpdateViews;
 
 namespace Vitraux.JsCodeGeneration;
 
-internal record class GeneratedJsCode(string InitializeViewJs, string UpdateViewJs, IEnumerable<ValueObjectNameWithData> ValueObjects, IEnumerable<CollectionObjectNameWithData> CollectionObjects);
+internal record class GeneratedJsCode(string InitializeViewJs, UpdateViewInfo UpdateViewInfo);

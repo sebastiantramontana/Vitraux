@@ -60,7 +60,7 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
         ExecuteScriptAsAwaitableFunction("initialize", [], [], generatedJsCode.InitializeViewJs, driver);
 
         //Act
-        ExecuteScriptAsAwaitableFunction("updateView", ["vm"], [GetPetownerJson()], generatedJsCode.UpdateViewJs, driver);
+        ExecuteScriptAsAwaitableFunction("updateView", ["vm"], [GetPetownerJson()], generatedJsCode.UpdateViewInfo.JsCode, driver);
 
         //Assert
         var renderedName = GetRenderedName(driver);
@@ -296,5 +296,8 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
         ]);
 
     public void Dispose()
-        => _server.Dispose();
+    {
+        _server.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }

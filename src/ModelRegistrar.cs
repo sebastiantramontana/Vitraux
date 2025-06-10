@@ -11,6 +11,7 @@ internal class ModelRegistrar(IServiceCollection container) : IModelRegistrar
         _ = container
             .AddSingleton<IModelMapper<TViewModel>, ModelMapper<TViewModel>>()
             .AddSingleton<IModelConfiguration<TViewModel>, TModelConfiguration>()
+            .AddSingleton<IObjectNamesRepository<TViewModel>, ObjectNamesRepository<TViewModel>>()
             .AddSingleton<IViewModelUpdateFunctionBuilder, ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>>()
             .AddSingleton<IViewlUpdater<TViewModel>, ViewUpdater<TViewModel>>();
 

@@ -8,7 +8,8 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
     IModelMapper<TViewModel> modelMapper,
     IRootJsGenerator rootJsGenerator,
     IJsInitializationInvoker jsInitializationExecutor,
-    IJsCreateUpdateFunctionInvoker jsCreateUpdateFunctionExecutor)
+    IJsCreateUpdateFunctionInvoker jsCreateUpdateFunctionExecutor,
+    IObjectNamesRepository<TViewModel> objectNamesRepository)
     : IViewModelUpdateFunctionBuilder
     where TModelConfiguration : class, IModelConfiguration<TViewModel>
 {
@@ -21,17 +22,21 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
 
         await jsInitializationExecutor.Execute(generatedJs.InitializeViewJs);
 
+        var vmKey = GenerateVMKey();
+
         switch (behavior.VMUpdateFunctionCaching)
         {
             case VMUpdateFunctionCacheByVersion cacheVersion:
-                await jsCreateUpdateFunctionExecutor.ExecuteVersionCached(GenerateVMKey(), cacheVersion.Version, generatedJs.UpdateViewJs);
+                await jsCreateUpdateFunctionExecutor.ExecuteVersionCached(vmKey, cacheVersion.Version, generatedJs.UpdateViewInfo.JsCode);
                 break;
             case VMUpdateFunctionNoCache:
-                await jsCreateUpdateFunctionExecutor.ExecuteNoCache(GenerateVMKey(), generatedJs.UpdateViewJs);
+                await jsCreateUpdateFunctionExecutor.ExecuteNoCache(vmKey, generatedJs.UpdateViewInfo.JsCode);
                 break;
             default:
                 throw new NotSupportedException($"Unsupported VMUpdateFunctionCaching: {behavior.VMUpdateFunctionCaching}");
         }
+
+        objectNamesRepository.ViewModelSerializationData = generatedJs.UpdateViewInfo.ViewModelSerializationData;  //new ObjectNamesWithData(generatedJs.ValueObjects, generatedJs.CollectionObjects);
     }
 
     private static string GenerateVMKey()

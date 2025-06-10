@@ -1,4 +1,15 @@
-﻿using Vitraux.Helpers;
+﻿using Microsoft.VisualStudio.TestPlatform.Utilities;
+using Swan;
+using System.Buffers;
+using System.Collections;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using Vitraux.Helpers;
+using Vitraux.JsCodeGeneration.Collections;
+using Vitraux.JsCodeGeneration.Formating;
+using Vitraux.JsCodeGeneration.UpdateViews;
+using Vitraux.JsCodeGeneration.Values;
 using Vitraux.Test.Example;
 
 namespace Vitraux.Test.JsCodeGeneration;
@@ -182,7 +193,7 @@ public class JsGeneratorTest
     [InlineData(QueryElementStrategy.OnlyOnceAtStart, expectedQueryElementsJsAtStart, expectedInitializationJsForAtStart)]
     [InlineData(QueryElementStrategy.OnlyOnceOnDemand, expectedQueryElementsJsOnDemand, expectedInitializationJsForOnDemand)]
     [InlineData(QueryElementStrategy.Always, expectedQueryElementsJsAlways, expectedInitializationJsForAlways)]
-    public void GenerateCodeTest(QueryElementStrategy queryElementStrategy, string expectedQueryElementsJs, string expectedInitializationJs)
+    public async Task GenerateCodeTest(QueryElementStrategy queryElementStrategy, string expectedQueryElementsJs, string expectedInitializationJs)
     {
         var sut = RootJsGeneratorFactory.Create();
         var petownerConfig = new PetOwnerConfiguration(new DataUriConverter());
@@ -193,7 +204,157 @@ public class JsGeneratorTest
         var generatedJsCode = sut.GenerateJs(data, queryElementStrategy);
         var expectedUpdateViewJs = expectedQueryElementsJs + Environment.NewLine + Environment.NewLine + expectedCommonUpdateViewJs;
 
-        Assert.Equal(expectedUpdateViewJs, generatedJsCode.UpdateViewJs);
+        Assert.Equal(expectedUpdateViewJs, generatedJsCode.UpdateViewInfo.JsCode);
         Assert.Equal(expectedInitializationJs, generatedJsCode.InitializeViewJs);
+
+        var serializedPetOwnerExampleJson = await SerializeViewModelToJson(generatedJsCode.UpdateViewInfo.ViewModelSerializationData, PetOwnerExample);
+
+        Assert.Equal(ExpectedPetOwnerExampleJson, serializedPetOwnerExampleJson);
+    }
+
+    private static PetOwner PetOwnerExample { get; } =
+        new PetOwner(
+            "Juan",
+            "123 Main St",
+            "555-1234",
+            new Subscription(SubscriptionFrequency.Semiannual, 123.456, true, true),
+            [
+                new Pet(
+                    "Fido",
+                    [1, 2, 3],
+                    [
+                        new Vaccine("Rabies", new DateTime(2022,6,8), ["Ingredient1", "Ingredient2"]),
+                        new Vaccine("Distemper", new DateTime(2022,7,9), ["Ingredient3"])
+                    ],
+                    [
+                        new Antiparasitic("Flea Treatment", new DateTime(2023,10,15)),
+                        new Antiparasitic("Tick Treatment", new DateTime(2023,11,16))
+                    ]),
+                new Pet(
+                    "Toulose",
+                    [4, 5, 6],
+                    [
+                        new Vaccine("Feline Leukemia", new DateTime(2024,4,1), ["Ingredient4"])
+                    ],
+                    [
+                        new Antiparasitic("Worm Treatment", new DateTime(2025,9,22))
+                    ])
+            ]);
+
+    private const string ExpectedPetOwnerExampleJson =
+        """
+        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":{},"c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"8/6/2022 00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"9/7/2022 00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"15/10/2023 00:00:00"},{"v0":"Tick Treatment","v1":"16/11/2023 00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"1/4/2024 00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"22/9/2025 00:00:00"}]}]}
+        """;
+
+    private static async Task<string> SerializeViewModelToJson(ViewModelSerializationData viewModelSerializationData, object obj)
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        await using var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions
+        {
+            Encoder = JavaScriptEncoder.Default,
+            Indented = false,
+            IndentCharacter = ' ',
+            IndentSize = 4,
+            SkipValidation = true,
+            NewLine = Environment.NewLine,
+            MaxDepth = 0
+        });
+
+        SerializeObjectToJson(viewModelSerializationData, obj, writer);
+
+        await writer.FlushAsync();
+
+        return Encoding.UTF8.GetString(buffer.WrittenSpan);
+    }
+
+    private static void SerializeObjectToJson(ViewModelSerializationData viewModelSerializationData, object obj, Utf8JsonWriter utf8JsonWriter)
+    {
+        utf8JsonWriter.WriteStartObject();
+        SerializePropertiesToJson(viewModelSerializationData, obj, utf8JsonWriter);
+        utf8JsonWriter.WriteEndObject();
+    }
+
+    private static void SerializePropertiesToJson(ViewModelSerializationData viewModelSerializationData, object obj, Utf8JsonWriter utf8JsonWriter)
+    {
+        SerializeValuesToJson(viewModelSerializationData.ValueProperties, obj, utf8JsonWriter);
+        SerializeCollectionsToJson(viewModelSerializationData.CollectionProperties, obj, utf8JsonWriter);
+    }
+
+    private static void SerializeValuesToJson(IEnumerable<ValueViewModelSerializationData> values, object obj, Utf8JsonWriter utf8JsonWriter)
+    {
+        foreach (var value in values)
+            SerializeValueToJson(value, obj, utf8JsonWriter);
+    }
+
+    private static void SerializeValueToJson(ValueViewModelSerializationData value, object obj, Utf8JsonWriter utf8JsonWriter)
+    {
+        var retValue = value.ValuePropertyValueDelegate.DynamicInvoke(obj);
+        SerializeObjectValueToJson(value.ValuePropertyName, retValue, utf8JsonWriter);
+    }
+
+    private static void SerializeObjectValueToJson(string propertyName, object? value, Utf8JsonWriter utf8JsonWriter)
+    {
+        if (value is null)
+        {
+            utf8JsonWriter.WriteNull(propertyName);
+        }
+        else
+        {
+            if (IsSimpleType(value.GetType()))
+            {
+                utf8JsonWriter.WriteString(propertyName, value.ToString());
+            }
+            else
+            {
+                //It will be handled when ToOwnMapping be implemented, in the meantime it returns an empty object here.
+                utf8JsonWriter.WritePropertyName(propertyName);
+                utf8JsonWriter.WriteStartObject();
+                utf8JsonWriter.WriteEndObject();
+            }
+        }
+    }
+
+    private static bool IsSimpleType(Type type)
+        => type.IsPrimitive ||
+            type.IsEnum ||
+            type == typeof(string) ||
+            type == typeof(decimal) ||
+            type == typeof(DateTime) ||
+            type == typeof(DateTimeOffset) ||
+            type == typeof(Guid) ||
+            type == typeof(TimeSpan) ||
+            type == typeof(DateOnly) ||
+            type == typeof(TimeOnly) ||
+            (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+
+
+    private static void SerializeCollectionsToJson(IEnumerable<CollectionViewModelSerializationData> collections, object obj, Utf8JsonWriter utf8JsonWriter)
+    {
+        foreach (var col in collections)
+            SerializeCollectionToJson(col, obj, utf8JsonWriter);
+    }
+
+    private static void SerializeCollectionToJson(CollectionViewModelSerializationData collection, object obj, Utf8JsonWriter utf8JsonWriter)
+    {
+        utf8JsonWriter.WritePropertyName(collection.CollectionPropertyName);
+        utf8JsonWriter.WriteStartArray();
+
+        var collectionItems = GetTypedEnumerableObjectFromDelegateInvokation(collection.CollectionPropertyValueDelegate, obj);
+
+        foreach (var child in collection.Children)
+        {
+            foreach (var item in collectionItems)
+            {
+                SerializeObjectToJson(child, item, utf8JsonWriter);
+            }
+        }
+
+        utf8JsonWriter.WriteEndArray();
+    }
+
+    private static IEnumerable<object> GetTypedEnumerableObjectFromDelegateInvokation(Delegate del, object obj)
+    {
+        var enumerable = del.DynamicInvoke(obj) as IEnumerable;
+        return enumerable?.Cast<object>() ?? [];
     }
 }

@@ -9,7 +9,7 @@ internal class ValueNamesGenerator(INotImplementedCaseGuard notImplementedCaseGu
 {
     const string ValueObjectNamePrefix = "v";
 
-    IEnumerable<FullValueObjectName> IValueNamesGenerator.Generate(IEnumerable<ValueData> values, IEnumerable<JsObjectName> allElementJsObjectNames)
+    public IEnumerable<FullValueObjectName> Generate(IEnumerable<ValueData> values, IEnumerable<JsObjectName> allElementJsObjectNames)
         => values.Select((value, indexAsPostfix) => new FullValueObjectName(GenerateObjName(indexAsPostfix), GenerateJsTargets(value.Targets, allElementJsObjectNames), value));
 
     private IEnumerable<ValueJsTarget> GenerateJsTargets(IEnumerable<IValueTarget> targets, IEnumerable<JsObjectName> allElementJsObjectNames)
