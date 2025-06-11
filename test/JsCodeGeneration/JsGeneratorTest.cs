@@ -1,13 +1,11 @@
-﻿using Microsoft.VisualStudio.TestPlatform.Utilities;
-using Swan;
-using System.Buffers;
+﻿using System.Buffers;
 using System.Collections;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Vitraux.Execution.Serialization;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.Collections;
-using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.UpdateViews;
 using Vitraux.JsCodeGeneration.Values;
 using Vitraux.Test.Example;
@@ -207,7 +205,12 @@ public class JsGeneratorTest
         Assert.Equal(expectedUpdateViewJs, generatedJsCode.UpdateViewInfo.JsCode);
         Assert.Equal(expectedInitializationJs, generatedJsCode.InitializeViewJs);
 
-        var serializedPetOwnerExampleJson = await SerializeViewModelToJson(generatedJsCode.UpdateViewInfo.ViewModelSerializationData, PetOwnerExample);
+        var serializationDataMapper = new SerializationDataMapper();
+        var jsonSerializer = new ViewModelJsonSerializer();
+
+        var encodedViewModelSerializationData = serializationDataMapper.MapToEncoded(generatedJsCode.UpdateViewInfo.ViewModelSerializationData);
+
+        var serializedPetOwnerExampleJson = await jsonSerializer.Serialize(encodedViewModelSerializationData, PetOwnerExample);
 
         Assert.Equal(ExpectedPetOwnerExampleJson, serializedPetOwnerExampleJson);
     }
@@ -245,116 +248,4 @@ public class JsGeneratorTest
         """
         {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":{},"c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"8/6/2022 00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"9/7/2022 00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"15/10/2023 00:00:00"},{"v0":"Tick Treatment","v1":"16/11/2023 00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"1/4/2024 00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"22/9/2025 00:00:00"}]}]}
         """;
-
-    private static async Task<string> SerializeViewModelToJson(ViewModelSerializationData viewModelSerializationData, object obj)
-    {
-        var buffer = new ArrayBufferWriter<byte>();
-        await using var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions
-        {
-            Encoder = JavaScriptEncoder.Default,
-            Indented = false,
-            IndentCharacter = ' ',
-            IndentSize = 4,
-            SkipValidation = true,
-            NewLine = Environment.NewLine,
-            MaxDepth = 0
-        });
-
-        SerializeObjectToJson(viewModelSerializationData, obj, writer);
-
-        await writer.FlushAsync();
-
-        return Encoding.UTF8.GetString(buffer.WrittenSpan);
-    }
-
-    private static void SerializeObjectToJson(ViewModelSerializationData viewModelSerializationData, object obj, Utf8JsonWriter utf8JsonWriter)
-    {
-        utf8JsonWriter.WriteStartObject();
-        SerializePropertiesToJson(viewModelSerializationData, obj, utf8JsonWriter);
-        utf8JsonWriter.WriteEndObject();
-    }
-
-    private static void SerializePropertiesToJson(ViewModelSerializationData viewModelSerializationData, object obj, Utf8JsonWriter utf8JsonWriter)
-    {
-        SerializeValuesToJson(viewModelSerializationData.ValueProperties, obj, utf8JsonWriter);
-        SerializeCollectionsToJson(viewModelSerializationData.CollectionProperties, obj, utf8JsonWriter);
-    }
-
-    private static void SerializeValuesToJson(IEnumerable<ValueViewModelSerializationData> values, object obj, Utf8JsonWriter utf8JsonWriter)
-    {
-        foreach (var value in values)
-            SerializeValueToJson(value, obj, utf8JsonWriter);
-    }
-
-    private static void SerializeValueToJson(ValueViewModelSerializationData value, object obj, Utf8JsonWriter utf8JsonWriter)
-    {
-        var retValue = value.ValuePropertyValueDelegate.DynamicInvoke(obj);
-        SerializeObjectValueToJson(value.ValuePropertyName, retValue, utf8JsonWriter);
-    }
-
-    private static void SerializeObjectValueToJson(string propertyName, object? value, Utf8JsonWriter utf8JsonWriter)
-    {
-        if (value is null)
-        {
-            utf8JsonWriter.WriteNull(propertyName);
-        }
-        else
-        {
-            if (IsSimpleType(value.GetType()))
-            {
-                utf8JsonWriter.WriteString(propertyName, value.ToString());
-            }
-            else
-            {
-                //It will be handled when ToOwnMapping be implemented, in the meantime it returns an empty object here.
-                utf8JsonWriter.WritePropertyName(propertyName);
-                utf8JsonWriter.WriteStartObject();
-                utf8JsonWriter.WriteEndObject();
-            }
-        }
-    }
-
-    private static bool IsSimpleType(Type type)
-        => type.IsPrimitive ||
-            type.IsEnum ||
-            type == typeof(string) ||
-            type == typeof(decimal) ||
-            type == typeof(DateTime) ||
-            type == typeof(DateTimeOffset) ||
-            type == typeof(Guid) ||
-            type == typeof(TimeSpan) ||
-            type == typeof(DateOnly) ||
-            type == typeof(TimeOnly) ||
-            (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
-
-
-    private static void SerializeCollectionsToJson(IEnumerable<CollectionViewModelSerializationData> collections, object obj, Utf8JsonWriter utf8JsonWriter)
-    {
-        foreach (var col in collections)
-            SerializeCollectionToJson(col, obj, utf8JsonWriter);
-    }
-
-    private static void SerializeCollectionToJson(CollectionViewModelSerializationData collection, object obj, Utf8JsonWriter utf8JsonWriter)
-    {
-        utf8JsonWriter.WritePropertyName(collection.CollectionPropertyName);
-        utf8JsonWriter.WriteStartArray();
-
-        var collectionItems = GetTypedEnumerableObjectFromDelegateInvokation(collection.CollectionPropertyValueDelegate, obj);
-
-        foreach (var child in collection.Children)
-        {
-            foreach (var item in collectionItems)
-            {
-                SerializeObjectToJson(child, item, utf8JsonWriter);
-            }
-        }
-
-        utf8JsonWriter.WriteEndArray();
-    }
-
-    private static IEnumerable<object> GetTypedEnumerableObjectFromDelegateInvokation(Delegate del, object obj)
-    {
-        var enumerable = del.DynamicInvoke(obj) as IEnumerable;
-        return enumerable?.Cast<object>() ?? [];
-    }
 }

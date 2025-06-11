@@ -106,11 +106,11 @@ globalThis.vitraux = {
                 return vmUpdateFunctionKeyPrefix + vmKey;
             },
 
-            isVersionedUpdateViewFunctionRegenerationNeeded(vmKey, version) {
+            isVersionedUpdateViewFunctionRebuildNeeded(vmKey, version) {
                 if (!vmKey || !version)
                     throw new VitrauxInternalError("vmKey and version must be set in isVersionedUpdateViewFunctionRegenerationNeeded!");
 
-                const vmFuncObjJson = localStorage.getItem(getFullVMKey(vmKey))
+                const vmFuncObjJson = localStorage.getItem(this.getFullVMKey(vmKey))
 
                 if (!vmFuncObjJson)
                     return true;
@@ -124,8 +124,8 @@ globalThis.vitraux = {
                 if (!version)
                     throw new VitrauxInternalError("Version must be set in createVersionedUpdateViewFunction!");
 
-                createUpdateViewFunction(vmKey, code);
-                storeUpdateViewFunction(vmKey, version, code);
+                this.createUpdateViewFunction(vmKey, code);
+                this.storeUpdateViewFunction(vmKey, version, code);
             },
 
             createUpdateViewFunction(vmKey, code) {
@@ -138,10 +138,11 @@ globalThis.vitraux = {
                     version: version
                 };
 
-                localStorage.setItem(getFullVMKey(vmKey), JSON.stringify(vmFuncObj));
+                localStorage.setItem(this.getFullVMKey(vmKey), JSON.stringify(vmFuncObj));
             },
 
-            async executeUpdateViewFunction(vmKey, vm) {
+            async executeUpdateViewFunction(vmKey, vmJson) {
+                const vm = JSON.parse(vmJson);
                 const func = this.vms[vmKey].function;
                 await func(vm);
             },

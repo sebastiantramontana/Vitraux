@@ -2,6 +2,6 @@
 
 internal interface IJsCreateUpdateFunctionInvoker
 {
-    ValueTask ExecuteVersionCached(string vmKey, string version, string jsCode);
-    ValueTask ExecuteNoCache(string vmKey, string jsCode);
+    ValueTask InvokeVersionCached(string vmKey, string version, string jsCode);
+    ValueTask InvokeNoCache(string vmKey, string jsCode);
 }

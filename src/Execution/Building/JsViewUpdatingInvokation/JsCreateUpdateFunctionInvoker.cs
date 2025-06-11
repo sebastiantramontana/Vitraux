@@ -8,9 +8,9 @@ internal class JsCreateUpdateFunctionInvoker(IJSRuntime jSRuntime) : IJsCreateUp
     private const string CreateUpdateNoCachedFunctionName = "globalThis.vitraux.updating.vmFunctions.createUpdateViewFunction";
     private readonly IJSInProcessRuntime _jsInProcessRuntime = (IJSInProcessRuntime)jSRuntime;
 
-    public ValueTask ExecuteNoCache(string vmKey, string jsCode)
+    public ValueTask InvokeNoCache(string vmKey, string jsCode)
         => _jsInProcessRuntime.InvokeVoidAsync(CreateUpdateNoCachedFunctionName, vmKey, jsCode);
 
-    public ValueTask ExecuteVersionCached(string vmKey, string version, string jsCode)
+    public ValueTask InvokeVersionCached(string vmKey, string version, string jsCode)
         => _jsInProcessRuntime.InvokeVoidAsync(CreateUpdateVersionedFunctionName, vmKey, version, jsCode);
 }

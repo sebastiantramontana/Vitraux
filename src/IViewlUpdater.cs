@@ -2,5 +2,5 @@
 
 public interface IViewlUpdater<TViewModel>
 {
-    void Update(TViewModel viewModel);
+    Task Update(TViewModel viewModel);
 }
