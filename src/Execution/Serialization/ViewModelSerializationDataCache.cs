@@ -1,6 +1,4 @@
-﻿using Vitraux.Execution.Serialization;
-
-namespace Vitraux.Execution.Building;
+﻿namespace Vitraux.Execution.Serialization;
 
 internal class ViewModelSerializationDataCache<TViewModel> : IViewModelSerializationDataCache<TViewModel>
 {
