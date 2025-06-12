@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vitraux", "src\Vitraux.csproj", "{66811227-E1AD-4874-A15C-94D64C5A58AF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vitraux.Test", "test\Vitraux.Test.csproj", "{97450DEE-54AD-4126-B99B-AA3F1B2A703D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vitraux.Test", "test\Automated\Vitraux.Test.csproj", "{97450DEE-54AD-4126-B99B-AA3F1B2A703D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

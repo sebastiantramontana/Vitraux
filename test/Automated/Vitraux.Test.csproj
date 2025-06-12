@@ -9,8 +9,9 @@
 		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
 	<ItemGroup>
-		<Content Include="GeneratedVMFunctionTest\**\*">
+		<Content Include="..\Manual\GeneratedVMFunctionTest\**\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>GeneratedVMFunctionTest\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
@@ -28,9 +29,8 @@
 		</PackageReference>
 		<PackageReference Include="Selenium.WebDriver" Version="4.33.0" />
 	</ItemGroup>
-
 	<ItemGroup>
-		<ProjectReference Include="..\src\Vitraux.csproj" />
+	  <ProjectReference Include="..\..\src\Vitraux.csproj" />
 	</ItemGroup>
 
 </Project>
