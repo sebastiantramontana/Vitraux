@@ -1,0 +1,275 @@
+﻿"use strict";
+
+const vmUpdateFunctionKeyPrefix = "vitraux-vms-";
+
+class VitrauxInternalError extends Error {
+    constructor(message) {
+        const internalErrorTitle = "Vitraux Internal Error: ";
+
+        super(`${internalErrorTitle}${message}`);
+    }
+}
+
+globalThis.vitraux = {
+    storedElements: {
+        elements: {},
+        getElementByIdAsArray(id) {
+            const element = document.getElementById(id);
+
+            return element ? [element] : [];
+        },
+
+        getStoredElementByIdAsArray(id, elementObjectName) {
+            const elementArray = this.elements[elementObjectName]
+                ?? this.storeElementByIdAsArray(id, elementObjectName);
+
+            return elementArray;
+        },
+
+        storeElementByIdAsArray(id, elementObjectName) {
+            const elementArray = this.getElementByIdAsArray(id);
+            this.elements[elementObjectName] = elementArray;
+
+            return elementArray;
+        },
+
+        getElementsByQuerySelector(parent, querySelector) {
+            return parent.querySelectorAll(querySelector);
+        },
+
+        getStoredElementsByQuerySelector(parentObj, querySelector, elementsObjectName) {
+            const elements = this.elements[elementsObjectName]
+                ?? this.storeElementsByQuerySelector(parentObj, querySelector, elementsObjectName);
+
+            return elements;
+        },
+
+        storeElementsByQuerySelector(parentObj, querySelector, elementsObjectName) {
+            const elements = this.getElementsByQuerySelector(parentObj, querySelector);
+            this.elements[elementsObjectName] = elements;
+
+            return elements;
+        },
+
+        getTemplate(id) {
+            return document.getElementById(id)?.content;
+        },
+
+        getStoredTemplate(id, elementsObjectName) {
+            const template = this.elements[elementsObjectName]
+                ?? this.storeTemplate(id, elementsObjectName);
+
+            return template;
+        },
+
+        storeTemplate(id, elementsObjectName) {
+            const template = this.getTemplate(id);
+            this.elements[elementsObjectName] = template;
+
+            return template;
+        },
+
+        async fetchElement(uri) {
+            const response = await fetch(uri);
+            const html = await response.text();
+
+            const template = document.createElement("template");
+            template.innerHTML = html.trim();
+
+            return template?.content;
+        },
+
+        async getFetchedElement(uri, elementsObjectName) {
+            const element = this.elements[elementsObjectName]
+                ?? await this.storeFetchedElement(uri, elementsObjectName);
+
+            return element;
+        },
+
+        async storeFetchedElement(uri, elementsObjectName) {
+            const element = await this.fetchElement(uri);
+            this.elements[elementsObjectName] = element;
+
+            return element;
+        }
+    },
+    updating: {
+        vmFunctions: {
+            vms: [],
+
+            async executeInitializationView(code) {
+                const func = new Function(code);
+                await func();
+            },
+
+            async executeUpdateViewFunction(vmKey, vmJson) {
+                const vm = JSON.parse(vmJson);
+                const func = this.vms[vmKey];
+                await func(vm);
+            },
+
+            getFullVMKey(vmKey) {
+                return vmUpdateFunctionKeyPrefix + vmKey;
+            },
+
+            getFunctionsCodeFromVersion(vmKey, version) {
+                if (!vmKey || !version)
+                    throw new VitrauxInternalError("vmKey and version must be set in isVersionedUpdateViewFunctionRegenerationNeeded!");
+
+                const vmFuncObjJson = localStorage.getItem(this.getFullVMKey(vmKey))
+
+                if (!vmFuncObjJson)
+                    return {};
+
+                const vmFuncObj = JSON.parse(vmFuncObjJson);
+
+                return (vmFuncObj.version === version) ? vmFuncObj : {};
+            },
+
+            tryCreateVersionedUpdateViewFunction(vmKey, version) {
+                if (!version)
+                    throw new VitrauxInternalError("Version must be set in createVersionedUpdateViewFunction!");
+
+                const functionCodes = this.getFunctionsCodeFromVersion(vmKey, version);
+
+                if (!functionCodes)
+                    return false;
+
+                this.executeInitializationView(functionCodes.initializationCode);
+                this.createUpdateViewFunction(vmKey, code);
+                this.storeFunctions(vmKey, version, functionCodes.initializationCode, functionCodes.updateViewCode);
+
+                return true;
+            },
+
+            createUpdateViewFunction(vmKey, code) {
+                this.vms[vmKey] = new Function("vm", code);
+            },
+
+            storeFunctions(vmKey, version, initializationCode, updateViewCode) {
+                const vmFuncObj = {
+                    initializationCode: initializationCode,
+                    updateViewCode: updateViewCode,
+                    version: version
+                };
+
+                localStorage.setItem(this.getFullVMKey(vmKey), JSON.stringify(vmFuncObj));
+            }
+        },
+        dom: {
+            setElementsContent(elements, content) {
+                for (const element of elements)
+                    element.textContent = content;
+            },
+
+            setElementsAttribute(elements, attribute, value) {
+                for (const element of elements)
+                    element.setAttribute(attribute, value);
+            },
+
+            updateValueByInsertingElements(elementToInsert, appendToElements, queryChildrenFunction, updateChildElementsFunction) {
+                if (!elementToInsert)
+                    return;
+
+                for (const appendToElement of appendToElements) {
+                    const clonedElement = elementToInsert.cloneNode(true);
+                    const targetChildElements = queryChildrenFunction(clonedElement);
+                    updateChildElementsFunction(targetChildElements);
+
+                    this.appendOnlyChild(appendToElement, clonedElement);
+                }
+            },
+
+            async updateTable(tables, rowToInsert, updateCallback, collection) {
+                for (const table of tables) {
+                    const newTbody = document.createElement("tbody");
+
+                    for (const collectionItem of collection) {
+                        await this.addNewRow(newTbody, rowToInsert, updateCallback, collectionItem);
+                    }
+
+                    table.tBodies[0].replaceWith(newTbody);
+                }
+            },
+
+            async updateCollectionByPopulatingElements(appendToElements, elementToInsert, updateCallback, collection) {
+                for (const appendToElement of appendToElements) {
+
+                    const newElements = [];
+
+                    for (const collectionItem of collection) {
+                        const newElement = await this.updateCollectionElement(elementToInsert, updateCallback, collectionItem);
+                        newElements.push(newElement);
+                    }
+
+                    this.replaceChildren(appendToElement, newElements);
+                }
+            },
+
+            async addNewRow(tbody, row, updateCallback, collectionItem) {
+                const newElement = await this.updateCollectionElement(row, updateCallback, collectionItem)
+                tbody.appendChild(newElement);
+            },
+
+            async updateCollectionElement(elementToInsert, updateCallback, collectionItem) {
+                const clonedElement = elementToInsert.cloneNode(true);
+                await updateCallback(clonedElement, collectionItem);
+
+                return clonedElement;
+            },
+
+            replaceChildren(parentElement, childElements) {
+                const rootElement = this.tryAttachShadow(parentElement);
+                rootElement.replaceChildren(...childElements);
+            },
+
+            appendOnlyChild(parentElement, childElement) {
+                this.replaceChildren(parentElement, [childElement]);
+            },
+
+            tryAttachShadow(element) {
+                return this.supportShadowDom(element)
+                    ? this.getAttachedShadow(element)
+                    : element;
+            },
+
+            getAttachedShadow(element) {
+                return (!element.shadowRoot)
+                    ? element.attachShadow({ mode: "open" })
+                    : element.shadowRoot;
+            },
+
+            supportShadowDom(element) {
+                if (!element || element.nodeType !== Node.ELEMENT_NODE)
+                    return false;
+
+                if (element.shadowRoot)
+                    return true;
+
+                const supportedTagNames = new Set([
+                    "article",
+                    "aside",
+                    "blockquote",
+                    "body",
+                    "div",
+                    "footer",
+                    "h1",
+                    "h2",
+                    "h3",
+                    "h4",
+                    "h5",
+                    "h6",
+                    "header",
+                    "main",
+                    "nav",
+                    "p",
+                    "section",
+                    "span"]);
+
+                const tag = element.tagName.toLowerCase();
+
+                return supportedTagNames.has(tag) || (tag.includes('-') && customElements.get(tag));
+            }
+        }
+    }
+};

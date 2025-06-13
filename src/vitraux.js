@@ -95,7 +95,7 @@ globalThis.vitraux = {
     },
     updating: {
         vmFunctions: {
-            vms: {},
+            vms: [],
 
             async executeInitializationView(code) {
                 const func = new Function(code);
@@ -115,7 +115,7 @@ globalThis.vitraux = {
                 if (!vmFuncObjJson)
                     return true;
 
-                const vmFuncObj = JSON.parse(funcObjJson);
+                const vmFuncObj = JSON.parse(vmFuncObjJson);
 
                 return (vmFuncObj.version !== version);
             },
@@ -143,7 +143,7 @@ globalThis.vitraux = {
 
             async executeUpdateViewFunction(vmKey, vmJson) {
                 const vm = JSON.parse(vmJson);
-                const func = this.vms[vmKey].function;
+                const func = this.vms[vmKey];
                 await func(vm);
             },
         },
