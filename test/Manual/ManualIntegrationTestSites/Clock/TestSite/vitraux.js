@@ -119,16 +119,16 @@ globalThis.vitraux = {
                 const vmFuncObjJson = localStorage.getItem(this.getFullVMKey(vmKey))
 
                 if (!vmFuncObjJson)
-                    return {};
+                    return false;
 
                 const vmFuncObj = JSON.parse(vmFuncObjJson);
 
-                return (vmFuncObj.version === version) ? vmFuncObj : {};
+                return (vmFuncObj.version === version) ? vmFuncObj : false;
             },
 
-            tryCreateVersionedUpdateViewFunction(vmKey, version) {
+            tryInitializeViewFunctionsFromCacheByVersion(vmKey, version) {
                 if (!version)
-                    throw new VitrauxInternalError("Version must be set in createVersionedUpdateViewFunction!");
+                    throw new VitrauxInternalError("Version must be set in tryInitializeViewFunctionsFromCacheByVersion!");
 
                 const functionCodes = this.getFunctionsCodeFromVersion(vmKey, version);
 
@@ -136,10 +136,25 @@ globalThis.vitraux = {
                     return false;
 
                 this.executeInitializationView(functionCodes.initializationCode);
-                this.createUpdateViewFunction(vmKey, code);
-                this.storeFunctions(vmKey, version, functionCodes.initializationCode, functionCodes.updateViewCode);
+                this.createUpdateViewFunction(vmKey, functionCodes.updateViewCode);
 
                 return true;
+            },
+
+            initializeNewViewFunctionsToCacheByVersion(vmKey, version, initializationCode, updateViewCode) {
+                if (!version)
+                    throw new VitrauxInternalError("Version must be set in initializeNewViewFunctionsToCacheByVersion!");
+
+                this.executeInitializationView(initializationCode);
+                this.createUpdateViewFunction(vmKey, updateViewCode);
+                this.storeFunctions(vmKey, version, initializationCode, updateViewCode);
+
+                return true;
+            },
+
+            InitializeNonCachedViewFunctions(vmKey, initializationCode, updateViewCode) {
+                this.executeInitializationView(initializationCode);
+                this.createUpdateViewFunction(vmKey, updateViewCode);
             },
 
             createUpdateViewFunction(vmKey, code) {
