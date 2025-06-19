@@ -2,6 +2,9 @@
 
 internal class NotImplementedCaseGuard : INotImplementedCaseGuard
 {
-    public T ThrowException<T>(object obj)
+    public TRet ThrowException<TRet>(object obj)
         => throw new NotImplementedException($"Case for type {obj.GetType().Name} not implemented. See StackTrace.");
+
+    public void ThrowException(object obj)
+        => _ = ThrowException<object>(obj);
 }

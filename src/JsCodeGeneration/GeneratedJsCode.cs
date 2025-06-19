@@ -2,4 +2,4 @@
 
 namespace Vitraux.JsCodeGeneration;
 
-internal record class GeneratedJsCode(string InitializeViewJs, UpdateViewInfo UpdateViewInfo);
+internal record class GeneratedJsCode(string InitializeViewJs, string UpdateViewJs);

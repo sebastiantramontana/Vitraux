@@ -1,13 +1,5 @@
-﻿using System.Buffers;
-using System.Collections;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using Vitraux.Execution.Serialization;
+﻿using Vitraux.Execution.Serialization;
 using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.Collections;
-using Vitraux.JsCodeGeneration.UpdateViews;
-using Vitraux.JsCodeGeneration.Values;
 using Vitraux.Test.Example;
 
 namespace Vitraux.Test.JsCodeGeneration;
@@ -198,18 +190,19 @@ public class JsGeneratorTest
 
         var modelMapper = new ModelMapper<PetOwner>();
         var data = petownerConfig.ConfigureMapping(modelMapper);
+        var allJsElementObjNames = RootJsGeneratorFactory.JsElementObjectNamesGenerator.Generate(string.Empty, data);
+        var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(data, allJsElementObjNames);
 
-        var generatedJsCode = sut.GenerateJs(data, queryElementStrategy);
+        var generatedJsCode = sut.GenerateJs(fullObjNames, allJsElementObjNames, queryElementStrategy);
         var expectedUpdateViewJs = expectedQueryElementsJs + Environment.NewLine + Environment.NewLine + expectedCommonUpdateViewJs;
 
-        Assert.Equal(expectedUpdateViewJs, generatedJsCode.UpdateViewInfo.JsCode);
+        Assert.Equal(expectedUpdateViewJs, generatedJsCode.UpdateViewJs);
         Assert.Equal(expectedInitializationJs, generatedJsCode.InitializeViewJs);
 
-        var serializationDataMapper = new SerializationDataMapper();
+        var serializationDataMapper = new EncodedSerializationDataMapper();
         var jsonSerializer = new ViewModelJsonSerializer();
 
-        var encodedViewModelSerializationData = serializationDataMapper.MapToEncoded(generatedJsCode.UpdateViewInfo.ViewModelSerializationData);
-
+        var encodedViewModelSerializationData = serializationDataMapper.MapToEncoded(fullObjNames);
         var serializedPetOwnerExampleJson = await jsonSerializer.Serialize(encodedViewModelSerializationData, PetOwnerExample);
 
         Assert.Equal(ExpectedPetOwnerExampleJson, serializedPetOwnerExampleJson);

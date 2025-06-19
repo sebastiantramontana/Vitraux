@@ -2,5 +2,5 @@
 
 internal interface IValuesJsCodeGenerationBuilder
 {
-    BuiltValueJs BuildJsCode(string parentObjectName, IEnumerable<FullValueObjectName> values);
+    string BuildJsCode(string parentObjectName, IEnumerable<FullValueObjectName> values);
 }

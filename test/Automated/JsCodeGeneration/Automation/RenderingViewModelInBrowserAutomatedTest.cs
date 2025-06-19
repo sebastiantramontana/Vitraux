@@ -55,12 +55,15 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
 
         var rootJsGenerator = RootJsGeneratorFactory.Create();
         var petOwnerMappingData = GetConfiguredPetOwnerMapping();
-        var generatedJsCode = rootJsGenerator.GenerateJs(petOwnerMappingData, queryElementStrategy);
+        var allJsElementObjNames = RootJsGeneratorFactory.JsElementObjectNamesGenerator.Generate(string.Empty, petOwnerMappingData);
+        var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(petOwnerMappingData, allJsElementObjNames);
+
+        var generatedJsCode = rootJsGenerator.GenerateJs(fullObjNames, allJsElementObjNames, queryElementStrategy);
 
         ExecuteScriptAsAwaitableFunction("initialize", [], [], generatedJsCode.InitializeViewJs, driver);
 
         //Act
-        ExecuteScriptAsAwaitableFunction("updateView", ["vm"], [GetPetownerJson()], generatedJsCode.UpdateViewInfo.JsCode, driver);
+        ExecuteScriptAsAwaitableFunction("updateView", ["vm"], [GetPetownerJson()], generatedJsCode.UpdateViewJs, driver);
 
         //Assert
         var renderedName = GetRenderedName(driver);
@@ -167,7 +170,7 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
             .FindElement(By.Id("petowner-phonenumber-id"))
             .Text;
 
-    private static IEnumerable<string> GetRenderedPhoneDataAttribute(IWebDriver driver)
+    private static ComparableEnumerable<string> GetRenderedPhoneDataAttribute(IWebDriver driver)
         => driver
             .FindElement(By.CssSelector(".petowner-phonenumber"))
             .GetShadowRoot()
@@ -176,7 +179,7 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
             .ToArray()
             .ToComparableEnumerable();
 
-    private static IEnumerable<RenderedPet> GetRenderedPets(IWebDriver driver)
+    private static ComparableEnumerable<RenderedPet> GetRenderedPets(IWebDriver driver)
         => driver
             .FindElements(By.CssSelector("#pets-table > tbody > tr"))
             .Select(tr => new RenderedPet(
@@ -188,7 +191,7 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
             .ToArray()
             .ToComparableEnumerable();
 
-    private static IEnumerable<string?> GetAnchorCellPetNames(IWebElement tr)
+    private static ComparableEnumerable<string?> GetAnchorCellPetNames(IWebElement tr)
     {
         var anchorCellPetNames = tr.FindElements(By.CssSelector(".anchor-cell-pet-name")).Select(e => e.GetDomAttribute("href")).ToArray().ToComparableEnumerable();
         var anotherAnchorCellPetName = tr.FindElement(By.CssSelector(".another-anchor-cell-pet-name")).GetDomAttribute("href");
@@ -196,7 +199,7 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
         return anchorCellPetNames.Append(anotherAnchorCellPetName).ToArray().ToComparableEnumerable();
     }
 
-    private static IEnumerable<RenderedVaccine> GetRenderedVaccines(IWebElement tr)
+    private static ComparableEnumerable<RenderedVaccine> GetRenderedVaccines(IWebElement tr)
         => tr
             .FindElements(By.CssSelector(".inner-table-vaccines > tbody > tr"))
             .Select(trv => new RenderedVaccine(
@@ -206,7 +209,7 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
             .ToArray()
             .ToComparableEnumerable();
 
-    private static IEnumerable<RenderedAntiparasitic> GetRenderedAntiparasitics(IWebElement tr)
+    private static ComparableEnumerable<RenderedAntiparasitic> GetRenderedAntiparasitics(IWebElement tr)
         => tr
             .FindElement(By.CssSelector(".inner-nav-antiparasitics"))
             .GetShadowRoot()

@@ -2,5 +2,6 @@
 
 internal interface INotImplementedCaseGuard
 {
-    T ThrowException<T>(object obj);
+    TRet ThrowException<TRet>(object obj);
+    void ThrowException(object obj);
 }

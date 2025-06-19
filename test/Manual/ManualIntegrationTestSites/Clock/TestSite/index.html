@@ -8,7 +8,10 @@
     <script>
         addEventListener("DOMContentLoaded", async () => {
             try {
+                const inicio = performance.now();
                 await Blazor.start();
+                const fin = performance.now();
+                console.log(`Inicializado en ${fin - inicio} milisegundos.`);
 
                 const clockWasm = await getClockWasm();
 

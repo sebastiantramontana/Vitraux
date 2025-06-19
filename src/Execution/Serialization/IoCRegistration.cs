@@ -6,6 +6,6 @@ internal static class IoCRegistration
 {
     internal static IServiceCollection AddSerialization(this IServiceCollection serviceCollection)
         => serviceCollection
-            .AddSingleton<ISerializationDataMapper, SerializationDataMapper>()
+            .AddSingleton<IEncodedSerializationDataMapper, EncodedSerializationDataMapper>()
             .AddSingleton<IViewModelJsonSerializer, ViewModelJsonSerializer>();
 }

@@ -6,6 +6,6 @@ internal static class IoCRegistration
 {
     internal static IServiceCollection AddJsObjectNames(this IServiceCollection serviceCollection)
         => serviceCollection
-            .AddSingleton<IJsObjectNamesGenerator, JsObjectNamesGenerator>()
+            .AddSingleton<IJsFullObjectNamesGenerator, JsFullObjectNamesGenerator>()
             .AddSingleton<IUniqueSelectorsFilter, UniqueSelectorsFilter>();
 }

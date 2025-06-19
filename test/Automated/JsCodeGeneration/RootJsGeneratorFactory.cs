@@ -22,6 +22,9 @@ namespace Vitraux.Test.JsCodeGeneration;
 
 internal static class RootJsGeneratorFactory
 {
+    internal static IJsFullObjectNamesGenerator JsFullObjectNamesGenerator { get; private set; } = default!;
+    internal static IJsElementObjectNamesGenerator JsElementObjectNamesGenerator { get; private set; } = default!;
+
     internal static RootJsGenerator Create()
     {
         var getElementByIdAsArrayCall = new GetElementByIdAsArrayCall();
@@ -39,12 +42,6 @@ internal static class RootJsGeneratorFactory
                                                                                                           getStoredTemplateCall,
                                                                                                           getFetchedElementCall,
                                                                                                           notImplementedCaseGuard);
-        var uniqueSelectorsFilter = new UniqueSelectorsFilter();
-        var elementNamesGenerator = new JsElementObjectNamesGenerator(notImplementedCaseGuard);
-        var valueNamesGenerator = new ValueNamesGenerator(notImplementedCaseGuard);
-        var collectionNamesGenerator = new CollectionNamesGenerator();
-        var jsObjectNamesGenerator = new JsObjectNamesGenerator(uniqueSelectorsFilter, elementNamesGenerator, valueNamesGenerator, collectionNamesGenerator);
-
         var codeFormatter = new CodeFormatter();
         var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(codeFormatter);
 
@@ -52,8 +49,14 @@ internal static class RootJsGeneratorFactory
                                                                        propertyCheckerJsCodeGeneration,
                                                                        codeFormatter,
                                                                        notImplementedCaseGuard);
+        var uniqueSelectorsFilter = new UniqueSelectorsFilter();
+        JsElementObjectNamesGenerator = new JsElementObjectNamesGenerator(uniqueSelectorsFilter, notImplementedCaseGuard);
 
-        var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter, jsObjectNamesGenerator);
+        var valueNamesGenerator = new ValueNamesGenerator(notImplementedCaseGuard);
+        var collectionNamesGenerator = new CollectionNamesGenerator();
+        JsFullObjectNamesGenerator = new JsFullObjectNamesGenerator(valueNamesGenerator, collectionNamesGenerator);
+
+        var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter, JsElementObjectNamesGenerator);
 
         var promiseJsGenerator = new PromiseJsGenerator();
         var updateViewJsGenerator = new UpdateViewJsGenerator(promiseJsGenerator,
@@ -67,7 +70,7 @@ internal static class RootJsGeneratorFactory
                                                                               notImplementedCaseGuard,
                                                                               promiseJsGenerator);
 
-        return new RootJsGenerator(jsObjectNamesGenerator, initializeJsGeneratorContext, updateViewJsGenerator);
+        return new RootJsGenerator(initializeJsGeneratorContext, updateViewJsGenerator);
     }
 
     private static QueryElementsJsCodeGeneratorContext CreateQueryElementsJsCodeGeneratorByStrategyContext(
@@ -96,7 +99,7 @@ internal static class RootJsGeneratorFactory
         return new QueryElementsJsCodeGeneratorContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
     }
 
-    private static ICollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter, IJsObjectNamesGenerator jsObjectNamesGenerator)
+    private static CollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter, IJsElementObjectNamesGenerator jsObjectNamesGenerator)
     {
         var functionNameGenerator = new CollectionUpdateFunctionNameGenerator();
         var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(functionNameGenerator, codeFormatter, jsObjectNamesGenerator);
@@ -107,7 +110,7 @@ internal static class RootJsGeneratorFactory
         return new CollectionsJsGenerationBuilder(propertyCheckerJsCodeGeneration, updateCollectionJsCodeGenerator);
     }
 
-    private static IValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(
+    private static ValuesJsCodeGenerationBuilder CreateValuesJsCodeGenerationBuilder(
         IGetElementsByQuerySelectorCall getElementsByQuerySelectorCall,
         IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration,
         ICodeFormatter codeFormatter,
@@ -130,7 +133,7 @@ internal static class RootJsGeneratorFactory
         return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
     }
 
-    private static IInitializeJsGeneratorContext CreateInitializeJsGeneratorContext(
+    private static InitializeJsGeneratorContext CreateInitializeJsGeneratorContext(
         IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
         IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
         IGetStoredTemplateCall getStoredTemplateCall,
@@ -141,10 +144,11 @@ internal static class RootJsGeneratorFactory
         var onlyOnceAtStartInitializeJsGenerator = CreateOnlyOnceAtStartInitializeJsGenerator(getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall, getStoredTemplateCall, getFetchedElementCall, notImplementedCaseGuard);
         var onlyOnceOnDemandInitializeJsGenerator = CreateOnlyOnceOnDemandInitializeJsGenerator(promiseJsGenerator);
         var alwaysInitializeJsGenerator = CreateAlwaysInitializeJsGenerator(promiseJsGenerator);
+
         return new InitializeJsGeneratorContext(onlyOnceAtStartInitializeJsGenerator, onlyOnceOnDemandInitializeJsGenerator, alwaysInitializeJsGenerator, notImplementedCaseGuard);
     }
 
-    private static IOnlyOnceAtStartInitializeJsGenerator CreateOnlyOnceAtStartInitializeJsGenerator(
+    private static OnlyOnceAtStartInitializeJsGenerator CreateOnlyOnceAtStartInitializeJsGenerator(
         IGetStoredElementByIdAsArrayCall getStoredElementByIdAsArrayCall,
         IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
         IGetStoredTemplateCall getStoredTemplateCall,
@@ -161,7 +165,6 @@ internal static class RootJsGeneratorFactory
         var storageElementJsLineGeneratorInsertElementsByTemplate = new StorageElementJsLineGeneratorInsertElementsByTemplate(storageElementJsLineGeneratorByTemplate, notImplementedCaseGuard);
         var storageElementJsLineGeneratorInsertElementsByUri = new StorageElementJsLineGeneratorInsertElementsByUri(storageElementJsLineGeneratorByUri, notImplementedCaseGuard);
 
-
         var jsLineGeneratorCollectionByTemplate = new StorageElementCollectionJsLineGeneratorByTemplate(storageElementJsLineGeneratorByTemplate, notImplementedCaseGuard);
         var jsLineGeneratorCollectionByUri = new StorageElementCollectionJsLineGeneratorByUri(storageElementJsLineGeneratorByUri, notImplementedCaseGuard);
         var storageElementCollectionLineGenerator = new StorageElementCollectionJsLineGenerator(jsLineGeneratorCollectionByTemplate, jsLineGeneratorCollectionByUri, notImplementedCaseGuard);
@@ -177,11 +180,11 @@ internal static class RootJsGeneratorFactory
         return new OnlyOnceAtStartInitializeJsGenerator(storageElementValueLineGenerator, storageElementCollectionLineGenerator, promiseJsGenerator, notImplementedCaseGuard);
     }
 
-    private static IOnlyOnceOnDemandInitializeJsGenerator CreateOnlyOnceOnDemandInitializeJsGenerator(IPromiseJsGenerator promiseJsGenerator)
-        => new OnlyOnceOnDemandInitializeJsGenerator(promiseJsGenerator);
+    private static OnlyOnceOnDemandInitializeJsGenerator CreateOnlyOnceOnDemandInitializeJsGenerator(IPromiseJsGenerator promiseJsGenerator)
+        => new(promiseJsGenerator);
 
-    private static IAlwaysInitializeJsGenerator CreateAlwaysInitializeJsGenerator(IPromiseJsGenerator promiseJsGenerator)
-        => new AlwaysInitializeJsGenerator(promiseJsGenerator);
+    private static AlwaysInitializeJsGenerator CreateAlwaysInitializeJsGenerator(IPromiseJsGenerator promiseJsGenerator)
+        => new(promiseJsGenerator);
 
     private static QueryElementsOnlyOnceAtStartJsGenerator CreateAtStartGenerator(IQueryElementsJsGenerator builder)
     {

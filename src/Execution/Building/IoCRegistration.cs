@@ -8,6 +8,7 @@ internal static class IoCRegistration
     internal static IServiceCollection AddBuilding(this IServiceCollection serviceCollection)
         => serviceCollection
             .AddSingleton<IVitrauxBuilder, VitrauxBuilder>()
-            .AddSingleton<IJsCreateUpdateFunctionInvoker, JsCreateUpdateFunctionInvoker>()
-            .AddSingleton<IJsInitializationInvoker, JsInitializationInvoker>();
+            .AddSingleton<IJsInitializeNonCachedViewFunctionsInvoker, JsInitializeNonCachedViewFunctionsInvoker>()
+            .AddSingleton<IJsTryInitializeViewFunctionsFromCacheByVersionInvoker, JsTryInitializeViewFunctionsFromCacheByVersionInvoker>()
+            .AddSingleton<IJsInitializeNewViewFunctionsToCacheByVersionInvoker, JsInitializeNewViewFunctionsToCacheByVersionInvoker>();
 }

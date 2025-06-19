@@ -11,18 +11,16 @@ internal class UpdateCollectionJsCodeGenerator(
     IUpdateCollectionFunctionCallbackJsCodeGenerator callbackJsCodeGenerator)
     : IUpdateCollectionJsCodeGenerator
 {
-    public GeneratedUpdateCollectionJs GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator)
+    public string GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator)
     {
         var callbackInfo = callbackJsCodeGenerator.GenerateJs(parentObjectName, collectionObjectName, elementObjectPairNames, updateViewJsGenerator);
         var updateCall = GetUpdateCall(elementObjectPairNames, parentObjectName, collectionObjectName, callbackInfo.FunctionName);
 
-        var updateCollectionjsCode = new StringBuilder()
-                                        .AppendLine(callbackInfo.JsCode)
-                                        .AppendLine()
-                                        .Append(updateCall)
-                                        .ToString();
-
-        return new(updateCollectionjsCode, callbackInfo.ViewModelSerializationData);
+        return new StringBuilder()
+                    .AppendLine(callbackInfo.JsCode)
+                    .AppendLine()
+                    .Append(updateCall)
+                    .ToString();
     }
 
     private string GetUpdateCall(JsCollectionElementObjectPairNames elementObjectPairNames, string parentObjectName, string collectionObjectName, string updateFunctionCallbackName)
@@ -38,6 +36,3 @@ internal class UpdateCollectionJsCodeGenerator(
     private static string CreateFullCollectionObjectName(string parentObjectName, string collectionObjectName)
         => $"{parentObjectName}.{collectionObjectName}";
 }
-
-
-

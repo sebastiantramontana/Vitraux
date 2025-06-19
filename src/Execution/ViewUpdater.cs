@@ -11,7 +11,9 @@ internal class ViewUpdater<TViewModel>(
     public async Task Update(TViewModel viewModel)
     {
         if (viewModel is null)
+        {
             return;
+        }
 
         var viewModelSerializationData = objectNamesRepository.ViewModelSerializationData;
         var serializedViewModelJson = await jsonSerializer.Serialize(viewModelSerializationData, viewModel);

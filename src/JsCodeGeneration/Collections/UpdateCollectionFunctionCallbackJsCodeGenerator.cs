@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.Formating;
-using Vitraux.JsCodeGeneration.JsObjectNames;
+using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.UpdateViews;
 
 namespace Vitraux.JsCodeGeneration.Collections;
@@ -8,7 +8,7 @@ namespace Vitraux.JsCodeGeneration.Collections;
 internal class UpdateCollectionFunctionCallbackJsCodeGenerator(
     ICollectionUpdateFunctionNameGenerator collectionUpdateFunctionNameGenerator,
     ICodeFormatter codeFormatter,
-    IJsObjectNamesGenerator jsObjectNamesGenerator)
+    IJsElementObjectNamesGenerator jsElementObjectNamesGenerator)
     : IUpdateCollectionFunctionCallbackJsCodeGenerator
 {
     const string CollectionItemObjectName = "item";
@@ -16,22 +16,25 @@ internal class UpdateCollectionFunctionCallbackJsCodeGenerator(
 
     public UpdateCollectionFunctionCallbackInfo GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator)
     {
-        var functionName = collectionUpdateFunctionNameGenerator.Generate();
-        var elementNamePrefix = $"{parentObjectName.Replace('.', '_')}_{collectionObjectName}";
-        var objectNamesGroup = jsObjectNamesGenerator.Generate(elementObjectPairNames.Target.Data, elementNamePrefix);
+        var elementNamePrefix = GenerateElementNamePrefix(parentObjectName, collectionObjectName);
+        var allJsElementObjectNames = jsElementObjectNamesGenerator.Generate(elementNamePrefix, elementObjectPairNames.Target.Data);
 
-        var generatedJs = updateViewJsGenerator.GenerateJs(QueryElementStrategy.Always, objectNamesGroup, CollectionItemObjectName, ParentElementObjectName);
+        var generatedJs = updateViewJsGenerator.GenerateJs(QueryElementStrategy.Always, elementObjectPairNames.Children, allJsElementObjectNames, CollectionItemObjectName, ParentElementObjectName);
+        var functionName = collectionUpdateFunctionNameGenerator.Generate();
 
         var jsCode = new StringBuilder()
             .AppendLine(GenerateFunctionHeader(functionName))
             .AppendLine("{")
-            .AppendLine(codeFormatter.Indent(generatedJs.JsCode))
+            .AppendLine(codeFormatter.Indent(generatedJs))
             .Append('}')
             .ToString();
 
-        return new(functionName, jsCode, generatedJs.ViewModelSerializationData);
+        return new(functionName, jsCode);
     }
 
-    private static string GenerateFunctionHeader(string functionName) 
+    private static string GenerateFunctionHeader(string functionName)
         => $"const {functionName} = async ({ParentElementObjectName}, {CollectionItemObjectName}) =>";
+
+    private static string GenerateElementNamePrefix(string parentObjectName, string collectionObjectName)
+        => $"{parentObjectName.Replace('.', '_')}_{collectionObjectName}";
 }

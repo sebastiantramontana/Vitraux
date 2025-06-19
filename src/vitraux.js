@@ -148,11 +148,9 @@ globalThis.vitraux = {
                 this.executeInitializationView(initializationCode);
                 this.createUpdateViewFunction(vmKey, updateViewCode);
                 this.storeFunctions(vmKey, version, initializationCode, updateViewCode);
-
-                return true;
             },
 
-            InitializeNonCachedViewFunctions(vmKey, initializationCode, updateViewCode) {
+            initializeNonCachedViewFunctions(vmKey, initializationCode, updateViewCode) {
                 this.executeInitializationView(initializationCode);
                 this.createUpdateViewFunction(vmKey, updateViewCode);
             },

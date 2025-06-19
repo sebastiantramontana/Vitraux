@@ -1,4 +1,5 @@
-﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
+﻿using System.Diagnostics.CodeAnalysis;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Values.Root;
 using Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Implementations.ElementBuilders.Values.Root;
@@ -7,6 +8,7 @@ using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
 internal class ModelMapper<TViewModel> : IModelMapper<TViewModel>
 {
     public IRootValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func)

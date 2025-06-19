@@ -1,60 +1,75 @@
 ﻿using Vitraux.Execution.Building.JsViewUpdatingInvokation;
 using Vitraux.Execution.Serialization;
+using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
-using Vitraux.JsCodeGeneration.UpdateViews;
+using Vitraux.JsCodeGeneration.JsObjectNames;
+using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
 namespace Vitraux.Execution.Building;
 
 internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
     IModelConfiguration<TViewModel> modelConfiguration,
     IModelMapper<TViewModel> modelMapper,
+    IJsFullObjectNamesGenerator jsFullObjectNamesGenerator,
+    IJsElementObjectNamesGenerator jsElementObjectNamesGenerator,
     IRootJsGenerator rootJsGenerator,
-    IJsInitializationInvoker jsInitializationExecutor,
-    IJsIsVersionedUpdateViewFunctionRebuildNeededInvoker jsIsVersionedUpdateViewFunctionRebuildNeededInvoker,
-    IJsCreateUpdateFunctionInvoker jsCreateUpdateFunctionExecutor,
-    ISerializationDataMapper serializationDataMapper,
-    IViewModelSerializationDataCache<TViewModel> vmSerializationDataCache)
+    IJsInitializeNonCachedViewFunctionsInvoker jsInitializeNonCachedViewFunctionsInvoker,
+    IJsTryInitializeViewFunctionsFromCacheByVersionInvoker jsTryInitializeViewFunctionsFromCacheByVersionInvoker,
+    IJsInitializeNewViewFunctionsToCacheByVersionInvoker jsinitializeNewViewFunctionsToCacheByVersionInvoker,
+    IEncodedSerializationDataMapper encodedSerializationDataMapper,
+    IViewModelSerializationDataCache<TViewModel> vmSerializationDataCache,
+    INotImplementedCaseGuard notImplementedCaseGuard)
     : IViewModelUpdateFunctionBuilder
     where TModelConfiguration : class, IModelConfiguration<TViewModel>
 {
     public async Task Build()
     {
-        var mappingData = modelConfiguration.ConfigureMapping(modelMapper);
-        var behavior = modelConfiguration.ConfigurationBehavior;
-        var generatedJs = rootJsGenerator.GenerateJs(mappingData, behavior.QueryElementStrategy);
         var vmKey = GenerateViewModelKey();
+        var behavior = modelConfiguration.ConfigurationBehavior;
+        var mappingData = modelConfiguration.ConfigureMapping(modelMapper);
 
-        StoreSerializationData(vmKey, generatedJs.UpdateViewInfo.ViewModelSerializationData);
+        var jsObjElementNames = jsElementObjectNamesGenerator.Generate(string.Empty, mappingData);
+        var fullObjNames = jsFullObjectNamesGenerator.Generate(mappingData, jsObjElementNames);
 
-        await jsInitializationExecutor.Execute(generatedJs.InitializeViewJs);
-        await CreateUpdateFunction(behavior.VMUpdateFunctionCaching, vmKey, generatedJs.UpdateViewInfo.JsCode);
-    }
+        StoreSerializationData(vmKey, fullObjNames);
 
-    private void StoreSerializationData(string vmKey, ViewModelSerializationData serializationData)
-    {
-        vmSerializationDataCache.ViewModelKey = vmKey;
-        vmSerializationDataCache.ViewModelSerializationData = serializationDataMapper.MapToEncoded(serializationData);
-    }
-
-    private ValueTask CreateUpdateFunction(VMUpdateFunctionCaching vmUpdateFunctionCaching, string vmKey, string jsCode)
-        => vmUpdateFunctionCaching switch
+        switch (behavior.VMUpdateFunctionCaching)
         {
-            VMUpdateFunctionNoCache => CreateUpdateFunctionNoCache(vmKey, jsCode),
-            VMUpdateFunctionCacheByVersion cacheVersion => TryCreateUpdateFunctionVersionCached(vmKey, cacheVersion.Version, jsCode),
-            _ => throw new NotSupportedException($"Unsupported VMUpdateFunctionCaching: {vmUpdateFunctionCaching}")
-        };
-
-    private async ValueTask TryCreateUpdateFunctionVersionCached(string vmKey, string version, string jsCode)
-    {
-        var isRebuildNeeded = await jsIsVersionedUpdateViewFunctionRebuildNeededInvoker.IsRebuildNeeded(vmKey, version);
-        if (isRebuildNeeded)
-        {
-            await jsCreateUpdateFunctionExecutor.InvokeVersionCached(vmKey, version, jsCode);
+            case VMUpdateFunctionNoCache:
+                InvokeInitializationViewFunctionsNoCache(vmKey, fullObjNames, jsObjElementNames, behavior.QueryElementStrategy);
+                break;
+            case VMUpdateFunctionCacheByVersion cacheByVersion:
+                await InvokeInitializationViewFunctionsByVersion(vmKey, cacheByVersion.Version, fullObjNames, jsObjElementNames, behavior.QueryElementStrategy);
+                break;
+            default:
+                notImplementedCaseGuard.ThrowException(behavior.VMUpdateFunctionCaching);
+                break;
         }
     }
 
-    private ValueTask CreateUpdateFunctionNoCache(string vmKey, string jsCode)
-        => jsCreateUpdateFunctionExecutor.InvokeNoCache(vmKey, jsCode);
+    private void StoreSerializationData(string vmKey, FullObjectNames fullObjectNames)
+    {
+        vmSerializationDataCache.ViewModelKey = vmKey;
+        vmSerializationDataCache.ViewModelSerializationData = encodedSerializationDataMapper.MapToEncoded(fullObjectNames);
+    }
+
+    private GeneratedJsCode GenerateJsCode(FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)
+        => rootJsGenerator.GenerateJs(fullObjectNames, allJsElementObjectNames, queryElementStrategy);
+
+    private async ValueTask InvokeInitializationViewFunctionsByVersion(string vmKey, string version, FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)
+    {
+        if (!await jsTryInitializeViewFunctionsFromCacheByVersionInvoker.Invoke(vmKey, version))
+        {
+            var generatedJsCode = GenerateJsCode(fullObjectNames, allJsElementObjectNames, queryElementStrategy);
+            jsinitializeNewViewFunctionsToCacheByVersionInvoker.Invoke(vmKey, version, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
+        }
+    }
+
+    private void InvokeInitializationViewFunctionsNoCache(string vmKey, FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)
+    {
+        var generatedJsCode = GenerateJsCode(fullObjectNames, allJsElementObjectNames, queryElementStrategy);
+        jsInitializeNonCachedViewFunctionsInvoker.Invoke(vmKey, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
+    }
 
     private static string GenerateViewModelKey()
         => typeof(TViewModel).FullName!.Replace('.', '-');

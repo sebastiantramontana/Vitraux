@@ -6,7 +6,6 @@ using Vitraux.JsCodeGeneration.UpdateViews;
 namespace Vitraux.JsCodeGeneration;
 
 internal class RootJsGenerator(
-    IJsObjectNamesGenerator jsObjectNamesGenerator,
     IInitializeJsGeneratorContext initializeJsGeneratorContext,
     IUpdateViewJsGenerator updateViewJsGenerator)
     : IRootJsGenerator
@@ -14,16 +13,15 @@ internal class RootJsGenerator(
     private const string ParentObjectName = "vm";
     private const string ParentElementObjectName = "document";
 
-    public GeneratedJsCode GenerateJs(ModelMappingData modelMappingData, QueryElementStrategy queryElementStrategy)
+    public GeneratedJsCode GenerateJs(FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)
     {
-        var objectNamesGrouping = jsObjectNamesGenerator.Generate(modelMappingData, string.Empty);
-        var initializeViewJs = GenerateInitializeViewJsCode(queryElementStrategy, objectNamesGrouping.AllJsElementObjectNames, ParentElementObjectName);
-        var updateViewInfo = updateViewJsGenerator.GenerateJs(queryElementStrategy, objectNamesGrouping, ParentObjectName, ParentElementObjectName);
+        var initializeViewJs = GenerateInitializeViewJsCode(queryElementStrategy, allJsElementObjectNames, ParentElementObjectName);
+        var updateViewInfo = updateViewJsGenerator.GenerateJs(queryElementStrategy, fullObjectNames, allJsElementObjectNames, ParentObjectName, ParentElementObjectName);
 
         return new(initializeViewJs, updateViewInfo);
     }
 
-    private String GenerateInitializeViewJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsElementObjectNames, string parentElementObjectName)
+    private string GenerateInitializeViewJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsElementObjectNames, string parentElementObjectName)
         => initializeJsGeneratorContext.GetStrategy(strategy)
                 .GenerateJs(allJsElementObjectNames, parentElementObjectName)
                 .TrimEnd();

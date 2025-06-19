@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 using Vitraux.Execution;
 using Vitraux.Execution.Building;
 using Vitraux.Execution.Serialization;
@@ -7,7 +8,7 @@ namespace Vitraux;
 
 internal class ModelRegistrar(IServiceCollection container) : IModelRegistrar
 {
-    public IModelRegistrar AddModelConfiguration<TViewModel, TModelConfiguration>()
+    public IModelRegistrar AddModelConfiguration<TViewModel, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TModelConfiguration>()
         where TModelConfiguration : class, IModelConfiguration<TViewModel>
     {
         _ = container
