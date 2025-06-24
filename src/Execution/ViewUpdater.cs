@@ -1,10 +1,11 @@
 ﻿using Vitraux.Execution.JsInvokers;
 using Vitraux.Execution.Serialization;
+using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution;
 
 internal class ViewUpdater<TViewModel>(
-    IViewModelSerializationDataCache<TViewModel> objectNamesRepository,
+    IViewModelJsNamesCache<TViewModel> objectNamesRepository,
     IViewModelJsonSerializer jsonSerializer,
     IJsExecuteUpdateViewFunctionInvoker jsExecuteUpdateView) 
     : IViewlUpdater<TViewModel>

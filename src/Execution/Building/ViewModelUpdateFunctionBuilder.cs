@@ -1,5 +1,5 @@
 ﻿using Vitraux.Execution.JsInvokers;
-using Vitraux.Execution.Serialization;
+using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
 using Vitraux.JsCodeGeneration.JsObjectNames;
@@ -16,8 +16,8 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
     IJsInitializeNonCachedViewFunctionsInvoker jsInitializeNonCachedViewFunctionsInvoker,
     IJsTryInitializeViewFunctionsFromCacheByVersionInvoker jsTryInitializeViewFunctionsFromCacheByVersionInvoker,
     IJsInitializeNewViewFunctionsToCacheByVersionInvoker jsinitializeNewViewFunctionsToCacheByVersionInvoker,
-    IEncodedSerializationDataMapper encodedSerializationDataMapper,
-    IViewModelSerializationDataCache<TViewModel> vmSerializationDataCache,
+    IViewModelJsNamesMapper encodedSerializationDataMapper,
+    IViewModelJsNamesCache<TViewModel> vmSerializationDataCache,
     INotImplementedCaseGuard notImplementedCaseGuard)
     : IViewModelUpdateFunctionBuilder
     where TModelConfiguration : class, IModelConfiguration<TViewModel>
@@ -50,7 +50,7 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
     private void StoreSerializationData(string vmKey, FullObjectNames fullObjectNames)
     {
         vmSerializationDataCache.ViewModelKey = vmKey;
-        vmSerializationDataCache.ViewModelSerializationData = encodedSerializationDataMapper.MapToEncoded(fullObjectNames);
+        vmSerializationDataCache.ViewModelSerializationData = encodedSerializationDataMapper.MapFromFull(fullObjectNames);
     }
 
     private GeneratedJsCode GenerateJsCode(FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)

@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Vitraux.Execution;
 using Vitraux.Execution.Building;
-using Vitraux.Execution.Serialization;
+using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux;
 
@@ -14,7 +14,7 @@ internal class ModelRegistrar(IServiceCollection container) : IModelRegistrar
         _ = container
             .AddSingleton<IModelMapper<TViewModel>, ModelMapper<TViewModel>>()
             .AddSingleton<IModelConfiguration<TViewModel>, TModelConfiguration>()
-            .AddSingleton<IViewModelSerializationDataCache<TViewModel>, ViewModelSerializationDataCache<TViewModel>>()
+            .AddSingleton<IViewModelJsNamesCache<TViewModel>, ViewModelJsNamesCache<TViewModel>>()
             .AddSingleton<IViewModelUpdateFunctionBuilder, ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>>()
             .AddSingleton<IViewlUpdater<TViewModel>, ViewUpdater<TViewModel>>();
 

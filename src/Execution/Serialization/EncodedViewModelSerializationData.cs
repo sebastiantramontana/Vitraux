@@ -1,3 +1,0 @@
-﻿namespace Vitraux.Execution.Serialization;
-
-internal record class EncodedViewModelSerializationData(IEnumerable<EncodedValueViewModelSerializationData> ValueProperties, IEnumerable<EncodedCollectionViewModelSerializationData> CollectionProperties);

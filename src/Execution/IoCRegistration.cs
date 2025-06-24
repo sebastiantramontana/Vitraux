@@ -2,6 +2,7 @@
 using Vitraux.Execution.Building;
 using Vitraux.Execution.JsInvokers;
 using Vitraux.Execution.Serialization;
+using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution;
 
@@ -11,5 +12,6 @@ internal static class IoCRegistration
         => serviceCollection
             .AddSerialization()
             .AddBuilding()
-            .AddInvokers();
+            .AddInvokers()
+            .AddViewModelNames();
 }

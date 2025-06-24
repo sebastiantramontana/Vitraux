@@ -3,12 +3,13 @@ using System.Collections;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution.Serialization;
 
 internal class ViewModelJsonSerializer : IViewModelJsonSerializer
 {
-    public async Task<string> Serialize(EncodedViewModelSerializationData viewModelSerializationData, object viewModel)
+    public async Task<string> Serialize(ViewModelJsNames viewModelSerializationData, object viewModel)
     {
         var buffer = new ArrayBufferWriter<byte>();
         await using var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions
@@ -29,20 +30,20 @@ internal class ViewModelJsonSerializer : IViewModelJsonSerializer
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
-    private static void SerializeObjectToJson(EncodedViewModelSerializationData viewModelSerializationData, object obj, Utf8JsonWriter utf8JsonWriter)
+    private static void SerializeObjectToJson(ViewModelJsNames viewModelSerializationData, object obj, Utf8JsonWriter utf8JsonWriter)
     {
         utf8JsonWriter.WriteStartObject();
         SerializePropertiesToJson(viewModelSerializationData, obj, utf8JsonWriter);
         utf8JsonWriter.WriteEndObject();
     }
 
-    private static void SerializePropertiesToJson(EncodedViewModelSerializationData viewModelSerializationData, object obj, Utf8JsonWriter utf8JsonWriter)
+    private static void SerializePropertiesToJson(ViewModelJsNames viewModelSerializationData, object obj, Utf8JsonWriter utf8JsonWriter)
     {
         SerializeValuesToJson(viewModelSerializationData.ValueProperties, obj, utf8JsonWriter);
         SerializeCollectionsToJson(viewModelSerializationData.CollectionProperties, obj, utf8JsonWriter);
     }
 
-    private static void SerializeValuesToJson(IEnumerable<EncodedValueViewModelSerializationData> values, object obj, Utf8JsonWriter utf8JsonWriter)
+    private static void SerializeValuesToJson(IEnumerable<ViewModelJsValueName> values, object obj, Utf8JsonWriter utf8JsonWriter)
     {
         foreach (var value in values)
         {
@@ -50,7 +51,7 @@ internal class ViewModelJsonSerializer : IViewModelJsonSerializer
         }
     }
 
-    private static void SerializeValueToJson(EncodedValueViewModelSerializationData value, object obj, Utf8JsonWriter utf8JsonWriter)
+    private static void SerializeValueToJson(ViewModelJsValueName value, object obj, Utf8JsonWriter utf8JsonWriter)
     {
         var retValue = value.ValuePropertyValueDelegate.DynamicInvoke(obj);
         SerializeObjectValueToJson(value.ValuePropertyName, retValue, utf8JsonWriter);
@@ -91,7 +92,7 @@ internal class ViewModelJsonSerializer : IViewModelJsonSerializer
             type == typeof(TimeOnly) ||
             (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
 
-    private static void SerializeCollectionsToJson(IEnumerable<EncodedCollectionViewModelSerializationData> collections, object obj, Utf8JsonWriter utf8JsonWriter)
+    private static void SerializeCollectionsToJson(IEnumerable<ViewModelJsCollectionName> collections, object obj, Utf8JsonWriter utf8JsonWriter)
     {
         foreach (var col in collections)
         {
@@ -99,7 +100,7 @@ internal class ViewModelJsonSerializer : IViewModelJsonSerializer
         }
     }
 
-    private static void SerializeCollectionToJson(EncodedCollectionViewModelSerializationData collection, object obj, Utf8JsonWriter utf8JsonWriter)
+    private static void SerializeCollectionToJson(ViewModelJsCollectionName collection, object obj, Utf8JsonWriter utf8JsonWriter)
     {
         utf8JsonWriter.WritePropertyName(collection.CollectionPropertyName);
         utf8JsonWriter.WriteStartArray();

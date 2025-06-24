@@ -1,6 +1,8 @@
-﻿namespace Vitraux.Execution.Serialization;
+﻿using Vitraux.Execution.ViewModelNames;
+
+namespace Vitraux.Execution.Serialization;
 
 internal interface IViewModelJsonSerializer
 {
-    Task<string> Serialize(EncodedViewModelSerializationData viewModelSerializationData, object viewModel);
+    Task<string> Serialize(ViewModelJsNames viewModelSerializationData, object viewModel);
 }

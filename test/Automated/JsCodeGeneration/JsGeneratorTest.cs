@@ -199,10 +199,10 @@ public class JsGeneratorTest
         Assert.Equal(expectedUpdateViewJs, generatedJsCode.UpdateViewJs);
         Assert.Equal(expectedInitializationJs, generatedJsCode.InitializeViewJs);
 
-        var serializationDataMapper = new EncodedSerializationDataMapper();
+        var serializationDataMapper = new ViewModelJsNamesMapper();
         var jsonSerializer = new ViewModelJsonSerializer();
 
-        var encodedViewModelSerializationData = serializationDataMapper.MapToEncoded(fullObjNames);
+        var encodedViewModelSerializationData = serializationDataMapper.MapFromFull(fullObjNames);
         var serializedPetOwnerExampleJson = await jsonSerializer.Serialize(encodedViewModelSerializationData, PetOwnerExample);
 
         Assert.Equal(ExpectedPetOwnerExampleJson, serializedPetOwnerExampleJson);
