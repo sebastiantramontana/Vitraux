@@ -1,4 +1,4 @@
-﻿namespace Vitraux.Execution;
+﻿namespace Vitraux.Execution.JsInvokers;
 
 internal interface IJsExecuteUpdateViewFunctionInvoker
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace Vitraux.Execution.Building.JsViewUpdatingInvokation;
+namespace Vitraux.Execution.JsInvokers;
 
 internal class JsInitializeNonCachedViewFunctionsInvoker(IJSRuntime jSRuntime) : IJsInitializeNonCachedViewFunctionsInvoker
 {

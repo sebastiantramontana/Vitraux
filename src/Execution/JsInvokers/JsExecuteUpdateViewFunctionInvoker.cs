@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace Vitraux.Execution;
+namespace Vitraux.Execution.JsInvokers;
 
 internal class JsExecuteUpdateViewFunctionInvoker(IJSRuntime jSRuntime) : IJsExecuteUpdateViewFunctionInvoker
 {

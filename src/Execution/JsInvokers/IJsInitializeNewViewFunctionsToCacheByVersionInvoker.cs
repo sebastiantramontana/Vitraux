@@ -1,4 +1,4 @@
-﻿namespace Vitraux.Execution.Building.JsViewUpdatingInvokation;
+﻿namespace Vitraux.Execution.JsInvokers;
 
 internal interface IJsInitializeNewViewFunctionsToCacheByVersionInvoker
 {

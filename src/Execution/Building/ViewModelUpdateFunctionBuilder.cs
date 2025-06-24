@@ -1,4 +1,4 @@
-﻿using Vitraux.Execution.Building.JsViewUpdatingInvokation;
+﻿using Vitraux.Execution.JsInvokers;
 using Vitraux.Execution.Serialization;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
