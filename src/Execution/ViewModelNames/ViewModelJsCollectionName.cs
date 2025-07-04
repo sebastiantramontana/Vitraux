@@ -2,4 +2,4 @@
 
 namespace Vitraux.Execution.ViewModelNames;
 
-internal record class ViewModelJsCollectionName(JsonEncodedText CollectionPropertyName, Delegate CollectionPropertyValueDelegate, IEnumerable<ViewModelJsNames> Children);
+internal record class ViewModelJsCollectionName(string CollectionPropertyName, Delegate CollectionPropertyValueDelegate, IEnumerable<ViewModelJsNames> Children);

@@ -9,27 +9,27 @@ internal class ValueNamesGenerator(INotImplementedCaseGuard notImplementedCaseGu
 {
     const string ValueObjectNamePrefix = "v";
 
-    public IEnumerable<FullValueObjectName> Generate(IEnumerable<ValueData> values, IEnumerable<JsObjectName> allElementJsObjectNames)
-        => values.Select((value, indexAsPostfix) => new FullValueObjectName(GenerateObjName(indexAsPostfix), GenerateJsTargets(value.Targets, allElementJsObjectNames), value));
+    public IEnumerable<FullValueObjectName> Generate(IEnumerable<ValueData> values, IEnumerable<JsObjectName> currentElementJsObjectNames)
+        => values.Select((value, indexAsPostfix) => new FullValueObjectName(GenerateObjName(indexAsPostfix), GenerateJsTargets(value.Targets, currentElementJsObjectNames), value));
 
-    private IEnumerable<ValueJsTarget> GenerateJsTargets(IEnumerable<IValueTarget> targets, IEnumerable<JsObjectName> allElementJsObjectNames)
-        => targets.Select(target => MapValueTargetToJs(target, allElementJsObjectNames));
+    private IEnumerable<ValueJsTarget> GenerateJsTargets(IEnumerable<IValueTarget> targets, IEnumerable<JsObjectName> currentElementJsObjectNames)
+        => targets.Select(target => MapValueTargetToJs(target, currentElementJsObjectNames));
 
-    private ValueJsTarget MapValueTargetToJs(IValueTarget target, IEnumerable<JsObjectName> allElementJsObjectNames)
+    private ValueJsTarget MapValueTargetToJs(IValueTarget target, IEnumerable<JsObjectName> currentElementJsObjectNames)
         => target switch
         {
-            ElementValueTarget elementTarget => CreateValueElementTargetJsObjectName(elementTarget, allElementJsObjectNames),
+            ElementValueTarget elementTarget => CreateValueElementTargetJsObjectName(elementTarget, currentElementJsObjectNames),
             CustomJsValueTarget customJsTarget => new ValueCustomJsTarget(customJsTarget),
             OwnMappingTarget ownMappingTarget => new ValueOwnMappingTarget(ownMappingTarget),
             _ => notImplementedCaseGuard.ThrowException<ValueJsTarget>(target)
         };
 
-    private static ValueElementTargetJsObjectName CreateValueElementTargetJsObjectName(ElementValueTarget elementTarget, IEnumerable<JsObjectName> allElementJsObjectNames)
+    private static ValueElementTargetJsObjectName CreateValueElementTargetJsObjectName(ElementValueTarget elementTarget, IEnumerable<JsObjectName> currentElementJsObjectNames)
     {
-        var jsElementObjectName = allElementJsObjectNames.Single(e => e.AssociatedSelector == elementTarget.Selector);
+        var jsElementObjectName = currentElementJsObjectNames.Single(e => e.AssociatedSelector == elementTarget.Selector);
 
         var jsInsertionElementObjectName = elementTarget.Insertion is not null
-            ? allElementJsObjectNames.Single(e => e.AssociatedSelector == elementTarget.Insertion)
+            ? currentElementJsObjectNames.Single(e => e.AssociatedSelector == elementTarget.Insertion)
             : null;
 
         return new ValueElementTargetJsObjectName(elementTarget, jsElementObjectName, jsInsertionElementObjectName);

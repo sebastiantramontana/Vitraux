@@ -2,4 +2,4 @@
 
 namespace Vitraux.Execution.ViewModelNames;
 
-internal record class ViewModelJsValueName(JsonEncodedText ValuePropertyName, Delegate ValuePropertyValueDelegate);
+internal record class ViewModelJsValueName(string ValuePropertyName, Delegate ValuePropertyValueDelegate);

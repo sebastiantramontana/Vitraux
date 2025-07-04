@@ -18,11 +18,10 @@ internal class UpdateViewJsGenerator(
     public string GenerateJs(
         QueryElementStrategy queryElementStrategy,
         FullObjectNames fullObjectNames,
-        IEnumerable<JsObjectName> allJsElementObjectNames,
         string parentObjectName,
         string parentElementObjectName)
         => new StringBuilder()
-                .Append(GenerateQueryElementsJsCode(queryElementStrategy, allJsElementObjectNames, parentElementObjectName))
+                .Append(GenerateQueryElementsJsCode(queryElementStrategy, fullObjectNames.JsElementObjectNames, parentElementObjectName))
                 .TryAppendLineForReadability()
                 .Append(GenerateValuesJsCode(parentObjectName, fullObjectNames.ValueNames))
                 .TryAppendLineForReadability()

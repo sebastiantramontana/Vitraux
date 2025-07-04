@@ -23,7 +23,6 @@ namespace Vitraux.Test.JsCodeGeneration;
 internal static class RootJsGeneratorFactory
 {
     internal static IJsFullObjectNamesGenerator JsFullObjectNamesGenerator { get; private set; } = default!;
-    internal static IJsElementObjectNamesGenerator JsElementObjectNamesGenerator { get; private set; } = default!;
 
     internal static RootJsGenerator Create()
     {
@@ -50,13 +49,13 @@ internal static class RootJsGeneratorFactory
                                                                        codeFormatter,
                                                                        notImplementedCaseGuard);
         var uniqueSelectorsFilter = new UniqueSelectorsFilter();
-        JsElementObjectNamesGenerator = new JsElementObjectNamesGenerator(uniqueSelectorsFilter, notImplementedCaseGuard);
+        var jsElementObjectNamesGenerator = new JsElementObjectNamesGenerator(uniqueSelectorsFilter, notImplementedCaseGuard);
 
         var valueNamesGenerator = new ValueNamesGenerator(notImplementedCaseGuard);
         var collectionNamesGenerator = new CollectionNamesGenerator();
-        JsFullObjectNamesGenerator = new JsFullObjectNamesGenerator(valueNamesGenerator, collectionNamesGenerator);
+        JsFullObjectNamesGenerator = new JsFullObjectNamesGenerator(valueNamesGenerator, collectionNamesGenerator, jsElementObjectNamesGenerator);
 
-        var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter, JsElementObjectNamesGenerator);
+        var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter);
 
         var promiseJsGenerator = new PromiseJsGenerator();
         var updateViewJsGenerator = new UpdateViewJsGenerator(promiseJsGenerator,
@@ -99,10 +98,10 @@ internal static class RootJsGeneratorFactory
         return new QueryElementsJsCodeGeneratorContext(atStartGenerator, onDemandGenerator, onAlwaysGenerator);
     }
 
-    private static CollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter, IJsElementObjectNamesGenerator jsObjectNamesGenerator)
+    private static CollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter)
     {
         var functionNameGenerator = new CollectionUpdateFunctionNameGenerator();
-        var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(functionNameGenerator, codeFormatter, jsObjectNamesGenerator);
+        var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(functionNameGenerator, codeFormatter);
         var updateCollectionByPopulatingElementsCall = new UpdateCollectionByPopulatingElementsCall();
         var updateTableCall = new UpdateTableCall();
         var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator);

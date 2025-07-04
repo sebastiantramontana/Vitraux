@@ -1,4 +1,5 @@
 ﻿using Vitraux.Execution.Serialization;
+using Vitraux.Execution.Tracking;
 using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
 using Vitraux.Test.Example;
@@ -95,80 +96,80 @@ public class JsGeneratorTest
                                         if(vm.c0) {
                                             const uc0 = async (p, item) =>
                                             {
-                                                const vm_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.cell-pet-name');
-                                                const vm_c0_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.anchor-cell-pet-name');
-                                                const vm_c0_e2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.another-anchor-cell-pet-name');
-                                                const vm_c0_e3 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.pet-photo');
-                                                const vm_c0_e4 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.inner-table-vaccines');
-                                                const vm_c0_c5 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/row-vaccines.html');
-                                                const vm_c0_e6 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.inner-nav-antiparasitics');
-                                                const vm_c0_c7 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/row-antiparasitics.html');
+                                                const n0_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.cell-pet-name');
+                                                const n0_c0_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.anchor-cell-pet-name');
+                                                const n0_c0_e2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.another-anchor-cell-pet-name');
+                                                const n0_c0_e3 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.pet-photo');
+                                                const n0_c0_e4 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.inner-table-vaccines');
+                                                const n0_c0_c5 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/row-vaccines.html');
+                                                const n0_c0_e6 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.inner-nav-antiparasitics');
+                                                const n0_c0_c7 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/row-antiparasitics.html');
 
                                                 if(item.v0) {
-                                                    globalThis.vitraux.updating.dom.setElementsContent(vm_c0_e0, item.v0);
-                                                    globalThis.vitraux.updating.dom.setElementsAttribute(vm_c0_e1, 'href', item.v0);
-                                                    globalThis.vitraux.updating.dom.setElementsAttribute(vm_c0_e2, 'href', item.v0);
+                                                    globalThis.vitraux.updating.dom.setElementsContent(n0_c0_e0, item.v0);
+                                                    globalThis.vitraux.updating.dom.setElementsAttribute(n0_c0_e1, 'href', item.v0);
+                                                    globalThis.vitraux.updating.dom.setElementsAttribute(n0_c0_e2, 'href', item.v0);
                                                 }
 
                                                 if(item.v1) {
-                                                    globalThis.vitraux.updating.dom.setElementsAttribute(vm_c0_e3, 'src', item.v1);
+                                                    globalThis.vitraux.updating.dom.setElementsAttribute(n0_c0_e3, 'src', item.v1);
                                                 }
 
                                                 if(item.c0) {
                                                     const uc1 = async (p, item) =>
                                                     {
-                                                        const item_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-vaccine');
-                                                        const item_c0_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-vaccine-date');
-                                                        const item_c0_e2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredients-list');
-                                                        const item_c0_c3 = globalThis.vitraux.storedElements.getTemplate('ingredients-template');
+                                                        const n1_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-vaccine');
+                                                        const n1_c0_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-vaccine-date');
+                                                        const n1_c0_e2 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredients-list');
+                                                        const n1_c0_c3 = globalThis.vitraux.storedElements.getTemplate('ingredients-template');
 
                                                         if(item.v0) {
-                                                            globalThis.vitraux.updating.dom.setElementsContent(item_c0_e0, item.v0);
+                                                            globalThis.vitraux.updating.dom.setElementsContent(n1_c0_e0, item.v0);
                                                         }
 
                                                         if(item.v1) {
-                                                            globalThis.vitraux.updating.dom.setElementsContent(item_c0_e1, item.v1);
+                                                            globalThis.vitraux.updating.dom.setElementsContent(n1_c0_e1, item.v1);
                                                         }
 
                                                         if(item.c0) {
                                                             const uc2 = async (p, item) =>
                                                             {
-                                                                const item_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredient-item');
+                                                                const n2_c0_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredient-item');
 
                                                                 if(item.v0) {
-                                                                    globalThis.vitraux.updating.dom.setElementsContent(item_c0_e0, item.v0);
+                                                                    globalThis.vitraux.updating.dom.setElementsContent(n2_c0_e0, item.v0);
                                                                 }
 
                                                                 return Promise.resolve();
                                                             }
 
-                                                            await globalThis.vitraux.updating.dom.updateCollectionByPopulatingElements(item_c0_e2, item_c0_c3, uc2, item.c0);
+                                                            await globalThis.vitraux.updating.dom.updateCollectionByPopulatingElements(n1_c0_e2, n1_c0_c3, uc2, item.c0);
                                                         }
 
                                                         return Promise.resolve();
                                                     }
 
-                                                    await globalThis.vitraux.updating.dom.updateTable(vm_c0_e4, vm_c0_c5, uc1, item.c0);
+                                                    await globalThis.vitraux.updating.dom.updateTable(n0_c0_e4, n0_c0_c5, uc1, item.c0);
                                                 }
 
                                                 if(item.c1) {
                                                     const uc3 = async (p, item) =>
                                                     {
-                                                        const item_c1_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-antiparasitics');
-                                                        const item_c1_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-antiparasitics-date');
+                                                        const n1_c1_e0 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-antiparasitics');
+                                                        const n1_c1_e1 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-antiparasitics-date');
 
                                                         if(item.v0) {
-                                                            globalThis.vitraux.updating.dom.setElementsContent(item_c1_e0, item.v0);
+                                                            globalThis.vitraux.updating.dom.setElementsContent(n1_c1_e0, item.v0);
                                                         }
 
                                                         if(item.v1) {
-                                                            globalThis.vitraux.updating.dom.setElementsContent(item_c1_e1, item.v1);
+                                                            globalThis.vitraux.updating.dom.setElementsContent(n1_c1_e1, item.v1);
                                                         }
 
                                                         return Promise.resolve();
                                                     }
 
-                                                    await globalThis.vitraux.updating.dom.updateCollectionByPopulatingElements(vm_c0_e6, vm_c0_c7, uc3, item.c1);
+                                                    await globalThis.vitraux.updating.dom.updateCollectionByPopulatingElements(n0_c0_e6, n0_c0_c7, uc3, item.c1);
                                                 }
 
                                                 return Promise.resolve();
@@ -191,20 +192,23 @@ public class JsGeneratorTest
 
         var modelMapper = new ModelMapper<PetOwner>();
         var data = petownerConfig.ConfigureMapping(modelMapper);
-        var allJsElementObjNames = RootJsGeneratorFactory.JsElementObjectNamesGenerator.Generate(string.Empty, data);
-        var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(data, allJsElementObjNames);
+        var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(data);
 
-        var generatedJsCode = sut.GenerateJs(fullObjNames, allJsElementObjNames, queryElementStrategy);
+        var generatedJsCode = sut.GenerateJs(fullObjNames, queryElementStrategy);
         var expectedUpdateViewJs = expectedQueryElementsJs + Environment.NewLine + Environment.NewLine + expectedCommonUpdateViewJs;
 
         Assert.Equal(expectedUpdateViewJs, generatedJsCode.UpdateViewJs);
         Assert.Equal(expectedInitializationJs, generatedJsCode.InitializeViewJs);
 
         var serializationDataMapper = new ViewModelJsNamesMapper();
+        var serializablePropertyValueExtractor = new SerializablePropertyValueExtractor();
         var jsonSerializer = new ViewModelJsonSerializer();
 
-        var encodedViewModelSerializationData = serializationDataMapper.MapFromFull(fullObjNames);
-        var serializedPetOwnerExampleJson = await jsonSerializer.Serialize(encodedViewModelSerializationData, PetOwnerExample);
+        var viewModelJsNames = serializationDataMapper.MapFromFull(fullObjNames);
+        var tracker = new ViewModelNoChangesTracker<PetOwner>(serializablePropertyValueExtractor);
+        var allData = tracker.Track(PetOwnerExample, viewModelJsNames);
+
+        var serializedPetOwnerExampleJson = await jsonSerializer.Serialize(allData);
 
         Assert.Equal(ExpectedPetOwnerExampleJson, serializedPetOwnerExampleJson);
     }
@@ -240,6 +244,6 @@ public class JsGeneratorTest
 
     private const string ExpectedPetOwnerExampleJson =
         """
-        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":{},"c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"8/6/2022 00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"9/7/2022 00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"15/10/2023 00:00:00"},{"v0":"Tick Treatment","v1":"16/11/2023 00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"1/4/2024 00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"22/9/2025 00:00:00"}]}]}
+        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":"","c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"8/6/2022 00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"9/7/2022 00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"15/10/2023 00:00:00"},{"v0":"Tick Treatment","v1":"16/11/2023 00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"1/4/2024 00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"22/9/2025 00:00:00"}]}]}
         """;
 }

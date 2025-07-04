@@ -9,7 +9,7 @@ namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
 internal class JsElementObjectNamesGenerator(
     IUniqueSelectorsFilter uniqueSelectorsFilter,
-    INotImplementedCaseGuard notImplementedSelector) : IJsElementObjectNamesGenerator
+    INotImplementedCaseGuard notImplementedCaseGuard) : IJsElementObjectNamesGenerator
 {
     const string ElementObjectNamePrefix = "e";
     const string InsertedElementObjectNamePrefix = "f";
@@ -32,7 +32,7 @@ internal class JsElementObjectNamesGenerator(
             ElementSelectorBase => ElementObjectNamePrefix,
             InsertElementSelectorBase => InsertedElementObjectNamePrefix,
             InsertionSelectorBase => CollectionElementObjectNamePrefix,
-            _ => notImplementedSelector.ThrowException<string>(selector)
+            _ => notImplementedCaseGuard.ThrowException<string>(selector)
         };
 
     private static string GenerateObjectName(string namePrefix, string initialName, int indexAsPostfix)

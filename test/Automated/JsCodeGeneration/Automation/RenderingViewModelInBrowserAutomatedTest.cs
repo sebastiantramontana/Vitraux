@@ -55,10 +55,9 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
 
         var rootJsGenerator = RootJsGeneratorFactory.Create();
         var petOwnerMappingData = GetConfiguredPetOwnerMapping();
-        var allJsElementObjNames = RootJsGeneratorFactory.JsElementObjectNamesGenerator.Generate(string.Empty, petOwnerMappingData);
-        var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(petOwnerMappingData, allJsElementObjNames);
+        var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(petOwnerMappingData);
 
-        var generatedJsCode = rootJsGenerator.GenerateJs(fullObjNames, allJsElementObjNames, queryElementStrategy);
+        var generatedJsCode = rootJsGenerator.GenerateJs(fullObjNames, queryElementStrategy);
 
         ExecuteScriptAsAwaitableFunction("initialize", [], [], generatedJsCode.InitializeViewJs, driver);
 

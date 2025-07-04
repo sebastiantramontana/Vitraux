@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Vitraux.JsCodeGeneration.Collections;
+﻿using Vitraux.JsCodeGeneration.Collections;
 using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.Values;
 
@@ -16,12 +15,12 @@ internal class ViewModelJsNamesMapper : IViewModelJsNamesMapper
     }
 
     private static IEnumerable<ViewModelJsValueName> MapValues(IEnumerable<FullValueObjectName> valueNames)
-        => valueNames.Select(value => new ViewModelJsValueName(JsonEncodedText.Encode(value.Name), value.AssociatedData.DataFunc));
+        => valueNames.Select(value => new ViewModelJsValueName(value.Name, value.AssociatedData.DataFunc));
 
     private IEnumerable<ViewModelJsCollectionName> MapCollections(IEnumerable<FullCollectionObjectName> collectionNames)
         => collectionNames.Select(colItem =>
         {
-            var viewModelSerializationsDataChildren = colItem.AssociatedElementNames.Select(e => MapFromFull(e.Children));
-            return new ViewModelJsCollectionName(JsonEncodedText.Encode(colItem.Name), colItem.AssociatedData.DataFunc, viewModelSerializationsDataChildren);
+            var childrenJsNames = colItem.AssociatedElementNames.Select(e => MapFromFull(e.Children));
+            return new ViewModelJsCollectionName(colItem.Name, colItem.AssociatedData.DataFunc, childrenJsNames);
         });
 }

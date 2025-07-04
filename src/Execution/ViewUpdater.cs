@@ -1,13 +1,16 @@
 ﻿using Vitraux.Execution.JsInvokers;
 using Vitraux.Execution.Serialization;
+using Vitraux.Execution.Tracking;
 using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution;
 
 internal class ViewUpdater<TViewModel>(
     IViewModelJsNamesCache<TViewModel> objectNamesRepository,
+    IModelConfiguration<TViewModel> modelConfiguration,
+    IViewModelChangeTrackingContext<TViewModel> viewModelChangeTrackingContext,
     IViewModelJsonSerializer jsonSerializer,
-    IJsExecuteUpdateViewFunctionInvoker jsExecuteUpdateView) 
+    IJsExecuteUpdateViewFunctionInvoker jsExecuteUpdateView)
     : IViewlUpdater<TViewModel>
 {
     public async Task Update(TViewModel viewModel)
@@ -17,8 +20,9 @@ internal class ViewUpdater<TViewModel>(
             return;
         }
 
-        var viewModelSerializationData = objectNamesRepository.ViewModelSerializationData;
-        var serializedViewModelJson = await jsonSerializer.Serialize(viewModelSerializationData, viewModel);
+        var viewModelChangesTracker = viewModelChangeTrackingContext.GetChangesTracker(modelConfiguration.ConfigurationBehavior.TrackChanges);
+        var trackedViewModelData = viewModelChangesTracker.Track(viewModel, objectNamesRepository.ViewModelJsNames);
+        var serializedViewModelJson = await jsonSerializer.Serialize(trackedViewModelData);
 
         await jsExecuteUpdateView.Invoke(objectNamesRepository.ViewModelKey, serializedViewModelJson);
     }

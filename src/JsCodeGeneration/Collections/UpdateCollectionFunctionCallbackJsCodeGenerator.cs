@@ -1,14 +1,12 @@
 ﻿using System.Text;
 using Vitraux.JsCodeGeneration.Formating;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.UpdateViews;
 
 namespace Vitraux.JsCodeGeneration.Collections;
 
 internal class UpdateCollectionFunctionCallbackJsCodeGenerator(
     ICollectionUpdateFunctionNameGenerator collectionUpdateFunctionNameGenerator,
-    ICodeFormatter codeFormatter,
-    IJsElementObjectNamesGenerator jsElementObjectNamesGenerator)
+    ICodeFormatter codeFormatter)
     : IUpdateCollectionFunctionCallbackJsCodeGenerator
 {
     const string CollectionItemObjectName = "item";
@@ -16,11 +14,8 @@ internal class UpdateCollectionFunctionCallbackJsCodeGenerator(
 
     public UpdateCollectionFunctionCallbackInfo GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator)
     {
-        var elementNamePrefix = GenerateElementNamePrefix(parentObjectName, collectionObjectName);
-        var allJsElementObjectNames = jsElementObjectNamesGenerator.Generate(elementNamePrefix, elementObjectPairNames.Target.Data);
-
-        var generatedJs = updateViewJsGenerator.GenerateJs(QueryElementStrategy.Always, elementObjectPairNames.Children, allJsElementObjectNames, CollectionItemObjectName, ParentElementObjectName);
         var functionName = collectionUpdateFunctionNameGenerator.Generate();
+        var generatedJs = updateViewJsGenerator.GenerateJs(QueryElementStrategy.Always, elementObjectPairNames.Children, CollectionItemObjectName, ParentElementObjectName);
 
         var jsCode = new StringBuilder()
             .AppendLine(GenerateFunctionHeader(functionName))
@@ -34,7 +29,4 @@ internal class UpdateCollectionFunctionCallbackJsCodeGenerator(
 
     private static string GenerateFunctionHeader(string functionName)
         => $"const {functionName} = async ({ParentElementObjectName}, {CollectionItemObjectName}) =>";
-
-    private static string GenerateElementNamePrefix(string parentObjectName, string collectionObjectName)
-        => $"{parentObjectName.Replace('.', '_')}_{collectionObjectName}";
 }

@@ -13,10 +13,10 @@ internal class RootJsGenerator(
     private const string ParentObjectName = "vm";
     private const string ParentElementObjectName = "document";
 
-    public GeneratedJsCode GenerateJs(FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)
+    public GeneratedJsCode GenerateJs(FullObjectNames fullObjectNames, QueryElementStrategy queryElementStrategy)
     {
-        var initializeViewJs = GenerateInitializeViewJsCode(queryElementStrategy, allJsElementObjectNames, ParentElementObjectName);
-        var updateViewInfo = updateViewJsGenerator.GenerateJs(queryElementStrategy, fullObjectNames, allJsElementObjectNames, ParentObjectName, ParentElementObjectName);
+        var initializeViewJs = GenerateInitializeViewJsCode(queryElementStrategy, fullObjectNames.JsElementObjectNames, ParentElementObjectName);
+        var updateViewInfo = updateViewJsGenerator.GenerateJs(queryElementStrategy, fullObjectNames, ParentObjectName, ParentElementObjectName);
 
         return new(initializeViewJs, updateViewInfo);
     }

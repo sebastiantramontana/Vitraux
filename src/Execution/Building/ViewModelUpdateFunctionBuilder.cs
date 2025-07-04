@@ -3,7 +3,6 @@ using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
 using Vitraux.JsCodeGeneration.JsObjectNames;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
 namespace Vitraux.Execution.Building;
 
@@ -11,7 +10,6 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
     IModelConfiguration<TViewModel> modelConfiguration,
     IModelMapper<TViewModel> modelMapper,
     IJsFullObjectNamesGenerator jsFullObjectNamesGenerator,
-    IJsElementObjectNamesGenerator jsElementObjectNamesGenerator,
     IRootJsGenerator rootJsGenerator,
     IJsInitializeNonCachedViewFunctionsInvoker jsInitializeNonCachedViewFunctionsInvoker,
     IJsTryInitializeViewFunctionsFromCacheByVersionInvoker jsTryInitializeViewFunctionsFromCacheByVersionInvoker,
@@ -27,19 +25,17 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
         var vmKey = GenerateViewModelKey();
         var behavior = modelConfiguration.ConfigurationBehavior;
         var mappingData = modelConfiguration.ConfigureMapping(modelMapper);
-
-        var jsObjElementNames = jsElementObjectNamesGenerator.Generate(string.Empty, mappingData);
-        var fullObjNames = jsFullObjectNamesGenerator.Generate(mappingData, jsObjElementNames);
+        var fullObjNames = jsFullObjectNamesGenerator.Generate(mappingData);
 
         StoreSerializationData(vmKey, fullObjNames);
 
         switch (behavior.VMUpdateFunctionCaching)
         {
             case VMUpdateFunctionNoCache:
-                InvokeInitializationViewFunctionsNoCache(vmKey, fullObjNames, jsObjElementNames, behavior.QueryElementStrategy);
+                InvokeInitializationViewFunctionsNoCache(vmKey, fullObjNames, behavior.QueryElementStrategy);
                 break;
             case VMUpdateFunctionCacheByVersion cacheByVersion:
-                await InvokeInitializationViewFunctionsByVersion(vmKey, cacheByVersion.Version, fullObjNames, jsObjElementNames, behavior.QueryElementStrategy);
+                await InvokeInitializationViewFunctionsByVersion(vmKey, cacheByVersion.Version, fullObjNames, behavior.QueryElementStrategy);
                 break;
             default:
                 notImplementedCaseGuard.ThrowException(behavior.VMUpdateFunctionCaching);
@@ -50,24 +46,24 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
     private void StoreSerializationData(string vmKey, FullObjectNames fullObjectNames)
     {
         vmSerializationDataCache.ViewModelKey = vmKey;
-        vmSerializationDataCache.ViewModelSerializationData = encodedSerializationDataMapper.MapFromFull(fullObjectNames);
+        vmSerializationDataCache.ViewModelJsNames = encodedSerializationDataMapper.MapFromFull(fullObjectNames);
     }
 
-    private GeneratedJsCode GenerateJsCode(FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)
-        => rootJsGenerator.GenerateJs(fullObjectNames, allJsElementObjectNames, queryElementStrategy);
+    private GeneratedJsCode GenerateJsCode(FullObjectNames fullObjectNames, QueryElementStrategy queryElementStrategy)
+        => rootJsGenerator.GenerateJs(fullObjectNames, queryElementStrategy);
 
-    private async ValueTask InvokeInitializationViewFunctionsByVersion(string vmKey, string version, FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)
+    private async ValueTask InvokeInitializationViewFunctionsByVersion(string vmKey, string version, FullObjectNames fullObjectNames, QueryElementStrategy queryElementStrategy)
     {
         if (!await jsTryInitializeViewFunctionsFromCacheByVersionInvoker.Invoke(vmKey, version))
         {
-            var generatedJsCode = GenerateJsCode(fullObjectNames, allJsElementObjectNames, queryElementStrategy);
+            var generatedJsCode = GenerateJsCode(fullObjectNames, queryElementStrategy);
             jsinitializeNewViewFunctionsToCacheByVersionInvoker.Invoke(vmKey, version, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
         }
     }
 
-    private void InvokeInitializationViewFunctionsNoCache(string vmKey, FullObjectNames fullObjectNames, IEnumerable<JsObjectName> allJsElementObjectNames, QueryElementStrategy queryElementStrategy)
+    private void InvokeInitializationViewFunctionsNoCache(string vmKey, FullObjectNames fullObjectNames, QueryElementStrategy queryElementStrategy)
     {
-        var generatedJsCode = GenerateJsCode(fullObjectNames, allJsElementObjectNames, queryElementStrategy);
+        var generatedJsCode = GenerateJsCode(fullObjectNames, queryElementStrategy);
         jsInitializeNonCachedViewFunctionsInvoker.Invoke(vmKey, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
     }
 

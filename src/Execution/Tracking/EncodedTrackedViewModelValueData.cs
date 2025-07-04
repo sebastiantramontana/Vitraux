@@ -2,4 +2,4 @@
 
 namespace Vitraux.Execution.Tracking;
 
-internal record class EncodedTrackedViewModelValueData(JsonEncodedText ValuePropertyName, object PropertyValue);
+internal record class EncodedTrackedViewModelValueData(JsonEncodedText ValuePropertyName, string PropertyValue);

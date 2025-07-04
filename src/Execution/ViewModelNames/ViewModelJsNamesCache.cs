@@ -3,5 +3,5 @@
 internal class ViewModelJsNamesCache<TViewModel> : IViewModelJsNamesCache<TViewModel>
 {
     public string ViewModelKey { get; set; } = string.Empty;
-    public ViewModelJsNames ViewModelSerializationData { get; set; } = default!;
+    public ViewModelJsNames ViewModelJsNames { get; set; } = default!;
 }

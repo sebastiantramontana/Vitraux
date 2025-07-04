@@ -1,8 +1,7 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
-
-namespace Vitraux.JsCodeGeneration.JsObjectNames;
+﻿namespace Vitraux.JsCodeGeneration.JsObjectNames;
 
 internal interface IJsFullObjectNamesGenerator
 {
-    FullObjectNames Generate(ModelMappingData modelMappingData, IEnumerable<JsObjectName> allJsElementObjectNames);
+    FullObjectNames Generate(ModelMappingData modelMappingData);
+    FullObjectNames Generate(string elementNamePrefix, ModelMappingData modelMappingData, int nestingLevel);
 }
