@@ -6,5 +6,6 @@ internal static class IoCRegistration
 {
     internal static IServiceCollection AddViewModelNames(this IServiceCollection serviceCollection)
         => serviceCollection
-            .AddSingleton<IViewModelJsNamesMapper, ViewModelJsNamesMapper>();
+            .AddSingleton<IViewModelJsNamesMapper, ViewModelJsNamesMapper>()
+            .AddSingleton<IViewModelKeyGenerator, ViewModelKeyGenerator>();
 }

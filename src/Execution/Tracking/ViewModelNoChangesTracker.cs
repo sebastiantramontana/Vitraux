@@ -4,10 +4,15 @@ using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution.Tracking;
 
-internal class ViewModelNoChangesTracker<TViewModel>(ISerializablePropertyValueExtractor serializablePropertyValueExtractor) : IViewModelNoChangesTracker<TViewModel>
+internal class ViewModelNoChangesTracker<TViewModel>(
+    ISerializablePropertyValueExtractor serializablePropertyValueExtractor,
+    IViewModelJsNamesCacheGeneric<TViewModel> vmJsNamesCache) : IViewModelNoChangesTracker<TViewModel>
 {
-    public EncodedTrackedViewModelAllData Track(object objToTrack, ViewModelJsNames vmNames)
+    public EncodedTrackedViewModelAllData Track(object? objToTrack, ViewModelJsNames vmNames)
     {
+        if (objToTrack is null)
+            return new([], []);
+
         var values = TrackValues(objToTrack, vmNames.ValueProperties);
         var collections = TrackCollections(objToTrack, vmNames.CollectionProperties);
 
@@ -15,12 +20,22 @@ internal class ViewModelNoChangesTracker<TViewModel>(ISerializablePropertyValueE
     }
 
     private IEnumerable<EncodedTrackedViewModelValueData> TrackValues(object objToTrack, IEnumerable<ViewModelJsValueName> valueNames)
-        => valueNames.Select(value =>
+        => valueNames.Select<ViewModelJsValueName, EncodedTrackedViewModelValueData>(value =>
         {
             var encodedName = EncodeName(value.ValuePropertyName);
-            var propertyValue = serializablePropertyValueExtractor.GetValue(value.ValuePropertyValueDelegate, objToTrack);
+            var valueInfo = serializablePropertyValueExtractor.GetValueInfo(value.ValuePropertyValueDelegate, objToTrack);
 
-            return new EncodedTrackedViewModelValueData(encodedName, propertyValue);
+            if (valueInfo.IsSimpleType)
+            {
+                var propertyValue = serializablePropertyValueExtractor.GetStringValue(valueInfo.Value);
+                return new EncodedTrackedViewModelStringValueData(encodedName, propertyValue);
+            }
+            else
+            {
+                var childrenVMJsNames = vmJsNamesCache.GetNamesByViewModelType(valueInfo.ValueType);
+                var allData = Track(valueInfo.Value, childrenVMJsNames);
+                return new EncodedTrackedViewModelObjectValueData(encodedName, allData);
+            }
         });
 
     private IEnumerable<EncodedTrackedViewModelCollectionData> TrackCollections(object objToTrack, IEnumerable<ViewModelJsCollectionName> collectionNames)

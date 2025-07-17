@@ -6,8 +6,9 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections;
 internal class RootCollectionCustomJsBuilder<TItem, TViewModelBack>(
     CustomJsCollectionTarget target,
     CollectionData collectionData,
-    IModelMapper<TViewModelBack> endCollectionReturn)
-    : RootCollectionTargetBuilder<TItem, TViewModelBack>(collectionData, endCollectionReturn), ICollectionCustomJsBuilder<TItem, IModelMapper<TViewModelBack>>
+    IModelMapper<TViewModelBack> endCollectionReturn,
+    IServiceProvider serviceProvider)
+    : RootCollectionTargetBuilder<TItem, TViewModelBack>(collectionData, endCollectionReturn, serviceProvider), ICollectionCustomJsBuilder<TItem, IModelMapper<TViewModelBack>>
 {
     public ICollectionTargetBuilder<TItem, IModelMapper<TViewModelBack>> FromModule(Uri moduleUri)
     {

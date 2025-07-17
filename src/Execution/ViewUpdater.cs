@@ -6,7 +6,7 @@ using Vitraux.Execution.ViewModelNames;
 namespace Vitraux.Execution;
 
 internal class ViewUpdater<TViewModel>(
-    IViewModelJsNamesCache<TViewModel> objectNamesRepository,
+    IViewModelJsNamesCacheGeneric<TViewModel> objectNamesRepository,
     IModelConfiguration<TViewModel> modelConfiguration,
     IViewModelChangeTrackingContext<TViewModel> viewModelChangeTrackingContext,
     IViewModelJsonSerializer jsonSerializer,

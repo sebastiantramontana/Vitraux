@@ -1,5 +1,7 @@
 ﻿using System.Text;
+using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
+using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.Values.JsTargets;
 using Vitraux.Modeling.Data.Values;
@@ -9,6 +11,8 @@ namespace Vitraux.JsCodeGeneration.Values;
 internal class TargetElementsValueJsGenerator(
     ITargetElementsDirectUpdateValueJsGenerator directUpdateValueJsGenerator,
     ITargetElementsUpdateValueInsertJsGenerator updateValueInsertJsGenerator,
+    IViewModelKeyGenerator viewModelKeyGenerator,
+    IExecuteUpdateViewFunctionCall executeUpdateViewFunctionCall,
     INotImplementedCaseGuard notImplementedCaseGuard)
     : ITargetElementsValueJsGenerator
 {
@@ -27,7 +31,7 @@ internal class TargetElementsValueJsGenerator(
         {
             ValueElementTargetJsObjectName valueJsElementTarget => GenerateJsByElementValueTarget(valueJsElementTarget, parentValueObjectName, valueObjName),
             ValueCustomJsTarget customJsTarget => GenerateJsByCustomJsValueTarget(customJsTarget.AssociatedCustomJsTarget, parentValueObjectName, valueObjName),
-            ValueOwnMappingTarget => GenerateJsByOwnMappingTarget(),
+            ValueOwnMappingTarget valueOwnMappingTarget => GenerateJsByOwnMappingTarget(valueOwnMappingTarget, parentValueObjectName, valueObjName),
             _ => notImplementedCaseGuard.ThrowException<string>(target)
         };
 
@@ -45,6 +49,11 @@ internal class TargetElementsValueJsGenerator(
     private static string GenerateJsByCustomJsValueTarget(CustomJsValueTarget customJsTarget, string parentValueObjectName, string valueObjName)
         => $"/*{customJsTarget.FunctionName}({parentValueObjectName}.{valueObjName});*/";
 
-    private static string GenerateJsByOwnMappingTarget()
-        => string.Empty;
+    private string GenerateJsByOwnMappingTarget(ValueOwnMappingTarget valueOwnMappingTarget, string parentValueObjectName, string valueObjectName)
+    {
+        var vmKey = viewModelKeyGenerator.Generate(valueOwnMappingTarget.AssociatedOwnMappingTarget.ObjectType);
+        var vmArg = $"{parentValueObjectName}.{valueObjectName}";
+
+        return $"{executeUpdateViewFunctionCall.Generate(vmKey, vmArg)};";
+    }
 }

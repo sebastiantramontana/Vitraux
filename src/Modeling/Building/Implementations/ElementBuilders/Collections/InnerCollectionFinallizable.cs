@@ -27,4 +27,7 @@ internal class InnerCollectionFinallizable<TItemBack, TItemActual, TEndCollectio
 
     public IContainerElementsSelectorBuilder<TItemActual, IInnerCollectionFinallizable<TItemBack, TItemActual, TEndCollectionReturn>> ToContainerElements
         => targetBuilderWrapped.ToContainerElements;
+
+    public ICollectionToOwnMappingFinallizable<TItemBack, TEndCollectionReturn> ToOwnMapping
+        => modelMapperWrapped.ToOwnMapping;
 }

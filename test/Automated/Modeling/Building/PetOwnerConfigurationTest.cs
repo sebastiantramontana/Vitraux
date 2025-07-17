@@ -1,10 +1,12 @@
-﻿using Vitraux.Helpers;
+﻿using Moq;
+using Vitraux.Helpers;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Selectors.Collections;
 using Vitraux.Modeling.Data.Selectors.Values;
 using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 using Vitraux.Modeling.Data.Values;
 using Vitraux.Test.Example;
+using Vitraux.Test.Utils;
 
 namespace Vitraux.Test.Modeling.Building;
 
@@ -19,7 +21,9 @@ public class PetOwnerConfigurationTest
 
         PetOwnerConfiguration sut = new(dataUriConverter);
 
-        var actualData = sut.ConfigureMapping(new ModelMapper<PetOwner>());
+        var serviceProvider = ServiceProviderMock.MockForPetOwner();
+
+        var actualData = sut.ConfigureMapping(new ModelMapper<PetOwner>(serviceProvider));
 
         var actualDataSerialized = VitrauxDataSerializer.Serialize(actualData, 0);
         var expectedDataSerialized = VitrauxDataSerializer.Serialize(expectedData, 0);
@@ -73,7 +77,7 @@ public class PetOwnerConfigurationTest
     private static ValueData CreateSubscriptionValueData()
     {
         var suscriptionValue = new ValueData((PetOwner p) => p.Subscription);
-        var suscriptionTarget = new OwnMappingTarget();
+        var suscriptionTarget = new OwnMappingTarget(typeof(Subscription));
 
         suscriptionValue.AddTarget(suscriptionTarget);
         return suscriptionValue;

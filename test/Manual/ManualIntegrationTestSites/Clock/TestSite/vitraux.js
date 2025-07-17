@@ -102,8 +102,12 @@ globalThis.vitraux = {
                 await func();
             },
 
-            async executeUpdateViewFunction(vmKey, vmJson) {
+            async executeUpdateViewFunctionFromJson(vmKey, vmJson) {
                 const vm = JSON.parse(vmJson);
+                await this.executeUpdateViewFunction(vmKey, vm);
+            },
+
+            async executeUpdateViewFunction(vmKey, vm) {
                 const func = this.vms[vmKey];
                 await func(vm);
             },

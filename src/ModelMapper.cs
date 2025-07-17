@@ -9,7 +9,7 @@ using Vitraux.Modeling.Data.Values;
 namespace Vitraux;
 
 [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-internal class ModelMapper<TViewModel> : IModelMapper<TViewModel>
+internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IModelMapper<TViewModel>
 {
     public IRootValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func)
     {
@@ -24,7 +24,7 @@ internal class ModelMapper<TViewModel> : IModelMapper<TViewModel>
         var collection = new CollectionData(func);
         Data.AddCollection(collection);
 
-        return new RootCollectionTargetBuilder<TItem, TViewModel>(collection, this);
+        return new RootCollectionTargetBuilder<TItem, TViewModel>(collection, this, serviceProvider);
     }
 
     public ModelMappingData Data { get; } = new ModelMappingData();

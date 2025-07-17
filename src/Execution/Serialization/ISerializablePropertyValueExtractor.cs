@@ -2,6 +2,7 @@
 
 internal interface ISerializablePropertyValueExtractor
 {
-    string GetValue(Delegate @delegate, object? value);
-    IEnumerable<object> GetCollection(Delegate @delegate, object? value);
+    SerializableValueInfo GetValueInfo(Delegate @delegate, object? obj);
+    string GetStringValue(object? value);
+    IEnumerable<object> GetCollection(Delegate @delegate, object? obj);
 }

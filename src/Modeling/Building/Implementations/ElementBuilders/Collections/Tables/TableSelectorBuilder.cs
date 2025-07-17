@@ -4,7 +4,10 @@ using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.Tables;
 
-internal class TableSelectorBuilder<TItem, TEndCollectionReturn>(CollectionData collectionData, TEndCollectionReturn endCollectionReturn)
+internal class TableSelectorBuilder<TItem, TEndCollectionReturn>(
+    CollectionData collectionData,
+    TEndCollectionReturn endCollectionReturn,
+    IServiceProvider serviceProvider)
     : ITableSelectorBuilder<TItem, TEndCollectionReturn>
 {
     public IPopulateTableRowsBuilder<TItem, TEndCollectionReturn> ById(string id)
@@ -24,7 +27,7 @@ internal class TableSelectorBuilder<TItem, TEndCollectionReturn>(CollectionData 
         var tableTarget = new CollectionTableTarget(elementSelector);
         collectionData.AddTarget(tableTarget);
 
-        return new PopulateTableRowsBuilder<TItem, TEndCollectionReturn>(tableTarget, endCollectionReturn);
+        return new PopulateTableRowsBuilder<TItem, TEndCollectionReturn>(collectionData, tableTarget, endCollectionReturn, serviceProvider);
     }
 }
 

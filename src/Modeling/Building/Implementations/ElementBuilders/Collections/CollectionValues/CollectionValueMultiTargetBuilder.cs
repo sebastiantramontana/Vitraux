@@ -13,7 +13,7 @@ internal class CollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionRe
     public ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> ToElements
         => BuildElementTarget();
 
-    public ICollectionValueCustomJsBuilder<TItem, TValue, TEndCollectionReturn> ToJsFunction(string jsFunction)
+    public ICollectionValueCustomJsFinallizable<TItem, TValue, TEndCollectionReturn> ToJsFunction(string jsFunction)
         => BuildCustomJsTarget(jsFunction);
 
     private CollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> BuildElementTarget()
@@ -24,7 +24,7 @@ internal class CollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionRe
         return new(newTarget, modelMapper, this, endCollectionReturn);
     }
 
-    private CollectionValueCustomJsBuilder<TItem, TValue, TEndCollectionReturn> BuildCustomJsTarget(string jsFunction)
+    private CollectionValueCustomJsFinallizable<TItem, TValue, TEndCollectionReturn> BuildCustomJsTarget(string jsFunction)
     {
         var newTarget = new CustomJsValueTarget(jsFunction);
         valueData.AddTarget(newTarget);

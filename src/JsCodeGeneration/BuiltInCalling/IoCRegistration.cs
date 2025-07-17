@@ -30,5 +30,6 @@ internal static class IoCRegistration
             .AddSingleton<IUpdateChildElementsFunctionCall, UpdateChildElementsFunctionCall>()
             .AddSingleton<IUpdateCollectionByPopulatingElementsCall, UpdateCollectionByPopulatingElementsCall>()
             .AddSingleton<IUpdateTableCall, UpdateTableCall>()
-            .AddSingleton<IUpdateValueByInsertingElementsCall, UpdateValueByInsertingElementsCall>();
+            .AddSingleton<IUpdateValueByInsertingElementsCall, UpdateValueByInsertingElementsCall>()
+            .AddSingleton<IExecuteUpdateViewFunctionCall, ExecuteUpdateViewFunctionCall>();
 }

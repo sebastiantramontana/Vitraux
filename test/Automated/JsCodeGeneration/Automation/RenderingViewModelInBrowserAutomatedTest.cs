@@ -6,6 +6,7 @@ using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using Vitraux.Helpers;
 using Vitraux.Test.Example;
+using Vitraux.Test.Utils;
 
 namespace Vitraux.Test.JsCodeGeneration.Automation;
 
@@ -128,8 +129,9 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
 
     private static ModelMappingData GetConfiguredPetOwnerMapping()
     {
+        var serviceProvider = ServiceProviderMock.MockForPetOwner();
         var petownerConfig = new PetOwnerConfiguration(new DataUriConverter());
-        var modelMapper = new ModelMapper<PetOwner>();
+        var modelMapper = new ModelMapper<PetOwner>(serviceProvider);
         var modelMappingData = petownerConfig.ConfigureMapping(modelMapper);
 
         return modelMappingData;

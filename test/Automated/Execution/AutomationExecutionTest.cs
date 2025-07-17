@@ -18,6 +18,7 @@ public class AutomationExecutionTest
                 .AddSingleton<IJSRuntime>(jsInProcessRuntime)
                 .AddVitraux()
                 .AddModelConfiguration<PetOwner, PetOwnerConfiguration>()
+                .AddModelConfiguration<Vaccine, VaccineConfiguration>()
                 .AddModelConfiguration<CustomerViewModel, CustomerViewModelConfiguration>();
 
         var serviceProvider = container.BuildServiceProvider();

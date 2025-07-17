@@ -7,7 +7,8 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.
 
 internal class ContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>(
     CollectionData collectionData,
-    TEndCollectionReturn endCollectionReturn)
+    TEndCollectionReturn endCollectionReturn,
+    IServiceProvider serviceProvider)
     : IContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>
 {
     public ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ById(string id)
@@ -27,7 +28,7 @@ internal class ContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>(
         var target = new CollectionElementTarget(elementSelector);
         collectionData.AddTarget(target);
 
-        return new CollectionPopulateFromBuilder<TItem, TEndCollectionReturn>(target, endCollectionReturn);
+        return new CollectionPopulateFromBuilder<TItem, TEndCollectionReturn>(collectionData, target, endCollectionReturn, serviceProvider);
     }
 }
 

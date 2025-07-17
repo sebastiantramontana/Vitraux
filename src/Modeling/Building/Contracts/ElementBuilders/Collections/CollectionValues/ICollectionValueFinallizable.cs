@@ -1,6 +1,4 @@
-﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.CollectionValues;
-
-namespace Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
+﻿namespace Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.CollectionValues;
 
 public interface ICollectionValueFinallizable<TItem, TValue, TEndCollectionReturn> : ICollectionModelMapper<TItem, TEndCollectionReturn>, ICollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>
 {

@@ -11,13 +11,13 @@ internal class RootValueTargetBuilder<TViewModel, TValue>(
     private readonly ValueData _valueData = valueData;
     private readonly IModelMapper<TViewModel> _modelMapper = modelMapper;
 
-    public IModelMapper<TViewModel> ToOwnMapping 
+    public IModelMapper<TViewModel> ToOwnMapping
         => BuildOwnMapping();
 
     private IModelMapper<TViewModel> BuildOwnMapping()
     {
-        var target = new OwnMappingTarget();
-        _valueData.AddTarget(target);
+        var ownMappingTarget = new OwnMappingTarget(typeof(TValue));
+        _valueData.AddTarget(ownMappingTarget);
 
         return _modelMapper;
     }

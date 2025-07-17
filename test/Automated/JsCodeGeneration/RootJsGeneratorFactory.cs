@@ -1,4 +1,5 @@
-﻿using Vitraux.Helpers;
+﻿using Vitraux.Execution.ViewModelNames;
+using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
 using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
@@ -23,6 +24,7 @@ namespace Vitraux.Test.JsCodeGeneration;
 internal static class RootJsGeneratorFactory
 {
     internal static IJsFullObjectNamesGenerator JsFullObjectNamesGenerator { get; private set; } = default!;
+    internal static INotImplementedCaseGuard NotImplementedCaseGuard { get; private set; } = default!;
 
     internal static RootJsGenerator Create()
     {
@@ -32,7 +34,7 @@ internal static class RootJsGeneratorFactory
         var getStoredElementsByQuerySelectorCall = new GetStoredElementsByQuerySelectorCall();
         var getStoredTemplateCall = new GetStoredTemplateCall();
         var getFetchedElementCall = new GetFetchedElementCall();
-        var notImplementedCaseGuard = new NotImplementedCaseGuard();
+        NotImplementedCaseGuard = new NotImplementedCaseGuard();
 
         var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(getElementByIdAsArrayCall,
                                                                                                           getStoredElementByIdAsArrayCall,
@@ -40,18 +42,18 @@ internal static class RootJsGeneratorFactory
                                                                                                           getStoredElementsByQuerySelectorCall,
                                                                                                           getStoredTemplateCall,
                                                                                                           getFetchedElementCall,
-                                                                                                          notImplementedCaseGuard);
+                                                                                                          NotImplementedCaseGuard);
         var codeFormatter = new CodeFormatter();
         var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(codeFormatter);
 
         var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall,
                                                                        propertyCheckerJsCodeGeneration,
                                                                        codeFormatter,
-                                                                       notImplementedCaseGuard);
+                                                                       NotImplementedCaseGuard);
         var uniqueSelectorsFilter = new UniqueSelectorsFilter();
-        var jsElementObjectNamesGenerator = new JsElementObjectNamesGenerator(uniqueSelectorsFilter, notImplementedCaseGuard);
+        var jsElementObjectNamesGenerator = new JsElementObjectNamesGenerator(uniqueSelectorsFilter, NotImplementedCaseGuard);
 
-        var valueNamesGenerator = new ValueNamesGenerator(notImplementedCaseGuard);
+        var valueNamesGenerator = new ValueNamesGenerator(NotImplementedCaseGuard);
         var collectionNamesGenerator = new CollectionNamesGenerator();
         JsFullObjectNamesGenerator = new JsFullObjectNamesGenerator(valueNamesGenerator, collectionNamesGenerator, jsElementObjectNamesGenerator);
 
@@ -66,7 +68,7 @@ internal static class RootJsGeneratorFactory
                                                                               getStoredElementsByQuerySelectorCall,
                                                                               getStoredTemplateCall,
                                                                               getFetchedElementCall,
-                                                                              notImplementedCaseGuard,
+                                                                              NotImplementedCaseGuard,
                                                                               promiseJsGenerator);
 
         return new RootJsGenerator(initializeJsGeneratorContext, updateViewJsGenerator);
@@ -127,7 +129,9 @@ internal static class RootJsGeneratorFactory
 
         var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementsDirectUpdateValueJsGenerator(attributeCodeGenerator, contentCodeGenerator, notImplementedCaseGuard);
         var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetElementsUpdateValueInsertJsGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall, notImplementedCaseGuard);
-        var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsGenerator(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator, notImplementedCaseGuard);
+        var viewModelKeyGenerator = new ViewModelKeyGenerator();
+        var executeUpdateViewFunctionCall = new ExecuteUpdateViewFunctionCall();
+        var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsGenerator(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator, viewModelKeyGenerator, executeUpdateViewFunctionCall, notImplementedCaseGuard);
 
         return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
     }

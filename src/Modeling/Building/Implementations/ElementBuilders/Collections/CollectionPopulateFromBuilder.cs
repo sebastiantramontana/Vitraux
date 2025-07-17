@@ -5,8 +5,10 @@ using Vitraux.Modeling.Data.Selectors.Collections;
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections;
 
 internal class CollectionPopulateFromBuilder<TItem, TEndCollectionReturn>(
+    CollectionData originalCollectionData,
     CollectionElementTarget collectionElementTarget,
-    TEndCollectionReturn endCollectionReturn) 
+    TEndCollectionReturn endCollectionReturn,
+    IServiceProvider serviceProvider)
     : ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn>
 {
     public ICollectionModelMapper<TItem, TEndCollectionReturn> FromTemplate(string id)
@@ -25,6 +27,6 @@ internal class CollectionPopulateFromBuilder<TItem, TEndCollectionReturn>(
     {
         collectionElementTarget.InsertionSelector = insertionSelector;
 
-        return new CollectionModelMapper<TItem, TEndCollectionReturn>(endCollectionReturn, collectionElementTarget.Data);
+        return new CollectionModelMapper<TItem, TEndCollectionReturn>(endCollectionReturn, collectionElementTarget.Data, originalCollectionData, serviceProvider);
     }
 }

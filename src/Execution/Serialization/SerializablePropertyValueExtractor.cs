@@ -1,37 +1,49 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Vitraux.Execution.Serialization;
 
 internal class SerializablePropertyValueExtractor : ISerializablePropertyValueExtractor
 {
-    private const string NonJsFalsyEmptyStringValue = "";
+    private const string NonJsFalsyEmptyStringValue = " ";
+    private readonly Type StringType = typeof(string);
 
-    public string GetValue(Delegate @delegate, object? obj)
+    public SerializableValueInfo GetValueInfo(Delegate @delegate, object? obj)
     {
-        var value = @delegate?.DynamicInvoke(obj);
-        return GetStringValue(value);
+        var value = @delegate.DynamicInvoke(obj);
+        var valueType = @delegate.Method.ReturnType;
+
+        return new(value, valueType, IsSimpleType(valueType));
     }
 
-    public IEnumerable<object> GetCollection(Delegate @delegate, object? value)
+    public string GetStringValue(object? value)
         => value is not null
-            ? @delegate.DynamicInvoke(value) as IEnumerable<object> ?? []
+            ? GetSafeStringValue(value)
+            : NonJsFalsyEmptyStringValue;
+
+    public IEnumerable<object> GetCollection(Delegate @delegate, object? obj)
+        => obj is not null
+            ? @delegate.DynamicInvoke(obj) as IEnumerable<object> ?? []
             : [];
 
-    private static string GetStringValue(object? value)
+    private bool IsSimpleType(Type objType)
     {
-        if (value is null)
-            return NonJsFalsyEmptyStringValue;
-
-        var toStringMethod = value.ToString;
-
-        return IsValidTypeForToString(toStringMethod.Method)
-            ? value.ToString() ?? NonJsFalsyEmptyStringValue
-            : NonJsFalsyEmptyStringValue;
+        objType = Nullable.GetUnderlyingType(objType) ?? objType;
+        return objType.IsPrimitive
+            || objType.IsEnum
+            || (TypeDescriptor.GetConverter(objType).CanConvertTo(StringType)
+                && !IsAutoStringType(objType));
     }
+    private static string GetSafeStringValue(object value)
+        => value.ToString() ?? NonJsFalsyEmptyStringValue;
 
-    private static bool IsValidTypeForToString(MethodInfo toStringMethod)
-        => toStringMethod.DeclaringType!.IsPrimitive
-        || (toStringMethod.DeclaringType != typeof(object)
-            && toStringMethod.GetCustomAttribute<CompilerGeneratedAttribute>() is null);
+    private static bool IsAutoStringType(Type objType)
+    {
+        const string ToString = "ToString";
+        var toStringMethod = objType.GetMethod(ToString, BindingFlags.Instance | BindingFlags.Public, []);
+
+        return toStringMethod is not null
+            && toStringMethod.GetCustomAttribute<CompilerGeneratedAttribute>() is not null;
+    }
 }

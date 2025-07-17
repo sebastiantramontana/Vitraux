@@ -19,8 +19,7 @@ internal class OnlyOnceAtStartInitializeJsGenerator(
     public string GenerateJs(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
         => GenerateJsLines(new StringBuilder(), jsObjectNames, parentObjectName)
             .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
-            .ToString()
-            .TrimEnd();
+            .ToString();
 
     private StringBuilder GenerateJsLines(StringBuilder stringBuilder, IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
         => jsObjectNames

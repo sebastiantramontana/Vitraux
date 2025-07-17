@@ -3,6 +3,7 @@ using Vitraux.Execution.Tracking;
 using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
 using Vitraux.Test.Example;
+using Vitraux.Test.Utils;
 
 namespace Vitraux.Test.JsCodeGeneration;
 
@@ -90,7 +91,7 @@ public class JsGeneratorTest
                                         }
 
                                         if(vm.v3) {
-
+                                            await globalThis.vitraux.updating.vmFunctions.executeUpdateViewFunction('Vitraux-Test-Example-Subscription', vm.v3);
                                         }
 
                                         if(vm.c0) {
@@ -189,8 +190,9 @@ public class JsGeneratorTest
     {
         var sut = RootJsGeneratorFactory.Create();
         var petownerConfig = new PetOwnerConfiguration(new DataUriConverter());
+        var serviceProvider = ServiceProviderMock.MockForPetOwner();
 
-        var modelMapper = new ModelMapper<PetOwner>();
+        var modelMapper = new ModelMapper<PetOwner>(serviceProvider);
         var data = petownerConfig.ConfigureMapping(modelMapper);
         var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(data);
 
@@ -202,10 +204,12 @@ public class JsGeneratorTest
 
         var serializationDataMapper = new ViewModelJsNamesMapper();
         var serializablePropertyValueExtractor = new SerializablePropertyValueExtractor();
-        var jsonSerializer = new ViewModelJsonSerializer();
+        var jsonSerializer = new ViewModelJsonSerializer(RootJsGeneratorFactory.NotImplementedCaseGuard);
 
         var viewModelJsNames = serializationDataMapper.MapFromFull(fullObjNames);
-        var tracker = new ViewModelNoChangesTracker<PetOwner>(serializablePropertyValueExtractor);
+        var vmJsNamesCache = new ViewModelJsNamesCache<PetOwner>(serviceProvider);
+
+        var tracker = new ViewModelNoChangesTracker<PetOwner>(serializablePropertyValueExtractor, vmJsNamesCache);
         var allData = tracker.Track(PetOwnerExample, viewModelJsNames);
 
         var serializedPetOwnerExampleJson = await jsonSerializer.Serialize(allData);
@@ -244,6 +248,6 @@ public class JsGeneratorTest
 
     private const string ExpectedPetOwnerExampleJson =
         """
-        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":"","c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"8/6/2022 00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"9/7/2022 00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"15/10/2023 00:00:00"},{"v0":"Tick Treatment","v1":"16/11/2023 00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"1/4/2024 00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"22/9/2025 00:00:00"}]}]}
+        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":{"v0":"Semiannual","v1":"123,456","v2":"True","v3":"True"},"c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"8/6/2022 00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"9/7/2022 00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"15/10/2023 00:00:00"},{"v0":"Tick Treatment","v1":"16/11/2023 00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"1/4/2024 00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"22/9/2025 00:00:00"}]}]}
         """;
 }

@@ -8,7 +8,7 @@ internal class CollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>
     ValueData valueData,
     ICollectionModelMapper<TItem, TEndCollectionReturn> modelMapper,
     TEndCollectionReturn endCollectionReturn)
-    : CollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>(valueData, modelMapper, endCollectionReturn), 
+    : CollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>(valueData, modelMapper, endCollectionReturn),
       ICollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>
 {
     private readonly ValueData _valueData = valueData;
@@ -19,8 +19,8 @@ internal class CollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>
 
     private ICollectionModelMapper<TItem, TEndCollectionReturn> BuildOwnMapping()
     {
-        var target = new OwnMappingTarget();
-        _valueData.AddTarget(target);
+        var ownMappingTarget = new OwnMappingTarget(typeof(TValue));
+        _valueData.AddTarget(ownMappingTarget);
 
         return _modelMapper;
     }

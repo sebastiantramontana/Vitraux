@@ -15,14 +15,15 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
     IJsTryInitializeViewFunctionsFromCacheByVersionInvoker jsTryInitializeViewFunctionsFromCacheByVersionInvoker,
     IJsInitializeNewViewFunctionsToCacheByVersionInvoker jsinitializeNewViewFunctionsToCacheByVersionInvoker,
     IViewModelJsNamesMapper encodedSerializationDataMapper,
-    IViewModelJsNamesCache<TViewModel> vmSerializationDataCache,
-    INotImplementedCaseGuard notImplementedCaseGuard)
+    IViewModelJsNamesCacheGeneric<TViewModel> vmSerializationDataCache,
+    INotImplementedCaseGuard notImplementedCaseGuard,
+    IViewModelKeyGenerator viewModelKeyGenerator)
     : IViewModelUpdateFunctionBuilder
     where TModelConfiguration : class, IModelConfiguration<TViewModel>
 {
     public async Task Build()
     {
-        var vmKey = GenerateViewModelKey();
+        var vmKey = viewModelKeyGenerator.Generate<TViewModel>();
         var behavior = modelConfiguration.ConfigurationBehavior;
         var mappingData = modelConfiguration.ConfigureMapping(modelMapper);
         var fullObjNames = jsFullObjectNamesGenerator.Generate(mappingData);
@@ -66,7 +67,4 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
         var generatedJsCode = GenerateJsCode(fullObjectNames, queryElementStrategy);
         jsInitializeNonCachedViewFunctionsInvoker.Invoke(vmKey, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
     }
-
-    private static string GenerateViewModelKey()
-        => typeof(TViewModel).FullName!.Replace('.', '-');
 }

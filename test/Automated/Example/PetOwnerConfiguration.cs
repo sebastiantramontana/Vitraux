@@ -4,7 +4,12 @@ namespace Vitraux.Test.Example;
 
 public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelConfiguration<PetOwner>
 {
-    public ConfigurationBehavior ConfigurationBehavior { get; } = new(QueryElementStrategy.OnlyOnceAtStart, true, VMUpdateFunctionCaching.ByVersion("test 1.0"));
+    public ConfigurationBehavior ConfigurationBehavior { get; } = new() 
+    { 
+        QueryElementStrategy = QueryElementStrategy.OnlyOnceAtStart, 
+        TrackChanges = true, 
+        VMUpdateFunctionCaching = VMUpdateFunctionCaching.ByVersion("test 1.0") 
+    };
 
     public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> modelMapper)
         => modelMapper
@@ -35,14 +40,8 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                         .ToElements.ByQuery(".another-anchor-cell-pet-name").ToAttribute("href")
                     .MapCollection(pet => pet.Vaccines)
                         .ToTables.ByQuery(".inner-table-vaccines")
-                        .PopulatingRows.FromUri(new Uri("./htmlpieces/row-vaccines.html", UriKind.Relative))
-                            .MapValue(v => v.Name).ToElements.ByQuery(".div-vaccine").ToContent
-                            .MapValue(v => v.DateApplied).ToElements.ByQuery(".span-vaccine-date").ToContent
-                            .MapCollection(v => v.Ingredients)
-                                .ToContainerElements.ByQuery(".ingredients-list")
-                                .FromTemplate("ingredients-template")
-                                    .MapValue(i => i).ToElements.ByQuery(".ingredient-item").ToContent
-                            .EndCollection
+                            .PopulatingRows.FromUri(new Uri("./htmlpieces/row-vaccines.html", UriKind.Relative))
+                                .ToOwnMapping
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery(".pet-photo").ToAttribute("src")
                     .MapCollection(pet => pet.Antiparasitics)

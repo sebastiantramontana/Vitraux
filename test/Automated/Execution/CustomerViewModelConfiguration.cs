@@ -2,7 +2,12 @@
 
 internal class CustomerViewModelConfiguration : IModelConfiguration<CustomerViewModel>
 {
-    public ConfigurationBehavior ConfigurationBehavior { get; } = new(QueryElementStrategy.OnlyOnceOnDemand, true, VMUpdateFunctionCaching.ByVersion("test 1.0"));
+    public ConfigurationBehavior ConfigurationBehavior { get; } = new()
+    {
+        QueryElementStrategy = QueryElementStrategy.OnlyOnceOnDemand,
+        TrackChanges = true,
+        VMUpdateFunctionCaching = VMUpdateFunctionCaching.ByVersion("test 1.0")
+    };
 
     public ModelMappingData ConfigureMapping(IModelMapper<CustomerViewModel> modelMapper)
         => modelMapper

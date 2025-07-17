@@ -21,7 +21,9 @@ internal class CollectionValueFinallizable<TItem, TValue, TEndCollectionReturn>(
     public ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> ToElements
         => multiTargetBuilderWrapped.ToElements;
 
-    public ICollectionValueCustomJsBuilder<TItem, TValue, TEndCollectionReturn> ToJsFunction(string jsFunction)
-        => multiTargetBuilderWrapped.ToJsFunction(jsFunction);
+    public ICollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> ToOwnMapping
+        => modelMapperWrapped.ToOwnMapping;
 
+    public ICollectionValueCustomJsFinallizable<TItem, TValue, TEndCollectionReturn> ToJsFunction(string jsFunction)
+        => multiTargetBuilderWrapped.ToJsFunction(jsFunction);
 }

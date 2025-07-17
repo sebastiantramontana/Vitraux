@@ -7,8 +7,9 @@ internal class InnerCollectionCustomJsBuilder<TItem, TItemBack, TEndCollectionRe
     CustomJsCollectionTarget target,
     CollectionData collectionData,
     ICollectionModelMapper<TItemBack, TEndCollectionReturnModelMapper> modelMapper,
-    TEndCollectionReturnModelMapper endCollectionReturnModelMapper)
-    : InnerCollectionTargetBuilder<TItem, TItemBack, TEndCollectionReturnModelMapper>(collectionData, modelMapper, endCollectionReturnModelMapper), ICollectionCustomJsBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>
+    TEndCollectionReturnModelMapper endCollectionReturnModelMapper,
+    IServiceProvider serviceProvider)
+    : InnerCollectionTargetBuilder<TItem, TItemBack, TEndCollectionReturnModelMapper>(collectionData, modelMapper, endCollectionReturnModelMapper, serviceProvider), ICollectionCustomJsBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>
 {
     public ICollectionTargetBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>> FromModule(Uri moduleUri)
     {
