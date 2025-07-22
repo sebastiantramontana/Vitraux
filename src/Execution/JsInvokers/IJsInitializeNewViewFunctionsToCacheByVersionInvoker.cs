@@ -2,5 +2,5 @@
 
 internal interface IJsInitializeNewViewFunctionsToCacheByVersionInvoker
 {
-    void Invoke(string vmKey, string version, string initializationJsCode, string updateViewJsCode);
+    ValueTask Invoke(string vmKey, string version, string initializationJsCode, string updateViewJsCode);
 }

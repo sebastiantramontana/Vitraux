@@ -97,13 +97,13 @@ internal class ViewModelShallowChangesTracker<TViewModel>(
                 if (!CompareCollections(propertyCollection, previousCollection))
                 {
                     TrackNewValue(collectionName.CollectionPropertyName, propertyCollection);
-                    selectedCollections.Add(CreateEncodedCollection(objToTrack, collectionName));
+                    selectedCollections.Add(CreateEncodedCollection(propertyCollection, collectionName));
                 }
             }
             else
             {
                 TrackNewValue(collectionName.CollectionPropertyName, propertyCollection);
-                selectedCollections.Add(CreateEncodedCollection(objToTrack, collectionName));
+                selectedCollections.Add(CreateEncodedCollection(propertyCollection, collectionName));
             }
         }
 
@@ -116,9 +116,11 @@ internal class ViewModelShallowChangesTracker<TViewModel>(
     private static EncodedTrackedViewModelObjectValueData CreateEncodedObjectValue(string name, EncodedTrackedViewModelAllData propertyAllData)
         => new(EncodeName(name), propertyAllData);
 
-    private EncodedTrackedViewModelCollectionData CreateEncodedCollection(object objToTrack, ViewModelJsCollectionName collectionName)
+    private EncodedTrackedViewModelCollectionData CreateEncodedCollection(IEnumerable<object?> childrenToTrack, ViewModelJsCollectionName collectionName)
     {
-        var dataChildren = collectionName.Children.Select(c => noChangesTracker.Track(objToTrack, c));
+        var dataChildren = childrenToTrack.SelectMany(ct
+            => collectionName.Children.Select(cn => noChangesTracker.Track(ct, cn)));
+
         return new EncodedTrackedViewModelCollectionData(EncodeName(collectionName.CollectionPropertyName), dataChildren);
     }
 

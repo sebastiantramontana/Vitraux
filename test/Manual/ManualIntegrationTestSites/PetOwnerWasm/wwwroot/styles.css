@@ -1,0 +1,220 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --background-color: #f8f9fa;
+    --border-color: #e0e0e0;
+    --success-color: #2ecc71;
+    --error-color: #e74c3c;
+    --hover-color: #f5f6f7;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--primary-color);
+}
+
+h1 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.select-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 1rem 0;
+}
+
+.select-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 1rem 0;
+}
+
+.select-container #petowners-spinner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(248, 249, 250, 0.9);
+    border-radius: 6px;
+    z-index: 1;
+}
+
+.select-container #petowners-spinner.petowners-spinner-hidden {
+    display: none;
+}
+
+.select-container #petowners-spinner span:first-child {
+    margin-right: 10px;
+}
+
+select#petowners {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: white;
+}
+
+select#petowners:disabled {
+    background-color: var(--background-color);
+    cursor: wait;
+}
+
+.select-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--secondary-color);
+    border-radius: 50%;
+    animation: spinner 0.8s linear infinite;
+    opacity: 1;
+    transition: opacity 0.3s;
+    display: inline-block;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+select#petowners:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.info-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.info-section > div:first-child {
+    font-weight: bold;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#petowner-name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#petowner-address, #petowner-phone-number {
+    color: #666;
+    margin: 5px 0;
+}
+
+.subscription-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.subscription-item {
+    background: var(--background-color);
+    padding: 15px;
+    border-radius: 6px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#petowner-pets {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+#petowner-pets th,
+#petowner-pets td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid var(--border-color);
+}
+
+#petowner-pets th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+#petowner-pets tbody tr {
+    background-color: white;
+}
+
+#petowner-pets tbody tr:nth-child(even) {
+    background-color: var(--background-color);
+}
+
+#petowner-pets tbody tr:hover {
+    background-color: var(--hover-color);
+}
+
+.vaccines-list,
+.antiparasitics-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.vaccines-list::-webkit-scrollbar,
+.antiparasitics-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.vaccines-list::-webkit-scrollbar-thumb,
+.antiparasitics-list::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 3px;
+}
+
+#petowner-subscription-is-up-to-date[data-is-up-to-date="True"] {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+#petowner-subscription-is-up-to-date[data-is-up-to-date="False"] {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+#petowner-subscription-is-direct-debit {
+    font-style: italic;
+}
+
+img[data-id="pet-photo"] {
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+}

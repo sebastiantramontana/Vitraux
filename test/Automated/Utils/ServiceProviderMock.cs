@@ -11,17 +11,16 @@ internal static class ServiceProviderMock
     {
         var serviceProviderMock = new Mock<IServiceProvider>();
 
-        serviceProviderMock.Setup(sp => sp.GetService(It.IsAny<Type>()))
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(It.IsAny<Type>()))
             .Returns(new Func<Type, object?>(type =>
-            {
-                return type switch
+                type switch
                 {
                     var t when t == typeof(IViewModelJsNamesCacheGeneric<Subscription>) => CreateViewModelJsNamesCacheForSubscription(serviceProviderMock.Object),
                     var t when t == typeof(IModelConfiguration<Vaccine>) => new VaccineConfiguration(),
                     var t when t == typeof(IModelMapper<Vaccine>) => new ModelMapper<Vaccine>(serviceProviderMock.Object),
                     _ => null
-                };
-            }));
+                }));
 
         return serviceProviderMock.Object;
     }

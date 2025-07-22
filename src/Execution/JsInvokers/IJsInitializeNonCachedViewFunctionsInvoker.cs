@@ -2,5 +2,5 @@
 
 internal interface IJsInitializeNonCachedViewFunctionsInvoker
 {
-    void Invoke(string vmKey, string initializationJsCode, string updateViewJsCode);
+    ValueTask Invoke(string vmKey, string initializationJsCode, string updateViewJsCode);
 }

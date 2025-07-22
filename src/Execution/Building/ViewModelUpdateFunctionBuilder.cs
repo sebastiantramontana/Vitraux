@@ -33,7 +33,7 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
         switch (behavior.VMUpdateFunctionCaching)
         {
             case VMUpdateFunctionNoCache:
-                InvokeInitializationViewFunctionsNoCache(vmKey, fullObjNames, behavior.QueryElementStrategy);
+                await InvokeInitializationViewFunctionsNoCache(vmKey, fullObjNames, behavior.QueryElementStrategy);
                 break;
             case VMUpdateFunctionCacheByVersion cacheByVersion:
                 await InvokeInitializationViewFunctionsByVersion(vmKey, cacheByVersion.Version, fullObjNames, behavior.QueryElementStrategy);
@@ -58,13 +58,13 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
         if (!await jsTryInitializeViewFunctionsFromCacheByVersionInvoker.Invoke(vmKey, version))
         {
             var generatedJsCode = GenerateJsCode(fullObjectNames, queryElementStrategy);
-            jsinitializeNewViewFunctionsToCacheByVersionInvoker.Invoke(vmKey, version, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
+            await jsinitializeNewViewFunctionsToCacheByVersionInvoker.Invoke(vmKey, version, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
         }
     }
 
-    private void InvokeInitializationViewFunctionsNoCache(string vmKey, FullObjectNames fullObjectNames, QueryElementStrategy queryElementStrategy)
+    private ValueTask InvokeInitializationViewFunctionsNoCache(string vmKey, FullObjectNames fullObjectNames, QueryElementStrategy queryElementStrategy)
     {
         var generatedJsCode = GenerateJsCode(fullObjectNames, queryElementStrategy);
-        jsInitializeNonCachedViewFunctionsInvoker.Invoke(vmKey, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
+        return jsInitializeNonCachedViewFunctionsInvoker.Invoke(vmKey, generatedJsCode.InitializeViewJs, generatedJsCode.UpdateViewJs);
     }
 }

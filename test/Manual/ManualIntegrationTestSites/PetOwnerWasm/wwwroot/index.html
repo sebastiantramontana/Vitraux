@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PetOwner</title>
+    <base href="/" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="vitraux.js"></script>
+    <script>
+        addEventListener("DOMContentLoaded", async () => {
+            try {
+                await Blazor.start();
+
+                const petOwnerWasm = await getPetOwnerWasm();
+                await addEventListenerToDropDown(petOwnerWasm);
+
+                await petOwnerWasm.RefreshPetOwnerNames();
+                addSelectPetOwnerDefaultOption();
+                hideSpinner();
+            }
+            catch (ex) {
+                console.log(`Algo salió mal: ${ex}`);
+            }
+
+            async function getPetOwnerWasm() {
+                const { getAssemblyExports } = await globalThis.getDotnetRuntime(0);
+                const exports = await getAssemblyExports("PetOwnerWasm.dll");
+                return exports.PetOwnerWasm.Program;
+            }
+
+            async function addEventListenerToDropDown(petOwnerWasm) {
+                const dropdown = document.getElementById('petowners');
+                dropdown.addEventListener('change', async (event) => {
+                    await petOwnerWasm.SelectPetOwner(Number.parseInt(event.target.value));
+                });
+            }
+
+            function hideSpinner() {
+                const spinner = document.getElementById('petowners-spinner');
+                const dropdown = document.getElementById('petowners');
+                spinner.classList.add('petowners-spinner-hidden');
+                dropdown.disabled = false;
+            }
+
+            function addSelectPetOwnerDefaultOption() {
+                const defaultOption = document.createElement("option");
+                defaultOption.textContent = "Select a petowner...";
+                defaultOption.value = "";
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+
+                const dropdown = document.getElementById('petowners');
+                dropdown.insertBefore(defaultOption, dropdown.firstChild);
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Petowners from Wasm using Vitraux</h1>
+    <div class="container">
+        <div class="info-section">
+            <div>Select Petowner</div>
+            <div class="select-container">
+                <select id="petowners" disabled> </select>
+                <div id="petowners-spinner"><span>Loading petowners...</span><span class="select-spinner"></span></div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div>Owner Information</div>
+            <div id="petowner-name"></div>
+            <div id="petowner-address"></div>
+            <div id="petowner-phone-number"></div>
+        </div>
+
+        <div class="info-section">
+            <div>Subscription Information</div>
+            <div class="subscription-info">
+                <div class="subscription-item">
+                    <div><span>Frequency:&nbsp;</span><span id="petowner-subscription-frequency"></span></div>
+                </div>
+                <div class="subscription-item">
+                    <div><span>Amount:&nbsp;</span><span id="petowner-subscription-amount"></span></div>
+                </div>
+                <div class="subscription-item">
+                    <div><span>Direct Debit:&nbsp;</span><span id="petowner-subscription-is-direct-debit"></span></div>
+                </div>
+                <div class="subscription-item">
+                    <div><span>Status:&nbsp;</span><span id="petowner-subscription-is-up-to-date"
+                            data-is-up-to-date=""></span></div>
+                </div>
+            </div>
+        </div>
+        <div class="info-section">
+            <div>Pets</div>
+            <table id="petowner-pets">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Photo</th>
+                        <th>Vaccines</th>
+                        <th>Antiparasitics</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <template id="petowner-pet-row">
+        <tr>
+            <td data-id="pet-name"></td>
+            <td><img data-id="pet-photo" /></td>
+            <td>
+                <div class="vaccines-list"></div>
+            </td>
+            <td>
+                <div class="antiparasitics-list"></div>
+            </td>
+        </tr>
+    </template>
+
+    <template id="vaccine-item-template">
+        <style>
+            .vaccine-item {
+                border: 1px solid var(--border-color);
+                margin: 10px 0;
+                padding: 12px;
+                border-radius: 6px;
+                background-color: white;
+                text-align: left;
+            }
+
+            .vaccine-name {
+                margin: 0 0 8px 0;
+                color: var(--primary-color);
+            }
+
+            .vaccine-date {
+                color: #666;
+                font-size: 0.9em;
+            }
+
+            .ingredients-list {
+                margin: 10px 0;
+                padding-left: 20px;
+            }
+
+            details {
+                margin-top: 10px;
+            }
+
+            details summary {
+                cursor: pointer;
+                color: var(--secondary-color);
+                font-weight: 600;
+                padding: 5px 0;
+            }
+
+            details summary:hover {
+                color: var(--primary-color);
+            }
+        </style>
+        <div class="vaccine-item">
+            <h4 class="vaccine-name"></h4>
+            <div class="vaccine-date"></div>
+            <details>
+                <summary>Ingredients</summary>
+                <ul class="ingredients-list"></ul>
+            </details>
+        </div>
+    </template>
+
+    <template id="vaccine-ingredient-template">
+        <style>
+            .ingredient-item {
+                padding: 3px 0;
+            }
+        </style>
+        <li class="ingredient-item"></li>
+    </template>
+
+    <template id="antiparasitic-item-template">
+        <style>
+            .antiparasitic-name {
+                font-weight: bold;
+            }
+
+            .antiparasitic-date {
+                color: #666;
+                font-size: 0.9em;
+            }
+
+            .antiparasitic-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px;
+                border: 1px solid var(--border-color);
+                margin: 10px 0;
+                border-radius: 6px;
+                background-color: white;
+            }
+        </style>
+        <div class="antiparasitic-item">
+            <span class="antiparasitic-name"></span>
+            <span class="antiparasitic-date"></span>
+        </div>
+    </template>
+
+    <template id="petowner-option-template">
+        <option value=""></option>
+    </template>
+
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+</body>
+
+</html>

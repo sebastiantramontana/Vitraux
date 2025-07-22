@@ -11,6 +11,7 @@ internal class JsElementObjectNamesGenerator(
     IUniqueSelectorsFilter uniqueSelectorsFilter,
     INotImplementedCaseGuard notImplementedCaseGuard) : IJsElementObjectNamesGenerator
 {
+    private static int _numberedNamePosfixCounter = -1;
     const string ElementObjectNamePrefix = "e";
     const string InsertedElementObjectNamePrefix = "f";
     const string CollectionElementObjectNamePrefix = "c";
@@ -19,11 +20,11 @@ internal class JsElementObjectNamesGenerator(
     {
         var selectors = uniqueSelectorsFilter.FilterDistinct(modelMappingData);
 
-        return selectors.Select((selector, indexAsPostfix) =>
+        return selectors.Select((selector) =>
         {
             var initialName = GetInitialNameBySelector(selector);
-            return new JsObjectName(GenerateObjectName(namePrefix, initialName, indexAsPostfix), selector);
-        });
+            return new JsObjectName(GenerateObjectName(namePrefix, initialName), selector);
+        }).ToArray();
     }
 
     private string GetInitialNameBySelector(SelectorBase selector)
@@ -35,8 +36,12 @@ internal class JsElementObjectNamesGenerator(
             _ => notImplementedCaseGuard.ThrowException<string>(selector)
         };
 
-    private static string GenerateObjectName(string namePrefix, string initialName, int indexAsPostfix)
-        => string.IsNullOrWhiteSpace(namePrefix)
-            ? $"{initialName}{indexAsPostfix}"
-            : $"{namePrefix}_{initialName}{indexAsPostfix}";
+    private static string GenerateObjectName(string namePrefix, string initialName)
+    {
+        var numberedNamePosfix = Interlocked.Increment(ref _numberedNamePosfixCounter);
+
+        return string.IsNullOrWhiteSpace(namePrefix)
+                ? $"{initialName}{numberedNamePosfix}"
+                : $"{namePrefix}_{initialName}{numberedNamePosfix}";
+    }
 }
