@@ -11,7 +11,7 @@ internal class JsElementObjectNamesGenerator(
     IUniqueSelectorsFilter uniqueSelectorsFilter,
     INotImplementedCaseGuard notImplementedCaseGuard) : IJsElementObjectNamesGenerator
 {
-    private static int _numberedNamePosfixCounter = -1;
+    private int _numberedNamePosfixCounter = -1;
     const string ElementObjectNamePrefix = "e";
     const string InsertedElementObjectNamePrefix = "f";
     const string CollectionElementObjectNamePrefix = "c";
@@ -36,7 +36,7 @@ internal class JsElementObjectNamesGenerator(
             _ => notImplementedCaseGuard.ThrowException<string>(selector)
         };
 
-    private static string GenerateObjectName(string namePrefix, string initialName)
+    private string GenerateObjectName(string namePrefix, string initialName)
     {
         var numberedNamePosfix = Interlocked.Increment(ref _numberedNamePosfixCounter);
 
