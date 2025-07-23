@@ -207,7 +207,7 @@ public class JsGeneratorTest
         var jsonSerializer = new ViewModelJsonSerializer(RootJsGeneratorFactory.NotImplementedCaseGuard);
 
         var viewModelJsNames = serializationDataMapper.MapFromFull(fullObjNames);
-        var vmJsNamesCache = new ViewModelJsNamesCache<PetOwner>(serviceProvider);
+        var vmJsNamesCache = new ViewModelJsNamesCacheGeneric<PetOwner>(serviceProvider);
 
         var tracker = new ViewModelNoChangesTracker<PetOwner>(serializablePropertyValueExtractor, vmJsNamesCache);
         var allData = tracker.Track(PetOwnerExample, viewModelJsNames);

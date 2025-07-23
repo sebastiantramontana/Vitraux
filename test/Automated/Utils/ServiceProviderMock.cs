@@ -25,7 +25,7 @@ internal static class ServiceProviderMock
         return serviceProviderMock.Object;
     }
 
-    private static ViewModelJsNamesCache<Subscription> CreateViewModelJsNamesCacheForSubscription(IServiceProvider serviceProvider)
+    private static ViewModelJsNamesCacheGeneric<Subscription> CreateViewModelJsNamesCacheForSubscription(IServiceProvider serviceProvider)
     {
         var subscriptionConfig = new SubscriptionConfiguration();
         var modelMapper = new ModelMapper<Subscription>(serviceProvider);
@@ -37,7 +37,7 @@ internal static class ServiceProviderMock
         var viewModelJsNames = serializationDataMapper.MapFromFull(fullObjNames);
         var viewModelKey = vmKeyGenerator.Generate<Subscription>();
 
-        return new ViewModelJsNamesCache<Subscription>(serviceProvider)
+        return new ViewModelJsNamesCacheGeneric<Subscription>(serviceProvider)
         {
             ViewModelJsNames = viewModelJsNames,
             ViewModelKey = viewModelKey
