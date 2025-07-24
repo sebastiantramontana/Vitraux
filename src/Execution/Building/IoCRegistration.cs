@@ -6,5 +6,6 @@ internal static class IoCRegistration
 {
     internal static IServiceCollection AddBuilding(this IServiceCollection serviceCollection)
         => serviceCollection
+            .AddSingleton<IBuilder, ConfigurationBuilder>()
             .AddSingleton<IVitrauxBuilder, VitrauxBuilder>();
 }

@@ -19,6 +19,7 @@ public partial class Program
 
         _ = builder.Services
             .AddVitraux()
+            .AddConfiguration(() => new VitrauxConfiguration { UseShadowDom = true })
             .AddModelConfiguration<AllPetOwnerNames, AllPetOwnerNamesConfiguration>()
             .AddModelConfiguration<PetOwner, PetOwnerConfiguration>()
             .AddModelConfiguration<Subscription, SubscriptionConfiguration>()

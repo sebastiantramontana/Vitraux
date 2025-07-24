@@ -18,7 +18,7 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
     IViewModelJsNamesCacheGeneric<TViewModel> vmSerializationDataCache,
     INotImplementedCaseGuard notImplementedCaseGuard,
     IViewModelKeyGenerator viewModelKeyGenerator)
-    : IViewModelUpdateFunctionBuilder
+    : IBuilder
     where TModelConfiguration : class, IModelConfiguration<TViewModel>
 {
     public async Task Build()

@@ -1,10 +1,10 @@
 ﻿namespace Vitraux.Execution.Building;
 
-internal class VitrauxBuilder(IEnumerable<IViewModelUpdateFunctionBuilder> viewBuilders) : IVitrauxBuilder
+internal class VitrauxBuilder(IEnumerable<IBuilder> builders) : IVitrauxBuilder
 {
     public Task Build()
     {
-        var tasks = viewBuilders.Select(builder => builder.Build());
+        var tasks = builders.Select(builder => builder.Build());
         return Task.WhenAll(tasks);
     }
 }

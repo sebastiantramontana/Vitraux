@@ -11,6 +11,13 @@ class VitrauxInternalError extends Error {
 }
 
 globalThis.vitraux = {
+    config: {
+        useShadowDom: true,
+
+        configure(useShadowDom) {
+            this.useShadowDom = useShadowDom;
+        }
+    },
     storedElements: {
         elements: {},
         getElementByIdAsArray(id) {
@@ -52,7 +59,7 @@ globalThis.vitraux = {
         },
 
         getTemplate(id) {
-            return document.getElementById(id)?.content;
+            return this.trimTemplateContent(document.getElementById(id)?.content);
         },
 
         getStoredTemplate(id, elementsObjectName) {
@@ -76,7 +83,7 @@ globalThis.vitraux = {
             const template = document.createElement("template");
             template.innerHTML = html.trim();
 
-            return template?.content;
+            return this.trimTemplateContent(template?.content);
         },
 
         async getFetchedElement(uri, elementsObjectName) {
@@ -91,6 +98,27 @@ globalThis.vitraux = {
             this.elements[elementsObjectName] = element;
 
             return element;
+        },
+
+        trimTemplateContent(templateContent) {
+            if (!templateContent)
+                return templateContent;
+
+            for (let i = 0; this.tryRemoveEmptyTextNode(templateContent, i); i++);
+            for (let i = templateContent.childNodes.length - 1; this.tryRemoveEmptyTextNode(templateContent, i); i--);
+
+            return templateContent;
+        },
+
+        tryRemoveEmptyTextNode(templateContent, i) {
+            const node = templateContent.childNodes[i];
+
+            if (node && node.nodeType === Node.TEXT_NODE && !node.textContent.trim()) {
+                templateContent.removeChild(node);
+                return true;
+            }
+
+            return false;
         }
     },
     updating: {
@@ -130,7 +158,7 @@ globalThis.vitraux = {
                 return (vmFuncObj.version === version) ? vmFuncObj : false;
             },
 
-            tryInitializeViewFunctionsFromCacheByVersion(vmKey, version) {
+            async tryInitializeViewFunctionsFromCacheByVersion(vmKey, version) {
                 if (!version)
                     throw new VitrauxInternalError("Version must be set in tryInitializeViewFunctionsFromCacheByVersion!");
 
@@ -139,28 +167,29 @@ globalThis.vitraux = {
                 if (!functionCodes)
                     return false;
 
-                this.executeInitializationView(functionCodes.initializationCode);
+                await this.executeInitializationView(functionCodes.initializationCode);
                 this.createUpdateViewFunction(vmKey, functionCodes.updateViewCode);
 
                 return true;
             },
 
-            initializeNewViewFunctionsToCacheByVersion(vmKey, version, initializationCode, updateViewCode) {
+            async initializeNewViewFunctionsToCacheByVersion(vmKey, version, initializationCode, updateViewCode) {
                 if (!version)
                     throw new VitrauxInternalError("Version must be set in initializeNewViewFunctionsToCacheByVersion!");
 
-                this.executeInitializationView(initializationCode);
+                await this.executeInitializationView(initializationCode);
                 this.createUpdateViewFunction(vmKey, updateViewCode);
                 this.storeFunctions(vmKey, version, initializationCode, updateViewCode);
             },
 
-            initializeNonCachedViewFunctions(vmKey, initializationCode, updateViewCode) {
-                this.executeInitializationView(initializationCode);
+            async initializeNonCachedViewFunctions(vmKey, initializationCode, updateViewCode) {
+                await this.executeInitializationView(initializationCode);
                 this.createUpdateViewFunction(vmKey, updateViewCode);
             },
 
             createUpdateViewFunction(vmKey, code) {
-                this.vms[vmKey] = new Function("vm", code);
+                var allCode = "return (async () => {" + code + "})()";
+                this.vms[vmKey] = new Function("vm", allCode);
             },
 
             storeFunctions(vmKey, version, initializationCode, updateViewCode) {
@@ -257,6 +286,9 @@ globalThis.vitraux = {
             },
 
             supportShadowDom(element) {
+                if (!globalThis.vitraux.config.useShadowDom)
+                    return false;
+
                 if (!element || element.nodeType !== Node.ELEMENT_NODE)
                     return false;
 

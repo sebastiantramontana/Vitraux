@@ -18,6 +18,7 @@ public partial class Program
 
         _ = builder.Services
             .AddVitraux()
+            .AddDefaultConfiguration()
             .AddModelConfiguration<ClockViewModel, ClockModelConfiguration>();
 
         await using var host = builder.Build();

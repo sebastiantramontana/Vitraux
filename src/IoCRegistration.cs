@@ -8,18 +8,21 @@ namespace Vitraux;
 
 public static class IoCRegistration
 {
-    public static IModelRegistrar AddVitraux(this IServiceCollection serviceCollection)
+    public static IVitrauxRegistrar AddVitraux(this IServiceCollection serviceCollection)
         => serviceCollection
             .AddExecution()
             .AddHelpers()
             .AddJsCodeGeneration()
-            .CreateModelRegistrar();
+            .CreateVitrauxRegistrar();
 
     public static Task BuildVitraux(this IServiceProvider serviceProvider)
     {
         var builder = serviceProvider.GetRequiredService<IVitrauxBuilder>();
         return builder.Build();
     }
+
+    private static VitrauxRegistrar CreateVitrauxRegistrar(this IServiceCollection serviceCollection)
+        => new(serviceCollection, serviceCollection.CreateModelRegistrar());
 
     private static ModelRegistrar CreateModelRegistrar(this IServiceCollection serviceCollection)
         => new(serviceCollection);

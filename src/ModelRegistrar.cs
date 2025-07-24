@@ -16,7 +16,7 @@ internal class ModelRegistrar(IServiceCollection container) : IModelRegistrar
             .AddSingleton<IModelMapper<TViewModel>, ModelMapper<TViewModel>>()
             .AddSingleton<IModelConfiguration<TViewModel>, TModelConfiguration>()
             .AddSingleton<IViewModelJsNamesCacheGeneric<TViewModel>, ViewModelJsNamesCacheGeneric<TViewModel>>()
-            .AddSingleton<IViewModelUpdateFunctionBuilder, ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>>()
+            .AddSingleton<IBuilder, ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>>()
             .AddSingleton<IViewModelChangeTrackingContext<TViewModel>, ViewModelChangeTrackingContext<TViewModel>>()
             .AddSingleton<IViewModelNoChangesTracker<TViewModel>, ViewModelNoChangesTracker<TViewModel>>()
             .AddSingleton<IViewModelShallowChangesTracker<TViewModel>, ViewModelShallowChangesTracker<TViewModel>>()

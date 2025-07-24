@@ -1,6 +1,6 @@
 ﻿namespace Vitraux.Execution.Building;
 
-internal interface IViewModelUpdateFunctionBuilder
+internal interface IBuilder
 {
     Task Build();
 }

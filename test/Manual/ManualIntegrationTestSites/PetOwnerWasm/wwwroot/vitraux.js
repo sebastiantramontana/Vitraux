@@ -11,6 +11,13 @@ class VitrauxInternalError extends Error {
 }
 
 globalThis.vitraux = {
+    config: {
+        useShadowDom: true,
+
+        configure(useShadowDom) {
+            this.useShadowDom = useShadowDom;
+        }
+    },
     storedElements: {
         elements: {},
         getElementByIdAsArray(id) {
@@ -181,8 +188,8 @@ globalThis.vitraux = {
             },
 
             createUpdateViewFunction(vmKey, code) {
-                    var allCode = "return (async () => {" + code + "})()";
-                    this.vms[vmKey] = new Function("vm", allCode);
+                var allCode = "return (async () => {" + code + "})()";
+                this.vms[vmKey] = new Function("vm", allCode);
             },
 
             storeFunctions(vmKey, version, initializationCode, updateViewCode) {
@@ -279,6 +286,9 @@ globalThis.vitraux = {
             },
 
             supportShadowDom(element) {
+                if (!globalThis.vitraux.config.useShadowDom)
+                    return false;
+
                 if (!element || element.nodeType !== Node.ELEMENT_NODE)
                     return false;
 
