@@ -67,12 +67,12 @@ public class JsGeneratorTest
                                       """;
 
     const string expectedCommonUpdateViewJs = """
-                                        if(vm.v0) {
+                                        if(globalThis.vitraux.updating.utils.isValueValid(vm.v0)) {
                                             globalThis.vitraux.updating.dom.setElementsContent(e0, vm.v0);
                                             /*poNameFunction(vm.v0);*/
                                         }
 
-                                        if(vm.v1) {
+                                        if(globalThis.vitraux.updating.utils.isValueValid(vm.v1)) {
                                             globalThis.vitraux.updating.dom.updateValueByInsertingElements(
                                                 f2,
                                                 e1,
@@ -81,7 +81,7 @@ public class JsGeneratorTest
                                             globalThis.vitraux.updating.dom.setElementsAttribute(e3, 'data-petowner-address', vm.v1);
                                         }
 
-                                        if(vm.v2) {
+                                        if(globalThis.vitraux.updating.utils.isValueValid(vm.v2)) {
                                             globalThis.vitraux.updating.dom.updateValueByInsertingElements(
                                                 f5,
                                                 e4,
@@ -90,11 +90,11 @@ public class JsGeneratorTest
                                             globalThis.vitraux.updating.dom.setElementsContent(e6, vm.v2);
                                         }
 
-                                        if(vm.v3) {
+                                        if(globalThis.vitraux.updating.utils.isValueValid(vm.v3)) {
                                             await globalThis.vitraux.updating.vmFunctions.executeUpdateViewFunction('Vitraux-Test-Example-Subscription', vm.v3);
                                         }
 
-                                        if(vm.c0) {
+                                        if(globalThis.vitraux.updating.utils.isValueValid(vm.c0)) {
                                             const uc0 = async (p, item) =>
                                             {
                                                 const n0_c0_e9 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.cell-pet-name');
@@ -106,17 +106,17 @@ public class JsGeneratorTest
                                                 const n0_c0_e15 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.inner-nav-antiparasitics');
                                                 const n0_c0_c16 = await globalThis.vitraux.storedElements.fetchElement('./htmlpieces/row-antiparasitics.html');
 
-                                                if(item.v0) {
+                                                if(globalThis.vitraux.updating.utils.isValueValid(item.v0)) {
                                                     globalThis.vitraux.updating.dom.setElementsContent(n0_c0_e9, item.v0);
                                                     globalThis.vitraux.updating.dom.setElementsAttribute(n0_c0_e10, 'href', item.v0);
                                                     globalThis.vitraux.updating.dom.setElementsAttribute(n0_c0_e11, 'href', item.v0);
                                                 }
 
-                                                if(item.v1) {
+                                                if(globalThis.vitraux.updating.utils.isValueValid(item.v1)) {
                                                     globalThis.vitraux.updating.dom.setElementsAttribute(n0_c0_e12, 'src', item.v1);
                                                 }
 
-                                                if(item.c0) {
+                                                if(globalThis.vitraux.updating.utils.isValueValid(item.c0)) {
                                                     const uc1 = async (p, item) =>
                                                     {
                                                         const n1_c0_e17 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-vaccine');
@@ -124,20 +124,20 @@ public class JsGeneratorTest
                                                         const n1_c0_e19 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredients-list');
                                                         const n1_c0_c20 = globalThis.vitraux.storedElements.getTemplate('ingredients-template');
 
-                                                        if(item.v0) {
+                                                        if(globalThis.vitraux.updating.utils.isValueValid(item.v0)) {
                                                             globalThis.vitraux.updating.dom.setElementsContent(n1_c0_e17, item.v0);
                                                         }
 
-                                                        if(item.v1) {
+                                                        if(globalThis.vitraux.updating.utils.isValueValid(item.v1)) {
                                                             globalThis.vitraux.updating.dom.setElementsContent(n1_c0_e18, item.v1);
                                                         }
 
-                                                        if(item.c0) {
+                                                        if(globalThis.vitraux.updating.utils.isValueValid(item.c0)) {
                                                             const uc2 = async (p, item) =>
                                                             {
                                                                 const n2_c0_e21 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.ingredient-item');
 
-                                                                if(item.v0) {
+                                                                if(globalThis.vitraux.updating.utils.isValueValid(item.v0)) {
                                                                     globalThis.vitraux.updating.dom.setElementsContent(n2_c0_e21, item.v0);
                                                                 }
 
@@ -153,17 +153,17 @@ public class JsGeneratorTest
                                                     await globalThis.vitraux.updating.dom.updateTable(n0_c0_e13, n0_c0_c14, uc1, item.c0);
                                                 }
 
-                                                if(item.c1) {
+                                                if(globalThis.vitraux.updating.utils.isValueValid(item.c1)) {
                                                     const uc3 = async (p, item) =>
                                                     {
                                                         const n1_c1_e22 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.div-antiparasitics');
                                                         const n1_c1_e23 = globalThis.vitraux.storedElements.getElementsByQuerySelector(p, '.span-antiparasitics-date');
 
-                                                        if(item.v0) {
+                                                        if(globalThis.vitraux.updating.utils.isValueValid(item.v0)) {
                                                             globalThis.vitraux.updating.dom.setElementsContent(n1_c1_e22, item.v0);
                                                         }
 
-                                                        if(item.v1) {
+                                                        if(globalThis.vitraux.updating.utils.isValueValid(item.v1)) {
                                                             globalThis.vitraux.updating.dom.setElementsContent(n1_c1_e23, item.v1);
                                                         }
 
@@ -248,6 +248,6 @@ public class JsGeneratorTest
 
     private const string ExpectedPetOwnerExampleJson =
         """
-        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":{"v0":"Semiannual","v1":"123,456","v2":"True","v3":"True"},"c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"8/6/2022 00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"9/7/2022 00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"15/10/2023 00:00:00"},{"v0":"Tick Treatment","v1":"16/11/2023 00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"1/4/2024 00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"22/9/2025 00:00:00"}]}]}
+        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":{"v0":"Semiannual","v1":123.456,"v2":true,"v3":true},"c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"2022-06-08T00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"2022-07-09T00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"2023-10-15T00:00:00"},{"v0":"Tick Treatment","v1":"2023-11-16T00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"2024-04-01T00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"2025-09-22T00:00:00"}]}]}
         """;
 }

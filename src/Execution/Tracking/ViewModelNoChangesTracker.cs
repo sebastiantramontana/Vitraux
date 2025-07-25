@@ -27,14 +27,14 @@ internal class ViewModelNoChangesTracker<TViewModel>(
 
             if (valueInfo.IsSimpleType)
             {
-                var propertyValue = serializablePropertyValueExtractor.GetStringValue(valueInfo.Value);
-                return new EncodedTrackedViewModelStringValueData(encodedName, propertyValue);
+                var propertyValue = serializablePropertyValueExtractor.GetSafeValue(valueInfo.Value);
+                return new EncodedTrackedViewModelSimpleValueData(encodedName, propertyValue);
             }
             else
             {
                 var childrenVMJsNames = vmJsNamesCache.GetNamesByViewModelType(valueInfo.ValueType);
                 var allData = Track(valueInfo.Value, childrenVMJsNames);
-                return new EncodedTrackedViewModelObjectValueData(encodedName, allData);
+                return new EncodedTrackedViewModelComplexObjectValueData(encodedName, allData);
             }
         });
 

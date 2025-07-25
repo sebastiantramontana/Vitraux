@@ -24,6 +24,7 @@ internal static class IoCRegistration
 
     private static IServiceCollection AddUpdating(this IServiceCollection serviceCollection)
         => serviceCollection
+            .AddSingleton<IIsValueValidCall, IsValueValidCall>()
             .AddSingleton<ISetElementsAttributeCall, SetElementsAttributeCall>()
             .AddSingleton<ISetElementsContentCall, SetElementsContentCall>()
             .AddSingleton<IToChildQueryFunctionCall, ToChildQueryFunctionCall>()

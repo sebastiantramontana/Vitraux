@@ -43,8 +43,9 @@ internal static class RootJsGeneratorFactory
                                                                                                           getStoredTemplateCall,
                                                                                                           getFetchedElementCall,
                                                                                                           NotImplementedCaseGuard);
+        var isValueValid = new IsValueValidCall();
         var codeFormatter = new CodeFormatter();
-        var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(codeFormatter);
+        var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(isValueValid, codeFormatter);
 
         var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall,
                                                                        propertyCheckerJsCodeGeneration,

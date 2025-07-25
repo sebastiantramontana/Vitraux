@@ -11,6 +11,13 @@ class VitrauxInternalError extends Error {
 }
 
 globalThis.vitraux = {
+    config: {
+        useShadowDom: true,
+
+        configure(useShadowDom) {
+            this.useShadowDom = useShadowDom;
+        }
+    },
     storedElements: {
         elements: {},
         getElementByIdAsArray(id) {
@@ -52,7 +59,7 @@ globalThis.vitraux = {
         },
 
         getTemplate(id) {
-            return document.getElementById(id)?.content;
+            return this.trimTemplateContent(document.getElementById(id)?.content);
         },
 
         getStoredTemplate(id, elementsObjectName) {
@@ -76,7 +83,7 @@ globalThis.vitraux = {
             const template = document.createElement("template");
             template.innerHTML = html.trim();
 
-            return template?.content;
+            return this.trimTemplateContent(template?.content);
         },
 
         async getFetchedElement(uri, elementsObjectName) {
@@ -91,60 +98,115 @@ globalThis.vitraux = {
             this.elements[elementsObjectName] = element;
 
             return element;
+        },
+
+        trimTemplateContent(templateContent) {
+            if (!templateContent)
+                return templateContent;
+
+            for (let i = 0; this.tryRemoveEmptyTextNode(templateContent, i); i++);
+            for (let i = templateContent.childNodes.length - 1; this.tryRemoveEmptyTextNode(templateContent, i); i--);
+
+            return templateContent;
+        },
+
+        tryRemoveEmptyTextNode(templateContent, i) {
+            const node = templateContent.childNodes[i];
+
+            if (node && node.nodeType === Node.TEXT_NODE && !node.textContent.trim()) {
+                templateContent.removeChild(node);
+                return true;
+            }
+
+            return false;
         }
     },
     updating: {
+        utils: {
+            isValueValid(v) {
+                return v || v === 0 || v === false || v === "";
+            }
+        },
+
         vmFunctions: {
-            vms: {},
+            vms: [],
 
             async executeInitializationView(code) {
                 const func = new Function(code);
                 await func();
             },
 
+            async executeUpdateViewFunctionFromJson(vmKey, vmJson) {
+                const vm = JSON.parse(vmJson);
+                await this.executeUpdateViewFunction(vmKey, vm);
+            },
+
+            async executeUpdateViewFunction(vmKey, vm) {
+                const func = this.vms[vmKey];
+                await func(vm);
+            },
+
             getFullVMKey(vmKey) {
                 return vmUpdateFunctionKeyPrefix + vmKey;
             },
 
-            isVersionedUpdateViewFunctionRegenerationNeeded(vmKey, version) {
+            getFunctionsCodeFromVersion(vmKey, version) {
                 if (!vmKey || !version)
                     throw new VitrauxInternalError("vmKey and version must be set in isVersionedUpdateViewFunctionRegenerationNeeded!");
 
-                const vmFuncObjJson = localStorage.getItem(getFullVMKey(vmKey))
+                const vmFuncObjJson = localStorage.getItem(this.getFullVMKey(vmKey))
 
                 if (!vmFuncObjJson)
-                    return true;
+                    return false;
 
-                const vmFuncObj = JSON.parse(funcObjJson);
+                const vmFuncObj = JSON.parse(vmFuncObjJson);
 
-                return (vmFuncObj.version !== version);
+                return (vmFuncObj.version === version) ? vmFuncObj : false;
             },
 
-            createVersionedUpdateViewFunction(vmKey, version, code) {
+            async tryInitializeViewFunctionsFromCacheByVersion(vmKey, version) {
                 if (!version)
-                    throw new VitrauxInternalError("Version must be set in createVersionedUpdateViewFunction!");
+                    throw new VitrauxInternalError("Version must be set in tryInitializeViewFunctionsFromCacheByVersion!");
 
-                createUpdateViewFunction(vmKey, code);
-                storeUpdateViewFunction(vmKey, version, code);
+                const functionCodes = this.getFunctionsCodeFromVersion(vmKey, version);
+
+                if (!functionCodes)
+                    return false;
+
+                await this.executeInitializationView(functionCodes.initializationCode);
+                this.createUpdateViewFunction(vmKey, functionCodes.updateViewCode);
+
+                return true;
+            },
+
+            async initializeNewViewFunctionsToCacheByVersion(vmKey, version, initializationCode, updateViewCode) {
+                if (!version)
+                    throw new VitrauxInternalError("Version must be set in initializeNewViewFunctionsToCacheByVersion!");
+
+                await this.executeInitializationView(initializationCode);
+                this.createUpdateViewFunction(vmKey, updateViewCode);
+                this.storeFunctions(vmKey, version, initializationCode, updateViewCode);
+            },
+
+            async initializeNonCachedViewFunctions(vmKey, initializationCode, updateViewCode) {
+                await this.executeInitializationView(initializationCode);
+                this.createUpdateViewFunction(vmKey, updateViewCode);
             },
 
             createUpdateViewFunction(vmKey, code) {
-                this.vms[vmKey] = new Function("vm", code);
+                var allCode = "return (async () => {" + code + "})()";
+                this.vms[vmKey] = new Function("vm", allCode);
             },
 
-            storeUpdateViewFunction(vmKey, version, code) {
+            storeFunctions(vmKey, version, initializationCode, updateViewCode) {
                 const vmFuncObj = {
-                    code: code,
+                    initializationCode: initializationCode,
+                    updateViewCode: updateViewCode,
                     version: version
                 };
 
-                localStorage.setItem(getFullVMKey(vmKey), JSON.stringify(vmFuncObj));
-            },
-
-            async executeUpdateViewFunction(vmKey, vm) {
-                const func = this.vms[vmKey].function;
-                await func(vm);
-            },
+                localStorage.setItem(this.getFullVMKey(vmKey), JSON.stringify(vmFuncObj));
+            }
         },
         dom: {
             setElementsContent(elements, content) {
@@ -230,6 +292,9 @@ globalThis.vitraux = {
             },
 
             supportShadowDom(element) {
+                if (!globalThis.vitraux.config.useShadowDom)
+                    return false;
+
                 if (!element || element.nodeType !== Node.ELEMENT_NODE)
                     return false;
 

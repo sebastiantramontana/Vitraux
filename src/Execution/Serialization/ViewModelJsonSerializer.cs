@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Numerics;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -55,11 +56,11 @@ internal class ViewModelJsonSerializer(INotImplementedCaseGuard notImplementedCa
     {
         switch (value)
         {
-            case EncodedTrackedViewModelStringValueData stringValue:
-                SerializeStringValueToJson(stringValue, utf8JsonWriter);
+            case EncodedTrackedViewModelSimpleValueData simpleValue:
+                SerializeSimpleValueToJson(simpleValue, utf8JsonWriter);
                 break;
-            case EncodedTrackedViewModelObjectValueData objectValue:
-                SerializeObjectValueToJson(objectValue, utf8JsonWriter);
+            case EncodedTrackedViewModelComplexObjectValueData complexValue:
+                SerializeComplexObjectValueToJson(complexValue, utf8JsonWriter);
                 break;
             default:
                 notImplementedCaseGuard.ThrowException(value);
@@ -67,14 +68,69 @@ internal class ViewModelJsonSerializer(INotImplementedCaseGuard notImplementedCa
         }
     }
 
-    private void SerializeObjectValueToJson(EncodedTrackedViewModelObjectValueData objectValue, Utf8JsonWriter utf8JsonWriter)
+    private void SerializeComplexObjectValueToJson(EncodedTrackedViewModelComplexObjectValueData objectValue, Utf8JsonWriter utf8JsonWriter)
     {
         utf8JsonWriter.WritePropertyName(objectValue.ValuePropertyName);
         SerializeObjectToJson(objectValue.PropertyAllData, utf8JsonWriter);
     }
 
-    private static void SerializeStringValueToJson(EncodedTrackedViewModelStringValueData stringValue, Utf8JsonWriter utf8JsonWriter)
-        => utf8JsonWriter.WriteString(stringValue.ValuePropertyName, stringValue.PropertyValue);
+    private static void SerializeSimpleValueToJson(EncodedTrackedViewModelSimpleValueData value, Utf8JsonWriter utf8JsonWriter)
+    {
+        switch (value.PropertyValue)
+        {
+            case bool boolValue:
+                utf8JsonWriter.WriteBoolean(value.ValuePropertyName, boolValue);
+                break;
+            case byte byteValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, byteValue);
+                break;
+            case ushort ushortValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, ushortValue);
+                break;
+            case uint uintValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, uintValue);
+                break;
+            case ulong ulongValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, ulongValue);
+                break;
+            case SByte sbyteValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, sbyteValue);
+                break;
+            case short shortValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, shortValue);
+                break;
+            case int intValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, intValue);
+                break;
+            case long longValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, longValue);
+                break;
+            case Int128 or UInt128 or BigInteger:
+                utf8JsonWriter.WriteString(value.ValuePropertyName, value.PropertyValue.ToString());
+                break;
+            case float floatValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, floatValue);
+                break;
+            case double doubleValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, doubleValue);
+                break;
+            case decimal decimalValue:
+                utf8JsonWriter.WriteNumber(value.ValuePropertyName, decimalValue);
+                break;
+            case DateTime dateTimeValue:
+                utf8JsonWriter.WriteString(value.ValuePropertyName, dateTimeValue);
+                break;
+            case DateTimeOffset dateTimeOffsetValue:
+                utf8JsonWriter.WriteString(value.ValuePropertyName, dateTimeOffsetValue);
+                break;
+            case Guid guidValue:
+                utf8JsonWriter.WriteString(value.ValuePropertyName, guidValue);
+                break;
+            default:
+                utf8JsonWriter.WriteString(value.ValuePropertyName, value.PropertyValue.ToString());
+                break;
+        }
+    }
 
     private void SerializeCollectionsToJson(IEnumerable<EncodedTrackedViewModelCollectionData> collections, Utf8JsonWriter utf8JsonWriter)
     {

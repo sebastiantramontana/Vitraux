@@ -6,7 +6,6 @@ namespace Vitraux.Execution.Serialization;
 
 internal class SerializablePropertyValueExtractor : ISerializablePropertyValueExtractor
 {
-    private const string NonJsFalsyEmptyStringValue = " ";
     private readonly Type StringType = typeof(string);
 
     public SerializableValueInfo GetValueInfo(Delegate @delegate, object? obj)
@@ -17,10 +16,8 @@ internal class SerializablePropertyValueExtractor : ISerializablePropertyValueEx
         return new(value, valueType, IsSimpleType(valueType));
     }
 
-    public string GetStringValue(object? value)
-        => value is not null
-            ? GetSafeStringValue(value)
-            : NonJsFalsyEmptyStringValue;
+    public object GetSafeValue(object? value)
+        => value ?? string.Empty;
 
     public IEnumerable<object> GetCollection(Delegate @delegate, object? obj)
         => obj is not null
@@ -35,8 +32,6 @@ internal class SerializablePropertyValueExtractor : ISerializablePropertyValueEx
             || (TypeDescriptor.GetConverter(objType).CanConvertTo(StringType)
                 && !IsAutoStringType(objType));
     }
-    private static string GetSafeStringValue(object value)
-        => value.ToString() ?? NonJsFalsyEmptyStringValue;
 
     private static bool IsAutoStringType(Type objType)
     {

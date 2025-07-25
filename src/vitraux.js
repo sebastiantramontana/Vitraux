@@ -122,6 +122,12 @@ globalThis.vitraux = {
         }
     },
     updating: {
+        utils: {
+            isValueValid(v) {
+                return v || v === 0 || v === false || v === "";
+            }
+        },
+
         vmFunctions: {
             vms: [],
 

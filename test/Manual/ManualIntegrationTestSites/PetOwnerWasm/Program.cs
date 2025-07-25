@@ -77,7 +77,7 @@ public partial class Program
             _allPetOwners = [
                 new PetOwner(1, "John Smith", "123 Evergreen Terrace, Springfield", "+1 (555) 123-4567", new Subscription(SubscriptionFrequency.Monthly, 9.99, true, true), await GetPets(1)),
                 new PetOwner(2, "Maria Gonzalez", "456 Evergreen Terrace, Springfield", "+1 (555) 321-7654", new Subscription(SubscriptionFrequency.Yearly, 99.89, false, true), await GetPets(2)),
-                new PetOwner(3, "Charles Wilson", "789 Evergreen Terrace, Springfield", "+1 (555) 456-7890", new Subscription(SubscriptionFrequency.Semiannual, 55.67, true, false), await GetPets(3)),
+                new PetOwner(3, "Charles Wilson", "789 Evergreen Terrace, Springfield", null, new Subscription(SubscriptionFrequency.Semiannual, 55.67, true, false), await GetPets(3)),
             ];
         }
 
