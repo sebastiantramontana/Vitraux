@@ -1,3 +1,3 @@
 ﻿namespace Vitraux.JsCodeGeneration.Collections;
 
-internal record class CollectionObjectNameWithElements(string Name, IEnumerable<JsCollectionElementObjectPairNames> AssociatedElementNames);
+internal record class CollectionObjectNameWithElements(string Name, IEnumerable<JsCollectionNames> AssociatedNames);

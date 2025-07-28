@@ -16,11 +16,30 @@ internal class CollectionNamesGenerator : ICollectionNamesGenerator
 
     private static FullCollectionObjectName CreateCollectionObjectName(string collectionObjectName, CollectionData collectionData, IEnumerable<JsObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, int nestingLevel)
     {
-        var elementTargets = collectionData.Targets.OfType<CollectionElementTarget>();
-        var elementObjectPairNames = elementTargets.Select(t => CreateJsCollectionElementObjectPairNamesNameByTarget(t, currentElementJsObjectNames, jsFullObjectNamesGenerator, collectionObjectName, nestingLevel));
+        var elementObjectPairNames = CreateElementObjectPairNames(collectionObjectName, collectionData, currentElementJsObjectNames, jsFullObjectNamesGenerator, nestingLevel);
+        var customJsNames = CreateCustomJsNames(collectionData);
+        var collectionNames = elementObjectPairNames.Concat(customJsNames);
 
-        return new(collectionObjectName, elementObjectPairNames, collectionData);
+        return new(collectionObjectName, collectionNames, collectionData);
     }
+
+    private static IEnumerable<JsCollectionNames> CreateElementObjectPairNames(string collectionObjectName, CollectionData collectionData, IEnumerable<JsObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, int nestingLevel)
+    {
+        var elementTargets = GetCollectionElementTargets(collectionData);
+        return elementTargets.Select(t => CreateJsCollectionElementObjectPairNamesNameByTarget(t, currentElementJsObjectNames, jsFullObjectNamesGenerator, collectionObjectName, nestingLevel));
+    }
+
+    private static IEnumerable<JsCollectionNames> CreateCustomJsNames(CollectionData collectionData)
+    {
+        var customJsTargets = JsCollectionCustomJsNames(collectionData);
+        return customJsTargets.Select(t => new JsCollectionCustomJsNames(t));
+    }
+
+    private static IEnumerable<CollectionElementTarget> GetCollectionElementTargets(CollectionData collectionData)
+        => collectionData.Targets.OfType<CollectionElementTarget>();
+
+    private static IEnumerable<CustomJsCollectionTarget> JsCollectionCustomJsNames(CollectionData collectionData)
+        => collectionData.Targets.OfType<CustomJsCollectionTarget>();
 
     private static JsCollectionElementObjectPairNames CreateJsCollectionElementObjectPairNamesNameByTarget(CollectionElementTarget target, IEnumerable<JsObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, string collectionObjectName, int nestingLevel)
     {

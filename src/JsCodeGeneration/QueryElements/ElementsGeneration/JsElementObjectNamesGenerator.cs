@@ -9,9 +9,9 @@ namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 
 internal class JsElementObjectNamesGenerator(
     IUniqueSelectorsFilter uniqueSelectorsFilter,
+    IAtomicAutoNumberGenerator atomicAutoNumberGenerator,
     INotImplementedCaseGuard notImplementedCaseGuard) : IJsElementObjectNamesGenerator
 {
-    private int _numberedNamePosfixCounter = -1;
     const string ElementObjectNamePrefix = "e";
     const string InsertedElementObjectNamePrefix = "f";
     const string CollectionElementObjectNamePrefix = "c";
@@ -38,7 +38,7 @@ internal class JsElementObjectNamesGenerator(
 
     private string GenerateObjectName(string namePrefix, string initialName)
     {
-        var numberedNamePosfix = Interlocked.Increment(ref _numberedNamePosfixCounter);
+        var numberedNamePosfix = atomicAutoNumberGenerator.Next();
 
         return string.IsNullOrWhiteSpace(namePrefix)
                 ? $"{initialName}{numberedNamePosfix}"

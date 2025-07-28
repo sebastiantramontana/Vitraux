@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Vitraux.JsCodeGeneration.BuiltInCalling;
 using Vitraux.JsCodeGeneration.Collections;
+using Vitraux.JsCodeGeneration.CustomJsGeneration;
 using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.Initialization;
 using Vitraux.JsCodeGeneration.JsObjectNames;
@@ -28,7 +29,8 @@ internal static class IoCRegistration
         => serviceCollection
             .AddSingleton<IPromiseJsGenerator, PromiseJsGenerator>()
             .AddSingleton<IPropertyCheckerJsCodeGeneration, PropertyCheckerJsCodeGeneration>()
-            .AddSingleton<IRootJsGenerator, RootJsGenerator>();
+            .AddSingleton<IRootJsGenerator, RootJsGenerator>()
+            .AddSingleton<ICustomJsJsGenerator, CustomJsJsGenerator>();
 
     private static IServiceCollection AddFormating(this IServiceCollection serviceCollection)
         => serviceCollection.AddSingleton<ICodeFormatter, CodeFormatter>();

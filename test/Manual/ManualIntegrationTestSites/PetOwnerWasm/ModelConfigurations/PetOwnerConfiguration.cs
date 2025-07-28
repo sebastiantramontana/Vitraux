@@ -15,11 +15,14 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
 
     public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> modelMapper)
         => modelMapper
-            .MapValue(po => po.Name).ToElements.ById("petowner-name").ToContent
+            .MapValue(po => po.Name)
+                .ToElements.ById("petowner-name").ToContent
+                .ToJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))
             .MapValue(po => po.Address).ToElements.ById("petowner-address").ToContent
             .MapValue(po => po.PhoneNumber).ToElements.ById("petowner-phone-number").ToContent
             .MapValue(po => po.Subscription).ToOwnMapping
             .MapCollection(po => po.Pets)
+                .ToJsFunction("pets.manage").FromModule(new Uri("./modules/pets.js", UriKind.Relative))
                 .ToTables.ById("petowner-pets")
                 .PopulatingRows.FromTemplate("petowner-pet-row")
                     .MapValue(pet => pet.Name).ToElements.ByQuery("[data-id='pet-name']").ToContent
@@ -30,6 +33,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery("[data-id='pet-photo']").ToAttribute("src")
                     .MapCollection(pet => pet.Antiparasitics)
+                        .ToJsFunction("globalThis.manageAntiparasitics")
                         .ToContainerElements.ByQuery(".antiparasitics-list")
                         .FromTemplate("antiparasitic-item-template")
                             .MapValue(a => a.Name).ToElements.ByQuery(".antiparasitic-name").ToContent

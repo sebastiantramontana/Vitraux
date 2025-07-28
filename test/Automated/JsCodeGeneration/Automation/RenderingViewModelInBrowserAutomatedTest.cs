@@ -60,6 +60,8 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
 
         var generatedJsCode = rootJsGenerator.GenerateJs(fullObjNames, queryElementStrategy);
 
+        ExecuteScriptAsAwaitableFunction("configureShadowDom", [], [], "globalThis.vitraux.config.configure(true);", driver);
+
         ExecuteScriptAsAwaitableFunction("initialize", [], [], generatedJsCode.InitializeViewJs, driver);
 
         //Act

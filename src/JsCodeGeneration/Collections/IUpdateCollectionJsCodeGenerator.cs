@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.Collections;
 
 internal interface IUpdateCollectionJsCodeGenerator
 {
-    string GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator);
+    string GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionNames jsCollectionNames, IUpdateViewJsGenerator updateViewJsGenerator);
 }

@@ -2,5 +2,5 @@
 
 namespace Vitraux.JsCodeGeneration.Collections;
 
-internal record class FullCollectionObjectName(string Name, IEnumerable<JsCollectionElementObjectPairNames> AssociatedElementNames, CollectionData AssociatedData)
-    : CollectionObjectNameWithElements(Name, AssociatedElementNames);
+internal record class FullCollectionObjectName(string Name, IEnumerable<JsCollectionNames> AssociatedNames, CollectionData AssociatedData)
+    : CollectionObjectNameWithElements(Name, AssociatedNames);

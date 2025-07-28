@@ -20,7 +20,12 @@ internal class ViewModelJsNamesMapper : IViewModelJsNamesMapper
     private IEnumerable<ViewModelJsCollectionName> MapCollections(IEnumerable<FullCollectionObjectName> collectionNames)
         => collectionNames.Select(colItem =>
         {
-            var childrenJsNames = colItem.AssociatedElementNames.Select(e => MapFromFull(e.Children));
+            var childrenJsNames = GetChildrenJsNames(colItem.AssociatedNames);
             return new ViewModelJsCollectionName(colItem.Name, colItem.AssociatedData.DataFunc, childrenJsNames);
         });
+
+    private IEnumerable<ViewModelJsNames> GetChildrenJsNames(IEnumerable<JsCollectionNames> associatedNames)
+        => associatedNames
+            .OfType<JsCollectionElementObjectPairNames>()
+            .Select(e => MapFromFull(e.Children));
 }

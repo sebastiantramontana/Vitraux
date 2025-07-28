@@ -2,6 +2,7 @@
 using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+using Vitraux.JsCodeGeneration.CustomJsGeneration;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.Values.JsTargets;
 using Vitraux.Modeling.Data.Values;
@@ -13,6 +14,7 @@ internal class TargetElementsValueJsGenerator(
     ITargetElementsUpdateValueInsertJsGenerator updateValueInsertJsGenerator,
     IViewModelKeyGenerator viewModelKeyGenerator,
     IExecuteUpdateViewFunctionCall executeUpdateViewFunctionCall,
+    ICustomJsJsGenerator customJsJsGenerator,
     INotImplementedCaseGuard notImplementedCaseGuard)
     : ITargetElementsValueJsGenerator
 {
@@ -46,8 +48,8 @@ internal class TargetElementsValueJsGenerator(
     private string GenerateJsByInsertingElementTarget(string parentValueObjectName, string valueObjectName, JsObjectName elementToInsertObjectName, JsObjectName elementsToAppendObjectName, ElementValueTarget elementValueTarget)
         => updateValueInsertJsGenerator.GenerateJs(elementValueTarget, elementToInsertObjectName, elementsToAppendObjectName, parentValueObjectName, valueObjectName);
 
-    private static string GenerateJsByCustomJsValueTarget(CustomJsValueTarget customJsTarget, string parentValueObjectName, string valueObjName)
-        => $"/*{customJsTarget.FunctionName}({parentValueObjectName}.{valueObjName});*/";
+    private string GenerateJsByCustomJsValueTarget(CustomJsValueTarget customJsTarget, string parentValueObjectName, string valueObjName)
+        => customJsJsGenerator.Generate(customJsTarget, $"{parentValueObjectName}.{valueObjName}");
 
     private string GenerateJsByOwnMappingTarget(ValueOwnMappingTarget valueOwnMappingTarget, string parentValueObjectName, string valueObjectName)
     {

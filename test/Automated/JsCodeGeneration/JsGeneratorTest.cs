@@ -69,7 +69,8 @@ public class JsGeneratorTest
     const string expectedCommonUpdateViewJs = """
                                         if(globalThis.vitraux.updating.utils.isValueValid(vm.v0)) {
                                             globalThis.vitraux.updating.dom.setElementsContent(e0, vm.v0);
-                                            /*poNameFunction(vm.v0);*/
+                                            const m0 = await import('./modules/po.js');
+                                            await m0.poNameFunction(vm.v0);
                                         }
 
                                         if(globalThis.vitraux.updating.utils.isValueValid(vm.v1)) {
@@ -171,12 +172,17 @@ public class JsGeneratorTest
                                                     }
 
                                                     await globalThis.vitraux.updating.dom.updateCollectionByPopulatingElements(n0_c0_e15, n0_c0_c16, uc3, item.c1);
+
+                                                    await globalThis.manageAntiparasitics(item.c1);
                                                 }
 
                                                 return Promise.resolve();
                                             }
 
                                             await globalThis.vitraux.updating.dom.updateTable(e7, c8, uc0, vm.c0);
+
+                                            const m1 = await import('./modules/pets.js');
+                                            await m1.pets.manage(vm.c0);
                                         }
 
                                         return Promise.resolve();

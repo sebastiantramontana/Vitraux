@@ -7,5 +7,6 @@ internal static class IoCRegistration
     internal static IServiceCollection AddHelpers(this IServiceCollection serviceCollection)
         => serviceCollection
             .AddSingleton<IDataUriConverter, DataUriConverter>()
-            .AddSingleton<INotImplementedCaseGuard, NotImplementedCaseGuard>();
+            .AddSingleton<INotImplementedCaseGuard, NotImplementedCaseGuard>()
+            .AddTransient<IAtomicAutoNumberGenerator, AtomicAutoNumberGenerator>();
 }

@@ -1,10 +1,11 @@
-﻿namespace Vitraux.JsCodeGeneration.Collections;
+﻿using Vitraux.Helpers;
 
-internal class CollectionUpdateFunctionNameGenerator : ICollectionUpdateFunctionNameGenerator
+namespace Vitraux.JsCodeGeneration.Collections;
+
+internal class CollectionUpdateFunctionNameGenerator(IAtomicAutoNumberGenerator atomicAutoNumberGenerator) : ICollectionUpdateFunctionNameGenerator
 {
-    private int _counter = -1;
     const string FunctionNamePrefix = "uc";
 
     public string Generate()
-        => $"{FunctionNamePrefix}{Interlocked.Increment(ref _counter)}";
+        => $"{FunctionNamePrefix}{atomicAutoNumberGenerator.Next()}";
 }
