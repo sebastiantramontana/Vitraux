@@ -30,6 +30,8 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                 .ToElements.ById("petowner-phonenumber-id").ToContent
             .MapValue(po => po.Subscription)
                 .ToOwnMapping
+            .MapValue(po =>po.HtmlComments)
+                .ToElements.ByQuery(".comments").ToHtml
             .MapCollection(po => po.Pets)
                 .ToJsFunction("pets.manage").FromModule(new Uri("./modules/pets.js", UriKind.Relative))
                 .ToTables.ById("pets-table")

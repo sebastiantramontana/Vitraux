@@ -42,12 +42,14 @@ public class PetOwnerConfigurationTest
         var addressValue = CreateAddressValueData();
         var phoneNumberValue = CreatePhoneNumberValueData();
         var suscriptionValue = CreateSubscriptionValueData();
+        var commentsValue = CreateCommentsValueData();
         var petsCollection = CreatePetsCollectionData();
 
         petOwnerData.AddValue(nameValue);
         petOwnerData.AddValue(addressValue);
         petOwnerData.AddValue(phoneNumberValue);
         petOwnerData.AddValue(suscriptionValue);
+        petOwnerData.AddValue(commentsValue);
         petOwnerData.AddCollection(petsCollection);
 
         return petOwnerData;
@@ -108,6 +110,22 @@ public class PetOwnerConfigurationTest
         phoneNumberValue.AddTarget(targetPhone2);
         return phoneNumberValue;
     }
+
+    private static ValueData CreateCommentsValueData()
+    {
+        var commentsValue = new ValueData((PetOwner p) => p.HtmlComments);
+
+        var targetComments1 = new ElementValueTarget
+        {
+            Selector = new ElementQuerySelectorString(".comments"),
+            Place = HtmlElementPlace.Instance
+        };
+
+        commentsValue.AddTarget(targetComments1);
+
+        return commentsValue;
+    }
+
 
     private static ValueData CreateAddressValueData()
     {

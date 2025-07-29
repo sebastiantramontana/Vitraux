@@ -6,6 +6,7 @@ namespace Vitraux.JsCodeGeneration.Values;
 internal class TargetElementsDirectUpdateValueJsGenerator(
     IElementPlaceAttributeJsGenerator attributeGenerator,
     IElementPlaceContentJsGenerator contentGenerator,
+    IElementPlaceHtmlJsGenerator htmlGenerator,
     INotImplementedCaseGuard notImplementedPlaceGuard)
     : ITargetElementsDirectUpdateValueJsGenerator
 {
@@ -14,6 +15,7 @@ internal class TargetElementsDirectUpdateValueJsGenerator(
         {
             AttributeElementPlace attrPlace => attributeGenerator.Generate(attrPlace.Attribute, jsObjectName, parentValueObjectName, valueObjectName),
             ContentElementPlace => contentGenerator.Generate(jsObjectName, parentValueObjectName, valueObjectName),
+            HtmlElementPlace => htmlGenerator.Generate(jsObjectName, parentValueObjectName, valueObjectName),
             _ => notImplementedPlaceGuard.ThrowException<string>(elementPlace),
         };
 }

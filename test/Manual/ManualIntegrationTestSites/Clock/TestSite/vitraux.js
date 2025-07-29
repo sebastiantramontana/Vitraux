@@ -214,6 +214,11 @@ globalThis.vitraux = {
                     element.textContent = content;
             },
 
+            setElementsHtml(elements, html) {
+                for (const element of elements)
+                    element.innerHTML = html;
+            },
+
             setElementsAttribute(elements, attribute, value) {
                 for (const element of elements)
                     element.setAttribute(attribute, value);

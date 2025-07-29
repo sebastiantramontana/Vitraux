@@ -17,6 +17,9 @@ internal class RootValueElementPlaceBuilder<TViewModel, TValue>(
     public IRootValueFinallizable<TViewModel, TValue> ToContent
         => SetElementPlace(ContentElementPlace.Instance);
 
+    public IRootValueFinallizable<TViewModel, TValue> ToHtml
+        => SetElementPlace(HtmlElementPlace.Instance);
+
     public IRootValueFinallizable<TViewModel, TValue> ToAttribute(string attribute)
         => SetElementPlace(new AttributeElementPlace(attribute));
 

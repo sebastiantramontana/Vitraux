@@ -6,6 +6,7 @@ namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 internal class UpdateChildElementsFunctionCall(
     ISetElementsAttributeCall setElementsAttributeCall,
     ISetElementsContentCall setElementsContentCall,
+    ISetElementsHtmlCall setElementsHtmlCall,
     INotImplementedCaseGuard notImplementedCaseGuard)
     : IUpdateChildElementsFunctionCall
 {
@@ -19,6 +20,7 @@ internal class UpdateChildElementsFunctionCall(
             {
                 AttributeElementPlace attributeElementPlace => setElementsAttributeCall.Generate(targetTemplateChildElements, attributeElementPlace.Attribute, fullValueObjectName),
                 ContentElementPlace => setElementsContentCall.Generate(targetTemplateChildElements, fullValueObjectName),
+                HtmlElementPlace => setElementsHtmlCall.Generate(targetTemplateChildElements, fullValueObjectName),
                 _ => notImplementedCaseGuard.ThrowException<string>(chilElementsPlace)
             };
     }

@@ -6,5 +6,6 @@ public interface IRootValueElementPlaceBuilder<TViewModel, TValue>
 {
     IRootInsertFromBuilder<TViewModel, TValue> Insert { get; }
     IRootValueFinallizable<TViewModel, TValue> ToContent { get; }
+    IRootValueFinallizable<TViewModel, TValue> ToHtml { get; }
     IRootValueFinallizable<TViewModel, TValue> ToAttribute(string attribute);
 }

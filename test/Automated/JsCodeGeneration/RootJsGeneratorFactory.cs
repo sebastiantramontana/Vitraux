@@ -129,11 +129,14 @@ internal static class RootJsGeneratorFactory
         var setElementsContentCall = new SetElementsContentCall();
         var contentCodeGenerator = new ElementPlaceContentJsGenerator(setElementsContentCall);
 
+        var setElementsHtmlCall = new SetElementsHtmlCall();
+        var htmlCodeGenerator = new ElementPlaceHtmlJsGenerator(setElementsHtmlCall);
+
         var toChildQueryFunctionCall = new ToChildQueryFunctionCall(getElementsByQuerySelectorCall);
         var updateByPopulatingElementsCall = new UpdateValueByInsertingElementsCall(codeFormatter);
-        var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall, notImplementedCaseGuard);
+        var updateChildElementsFunctionCall = new UpdateChildElementsFunctionCall(setElementsAttributeCall, setElementsContentCall, setElementsHtmlCall, notImplementedCaseGuard);
 
-        var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementsDirectUpdateValueJsGenerator(attributeCodeGenerator, contentCodeGenerator, notImplementedCaseGuard);
+        var targetElementDirectUpdateValueJsCodeGenerator = new TargetElementsDirectUpdateValueJsGenerator(attributeCodeGenerator, contentCodeGenerator, htmlCodeGenerator, notImplementedCaseGuard);
         var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetElementsUpdateValueInsertJsGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall, notImplementedCaseGuard);
         var viewModelKeyGenerator = new ViewModelKeyGenerator();
         var executeUpdateViewFunctionCall = new ExecuteUpdateViewFunctionCall();

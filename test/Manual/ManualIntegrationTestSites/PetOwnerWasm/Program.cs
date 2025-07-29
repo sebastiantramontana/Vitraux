@@ -75,15 +75,27 @@ public partial class Program
         if (!_allPetOwners.Any())
         {
             _allPetOwners = [
-                new PetOwner(1, "John Smith", "123 Evergreen Terrace, Springfield", "+1 (555) 123-4567", new Subscription(SubscriptionFrequency.Monthly, 9.99, true, true), await GetPets(1)),
-                new PetOwner(2, "Maria Gonzalez", "456 Evergreen Terrace, Springfield", "+1 (555) 321-7654", new Subscription(SubscriptionFrequency.Yearly, 99.89, false, true), await GetPets(2)),
-                new PetOwner(3, "Charles Wilson", "789 Evergreen Terrace, Springfield", null, new Subscription(SubscriptionFrequency.Semiannual, 55.67, true, false), await GetPets(3)),
+                new PetOwner(1, "John Smith", "123 Evergreen Terrace, Springfield", "+1 (555) 123-4567", CreateHtmlContent("John Smith"), new Subscription(SubscriptionFrequency.Monthly, 9.99, true, true), await GetPets(1)),
+                new PetOwner(2, "Maria Gonzalez", "456 Evergreen Terrace, Springfield", "+1 (555) 321-7654", CreateHtmlContent("Maria Gonzalez"), new Subscription(SubscriptionFrequency.Yearly, 99.89, false, true), await GetPets(2)),
+                new PetOwner(3, "Charles Wilson", "789 Evergreen Terrace, Springfield", null, CreateHtmlContent("Charles Wilson"), new Subscription(SubscriptionFrequency.Semiannual, 55.67, true, false), await GetPets(3)),
             ];
         }
 
         return _allPetOwners;
     }
 
+    private static string CreateHtmlContent(string petownerName)
+        => $"""
+            <h2 style='width: 100%; text-align: center; color: lightblue; font-weight: bold;'>Some comments for {petownerName}</h2>
+                <div style='margin-left: 10px;'>
+                    <span style='color: red'>bla</span>
+                    <span style='color: orange'>bla</span>
+                    <span style='color: gold;'>bla</span>
+                    <span style='color: green'>bla</span>
+                    <span style='color: blue'>bla...&nbsp;</span>
+                    <span style='color: purple'>{petownerName}</span>
+                </div>
+            """;
     private static async Task<IEnumerable<Pet>> GetPets(int petOwnerId)
     {
         var petPhotos = await GetAllPetPhotos();

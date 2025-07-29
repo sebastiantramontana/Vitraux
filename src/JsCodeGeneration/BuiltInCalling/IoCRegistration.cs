@@ -27,6 +27,7 @@ internal static class IoCRegistration
             .AddSingleton<IIsValueValidCall, IsValueValidCall>()
             .AddSingleton<ISetElementsAttributeCall, SetElementsAttributeCall>()
             .AddSingleton<ISetElementsContentCall, SetElementsContentCall>()
+            .AddSingleton<ISetElementsHtmlCall, SetElementsHtmlCall>()
             .AddSingleton<IToChildQueryFunctionCall, ToChildQueryFunctionCall>()
             .AddSingleton<IUpdateChildElementsFunctionCall, UpdateChildElementsFunctionCall>()
             .AddSingleton<IUpdateCollectionByPopulatingElementsCall, UpdateCollectionByPopulatingElementsCall>()

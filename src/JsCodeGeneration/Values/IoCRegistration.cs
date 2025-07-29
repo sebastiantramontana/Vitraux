@@ -8,6 +8,7 @@ internal static class IoCRegistration
         => serviceCollection
             .AddSingleton<IElementPlaceAttributeJsGenerator, ElementPlaceAttributeJsGenerator>()
             .AddSingleton<IElementPlaceContentJsGenerator, ElementPlaceContentJsGenerator>()
+            .AddSingleton<IElementPlaceHtmlJsGenerator, ElementPlaceHtmlJsGenerator>()
             .AddSingleton<ITargetElementsDirectUpdateValueJsGenerator, TargetElementsDirectUpdateValueJsGenerator>()
             .AddSingleton<ITargetElementsUpdateValueInsertJsGenerator, TargetElementsUpdateValueInsertJsGenerator>()
             .AddSingleton<ITargetElementsValueJsGenerator, TargetElementsValueJsGenerator>()

@@ -14,6 +14,9 @@ internal class CollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionR
     public ICollectionValueFinallizable<TItem, TValue, TEndCollectionReturn> ToContent
         => SetElementPlace(ContentElementPlace.Instance);
 
+    public ICollectionValueFinallizable<TItem, TValue, TEndCollectionReturn> ToHtml
+        => SetElementPlace(HtmlElementPlace.Instance);
+
     public ICollectionValueFinallizable<TItem, TValue, TEndCollectionReturn> ToAttribute(string attribute)
         => SetElementPlace(new AttributeElementPlace(attribute));
 
