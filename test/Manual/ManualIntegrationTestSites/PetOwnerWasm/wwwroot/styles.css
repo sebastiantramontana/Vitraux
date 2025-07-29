@@ -206,12 +206,12 @@ table {
     border-radius: 3px;
 }
 
-#petowner-subscription-is-up-to-date[data-is-up-to-date="true"] {
+#petowner-subscription-is-up-to-date[data-is-up-to-date] {
     color: var(--success-color);
     font-weight: bold;
 }
 
-#petowner-subscription-is-up-to-date[data-is-up-to-date="false"] {
+#petowner-subscription-is-up-to-date:not([data-is-up-to-date]) {
     color: var(--error-color);
     font-weight: bold;
 }

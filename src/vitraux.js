@@ -220,8 +220,21 @@ globalThis.vitraux = {
             },
 
             setElementsAttribute(elements, attribute, value) {
+                const setAttributeFunc = (typeof value === "boolean")
+                    ? this.toggleBoolAttribute
+                    : this.setAttributeValue;
+
+                setAttributeFunc(elements, attribute, value);
+            },
+
+            setAttributeValue(elements, attribute, value) {
                 for (const element of elements)
                     element.setAttribute(attribute, value);
+            },
+
+            toggleBoolAttribute(elements, attribute, value) {
+                for (const element of elements)
+                    element.toggleAttribute(attribute, value);
             },
 
             updateValueByInsertingElements(elementToInsert, appendToElements, queryChildrenFunction, updateChildElementsFunction) {
