@@ -214,9 +214,27 @@ globalThis.vitraux = {
                     element.textContent = content;
             },
 
+            setElementsHtml(elements, html) {
+                for (const element of elements)
+                    element.innerHTML = html;
+            },
+
             setElementsAttribute(elements, attribute, value) {
+                const setAttributeFunc = (typeof value === "boolean")
+                    ? this.toggleBoolAttribute
+                    : this.setAttributeValue;
+
+                setAttributeFunc(elements, attribute, value);
+            },
+
+            setAttributeValue(elements, attribute, value) {
                 for (const element of elements)
                     element.setAttribute(attribute, value);
+            },
+
+            toggleBoolAttribute(elements, attribute, value) {
+                for (const element of elements)
+                    element.toggleAttribute(attribute, value);
             },
 
             updateValueByInsertingElements(elementToInsert, appendToElements, queryChildrenFunction, updateChildElementsFunction) {
@@ -232,7 +250,7 @@ globalThis.vitraux = {
                 }
             },
 
-            async updateTable(tables, rowToInsert, updateCallback, collection) {
+            async updateTable(tables, tbodyIndex, rowToInsert, updateCallback, collection) {
                 for (const table of tables) {
                     const newTbody = document.createElement("tbody");
 
@@ -240,7 +258,7 @@ globalThis.vitraux = {
                         await this.addNewRow(newTbody, rowToInsert, updateCallback, collectionItem);
                     }
 
-                    table.tBodies[0].replaceWith(newTbody);
+                    table.tBodies[tbodyIndex].replaceWith(newTbody);
                 }
             },
 

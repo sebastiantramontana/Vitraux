@@ -1,9 +1,9 @@
-﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
+﻿using Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.Tables;
 
 namespace Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.Tables;
 
 public interface IPopulateTableRowsBuilder<TItem, TEndCollectionReturn>
 {
-    ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> PopulatingRows { get; }
+    ICollectionPopulateTableBuilder<TItem, TEndCollectionReturn> PopulatingRows { get; }
 }
 

@@ -42,7 +42,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                         .ToElements.ByQuery(".another-anchor-cell-pet-name").ToAttribute("href")
                     .MapCollection(pet => pet.Vaccines)
                         .ToTables.ByQuery(".inner-table-vaccines")
-                            .PopulatingRows.FromUri(new Uri("./htmlpieces/row-vaccines.html", UriKind.Relative))
+                            .PopulatingRows.ToTBody(1).FromUri(new Uri("./htmlpieces/row-vaccines.html", UriKind.Relative))
                                 .ToOwnMapping
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery(".pet-photo").ToAttribute("src")

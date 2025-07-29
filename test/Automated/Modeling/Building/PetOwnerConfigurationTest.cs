@@ -66,7 +66,7 @@ public class PetOwnerConfigurationTest
 
         var petsTarget2 = new CollectionTableTarget(new ElementIdSelectorString("pets-table"))
         {
-            InsertionSelector = new TemplateInsertionSelectorId("pet-row-template"),
+            InsertionSelector = new TemplateInsertionSelectorId("pet-row-template")
         };
 
         FillPetsTableData(petsTarget2.Data);
@@ -212,6 +212,7 @@ public class PetOwnerConfigurationTest
         var vaccineTarget = new CollectionTableTarget(new ElementQuerySelectorString(".inner-table-vaccines"))
         {
             InsertionSelector = new UriInsertionSelectorUri(new Uri("./htmlpieces/row-vaccines.html", UriKind.Relative)),
+            TBodyIndex = 1
         };
 
         vaccinesCollection.AddTarget(vaccineTarget);

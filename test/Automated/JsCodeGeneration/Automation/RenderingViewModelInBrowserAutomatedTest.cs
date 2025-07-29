@@ -204,7 +204,7 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
 
     private static ComparableEnumerable<RenderedVaccine> GetRenderedVaccines(IWebElement tr)
         => tr
-            .FindElements(By.CssSelector(".inner-table-vaccines > tbody > tr"))
+            .FindElements(By.CssSelector(".inner-table-vaccines > tbody:nth-of-type(2) > tr"))
             .Select(trv => new RenderedVaccine(
                 trv.FindElement(By.CssSelector(".div-vaccine")).Text,
                 trv.FindElement(By.CssSelector(".span-vaccine-date")).Text,

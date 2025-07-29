@@ -25,7 +25,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
             .MapCollection(po => po.Pets)
                 .ToJsFunction("pets.manage").FromModule(new Uri("./modules/pets.js", UriKind.Relative))
                 .ToTables.ById("petowner-pets")
-                .PopulatingRows.FromTemplate("petowner-pet-row")
+                .PopulatingRows.ToTBody(1).FromTemplate("petowner-pet-row")
                     .MapValue(pet => pet.Name).ToElements.ByQuery("[data-id='pet-name']").ToContent
                     .MapCollection(pet => pet.Vaccines)
                         .ToContainerElements.ByQuery(".vaccines-list")

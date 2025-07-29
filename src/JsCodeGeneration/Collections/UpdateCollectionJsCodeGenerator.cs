@@ -44,9 +44,12 @@ internal class UpdateCollectionJsCodeGenerator(
     private string GetUpdateCall(JsCollectionElementObjectPairNames elementObjectPairNames, string parentObjectName, string collectionObjectName, string updateFunctionCallbackName)
     {
         var fullCollectionObjectName = CreateFullCollectionObjectName(parentObjectName, collectionObjectName);
-        var codeToCall = elementObjectPairNames.Target is CollectionTableTarget
-                        ? updateTableCall.Generate(elementObjectPairNames.AppendToJsObjectName, elementObjectPairNames.ElementToInsertJsObjectName, updateFunctionCallbackName, fullCollectionObjectName)
-                        : updateCollectionByPopulatingElementsCall.Generate(elementObjectPairNames.AppendToJsObjectName, elementObjectPairNames.ElementToInsertJsObjectName, updateFunctionCallbackName, fullCollectionObjectName);
+        var codeToCall = elementObjectPairNames.Target switch
+        {
+            CollectionTableTarget collectionTableTarget => updateTableCall.Generate(elementObjectPairNames.AppendToJsObjectName, collectionTableTarget.TBodyIndex, elementObjectPairNames.ElementToInsertJsObjectName, updateFunctionCallbackName, fullCollectionObjectName),
+            CollectionElementTarget => updateCollectionByPopulatingElementsCall.Generate(elementObjectPairNames.AppendToJsObjectName, elementObjectPairNames.ElementToInsertJsObjectName, updateFunctionCallbackName, fullCollectionObjectName),
+            _ => notImplementedCaseGuard.ThrowException<string>(elementObjectPairNames.Target)
+        };
 
         return $"{codeToCall};";
     }

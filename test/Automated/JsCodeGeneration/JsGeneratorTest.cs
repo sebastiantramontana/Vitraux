@@ -159,7 +159,7 @@ public class JsGeneratorTest
                                                         return Promise.resolve();
                                                     }
 
-                                                    await globalThis.vitraux.updating.dom.updateTable(n0_c0_e14, n0_c0_c15, uc1, item.c0);
+                                                    await globalThis.vitraux.updating.dom.updateTable(n0_c0_e14, 1, n0_c0_c15, uc1, item.c0);
                                                 }
 
                                                 if(globalThis.vitraux.updating.utils.isValueValid(item.c1)) {
@@ -187,7 +187,7 @@ public class JsGeneratorTest
                                                 return Promise.resolve();
                                             }
 
-                                            await globalThis.vitraux.updating.dom.updateTable(e8, c9, uc0, vm.c0);
+                                            await globalThis.vitraux.updating.dom.updateTable(e8, 0, c9, uc0, vm.c0);
 
                                             const m1 = await import('./modules/pets.js');
                                             await m1.pets.manage(vm.c0);

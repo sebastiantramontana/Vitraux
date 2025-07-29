@@ -2,5 +2,5 @@
 
 internal interface IUpdateTableCall
 {
-    string Generate(string tablesArg, string rowToInsertArg, string updateCallbackArg, string collectionArg);
+    string Generate(string tablesArg, int tbodyIndex, string rowToInsertArg, string updateCallbackArg, string collectionArg);
 }

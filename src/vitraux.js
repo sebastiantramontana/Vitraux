@@ -250,7 +250,7 @@ globalThis.vitraux = {
                 }
             },
 
-            async updateTable(tables, rowToInsert, updateCallback, collection) {
+            async updateTable(tables, tbodyIndex, rowToInsert, updateCallback, collection) {
                 for (const table of tables) {
                     const newTbody = document.createElement("tbody");
 
@@ -258,7 +258,7 @@ globalThis.vitraux = {
                         await this.addNewRow(newTbody, rowToInsert, updateCallback, collectionItem);
                     }
 
-                    table.tBodies[0].replaceWith(newTbody);
+                    table.tBodies[tbodyIndex].replaceWith(newTbody);
                 }
             },
 
