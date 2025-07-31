@@ -7,7 +7,7 @@ using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections;
 
-internal class InnerCollectionTargetBuilder<TItem, TItemBack, TEndCollectionReturnModelMapper> : ICollectionTargetBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>
+internal class InnerCollectionTargetBuilder<TItem, TItemBack, TEndCollectionReturnModelMapper> : IInnerCollectionTargetBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>
 {
     private readonly CollectionData _collectionData;
     private readonly ICollectionModelMapper<TItemBack, TEndCollectionReturnModelMapper> _modelMapper;
@@ -28,13 +28,13 @@ internal class InnerCollectionTargetBuilder<TItem, TItemBack, TEndCollectionRetu
         _endCollectionReturn = new InnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>(_endCollectionReturnModelMapper, _modelMapper, this);
     }
 
-    public ITableSelectorBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>> ToTables
-        => new TableSelectorBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>(_collectionData, _endCollectionReturn, _serviceProvider);
+    public IInnerTableSelectorBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>> ToTables
+        => new InnerTableSelectorBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>(_collectionData, _endCollectionReturn, _serviceProvider);
 
-    public IContainerElementsSelectorBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>> ToContainerElements
-        => new ContainerElementsSelectorBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>(_collectionData, _endCollectionReturn, _serviceProvider);
+    public IInnerContainerElementsSelectorBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>> ToContainerElements
+        => new InnerContainerElementsSelectorBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>(_collectionData, _endCollectionReturn, _serviceProvider);
 
-    public ICollectionCustomJsBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>> ToJsFunction(string jsFunction)
+    public IInnerCollectionCustomJsBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>> ToJsFunction(string jsFunction)
     {
         var target = new CustomJsCollectionTarget(jsFunction);
         _collectionData.AddTarget(target);

@@ -13,7 +13,6 @@ internal class StorageElementJsLineGeneratorElementsByQuery(
         => jsObjectName.AssociatedSelector switch
         {
             ElementQuerySelectorString querySelectorString => generatorByQuerySelector.Generate(jsObjectName.Name, querySelectorString.Query, parentObjectName),
-            ElementQuerySelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 }

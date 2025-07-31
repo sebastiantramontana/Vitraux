@@ -11,7 +11,7 @@ internal class RootValueFinallizable<TViewModel, TValue>(
     public IRootValueTargetBuilder<TViewModel, TValueOther> MapValue<TValueOther>(Func<TViewModel, TValueOther> func)
         => modelMapperWrapped.MapValue(func);
 
-    public ICollectionTargetBuilder<TItem, IModelMapper<TViewModel>> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func)
+    public IRootCollectionTargetBuilder<TItem, TViewModel> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func)
         => modelMapperWrapped.MapCollection(func);
 
     public IRootValueElementSelectorBuilder<TViewModel, TValue> ToElements

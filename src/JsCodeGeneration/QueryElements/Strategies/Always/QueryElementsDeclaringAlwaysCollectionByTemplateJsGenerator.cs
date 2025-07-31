@@ -14,7 +14,6 @@ internal class QueryElementsDeclaringAlwaysCollectionByTemplateJsGenerator(
         => jsObjectName.AssociatedSelector switch
         {
             TemplateInsertionSelectorId templateSelectorId => GenerateJsById(jsObjectName.Name, templateSelectorId.TemplateId),
-            TemplateInsertionSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 

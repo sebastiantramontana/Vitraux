@@ -14,12 +14,6 @@ internal class RootChildrenSelectorBuilder<TViewModel, TValue>(
     public IRootChildrenPlaceBuilder<TViewModel, TValue> ByQuery(string query)
         => SetChildQuerySelector(new ElementQuerySelectorString(query));
 
-    public IRootChildrenPlaceBuilder<TViewModel, TValue> ByQuery(Func<TValue, string> queryFunc)
-        => SetChildQuerySelector(new ElementQuerySelectorDelegate(queryFunc));
-
-    public IRootChildrenPlaceBuilder<TViewModel, TValue> ByQuery(Func<TViewModel, string> queryFunc)
-        => SetChildQuerySelector(new ElementQuerySelectorDelegate(queryFunc));
-
     private RootChildrenPlaceBuilder<TViewModel, TValue> SetChildQuerySelector(ElementQuerySelectorBase elementQuerySelector)
     {
         target.Insertion!.TargetChildElementsSelector = elementQuerySelector;

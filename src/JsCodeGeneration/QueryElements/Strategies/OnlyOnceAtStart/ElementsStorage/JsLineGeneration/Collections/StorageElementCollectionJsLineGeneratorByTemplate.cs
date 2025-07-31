@@ -13,7 +13,6 @@ internal class StorageElementCollectionJsLineGeneratorByTemplate(
         => collectionObjectName.AssociatedSelector switch
         {
             TemplateInsertionSelectorId templateSelector => storageElementJsLineGeneratorByTemplate.Generate(templateSelector.TemplateId, collectionObjectName.Name),
-            TemplateInsertionSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(collectionObjectName.AssociatedSelector)
         };
 }

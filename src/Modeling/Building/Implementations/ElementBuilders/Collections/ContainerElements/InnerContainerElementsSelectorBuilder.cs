@@ -5,23 +5,14 @@ using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.ContainerElements;
 
-internal class ContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>(
+internal class InnerContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>(
     CollectionData collectionData,
     TEndCollectionReturn endCollectionReturn,
     IServiceProvider serviceProvider)
-    : IContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>
+    : IInnerContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>
 {
-    public ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ById(string id)
-        => SetCollectionElementsTarget(new ElementIdSelectorString(id));
-
-    public ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ById(Func<TItem, string> idFunc)
-        => SetCollectionElementsTarget(new ElementIdSelectorDelegate(idFunc));
-
     public ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ByQuery(string query)
         => SetCollectionElementsTarget(new ElementQuerySelectorString(query));
-
-    public ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn> ByQuery(Func<TItem, string> queryFunc)
-        => SetCollectionElementsTarget(new ElementQuerySelectorDelegate(queryFunc));
 
     private CollectionPopulateFromBuilder<TItem, TEndCollectionReturn> SetCollectionElementsTarget(ElementSelectorBase elementSelector)
     {

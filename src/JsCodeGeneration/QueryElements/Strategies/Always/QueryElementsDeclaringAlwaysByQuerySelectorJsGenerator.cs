@@ -14,7 +14,6 @@ internal class QueryElementsDeclaringAlwaysByQuerySelectorJsGenerator(
         => jsObjectName.AssociatedSelector switch
         {
             ElementQuerySelectorString elementQuerySelector => GenerateJsLineByQueryString(jsObjectName.Name, parentElementObjectName, elementQuerySelector.Query),
-            ElementQuerySelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 

@@ -13,7 +13,6 @@ internal class StorageElementCollectionJsLineGeneratorByUri(
         => collectionObjectName.AssociatedSelector switch
         {
             UriInsertionSelectorUri uriSelector => storageElementJsLineGeneratorByUri.Generate(uriSelector.Uri, collectionObjectName.Name),
-            UriInsertionSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(collectionObjectName.AssociatedSelector)
         };
 }

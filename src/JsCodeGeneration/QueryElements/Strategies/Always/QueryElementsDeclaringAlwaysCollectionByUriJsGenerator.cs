@@ -14,7 +14,6 @@ internal class QueryElementsDeclaringAlwaysCollectionByUriJsGenerator(
         => jsObjectName.AssociatedSelector switch
         {
             UriInsertionSelectorUri selectorUri => GenerateJsById(jsObjectName.Name, selectorUri.Uri),
-            UriInsertionSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 

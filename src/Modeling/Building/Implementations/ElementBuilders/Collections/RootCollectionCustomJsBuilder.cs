@@ -8,9 +8,9 @@ internal class RootCollectionCustomJsBuilder<TItem, TViewModelBack>(
     CollectionData collectionData,
     IModelMapper<TViewModelBack> endCollectionReturn,
     IServiceProvider serviceProvider)
-    : RootCollectionTargetBuilder<TItem, TViewModelBack>(collectionData, endCollectionReturn, serviceProvider), ICollectionCustomJsBuilder<TItem, IModelMapper<TViewModelBack>>
+    : RootCollectionTargetBuilder<TItem, TViewModelBack>(collectionData, endCollectionReturn, serviceProvider), IRootCollectionCustomJsBuilder<TItem, TViewModelBack>
 {
-    public ICollectionTargetBuilder<TItem, IModelMapper<TViewModelBack>> FromModule(Uri moduleUri)
+    public IRootCollectionTargetBuilder<TItem, TViewModelBack> FromModule(Uri moduleUri)
     {
         target.ModuleFrom = moduleUri;
         return this;

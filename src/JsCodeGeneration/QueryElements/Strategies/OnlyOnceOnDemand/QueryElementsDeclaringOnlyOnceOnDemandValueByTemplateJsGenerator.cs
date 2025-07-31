@@ -14,7 +14,6 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandValueByTemplateJsGenerator(
         => jsObjectName.AssociatedSelector switch
         {
             InsertElementTemplateSelectorId templateSelectorId => GenerateJsById(jsObjectName.Name, templateSelectorId),
-            InsertElementTemplateSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 

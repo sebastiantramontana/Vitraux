@@ -11,15 +11,15 @@ internal class RootCollectionTargetBuilder<TItem, TViewModelBack>(
     CollectionData collectionData,
     IModelMapper<TViewModelBack> endCollectionReturn,
     IServiceProvider serviceProvider)
-    : ICollectionTargetBuilder<TItem, IModelMapper<TViewModelBack>>
+    : IRootCollectionTargetBuilder<TItem, TViewModelBack>
 {
-    public ITableSelectorBuilder<TItem, IModelMapper<TViewModelBack>> ToTables
-        => new TableSelectorBuilder<TItem, IModelMapper<TViewModelBack>>(collectionData, endCollectionReturn, serviceProvider);
+    public IRootTableSelectorBuilder<TItem, TViewModelBack> ToTables
+        => new RootTableSelectorBuilder<TItem, TViewModelBack>(collectionData, endCollectionReturn, serviceProvider);
 
-    public IContainerElementsSelectorBuilder<TItem, IModelMapper<TViewModelBack>> ToContainerElements
-        => new ContainerElementsSelectorBuilder<TItem, IModelMapper<TViewModelBack>>(collectionData, endCollectionReturn, serviceProvider);
+    public IRootContainerElementsSelectorBuilder<TItem, TViewModelBack> ToContainerElements
+        => new RootContainerElementsSelectorBuilder<TItem, TViewModelBack>(collectionData, endCollectionReturn, serviceProvider);
 
-    public ICollectionCustomJsBuilder<TItem, IModelMapper<TViewModelBack>> ToJsFunction(string jsFunction)
+    public IRootCollectionCustomJsBuilder<TItem, TViewModelBack> ToJsFunction(string jsFunction)
     {
         var target = new CustomJsCollectionTarget(jsFunction);
         collectionData.AddTarget(target);

@@ -14,7 +14,6 @@ internal class QueryElementsDeclaringAlwaysByIdJsGenerator(
         => jsObjectName.AssociatedSelector switch
         {
             ElementIdSelectorString elementIdSelector => GenerateJsLineByIdString(jsObjectName.Name, elementIdSelector.Id),
-            ElementIdSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 

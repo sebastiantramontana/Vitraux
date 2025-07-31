@@ -19,7 +19,7 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IMode
         return new RootValueTargetBuilder<TViewModel, TValue>(newValue, this);
     }
 
-    public ICollectionTargetBuilder<TItem, IModelMapper<TViewModel>> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func)
+    public IRootCollectionTargetBuilder<TItem, TViewModel> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func)
     {
         var collection = new CollectionData(func);
         Data.AddCollection(collection);

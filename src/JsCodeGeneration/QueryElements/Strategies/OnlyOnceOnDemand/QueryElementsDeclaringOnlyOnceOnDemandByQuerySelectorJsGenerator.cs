@@ -14,7 +14,6 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandByQuerySelectorJsGenerator(
         => jsObjectName.AssociatedSelector switch
         {
             ElementQuerySelectorString selector => BuildJsLineByQueryString(parentObjectName, jsObjectName.Name, selector.Query),
-            ElementQuerySelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 

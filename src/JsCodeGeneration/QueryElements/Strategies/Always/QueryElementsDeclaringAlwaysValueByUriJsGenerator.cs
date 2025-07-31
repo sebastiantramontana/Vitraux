@@ -14,7 +14,6 @@ internal class QueryElementsDeclaringAlwaysValueByUriJsGenerator(
         => jsObjectName.AssociatedSelector switch
         {
             InsertElementUriSelectorUri uriSelector => GenerateJsByUri(jsObjectName.Name, uriSelector.Uri),
-            InsertElementUriSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 

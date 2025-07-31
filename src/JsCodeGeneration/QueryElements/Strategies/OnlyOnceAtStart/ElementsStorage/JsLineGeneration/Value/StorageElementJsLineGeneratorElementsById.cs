@@ -13,7 +13,6 @@ internal class StorageElementJsLineGeneratorElementsById(
         => jsObjectName.AssociatedSelector switch
         {
             ElementIdSelectorString idSelectorString => generatorById.Generate(jsObjectName.Name, idSelectorString.Id),
-            ElementIdSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 }

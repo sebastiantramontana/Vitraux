@@ -17,7 +17,6 @@ internal class TargetElementsUpdateValueInsertJsGenerator(
         => targetElement.Insertion!.TargetChildElementsSelector switch
         {
             ElementQuerySelectorString targetChildElementsSelector => GenerateJsByQueryString(targetChildElementsSelector.Query, targetElement.Place, elementToInsertObjectName.Name, elementsToAppendObjectName.Name, parentValueObjectName, valueObjectName),
-            ElementQuerySelectorDelegate => string.Empty,
             _ => notImplementedCaseGuard.ThrowException<string>(targetElement.Insertion!.TargetChildElementsSelector)
         };
 

@@ -12,7 +12,7 @@ internal class CollectionValueFinallizable<TItem, TValue, TEndCollectionReturn>(
     public TEndCollectionReturn EndCollection
         => endCollectionReturn;
 
-    public ICollectionTargetBuilder<TInnerItem, IInnerCollectionFinallizable<TItem, TInnerItem, TEndCollectionReturn>> MapCollection<TInnerItem>(Func<TItem, IEnumerable<TInnerItem>> func)
+    public IInnerCollectionTargetBuilder<TInnerItem, IInnerCollectionFinallizable<TItem, TInnerItem, TEndCollectionReturn>> MapCollection<TInnerItem>(Func<TItem, IEnumerable<TInnerItem>> func)
         => modelMapperWrapped.MapCollection(func);
 
     public ICollectionValueTargetBuilder<TItem, TValue1, TEndCollectionReturn> MapValue<TValue1>(Func<TItem, TValue1> func)
@@ -21,7 +21,7 @@ internal class CollectionValueFinallizable<TItem, TValue, TEndCollectionReturn>(
     public ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> ToElements
         => multiTargetBuilderWrapped.ToElements;
 
-    public ICollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> ToOwnMapping
+    public IInnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> ToOwnMapping
         => modelMapperWrapped.ToOwnMapping;
 
     public ICollectionValueCustomJsFinallizable<TItem, TValue, TEndCollectionReturn> ToJsFunction(string jsFunction)

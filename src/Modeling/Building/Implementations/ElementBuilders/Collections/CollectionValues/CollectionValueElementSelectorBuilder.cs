@@ -12,23 +12,8 @@ internal class CollectionValueElementSelectorBuilder<TItem, TValue, TEndCollecti
     TEndCollectionReturn endCollectionReturn)
     : ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn>
 {
-    public ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ById(string id)
-        => SetSelectorToTarget(new ElementIdSelectorString(id));
-
-    public ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ById(Func<TValue, string> idFunc)
-        => SetSelectorToTarget(new ElementIdSelectorDelegate(idFunc));
-
-    public ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ById(Func<TItem, string> idFunc)
-        => SetSelectorToTarget(new ElementIdSelectorDelegate(idFunc));
-
     public ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ByQuery(string query)
         => SetSelectorToTarget(new ElementQuerySelectorString(query));
-
-    public ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ByQuery(Func<TValue, string> queryFunc)
-        => SetSelectorToTarget(new ElementQuerySelectorDelegate(queryFunc));
-
-    public ICollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> ByQuery(Func<TItem, string> queryFunc)
-        => SetSelectorToTarget(new ElementQuerySelectorDelegate(queryFunc));
 
     private CollectionValueElementPlaceBuilder<TItem, TValue, TEndCollectionReturn> SetSelectorToTarget(ElementSelectorBase elementSelector)
     {

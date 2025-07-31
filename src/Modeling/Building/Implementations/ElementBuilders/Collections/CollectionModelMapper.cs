@@ -16,7 +16,7 @@ internal class CollectionModelMapper<TItem, TEndCollectionReturn>(
     IServiceProvider serviceProvider)
     : ICollectionModelMapper<TItem, TEndCollectionReturn>
 {
-    public ICollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> ToOwnMapping
+    public IInnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> ToOwnMapping
         => AddToOwnMapping();
 
     public ICollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn> MapValue<TValue>(Func<TItem, TValue> func)
@@ -27,7 +27,7 @@ internal class CollectionModelMapper<TItem, TEndCollectionReturn>(
         return new CollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>(newValue, this, endCollectionReturn);
     }
 
-    public ICollectionTargetBuilder<TInnerItem, IInnerCollectionFinallizable<TItem, TInnerItem, TEndCollectionReturn>> MapCollection<TInnerItem>(Func<TItem, IEnumerable<TInnerItem>> func)
+    public IInnerCollectionTargetBuilder<TInnerItem, IInnerCollectionFinallizable<TItem, TInnerItem, TEndCollectionReturn>> MapCollection<TInnerItem>(Func<TItem, IEnumerable<TInnerItem>> func)
     {
         var newCollection = new CollectionData(func);
         modelMappingDataToCollect.AddCollection(newCollection);
@@ -35,7 +35,7 @@ internal class CollectionModelMapper<TItem, TEndCollectionReturn>(
         return new InnerCollectionTargetBuilder<TInnerItem, TItem, TEndCollectionReturn>(newCollection, this, endCollectionReturn, serviceProvider);
     }
 
-    private CollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> AddToOwnMapping()
+    private InnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> AddToOwnMapping()
     {
         var mc = serviceProvider.GetRequiredService<IModelConfiguration<TItem>>();
         var modelMapper = serviceProvider.GetRequiredService<IModelMapper<TItem>>();
@@ -51,8 +51,8 @@ internal class CollectionModelMapper<TItem, TEndCollectionReturn>(
             modelMappingDataToCollect.AddCollection(coll);
         }
 
-        var tableSelectorBuilder = new TableSelectorBuilder<TItem, TEndCollectionReturn>(originalCollectionData, endCollectionReturn, serviceProvider);
-        var containerElementsSelectorBuilder = new ContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>(originalCollectionData, endCollectionReturn, serviceProvider);
-        return new CollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn>(originalCollectionData, tableSelectorBuilder, containerElementsSelectorBuilder, endCollectionReturn, serviceProvider);
+        var tableSelectorBuilder = new InnerTableSelectorBuilder<TItem, TEndCollectionReturn>(originalCollectionData, endCollectionReturn, serviceProvider);
+        var containerElementsSelectorBuilder = new InnerContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>(originalCollectionData, endCollectionReturn, serviceProvider);
+        return new InnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn>(originalCollectionData, tableSelectorBuilder, containerElementsSelectorBuilder, endCollectionReturn, serviceProvider);
     }
 }

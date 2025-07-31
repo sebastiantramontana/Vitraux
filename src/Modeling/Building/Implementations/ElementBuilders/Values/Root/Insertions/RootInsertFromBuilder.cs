@@ -14,20 +14,8 @@ internal class RootInsertFromBuilder<TViewModel, TValue>(
     public IRootInsertToChildrenBuilder<TViewModel, TValue> FromTemplate(string id)
         => SetInsertSelector(new InsertElementTemplateSelectorId(id));
 
-    public IRootInsertToChildrenBuilder<TViewModel, TValue> FromTemplate(Func<TViewModel, string> idFunc)
-        => SetInsertSelector(new InsertElementTemplateSelectorDelegate(idFunc));
-
-    public IRootInsertToChildrenBuilder<TViewModel, TValue> FromTemplate(Func<TValue, string> idFunc)
-        => SetInsertSelector(new InsertElementTemplateSelectorDelegate(idFunc));
-
     public IRootInsertToChildrenBuilder<TViewModel, TValue> FromUri(Uri uri)
         => SetInsertSelector(new InsertElementUriSelectorUri(uri));
-
-    public IRootInsertToChildrenBuilder<TViewModel, TValue> FromUri(Func<TViewModel, Uri> uriFunc)
-        => SetInsertSelector(new InsertElementUriSelectorDelegate(uriFunc));
-
-    public IRootInsertToChildrenBuilder<TViewModel, TValue> FromUri(Func<TValue, Uri> uriFunc)
-        => SetInsertSelector(new InsertElementUriSelectorDelegate(uriFunc));
 
     private RootInsertToChildrenBuilder<TViewModel, TValue> SetInsertSelector(InsertElementSelectorBase insertElementSelector)
     {

@@ -14,7 +14,6 @@ internal class QueryElementsDeclaringAlwaysValueByTemplateJsGenerator(
         => jsObjectName.AssociatedSelector switch
         {
             InsertElementTemplateSelectorId templateSelectorId => GenerateJsById(jsObjectName.Name, templateSelectorId.TemplateId),
-            InsertElementTemplateSelectorDelegate => string.Empty,
             _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
         };
 
