@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -24,6 +25,8 @@ internal class SerializablePropertyValueExtractor : ISerializablePropertyValueEx
             ? @delegate.DynamicInvoke(obj) as IEnumerable<object> ?? []
             : [];
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "It is very unlikely")]
+    [UnconditionalSuppressMessage("Trimming", "IL2067:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The parameter of method does not have matching annotations.", Justification = "<pendiente>")]
     private bool IsSimpleType(Type objType)
     {
         objType = Nullable.GetUnderlyingType(objType) ?? objType;
@@ -33,6 +36,7 @@ internal class SerializablePropertyValueExtractor : ISerializablePropertyValueEx
                 && !IsAutoStringType(objType));
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2070:'this' argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The parameter of method does not have matching annotations.", Justification = "It is very unlikely that the compiler trims the ToString method.")]
     private static bool IsAutoStringType(Type objType)
     {
         const string ToString = "ToString";
