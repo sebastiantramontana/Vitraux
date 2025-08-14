@@ -1,15 +1,12 @@
-<h1 align="center">Vitraux</h1>
-<h4 align="center">Map your .NET ViewModels to HTML in WebAssembly</h4>
-
-<p align="center">
-<img src="https://github.com/sebastiantramontana/Vitraux/blob/main/assets/vitraux-banner.png" />
-</p>
+# Vitraux
+### Map your .NET ViewModels to HTML in WebAssembly
+![Banner](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/assets/vitraux-banner.png)
 
 ## Introduction
 Vitraux is a .NET library for manipulating the HTML DOM in WebAssembly applications.  
 Using a declarative approach, it maps .NET ViewModels directly to standard HTML elements, maintaining a clear separation of concerns between frontend and backend. This makes your code easier to maintain, more readable, and highly scalable.
 
-![Mapping](https://github.com/sebastiantramontana/Vitraux/blob/main/assets/readme/mapping-banner-final.png)
+![Mapping](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/assets/readme/mapping-banner-final.png)
 
 ---
 
@@ -57,12 +54,12 @@ Using a declarative approach, it maps .NET ViewModels directly to standard HTML 
 1. **Remove all .razor files**  
    Delete all .razor files from your solution so it’s clean and free of Blazor pages or components.
 
-   ![Remove .razor Files](https://github.com/sebastiantramontana/Vitraux/blob/main/assets/readme/remove-razor-files.png)
+   ![Remove .razor Files](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/assets/readme/remove-razor-files.png)
 
 1. **Remove root component code from Main()**  
    Remove any root component registration and rendering from Main() — Vitraux doesn’t use them.
 
-   ![Remove Root Components](https://github.com/sebastiantramontana/Vitraux/blob/main/assets/readme/remove-root-components-main.png)
+   ![Remove Root Components](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/assets/readme/remove-root-components-main.png)
 
 1. **[Install](#installation) the Vitraux NuGet package**  
 
@@ -232,7 +229,7 @@ Using a declarative approach, it maps .NET ViewModels directly to standard HTML 
    </body>
    </html>
 
-1. **For a complete breakdown of features and technical details, see the [Manual de Referencia](https://github.com/sebastiantramontana/Vitraux/blob/main/docs/reference-manual.md).**
+1. **For a complete breakdown of features and technical details, see the [Manual de Referencia](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/docs/reference-manual.md).**
 
 ---
 
@@ -240,12 +237,18 @@ Using a declarative approach, it maps .NET ViewModels directly to standard HTML 
 Vitraux uses declarative mapping to connect .NET ViewModels to standard HTML elements in WebAssembly applications.
 When you need to update the UI, you call an update method in .NET, which sends the data to the browser. Vitraux then runs an automatically generated JavaScript function to update the DOM, keeping your view in sync with your data model.
 
+---
+
 ## Installation
 Install the package from [NuGet](https://www.nuget.org/packages/Vitraux/)
+
+---
 
 ## Contributing
 Contributions are welcome! If you have ideas, find bugs, or want to collaborate, feel free to open an Issue or Pull Request.
 
+---
+
 ## License
 This project is licensed under the MIT License.
-See the [LICENSE](https://github.com/sebastiantramontana/Vitraux/blob/main/LICENSE) file for details.
+See the [LICENSE](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/LICENSE) file for details.
