@@ -1,82 +1,85 @@
 <h1 align="center">Vitraux</h1>
-<h4 align="center">Mapea tus viewmodels .NET a HTML en WebAssembly.</h4>
+<h4 align="center">Map your .NET ViewModels to HTML in WebAssembly</h4>
 
 <p align="center">
 <img src="https://github.com/sebastiantramontana/Vitraux/blob/main/assets/vitraux-banner.png" />
 </p>
 
-## Introducción
-Vitraux es una librería para .NET que permite manipular el DOM de HTML en aplicaciones WebAssembly. Con un enfoque declarativo, mapea ViewModels de .Net directamente a elementos HTML estándar, manteniendo la separación de responsabilidades y el desacople entre frontend y backend, y facilitando el mantenimiento, la legibilidad y la escalabilidad del código.
+## Introduction
+Vitraux is a .NET library for manipulating the HTML DOM in WebAssembly applications.  
+Using a declarative approach, it maps .NET ViewModels directly to standard HTML elements, maintaining a clear separation of concerns between frontend and backend. This makes your code easier to maintain, more readable, and highly scalable.
 
 ![Mapping](https://github.com/sebastiantramontana/Vitraux/blob/main/assets/readme/mapping-banner-final.png)
 
 ---
 
-## Principales ventajas
+## Key Benefits
 
-- **HTML y C# limpios:** No requiere componentes personalizados ni mezcla lógica .Net con HTML. El frontend sigue siendo HTML5 y el backend, .Net puro.
+- **Clean HTML and C#:** No need for custom components or mixing .NET logic with HTML. Your frontend remains pure HTML5 and your backend pure .NET.
 
-- **Desacople real:** Mantiene la separación clara entre lógica de negocio (backend) y presentación (frontend), facilitando el trabajo colaborativo y el mantenimiento.
+- **True Decoupling:** Keeps business logic (backend) and presentation (frontend) fully separated, making collaboration and maintenance easier.
 
-- **Enfoque declarativo:** El mapeo entre ViewModels y elementos HTML se define de forma simple y expresiva.
+- **Declarative Mapping:** Define the mapping between ViewModels and HTML elements in a simple, expressive way.
 
-- **Fácil integración:** Solo se necesita definir los mapeos y llamar a un método de actualización. El resto es transparente para el desarrollador.
+- **Easy Integration:** Just define your mappings and call an update method. Everything else is handled automatically.
 
-- **Manipulación del DOM eficiente:** Manipula los objetos del DOM en memoria todo lo posible y sólo actualiza la UI cuando es estrictamente necesario, optimizando la performance.
+- **Efficient DOM Updates:** Works with DOM objects in memory as much as possible, updating the UI only when strictly necessary for optimal performance.
 
-- **Compatible y escalable:** Compatible desde HTML vainilla, Web Components, a cualquier típica herramienta de frontend que produzca HTML.
+- **Compatible and Scalable:** Works with anything from vanilla HTML and Web Components to any frontend tool that outputs HTML.
 
-- **Modularización del HTML:** Permite modularizar la estructura del documento en fragmentos de HTML contenidos en templates o URIs que el propio usuario define y maqueta a gusto.
-
----
-
-## Funcionalidades
-
-- **Seguimiento de cambios:** Soporta el seguimiento de cambios para transmitir y actualizar en la UI solo los datos que realmente cambiaron desde la última actualización. Esto optimiza el tráfico de datos y evita renders innecesarios.
-
-- **Estrategias flexibles de selección de elementos:** Contiene una serie de estrategias de selección de elementos HTML, adaptándose a cualquier estructura de vista.
-
-- **Mapeo a funciones javascript personalizadas:** Permite invocar funciones de javascript personalizadas que se ejecutan ante los cambios en el viewmodel.
-
-- **Modularizacion del mapeo:** El mapeo puede subdividirse en varios submapeos para una mayor legibilidad o reutilización.
-
-- **Cache de funciones autogeneradas:** Las funciones JavaScript de inicialización y actualización de la vista, generadas automáticamente por Vitraux, pueden cachearse optimizando la carga.
-
-- **Utilización de Shadow DOM:** Puede utilizar Shadow DOM para encapsular estilos y estructura según la necesidad del proyecto.
+- **HTML Modularization:** Lets you break your HTML into fragments stored in templates or external URIs, which you can design and structure however you like.
 
 ---
 
-## Primeros pasos
+## Features
 
-1. **Crea un proyecto Blazor WebAssembly Standalone**  
-   Usa Visual Studio asegurándote de desactivar la opción “Incluir páginas de ejemplo” o la CLI de .NET con el comando
-   ```cli
+- **Change Tracking:** Sends and updates only the data that actually changed since the last update, minimizing data transfer and avoiding unnecessary re-renders.
+
+- **Flexible Element Selection Strategies:** Multiple ways to select HTML elements, adaptable to any view structure.
+
+- **Custom JavaScript Function Mapping:** Call your own JavaScript functions in response to ViewModel changes.
+
+- **Modular Mapping:** Split your mapping into sub-mappings for better readability and reuse.
+
+- **Auto-Generated Function Caching:** Initialization and update functions generated by Vitraux can be cached for faster load times.
+
+- **Shadow DOM Support:** Optionally encapsulate styles and structure using Shadow DOM, depending on project needs.
+
+---
+
+## Getting Started
+
+1. **Create a Blazor WebAssembly Standalone Project**  
+   Use Visual Studio and disable the “Include sample pages” option, or create it via the .NET CLI:  
+   ```bash
    dotnet new blazorwasm --empty -o MyProject
-1. **Elimina todos los archivos `.razor`**  
-   Borra todos los archivos con extensión `.razor` de la solución para dejar el proyecto limpio, sin páginas ni componentes de Blazor.
+
+1. **Remove all .razor files**  
+   Delete all .razor files from your solution so it’s clean and free of Blazor pages or components.
 
    ![Remove .razor Files](https://github.com/sebastiantramontana/Vitraux/blob/main/assets/readme/remove-razor-files.png)
 
-1. **Elimina el código de root components del método `Main()`**  
-   Quita el registro y renderizado de componentes raíz en el método `Main()`, ya que Vitraux no los utiliza.
+1. **Remove root component code from Main()**  
+   Remove any root component registration and rendering from Main() — Vitraux doesn’t use them.
 
    ![Remove Root Components](https://github.com/sebastiantramontana/Vitraux/blob/main/assets/readme/remove-root-components-main.png)
 
-1. **[Instala](#instalación) el paquete de Vitraux desde Nuget**
+1. **[Install](#installation) the Vitraux NuGet package**  
 
-1. **Agrega el archivo JavaScript de Vitraux**  
-   Coloca el archivo `vitraux-<version>-min.js` en la carpeta que prefieras de tu sitio web. No hay una ubicación obligatoria; solo asegúrate de referenciar la ruta correcta en el HTML.
+1. **Add the Vitraux JavaScript file**  
+   Place vitraux-`<version>`-min.js anywhere in your site’s folder structure. There’s no required location  
+   — just ensure your HTML references the correct path.
 
-1. **Incluye las referencias a los archivos JavaScript en tu HTML**  
-   Agrega la referencia a `vitraux-<version>-min.js` en el `<head>` o antes del cierre de `</body>`.  
-   La referencia a `_framework/blazor.webassembly.js` debe ir al final del `<body>`:
+1. **Include the JavaScript references in your HTML**  
+   Add the vitraux-`<version>`-min.js reference in `<head>` or before the closing `</body>`.  
+   The _framework/blazor.webassembly.js reference must be placed at the end of `<body>`:
 
    ```html
    <script src="js/vitraux-<version>-min.js"></script>
    ...
    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
 
-1. **Agrega tu código C# y configuración mínima de ejemplo:**
+1. **Add your C# code and a minimal configuration example**
    ```csharp
    // PetOwner.cs
    public record class PetOwner
@@ -170,7 +173,7 @@ Vitraux es una librería para .NET que permite manipular el DOM de HTML en aplic
       }
    }
 
-1. **Ejemplo de HTML completo:**
+1. **Full HTML Example**
    ```html
    <!DOCTYPE html>
    <html lang="en">
@@ -229,20 +232,20 @@ Vitraux es una librería para .NET que permite manipular el DOM de HTML en aplic
    </body>
    </html>
 
-1. **Para una detalle completo de las funcionalidades y detalles técnicos consulta el [Manual de Referencia](./docs/reference-manual.md).**
+1. **For a complete breakdown of features and technical details, see the [Manual de Referencia](https://github.com/sebastiantramontana/Vitraux/blob/main/docs/reference-manual.md).**
 
 ---
 
-## Cómo Funciona
-Vitraux funciona mediante el mapeo declarativo de viewmodels .NET a elementos HTML estándar en aplicaciones WebAssembly.
-Cuando necesitas actualizar la interfaz, simplemente se llama a una función de actualización en .NET que envía los datos al navegador. Allí, una función JavaScript generada por Vitraux actualiza el DOM automáticamente, manteniendo la vista sincronizada con el modelo de datos.
+## How It Works
+Vitraux uses declarative mapping to connect .NET ViewModels to standard HTML elements in WebAssembly applications.
+When you need to update the UI, you call an update method in .NET, which sends the data to the browser. Vitraux then runs an automatically generated JavaScript function to update the DOM, keeping your view in sync with your data model.
 
-## Instalación
-Instala el paquete desde [NuGet](https://www.nuget.org/packages/Vitraux/)
+## Installation
+Install the package from [NuGet](https://www.nuget.org/packages/Vitraux/)
 
-## Contribuciones
-¡Las contribuciones son bienvenidas! Si tienes ideas, encuentras errores o deseas colaborar, no dudes en abrir un Issue o un Pull Request.
+## Contributing
+Contributions are welcome! If you have ideas, find bugs, or want to collaborate, feel free to open an Issue or Pull Request.
 
-## Licencia
-Este proyecto está licenciado bajo los términos de la licencia MIT.
-Consulta el archivo [LICENSE](https://github.com/sebastiantramontana/Vitraux/blob/main/LICENSE) para más información.
+## License
+This project is licensed under the MIT License.
+See the [LICENSE](https://github.com/sebastiantramontana/Vitraux/blob/main/LICENSE) file for details.
