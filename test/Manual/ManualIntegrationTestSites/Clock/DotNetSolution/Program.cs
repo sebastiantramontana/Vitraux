@@ -9,7 +9,7 @@ namespace ClockWasm;
 public partial class Program
 {
     private static readonly ClockViewModel _clock = new();
-    private static IViewlUpdater<ClockViewModel> _viewlUpdater = default!;
+    private static IViewUpdater<ClockViewModel> _viewUpdater = default!;
     private static CancellationTokenSource _cancellationTokenSouce = new();
 
     public static async Task Main(string[] args)
@@ -25,7 +25,7 @@ public partial class Program
 
         await host.Services.BuildVitraux();
 
-        _viewlUpdater = host.Services.GetRequiredService<IViewlUpdater<ClockViewModel>>();
+        _viewUpdater = host.Services.GetRequiredService<IViewUpdater<ClockViewModel>>();
 
         await host.RunAsync();
     }
@@ -36,7 +36,7 @@ public partial class Program
         try
         {
             _clock.Reset();
-            await _viewlUpdater.Update(_clock);
+            await _viewUpdater.Update(_clock);
         }
         catch (Exception ex)
         {
@@ -54,7 +54,7 @@ public partial class Program
             while (await timer.WaitForNextTickAsync(_cancellationTokenSouce.Token))
             {
                 _clock.AddTenthSecond();
-                await _viewlUpdater.Update(_clock);
+                await _viewUpdater.Update(_clock);
             }
         }
         catch (OperationCanceledException)

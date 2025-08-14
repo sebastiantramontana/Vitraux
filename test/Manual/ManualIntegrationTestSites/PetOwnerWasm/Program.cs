@@ -10,8 +10,8 @@ namespace PetOwnerWasm;
 [SupportedOSPlatform("browser")]
 public partial class Program
 {
-    private static IViewlUpdater<PetOwner> _petownerViewlUpdater = default!;
-    private static IViewlUpdater<AllPetOwnerNames> _allPetownerNamesViewlUpdater = default!;
+    private static IViewUpdater<PetOwner> _petownerViewlUpdater = default!;
+    private static IViewUpdater<AllPetOwnerNames> _allPetownerNamesViewlUpdater = default!;
 
     public static async Task Main(string[] args)
     {
@@ -31,8 +31,8 @@ public partial class Program
         {
             await host.Services.BuildVitraux();
 
-            _petownerViewlUpdater = host.Services.GetRequiredService<IViewlUpdater<PetOwner>>();
-            _allPetownerNamesViewlUpdater = host.Services.GetRequiredService<IViewlUpdater<AllPetOwnerNames>>();
+            _petownerViewlUpdater = host.Services.GetRequiredService<IViewUpdater<PetOwner>>();
+            _allPetownerNamesViewlUpdater = host.Services.GetRequiredService<IViewUpdater<AllPetOwnerNames>>();
         }
         catch (Exception e)
         {

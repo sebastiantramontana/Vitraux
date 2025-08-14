@@ -26,8 +26,8 @@ public class AutomationExecutionTest
 
         await serviceProvider.BuildVitraux();
 
-        var viewUpdaterPetOwner = serviceProvider.GetRequiredService<IViewlUpdater<PetOwner>>();
-        var viewUpdaterCustomerViewModel = serviceProvider.GetRequiredService<IViewlUpdater<CustomerViewModel>>();
+        var viewUpdaterPetOwner = serviceProvider.GetRequiredService<IViewUpdater<PetOwner>>();
+        var viewUpdaterCustomerViewModel = serviceProvider.GetRequiredService<IViewUpdater<CustomerViewModel>>();
 
         Assert.NotNull(viewUpdaterPetOwner);
         Assert.NotNull(viewUpdaterCustomerViewModel);

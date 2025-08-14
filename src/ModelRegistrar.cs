@@ -20,7 +20,7 @@ internal class ModelRegistrar(IServiceCollection container) : IModelRegistrar
             .AddSingleton<IViewModelChangeTrackingContext<TViewModel>, ViewModelChangeTrackingContext<TViewModel>>()
             .AddSingleton<IViewModelNoChangesTracker<TViewModel>, ViewModelNoChangesTracker<TViewModel>>()
             .AddSingleton<IViewModelShallowChangesTracker<TViewModel>, ViewModelShallowChangesTracker<TViewModel>>()
-            .AddSingleton<IViewlUpdater<TViewModel>, ViewUpdater<TViewModel>>();
+            .AddSingleton<IViewUpdater<TViewModel>, ViewUpdater<TViewModel>>();
 
         return this;
     }

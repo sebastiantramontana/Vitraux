@@ -11,7 +11,7 @@ internal class ViewUpdater<TViewModel>(
     IViewModelChangeTrackingContext<TViewModel> viewModelChangeTrackingContext,
     IViewModelJsonSerializer jsonSerializer,
     IJsExecuteUpdateViewFunctionInvoker jsExecuteUpdateView)
-    : IViewlUpdater<TViewModel>
+    : IViewUpdater<TViewModel>
 {
     public async Task Update(TViewModel viewModel)
     {

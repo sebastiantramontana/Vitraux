@@ -3,11 +3,15 @@
   <Target Name="VitrauxJsCopy" AfterTargets="Build">
       <Message Text="Copying vitraux.js" Importance="high" />
 	  <ItemGroup>
-		  <VitrauxJsFile Include="..\..\..\..\..\src\vitraux.js" />
+		  <VitrauxPackage Include="@(PackageReference->WithMetadataValue('Identity', 'Vitraux'))" />
 	  </ItemGroup>
-
+	  
+	  <PropertyGroup>
+		  <VitrauxPackagePath>$([System.IO.Path]::Combine('$(NuGetPackageRoot)', '%(VitrauxPackage.Identity)', '%(VitrauxPackage.Version)', 'contentFiles', 'any', 'any', 'vitraux-1.0.0-rc-min.js'))</VitrauxPackagePath>
+	  </PropertyGroup>
+	  
 	  <Copy
-			SourceFiles="@(VitrauxJsFile)"
+			SourceFiles="$(VitrauxPackagePath)"
 			DestinationFolder="$(ProjectDir)..\TestSite\"
 			SkipUnchangedFiles="true" />
   </Target>
