@@ -2,6 +2,11 @@
 ### Map your .NET ViewModels to HTML in WebAssembly
 ![Banner](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/assets/vitraux-banner.png)
 
+[![Version](https://img.shields.io/badge/Version-1.0.2--rc-yellow.svg)]
+[![Version](https://img.shields.io/badge/Tests-passing!-green)]
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/LICENSE)
+
+
 ## Introduction
 Vitraux is a .NET library for manipulating the HTML DOM in WebAssembly applications.  
 Using a declarative approach, it maps .NET ViewModels directly to standard HTML elements, maintaining a clear separation of concerns between frontend and backend. This makes your code easier to maintain, more readable, and highly scalable.
