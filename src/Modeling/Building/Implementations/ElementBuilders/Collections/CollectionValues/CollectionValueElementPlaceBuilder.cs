@@ -1,5 +1,6 @@
 ﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.CollectionValues;
+using Vitraux.Modeling.Data;
 using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.CollectionValues;

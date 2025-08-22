@@ -1,6 +1,7 @@
 ﻿using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.Modeling.Data;
 using Vitraux.Modeling.Data.Selectors.Values;
 using Vitraux.Modeling.Data.Values;
 
