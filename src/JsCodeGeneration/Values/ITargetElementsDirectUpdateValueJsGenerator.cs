@@ -1,4 +1,4 @@
-﻿using Vitraux.Modeling.Data.Values;
+﻿using Vitraux.Modeling.Data;
 
 namespace Vitraux.JsCodeGeneration.Values;
 
