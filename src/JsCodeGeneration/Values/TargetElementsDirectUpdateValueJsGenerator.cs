@@ -1,4 +1,5 @@
 ﻿using Vitraux.Helpers;
+using Vitraux.Modeling.Data;
 using Vitraux.Modeling.Data.Values;
 
 namespace Vitraux.JsCodeGeneration.Values;

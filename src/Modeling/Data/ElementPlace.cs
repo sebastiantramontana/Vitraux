@@ -1,3 +1,3 @@
-﻿namespace Vitraux.Modeling.Data.Values;
+﻿namespace Vitraux.Modeling.Data;
 
 internal abstract record class ElementPlace;
