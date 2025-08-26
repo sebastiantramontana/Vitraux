@@ -2,15 +2,16 @@
 
 namespace Vitraux.Modeling.Data.Actions;
 
-internal record class ActionTarget(ElementSelectorBase Selector) : IActionTarget
+internal record class ActionTarget : IActionTarget
 {
-    private const string PassValueParameterName = "Value";
+    private const string InputValueParameterName = "Value";
     private readonly ICollection<ActionSourceParameter> _parameters = [];
 
+    internal ElementSelectorBase Selector { get; set; } = default!;
     internal string Event { get; set; } = default!;
     internal IEnumerable<ActionSourceParameter> Parameters => _parameters;
 
     internal void AddParameter(ActionSourceParameter newParameter) => _parameters.Add(newParameter);
-    internal void PassValueParameter() => _parameters.Add(new(PassValueParameterName) { Selector = Selector, ElementPlace = ValuePropertyElementPlace.Instance });
+    internal void AddInputValueParameter() => _parameters.Add(new(InputValueParameterName) { Selector = Selector, ElementPlace = ValuePropertyElementPlace.Instance });
 }
 

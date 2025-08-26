@@ -1,4 +1,5 @@
-﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
+﻿using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Values.Root;
 
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Values.Root;
@@ -17,9 +18,12 @@ internal class RootValueFinallizable<TViewModel, TValue>(
     public IRootValueElementSelectorBuilder<TViewModel, TValue> ToElements
         => multiTargetBuilderWrapped.ToElements;
 
-    public ModelMappingData Data 
+    public ModelMappingData Data
         => modelMapperWrapped.Data;
 
     public IRootValueCustomJsBuilder<TViewModel, TValue> ToJsFunction(string jsFunction)
         => multiTargetBuilderWrapped.ToJsFunction(jsFunction);
+
+    public IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, IDictionary<string, IEnumerable<string>>, Task> action)
+        => modelMapperWrapped.MapAction(action);
 }
