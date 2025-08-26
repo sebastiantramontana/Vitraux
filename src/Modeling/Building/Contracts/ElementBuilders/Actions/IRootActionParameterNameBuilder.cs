@@ -2,5 +2,5 @@
 
 public interface IRootActionParameterNameBuilder<TViewModel>
 {
-    IRootActionAddParametersSourceBuilder<TViewModel> WithName(string paramName);
+    IRootActionAddParametersFromBuilder<TViewModel> WithName(string paramName);
 }

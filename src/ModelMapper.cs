@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Values.Root;
+using Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 using Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Implementations.ElementBuilders.Values.Root;
+using Vitraux.Modeling.Data.Actions;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Values;
 
@@ -25,6 +28,14 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IMode
         Data.AddCollection(collection);
 
         return new RootCollectionTargetBuilder<TItem, TViewModel>(collection, this, serviceProvider);
+    }
+
+    public IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, IDictionary<string, IEnumerable<string>>, Task> func)
+    {
+        var action = new ActionData(func);
+        Data.AddAction(action);
+
+        return new RootActionSourceBuilder<TViewModel>(action, this);
     }
 
     public ModelMappingData Data { get; } = new ModelMappingData();
