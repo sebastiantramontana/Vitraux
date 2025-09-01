@@ -31,6 +31,8 @@ Using a declarative approach, it maps .NET ViewModels directly to standard HTML 
 
 - **HTML Modularization:** Lets you break your HTML into fragments stored in templates or external URIs, which you can design and structure however you like.
 
+- **Trimmable & AOT-ready:** Safe to enable PublishTrimmed and AOT; no runtime codegen or reflective serializers.
+
 ---
 
 ## Features
