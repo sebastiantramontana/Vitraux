@@ -234,7 +234,7 @@ Using a declarative approach, it maps .NET ViewModels directly to standard HTML 
    </body>
    </html>
 
-1. **For a complete breakdown of features and technical details, see the [Reference Manual](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/docs/reference-manual.md).**
+1. **For a complete breakdown of features and technical details, see the [Reference Manual](https://github.com/sebastiantramontana/Vitraux/blob/main/docs/reference-manual.md).**
 
 ---
 
