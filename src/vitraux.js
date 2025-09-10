@@ -127,7 +127,6 @@ globalThis.vitraux = {
                 return v || v === 0 || v === false || v === "";
             }
         },
-
         vmFunctions: {
             vms: [],
 
@@ -343,6 +342,24 @@ globalThis.vitraux = {
 
                 return supportedTagNames.has(tag) || (tag.includes('-') && customElements.get(tag));
             }
+        }
+    },
+    actions: {
+        vitrauxWasmExports: null,
+
+        async getVitrauxWasmExports() {
+            if (!this.vitrauxWasmExports) {
+
+                const { getAssemblyExports } = await globalThis.getDotnetRuntime(0);
+                this.vitrauxWasmExports = await getAssemblyExports("Vitraux.dll");
+            }
+
+            return this.vitrauxWasmExports;
+        },
+
+        async InvokeActionDispatcher(vmkey, actionKey, actionArguments) {
+            const vitrauxWasm = await this.getVitrauxWasmExports();
+            await vitrauxWasm.DispatchAction(vmkey, actionKey, actionArguments);
         }
     }
 };
