@@ -213,9 +213,17 @@ globalThis.vitraux = {
                     element.textContent = content;
             },
 
+            getElementsContent(elements) {
+                return elements.map(e => e.textContent);
+            },
+
             setElementsHtml(elements, html) {
                 for (const element of elements)
                     element.innerHTML = html;
+            },
+
+            getElementsHtml(elements) {
+                return elements.map(e => e.innerHTML);
             },
 
             setElementsAttribute(elements, attribute, value) {
@@ -234,6 +242,15 @@ globalThis.vitraux = {
             toggleBoolAttribute(elements, attribute, value) {
                 for (const element of elements)
                     element.toggleAttribute(attribute, value);
+            },
+
+            getElementsAttribute(elements, attribute) {
+                return elements.map(e => getAttributeValue(e, attribute));
+
+                function getAttributeValue(element, attributeName) {
+                    const attributeValue = element.getAttribute(attributeName);
+                    return attributeName === attributeValue ? true : attributeValue;
+                }
             },
 
             updateValueByInsertingElements(elementToInsert, appendToElements, queryChildrenFunction, updateChildElementsFunction) {
