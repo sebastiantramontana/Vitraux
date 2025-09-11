@@ -4,9 +4,41 @@ const vmUpdateFunctionKeyPrefix = "vitraux-vms-";
 
 class VitrauxInternalError extends Error {
     constructor(message) {
-        const internalErrorTitle = "Vitraux Internal Error: ";
+        const internalErrorTitle = "Vitraux Internal Error:";
 
-        super(`${internalErrorTitle}${message}`);
+        super(`${internalErrorTitle} ${message}`);
+    }
+}
+
+class ActionListener extends EventListener {
+    #vmKey;
+    #actionKey;
+    #paramsCallback;
+    #vitrauxWasmExports;
+
+    constructor(vmKey, actionKey, paramsCallback) {
+        this.#vmKey = vmKey;
+        this.#actionKey = actionKey;
+        this.#paramsCallback = paramsCallback;
+    }
+
+    async handleEvent(event) {
+        await this.#invokeActionDispatcher(this.#vmKey, this.#actionKey, this.#paramsCallback.call());
+    }
+
+    async #invokeActionDispatcher(vmkey, actionKey, actionArguments) {
+        const vitrauxWasm = await this.#getVitrauxWasmExports();
+        await vitrauxWasm.DispatchAction(vmkey, actionKey, actionArguments);
+    }
+
+    async #getVitrauxWasmExports() {
+        if (!this.#vitrauxWasmExports) {
+
+            const getAssemblyExports = await globalThis.getDotnetRuntime(0);
+            this.#vitrauxWasmExports = await getAssemblyExports("Vitraux.dll");
+        }
+
+        return this.#vitrauxWasmExports;
     }
 }
 
@@ -362,21 +394,12 @@ globalThis.vitraux = {
         }
     },
     actions: {
-        vitrauxWasmExports: null,
+        registerAction(elements, event, vmKey, actionKey, paramsCallback) {
+            const actionListener = new ActionListener(vmKey, actionKey, paramsCallback);
 
-        async getVitrauxWasmExports() {
-            if (!this.vitrauxWasmExports) {
-
-                const { getAssemblyExports } = await globalThis.getDotnetRuntime(0);
-                this.vitrauxWasmExports = await getAssemblyExports("Vitraux.dll");
+            for (const element of elements) {
+                element.addEventListener(event, actionListener);
             }
-
-            return this.vitrauxWasmExports;
-        },
-
-        async InvokeActionDispatcher(vmkey, actionKey, actionArguments) {
-            const vitrauxWasm = await this.getVitrauxWasmExports();
-            await vitrauxWasm.DispatchAction(vmkey, actionKey, actionArguments);
         }
     }
 };
