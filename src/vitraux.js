@@ -13,17 +13,18 @@ class VitrauxInternalError extends Error {
 class ActionListener extends EventListener {
     #vmKey;
     #actionKey;
-    #paramsCallback;
+    #actionArgsCallback;
     #vitrauxWasmExports;
 
-    constructor(vmKey, actionKey, paramsCallback) {
+    constructor(vmKey, actionKey, actionArgsCallback) {
         this.#vmKey = vmKey;
         this.#actionKey = actionKey;
-        this.#paramsCallback = paramsCallback;
+        this.#actionArgsCallback = actionArgsCallback;
     }
 
     async handleEvent(event) {
-        await this.#invokeActionDispatcher(this.#vmKey, this.#actionKey, this.#paramsCallback.call());
+        const actionArgs = this.#actionArgsCallback.call();
+        await this.#invokeActionDispatcher(this.#vmKey, this.#actionKey, actionArgs);
     }
 
     async #invokeActionDispatcher(vmkey, actionKey, actionArguments) {
@@ -206,22 +207,26 @@ globalThis.vitraux = {
 
                 await this.executeInitializationView(functionCodes.initializationCode);
                 this.createUpdateViewFunction(vmKey, functionCodes.updateViewCode);
+                globalThis.vitraux.actions.createActionRegistrationsFunction(vmKey, functionCodes.actionsCode);
 
                 return true;
             },
 
-            async initializeNewViewFunctionsToCacheByVersion(vmKey, version, initializationCode, updateViewCode) {
+            async initializeNewViewFunctionsToCacheByVersion(vmKey, version, initializationCode, updateViewCode, actionsCode) {
                 if (!version)
                     throw new VitrauxInternalError("Version must be set in initializeNewViewFunctionsToCacheByVersion!");
 
                 await this.executeInitializationView(initializationCode);
                 this.createUpdateViewFunction(vmKey, updateViewCode);
-                this.storeFunctions(vmKey, version, initializationCode, updateViewCode);
+                globalThis.vitraux.actions.createActionRegistrationsFunction(vmKey, actionsCode);
+
+                this.storeFunctions(vmKey, version, initializationCode, updateViewCode, actionsCode);
             },
 
-            async initializeNonCachedViewFunctions(vmKey, initializationCode, updateViewCode) {
+            async initializeNonCachedViewFunctions(vmKey, initializationCode, updateViewCode, actionsCode) {
                 await this.executeInitializationView(initializationCode);
                 this.createUpdateViewFunction(vmKey, updateViewCode);
+                globalThis.vitraux.actions.createActionRegistrationsFunction(vmKey, actionsCode);
             },
 
             createUpdateViewFunction(vmKey, code) {
@@ -229,10 +234,11 @@ globalThis.vitraux = {
                 this.vms[vmKey] = new Function("vm", allCode);
             },
 
-            storeFunctions(vmKey, version, initializationCode, updateViewCode) {
+            storeFunctions(vmKey, version, initializationCode, updateViewCode, actionsCode) {
                 const vmFuncObj = {
                     initializationCode: initializationCode,
                     updateViewCode: updateViewCode,
+                    actionsCode: actionsCode,
                     version: version
                 };
 
@@ -394,8 +400,19 @@ globalThis.vitraux = {
         }
     },
     actions: {
-        registerAction(elements, event, vmKey, actionKey, paramsCallback) {
-            const actionListener = new ActionListener(vmKey, actionKey, paramsCallback);
+        vmActions: [],
+
+        createActionRegistrationsFunction(vmKey, code) {
+            this.vmActions[vmKey] = new Function(code);
+        },
+
+        async executeActionRegistrationsFunction(vmKey) {
+            const func = this.vmActions[vmKey];
+            func();
+        },
+
+        registerAction(elements, event, vmKey, actionKey, actionArgsCallback) {
+            const actionListener = new ActionListener(vmKey, actionKey, actionArgsCallback);
 
             for (const element of elements) {
                 element.addEventListener(event, actionListener);
