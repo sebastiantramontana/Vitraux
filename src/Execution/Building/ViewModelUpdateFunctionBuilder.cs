@@ -6,40 +6,37 @@ using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.Execution.Building;
 
+internal interface IViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>
+    where TModelConfiguration : class, IModelConfiguration<TViewModel>
+{
+    Task Build(string vmKey, ConfigurationBehavior configurationBehavior, FullObjectNames fullObjNames);
+}
+
 internal class ViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>(
-    IModelConfiguration<TViewModel> modelConfiguration,
-    IModelMapper<TViewModel> modelMapper,
-    IJsFullObjectNamesGenerator jsFullObjectNamesGenerator,
     IRootJsGenerator rootJsGenerator,
     IJsInitializeNonCachedViewFunctionsInvoker jsInitializeNonCachedViewFunctionsInvoker,
     IJsTryInitializeViewFunctionsFromCacheByVersionInvoker jsTryInitializeViewFunctionsFromCacheByVersionInvoker,
     IJsInitializeNewViewFunctionsToCacheByVersionInvoker jsinitializeNewViewFunctionsToCacheByVersionInvoker,
     IViewModelJsNamesMapper encodedSerializationDataMapper,
     IViewModelJsNamesCacheGeneric<TViewModel> vmSerializationDataCache,
-    INotImplementedCaseGuard notImplementedCaseGuard,
-    IViewModelKeyGenerator viewModelKeyGenerator)
-    : IBuilder
+    INotImplementedCaseGuard notImplementedCaseGuard)
+    : IViewModelUpdateFunctionBuilder<TViewModel, TModelConfiguration>
     where TModelConfiguration : class, IModelConfiguration<TViewModel>
 {
-    public async Task Build()
+    public async Task Build(string vmKey, ConfigurationBehavior configurationBehavior, FullObjectNames fullObjNames)
     {
-        var vmKey = viewModelKeyGenerator.Generate<TViewModel>();
-        var behavior = modelConfiguration.ConfigurationBehavior;
-        var mappingData = modelConfiguration.ConfigureMapping(modelMapper);
-        var fullObjNames = jsFullObjectNamesGenerator.Generate(mappingData);
-
         StoreSerializationData(vmKey, fullObjNames);
 
-        switch (behavior.VMUpdateFunctionCaching)
+        switch (configurationBehavior.VMUpdateFunctionCaching)
         {
             case VMUpdateFunctionNoCache:
-                await InvokeInitializationViewFunctionsNoCache(vmKey, fullObjNames, behavior.QueryElementStrategy);
+                await InvokeInitializationViewFunctionsNoCache(vmKey, fullObjNames, configurationBehavior.QueryElementStrategy);
                 break;
             case VMUpdateFunctionCacheByVersion cacheByVersion:
-                await InvokeInitializationViewFunctionsByVersion(vmKey, cacheByVersion.Version, fullObjNames, behavior.QueryElementStrategy);
+                await InvokeInitializationViewFunctionsByVersion(vmKey, cacheByVersion.Version, fullObjNames, configurationBehavior.QueryElementStrategy);
                 break;
             default:
-                notImplementedCaseGuard.ThrowException(behavior.VMUpdateFunctionCaching);
+                notImplementedCaseGuard.ThrowException(configurationBehavior.VMUpdateFunctionCaching);
                 break;
         }
     }
