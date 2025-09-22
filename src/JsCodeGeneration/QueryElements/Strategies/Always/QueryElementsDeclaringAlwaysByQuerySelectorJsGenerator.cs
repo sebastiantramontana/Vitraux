@@ -1,6 +1,6 @@
 ﻿using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
@@ -10,13 +10,13 @@ internal class QueryElementsDeclaringAlwaysByQuerySelectorJsGenerator(
     INotImplementedCaseGuard notImplementedSelector)
     : IQueryElementsDeclaringAlwaysByQuerySelectorJsGenerator
 {
-    public string GenerateJsCode(string parentElementObjectName, JsObjectName jsObjectName)
-        => jsObjectName.AssociatedSelector switch
+    public string GenerateJsCode(string parentElementObjectName, JsElementObjectName jsElementObjectName)
+        => jsElementObjectName.AssociatedSelector switch
         {
-            ElementQuerySelectorString elementQuerySelector => GenerateJsLineByQueryString(jsObjectName.Name, parentElementObjectName, elementQuerySelector.Query),
-            _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
+            ElementQuerySelectorString elementQuerySelector => GenerateJsLineByQueryString(jsElementObjectName.Name, parentElementObjectName, elementQuerySelector.Query),
+            _ => notImplementedSelector.ThrowException<string>(jsElementObjectName.AssociatedSelector)
         };
 
-    private string GenerateJsLineByQueryString(string jsObjectName, string parentElementObjectName, string query)
-        => $"const {jsObjectName} = {getElementsByQuerySelectorCalling.Generate(parentElementObjectName, query)};";
+    private string GenerateJsLineByQueryString(string jsElementObjectName, string parentElementObjectName, string query)
+        => $"const {jsElementObjectName} = {getElementsByQuerySelectorCalling.Generate(parentElementObjectName, query)};";
 }

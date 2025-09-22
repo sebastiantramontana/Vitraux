@@ -1,5 +1,5 @@
 ﻿using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
@@ -9,7 +9,7 @@ internal class StorageElementJsLineGeneratorInsertElementsByUri(
     INotImplementedCaseGuard notImplementedSelector)
     : IStorageElementJsLineGeneratorInsertElementsByUri
 {
-    public string Generate(JsObjectName fetchedJsObjectName)
+    public string Generate(JsElementObjectName fetchedJsObjectName)
         => fetchedJsObjectName.AssociatedSelector switch
         {
             InsertElementUriSelectorUri uriSelector => lineGeneratorByUri.Generate(uriSelector.Uri, fetchedJsObjectName.Name),

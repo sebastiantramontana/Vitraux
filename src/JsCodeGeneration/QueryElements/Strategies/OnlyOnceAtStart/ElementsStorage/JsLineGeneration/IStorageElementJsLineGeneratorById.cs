@@ -2,5 +2,5 @@
 
 internal interface IStorageElementJsLineGeneratorById
 {
-    string Generate(string jsObjectName, string id);
+    string Generate(string jsElementObjectName, string id);
 }

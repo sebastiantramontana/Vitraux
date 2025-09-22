@@ -1,7 +1,6 @@
 ﻿using Vitraux.JsCodeGeneration.Collections;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.Values;
 
 namespace Vitraux.JsCodeGeneration.JsObjectNames;
 
-internal record class FullObjectNames(IEnumerable<FullValueObjectName> ValueNames, IEnumerable<FullCollectionObjectName> CollectionNames, IEnumerable<JsObjectName> JsElementObjectNames);
+internal record class FullObjectNames(IEnumerable<FullValueObjectName> ValueNames, IEnumerable<FullCollectionObjectName> CollectionNames, IEnumerable<JsElementObjectName> JsElementObjectNames);

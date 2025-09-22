@@ -1,6 +1,6 @@
 ﻿using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.Modeling.Data.Selectors.Collections;
 using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
@@ -11,13 +11,13 @@ internal class QueryElementsDeclaringOnlyOnceOnDemandCollectionByTemplateJsGener
     INotImplementedCaseGuard notImplementedSelector) 
     : IQueryElementsDeclaringOnlyOnceOnDemandCollectionByTemplateJsGenerator
 {
-    public string GenerateJsCode(string parentObjectName, JsObjectName jsObjectName)
-        => jsObjectName.AssociatedSelector switch
+    public string GenerateJsCode(string parentObjectName, JsElementObjectName jsElementObjectName)
+        => jsElementObjectName.AssociatedSelector switch
         {
-            TemplateInsertionSelectorId templateSelectorId => GenerateJsById(jsObjectName.Name, templateSelectorId),
-            _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
+            TemplateInsertionSelectorId templateSelectorId => GenerateJsById(jsElementObjectName.Name, templateSelectorId),
+            _ => notImplementedSelector.ThrowException<string>(jsElementObjectName.AssociatedSelector)
         };
 
-    private string GenerateJsById(string jsObjectName, TemplateInsertionSelectorId templateSelectorId)
-        => $"const {jsObjectName} = {getStoredElementByTemplateCall.Generate(templateSelectorId.TemplateId, jsObjectName)};";
+    private string GenerateJsById(string jsElementObjectName, TemplateInsertionSelectorId templateSelectorId)
+        => $"const {jsElementObjectName} = {getStoredElementByTemplateCall.Generate(templateSelectorId.TemplateId, jsElementObjectName)};";
 }

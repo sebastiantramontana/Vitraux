@@ -3,7 +3,6 @@ using Vitraux.JsCodeGeneration.Collections;
 using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.QueryElements;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.Values;
 
 namespace Vitraux.JsCodeGeneration.UpdateViews;
@@ -37,7 +36,7 @@ internal class UpdateViewJsGenerator(
     private string GenerateCollectionJsCode(string parentObjectName, IEnumerable<FullCollectionObjectName> collectionNames)
         => collectionsJsCodeGenerationBuilder.BuildJsCode(parentObjectName, collectionNames, this);
 
-    private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsObjectNames, string parentElementObjectName)
+    private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsElementObjectName> allJsObjectNames, string parentElementObjectName)
         => queryElementsJsCodeGeneratorContext
             .GetStrategy(strategy)
             .GenerateJsCode(allJsObjectNames, parentElementObjectName)

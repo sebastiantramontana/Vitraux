@@ -1,10 +1,9 @@
 ﻿using Vitraux.JsCodeGeneration.JsObjectNames;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.JsCodeGeneration.Collections;
 
 internal interface ICollectionNamesGenerator
 {
-    IEnumerable<FullCollectionObjectName> Generate(IEnumerable<CollectionData> collections, IEnumerable<JsObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsObjectNamesGenerator, int nestingLevel);
+    IEnumerable<FullCollectionObjectName> Generate(IEnumerable<CollectionData> collections, IEnumerable<JsElementObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsObjectNamesGenerator, int nestingLevel);
 }

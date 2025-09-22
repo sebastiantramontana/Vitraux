@@ -1,11 +1,10 @@
 ﻿using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.Modeling.Data.Selectors;
 using Vitraux.Modeling.Data.Selectors.Collections;
 using Vitraux.Modeling.Data.Selectors.Values;
 using Vitraux.Modeling.Data.Selectors.Values.Insertions;
 
-namespace Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+namespace Vitraux.JsCodeGeneration.JsObjectNames;
 
 internal class JsElementObjectNamesGenerator(
     IUniqueSelectorsFilter uniqueSelectorsFilter,
@@ -16,14 +15,14 @@ internal class JsElementObjectNamesGenerator(
     const string InsertedElementObjectNamePrefix = "f";
     const string CollectionElementObjectNamePrefix = "c";
 
-    public IEnumerable<JsObjectName> Generate(string namePrefix, ModelMappingData modelMappingData)
+    public IEnumerable<JsElementObjectName> Generate(string namePrefix, ModelMappingData modelMappingData)
     {
         var selectors = uniqueSelectorsFilter.FilterDistinct(modelMappingData);
 
         return selectors.Select((selector) =>
         {
             var initialName = GetInitialNameBySelector(selector);
-            return new JsObjectName(GenerateObjectName(namePrefix, initialName), selector);
+            return new JsElementObjectName(GenerateObjectName(namePrefix, initialName), selector);
         }).ToArray();
     }
 

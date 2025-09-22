@@ -1,5 +1,5 @@
 ﻿using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.Modeling.Data.Selectors.Collections;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Collections;
@@ -10,7 +10,7 @@ internal class StorageElementCollectionJsLineGenerator(
     INotImplementedCaseGuard notImplementedSelector)
     : IStorageElementCollectionJsLineGenerator
 {
-    public string Generate(JsObjectName collectionObjectName)
+    public string Generate(JsElementObjectName collectionObjectName)
     {
         return collectionObjectName.AssociatedSelector switch
         {
