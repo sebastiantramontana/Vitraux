@@ -1,5 +1,5 @@
 ﻿using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.Values.JsTargets;
 using Vitraux.Modeling.Data.Values;
 
@@ -9,13 +9,13 @@ internal class ValueNamesGenerator(INotImplementedCaseGuard notImplementedCaseGu
 {
     const string ValueObjectNamePrefix = "v";
 
-    public IEnumerable<FullValueObjectName> Generate(IEnumerable<ValueData> values, IEnumerable<JsObjectName> currentElementJsObjectNames)
+    public IEnumerable<FullValueObjectName> Generate(IEnumerable<ValueData> values, IEnumerable<JsElementObjectName> currentElementJsObjectNames)
         => values.Select((value, indexAsPostfix) => new FullValueObjectName(GenerateObjName(indexAsPostfix), GenerateJsTargets(value.Targets, currentElementJsObjectNames), value));
 
-    private IEnumerable<ValueJsTarget> GenerateJsTargets(IEnumerable<IValueTarget> targets, IEnumerable<JsObjectName> currentElementJsObjectNames)
+    private IEnumerable<ValueJsTarget> GenerateJsTargets(IEnumerable<IValueTarget> targets, IEnumerable<JsElementObjectName> currentElementJsObjectNames)
         => targets.Select(target => MapValueTargetToJs(target, currentElementJsObjectNames));
 
-    private ValueJsTarget MapValueTargetToJs(IValueTarget target, IEnumerable<JsObjectName> currentElementJsObjectNames)
+    private ValueJsTarget MapValueTargetToJs(IValueTarget target, IEnumerable<JsElementObjectName> currentElementJsObjectNames)
         => target switch
         {
             ElementValueTarget elementTarget => CreateValueElementTargetJsObjectName(elementTarget, currentElementJsObjectNames),
@@ -24,7 +24,7 @@ internal class ValueNamesGenerator(INotImplementedCaseGuard notImplementedCaseGu
             _ => notImplementedCaseGuard.ThrowException<ValueJsTarget>(target)
         };
 
-    private static ValueElementTargetJsObjectName CreateValueElementTargetJsObjectName(ElementValueTarget elementTarget, IEnumerable<JsObjectName> currentElementJsObjectNames)
+    private static ValueElementTargetJsObjectName CreateValueElementTargetJsObjectName(ElementValueTarget elementTarget, IEnumerable<JsElementObjectName> currentElementJsObjectNames)
     {
         var jsElementObjectName = currentElementJsObjectNames.Single(e => e.AssociatedSelector == elementTarget.Selector);
 

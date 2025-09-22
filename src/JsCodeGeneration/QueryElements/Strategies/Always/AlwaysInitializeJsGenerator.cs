@@ -1,9 +1,9 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+﻿using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
 internal class AlwaysInitializeJsGenerator(IPromiseJsGenerator promiseJsGenerator) : IAlwaysInitializeJsGenerator
 {
-    public string GenerateJs(IEnumerable<JsObjectName> _, string __)
+    public string GenerateJs(IEnumerable<JsElementObjectName> _, string __)
         => promiseJsGenerator.ReturnResolvedPromiseJsLine;
 }

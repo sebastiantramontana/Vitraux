@@ -1,6 +1,6 @@
 ﻿using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.StoredElements;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.Modeling.Data.Selectors.Values;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
@@ -10,13 +10,13 @@ internal class QueryElementsDeclaringAlwaysByIdJsGenerator(
     INotImplementedCaseGuard notImplementedSelector) 
     : IQueryElementsDeclaringAlwaysByIdJsGenerator
 {
-    public string GenerateJsCode(string parentElementObjectName, JsObjectName jsObjectName)
-        => jsObjectName.AssociatedSelector switch
+    public string GenerateJsCode(string parentElementObjectName, JsElementObjectName jsElementObjectName)
+        => jsElementObjectName.AssociatedSelector switch
         {
-            ElementIdSelectorString elementIdSelector => GenerateJsLineByIdString(jsObjectName.Name, elementIdSelector.Id),
-            _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
+            ElementIdSelectorString elementIdSelector => GenerateJsLineByIdString(jsElementObjectName.Name, elementIdSelector.Id),
+            _ => notImplementedSelector.ThrowException<string>(jsElementObjectName.AssociatedSelector)
         };
 
-    private string GenerateJsLineByIdString(string jsObjectName, string id)
-        => $"const {jsObjectName} = {getElementByIdAsArrayCalling.Generate(id)};";
+    private string GenerateJsLineByIdString(string jsElementObjectName, string id)
+        => $"const {jsElementObjectName} = {getElementByIdAsArrayCalling.Generate(id)};";
 }

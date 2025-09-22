@@ -1,6 +1,6 @@
 ﻿using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.Modeling.Data;
 using Vitraux.Modeling.Data.Selectors.Values;
 using Vitraux.Modeling.Data.Values;
@@ -14,7 +14,7 @@ internal class TargetElementsUpdateValueInsertJsGenerator(
     INotImplementedCaseGuard notImplementedCaseGuard)
     : ITargetElementsUpdateValueInsertJsGenerator
 {
-    public string GenerateJs(ElementValueTarget targetElement, JsObjectName elementToInsertObjectName, JsObjectName elementsToAppendObjectName, string parentValueObjectName, string valueObjectName)
+    public string GenerateJs(ElementValueTarget targetElement, JsElementObjectName elementToInsertObjectName, JsElementObjectName elementsToAppendObjectName, string parentValueObjectName, string valueObjectName)
         => targetElement.Insertion!.TargetChildElementsSelector switch
         {
             ElementQuerySelectorString targetChildElementsSelector => GenerateJsByQueryString(targetChildElementsSelector.Query, targetElement.Place, elementToInsertObjectName.Name, elementsToAppendObjectName.Name, parentValueObjectName, valueObjectName),

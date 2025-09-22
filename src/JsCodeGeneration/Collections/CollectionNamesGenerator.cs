@@ -1,5 +1,4 @@
 ﻿using Vitraux.JsCodeGeneration.JsObjectNames;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.JsCodeGeneration.Collections;
@@ -8,13 +7,13 @@ internal class CollectionNamesGenerator : ICollectionNamesGenerator
 {
     const string CollectionObjectNamePrefix = "c";
 
-    public IEnumerable<FullCollectionObjectName> Generate(IEnumerable<CollectionData> collections, IEnumerable<JsObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, int nestingLevel)
+    public IEnumerable<FullCollectionObjectName> Generate(IEnumerable<CollectionData> collections, IEnumerable<JsElementObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, int nestingLevel)
         => collections.Select((col, indexAsPostfix) => CreateCollectionObjectName(GenerateObjName(indexAsPostfix), col, currentElementJsObjectNames, jsFullObjectNamesGenerator, nestingLevel));
 
     private static string GenerateObjName(int indexAsPostfix)
         => $"{CollectionObjectNamePrefix}{indexAsPostfix}";
 
-    private static FullCollectionObjectName CreateCollectionObjectName(string collectionObjectName, CollectionData collectionData, IEnumerable<JsObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, int nestingLevel)
+    private static FullCollectionObjectName CreateCollectionObjectName(string collectionObjectName, CollectionData collectionData, IEnumerable<JsElementObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, int nestingLevel)
     {
         var elementObjectPairNames = CreateElementObjectPairNames(collectionObjectName, collectionData, currentElementJsObjectNames, jsFullObjectNamesGenerator, nestingLevel);
         var customJsNames = CreateCustomJsNames(collectionData);
@@ -23,7 +22,7 @@ internal class CollectionNamesGenerator : ICollectionNamesGenerator
         return new(collectionObjectName, collectionNames, collectionData);
     }
 
-    private static IEnumerable<JsCollectionNames> CreateElementObjectPairNames(string collectionObjectName, CollectionData collectionData, IEnumerable<JsObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, int nestingLevel)
+    private static IEnumerable<JsCollectionNames> CreateElementObjectPairNames(string collectionObjectName, CollectionData collectionData, IEnumerable<JsElementObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, int nestingLevel)
     {
         var elementTargets = GetCollectionElementTargets(collectionData);
         return elementTargets.Select(t => CreateJsCollectionElementObjectPairNamesNameByTarget(t, currentElementJsObjectNames, jsFullObjectNamesGenerator, collectionObjectName, nestingLevel));
@@ -41,7 +40,7 @@ internal class CollectionNamesGenerator : ICollectionNamesGenerator
     private static IEnumerable<CustomJsCollectionTarget> JsCollectionCustomJsNames(CollectionData collectionData)
         => collectionData.Targets.OfType<CustomJsCollectionTarget>();
 
-    private static JsCollectionElementObjectPairNames CreateJsCollectionElementObjectPairNamesNameByTarget(CollectionElementTarget target, IEnumerable<JsObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, string collectionObjectName, int nestingLevel)
+    private static JsCollectionElementObjectPairNames CreateJsCollectionElementObjectPairNamesNameByTarget(CollectionElementTarget target, IEnumerable<JsElementObjectName> currentElementJsObjectNames, IJsFullObjectNamesGenerator jsFullObjectNamesGenerator, string collectionObjectName, int nestingLevel)
     {
         var appendToElementObjectName = currentElementJsObjectNames.Single(e => e.AssociatedSelector == target.AppendToElementSelector);
         var elementToInsertObjectName = currentElementJsObjectNames.Single(e => e.AssociatedSelector == target.InsertionSelector);

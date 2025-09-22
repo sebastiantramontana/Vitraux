@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Vitraux.Helpers;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Collections;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 using Vitraux.Modeling.Data.Selectors.Collections;
@@ -16,20 +16,20 @@ internal class OnlyOnceAtStartInitializeJsGenerator(
     INotImplementedCaseGuard notImplementedSelector)
     : IOnlyOnceAtStartInitializeJsGenerator
 {
-    public string GenerateJs(IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
+    public string GenerateJs(IEnumerable<JsElementObjectName> jsObjectNames, string parentObjectName)
         => GenerateJsLines(new StringBuilder(), jsObjectNames, parentObjectName)
             .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
             .ToString();
 
-    private StringBuilder GenerateJsLines(StringBuilder stringBuilder, IEnumerable<JsObjectName> jsObjectNames, string parentObjectName)
+    private StringBuilder GenerateJsLines(StringBuilder stringBuilder, IEnumerable<JsElementObjectName> jsObjectNames, string parentObjectName)
         => jsObjectNames
-            .Aggregate(stringBuilder, (sb, jsObjectName) => sb.AppendLine(GenerateJsLine(jsObjectName, parentObjectName)));
+            .Aggregate(stringBuilder, (sb, jsElementObjectName) => sb.AppendLine(GenerateJsLine(jsElementObjectName, parentObjectName)));
 
-    private string GenerateJsLine(JsObjectName jsObjectName, string parentObjectName)
-        => jsObjectName.AssociatedSelector switch
+    private string GenerateJsLine(JsElementObjectName jsElementObjectName, string parentObjectName)
+        => jsElementObjectName.AssociatedSelector switch
         {
-            ElementSelectorBase or InsertElementSelectorBase => valueJsLineGenerator.Generate(jsObjectName, parentObjectName),
-            InsertionSelectorBase => collectionJsLineGenerator.Generate(jsObjectName),
-            _ => notImplementedSelector.ThrowException<string>(jsObjectName.AssociatedSelector)
+            ElementSelectorBase or InsertElementSelectorBase => valueJsLineGenerator.Generate(jsElementObjectName, parentObjectName),
+            InsertionSelectorBase => collectionJsLineGenerator.Generate(jsElementObjectName),
+            _ => notImplementedSelector.ThrowException<string>(jsElementObjectName.AssociatedSelector)
         };
 }
