@@ -1,4 +1,4 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+﻿using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
@@ -7,6 +7,6 @@ internal class QueryElementsOnlyOnceOnDemandJsCodeGenerator(
     IQueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator onlyOnceOnDemandGenerator)
     : IQueryElementsOnlyOnceOnDemandJsCodeGenerator
 {
-    public string GenerateJsCode(IEnumerable<JsObjectName> jsObjectNames, string parentElementObjectName)
+    public string GenerateJsCode(IEnumerable<JsElementObjectName> jsObjectNames, string parentElementObjectName)
         => generator.GenerateJsCode(onlyOnceOnDemandGenerator, jsObjectNames, parentElementObjectName);
 }

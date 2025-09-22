@@ -3,7 +3,7 @@ using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 using Vitraux.JsCodeGeneration.CustomJsGeneration;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.Values.JsTargets;
 using Vitraux.Modeling.Data.Values;
 
@@ -45,7 +45,7 @@ internal class TargetElementsValueJsGenerator(
     private string GenerateJsByDirectElementTarget(string parentValueObjectName, string valueObjectName, string elementJsObjName, ElementValueTarget elementValueTarget)
         => directUpdateValueJsGenerator.GenerateJs(elementJsObjName, elementValueTarget.Place, parentValueObjectName, valueObjectName);
 
-    private string GenerateJsByInsertingElementTarget(string parentValueObjectName, string valueObjectName, JsObjectName elementToInsertObjectName, JsObjectName elementsToAppendObjectName, ElementValueTarget elementValueTarget)
+    private string GenerateJsByInsertingElementTarget(string parentValueObjectName, string valueObjectName, JsElementObjectName elementToInsertObjectName, JsElementObjectName elementsToAppendObjectName, ElementValueTarget elementValueTarget)
         => updateValueInsertJsGenerator.GenerateJs(elementValueTarget, elementToInsertObjectName, elementsToAppendObjectName, parentValueObjectName, valueObjectName);
 
     private string GenerateJsByCustomJsValueTarget(CustomJsValueTarget customJsTarget, string parentValueObjectName, string valueObjName)

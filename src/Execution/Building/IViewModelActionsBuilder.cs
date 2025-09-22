@@ -1,6 +1,5 @@
 ﻿using Vitraux.Execution.ViewModelNames;
 using Vitraux.JsCodeGeneration.JsObjectNames;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.Modeling.Data.Actions;
 
 namespace Vitraux.Execution.Building;
@@ -30,12 +29,12 @@ internal class ViewModelRuntimeBuilder<TViewModel, TModelConfiguration>(
 
 internal interface IViewModelActionsBuilder<TViewModel>
 {
-    public Task Build(string vmKey, ConfigurationBehavior configurationBehavior, IEnumerable<ActionData> Actions, IEnumerable<JsObjectName> JsElementObjectNames);
+    public Task Build(string vmKey, ConfigurationBehavior configurationBehavior, IEnumerable<ActionData> Actions, IEnumerable<JsElementObjectName> JsElementObjectNames);
 }
 
 internal class ViewModelActionsBuilder<TViewModel> : IViewModelActionsBuilder<TViewModel>
 {
-    public Task Build(string vmKey, ConfigurationBehavior configurationBehavior, IEnumerable<ActionData> Actions, IEnumerable<JsObjectName> JsElementObjectNames)
+    public Task Build(string vmKey, ConfigurationBehavior configurationBehavior, IEnumerable<ActionData> Actions, IEnumerable<JsElementObjectName> JsElementObjectNames)
     {
         throw new NotImplementedException();
     }

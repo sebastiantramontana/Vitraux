@@ -11,12 +11,12 @@ internal class TargetElementsDirectUpdateValueJsGenerator(
     INotImplementedCaseGuard notImplementedPlaceGuard)
     : ITargetElementsDirectUpdateValueJsGenerator
 {
-    public string GenerateJs(string jsObjectName, ElementPlace elementPlace, string parentValueObjectName, string valueObjectName)
+    public string GenerateJs(string jsElementObjectName, ElementPlace elementPlace, string parentValueObjectName, string valueObjectName)
         => elementPlace switch
         {
-            AttributeElementPlace attrPlace => attributeGenerator.Generate(attrPlace.Attribute, jsObjectName, parentValueObjectName, valueObjectName),
-            ContentElementPlace => contentGenerator.Generate(jsObjectName, parentValueObjectName, valueObjectName),
-            HtmlElementPlace => htmlGenerator.Generate(jsObjectName, parentValueObjectName, valueObjectName),
+            AttributeElementPlace attrPlace => attributeGenerator.Generate(attrPlace.Attribute, jsElementObjectName, parentValueObjectName, valueObjectName),
+            ContentElementPlace => contentGenerator.Generate(jsElementObjectName, parentValueObjectName, valueObjectName),
+            HtmlElementPlace => htmlGenerator.Generate(jsElementObjectName, parentValueObjectName, valueObjectName),
             _ => notImplementedPlaceGuard.ThrowException<string>(elementPlace),
         };
 }

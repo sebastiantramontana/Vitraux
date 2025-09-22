@@ -1,6 +1,5 @@
 ﻿using Vitraux.JsCodeGeneration.Initialization;
 using Vitraux.JsCodeGeneration.JsObjectNames;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.UpdateViews;
 
 namespace Vitraux.JsCodeGeneration;
@@ -21,7 +20,7 @@ internal class RootJsGenerator(
         return new(initializeViewJs, updateViewInfo);
     }
 
-    private string GenerateInitializeViewJsCode(QueryElementStrategy strategy, IEnumerable<JsObjectName> allJsElementObjectNames, string parentElementObjectName)
+    private string GenerateInitializeViewJsCode(QueryElementStrategy strategy, IEnumerable<JsElementObjectName> allJsElementObjectNames, string parentElementObjectName)
         => initializeJsGeneratorContext.GetStrategy(strategy)
                 .GenerateJs(allJsElementObjectNames, parentElementObjectName)
                 .TrimEnd();

@@ -1,5 +1,4 @@
 ﻿using Vitraux.Modeling.Data;
-using Vitraux.Modeling.Data.Actions;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Selectors;
 using Vitraux.Modeling.Data.Values;
@@ -11,7 +10,6 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
     public IEnumerable<SelectorBase> FilterDistinct(ModelMappingData modelMappingData)
         => GetValueSelectors(modelMappingData)
             .Concat(GetCollectionSelectors(modelMappingData))
-            .Concat(GetActionSelectors(modelMappingData))
             .Distinct();
 
     private static IEnumerable<SelectorBase> GetValueSelectors(ModelMappingData modelMappingData)
@@ -19,9 +17,6 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
 
     private static IEnumerable<SelectorBase> GetCollectionSelectors(ModelMappingData modelMappingData)
         => GetSelectors<ICollectionTarget, CollectionElementTarget>(modelMappingData.Collections, GetSelectorsFromCollectionElementTarget);
-
-    private static IEnumerable<SelectorBase> GetActionSelectors(ModelMappingData modelMappingData)
-        => GetSelectors<IActionTarget, ActionTarget>(modelMappingData.Actions, GetSelectorsFromActionTarget);
 
     private static IEnumerable<SelectorBase> GetSelectors<TTargetBase, TTargetReturn>(IEnumerable<DelegateDataBase<TTargetBase>> data, Func<TTargetReturn, IEnumerable<SelectorBase>> selectorFunc)
         where TTargetBase : ITarget
@@ -39,9 +34,6 @@ internal class UniqueSelectorsFilter : IUniqueSelectorsFilter
 
     private static IEnumerable<SelectorBase> GetSelectorsFromCollectionElementTarget(CollectionElementTarget collectionElementTarget)
         => [collectionElementTarget.AppendToElementSelector, collectionElementTarget.InsertionSelector];
-
-    private static IEnumerable<SelectorBase> GetSelectorsFromActionTarget(ActionTarget actionTarget)
-        => [actionTarget.Selector, .. actionTarget.Parameters.Select(p => p.Selector)];
 
     private static IEnumerable<SelectorBase> GetSelectorsFromElementTarget(ElementValueTarget elementTarget)
         => [elementTarget.Selector, .. TotSafeEnumerable(elementTarget.Insertion)];

@@ -1,8 +1,8 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+﻿using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 
 internal interface IStorageElementJsLineGeneratorInsertElementsByUri
 {
-    string Generate(JsObjectName jsObjectName);
+    string Generate(JsElementObjectName jsElementObjectName);
 }

@@ -1,8 +1,8 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+﻿using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.JsCodeGeneration.QueryElements;
 
 internal interface IQueryElementsJsCodeGenerator
 {
-    string GenerateJsCode(IEnumerable<JsObjectName> jsObjectNames, string parentElementObjectName);
+    string GenerateJsCode(IEnumerable<JsElementObjectName> jsObjectNames, string parentElementObjectName);
 }

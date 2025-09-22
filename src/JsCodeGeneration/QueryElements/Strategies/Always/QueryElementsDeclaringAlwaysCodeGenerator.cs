@@ -1,11 +1,11 @@
-﻿using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
+﻿using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
 internal class QueryElementsDeclaringAlwaysCodeGenerator(IJsQueryElementsDeclaringAlwaysGeneratorContext context) : IQueryElementsDeclaringAlwaysCodeGenerator
 {
-    public string GenerateJsCode(string parentElementObjectName, JsObjectName jsObjectName)
+    public string GenerateJsCode(string parentElementObjectName, JsElementObjectName jsElementObjectName)
         => context
-            .GetStrategy(jsObjectName.AssociatedSelector)
-            .GenerateJsCode(parentElementObjectName, jsObjectName);
+            .GetStrategy(jsElementObjectName.AssociatedSelector)
+            .GenerateJsCode(parentElementObjectName, jsElementObjectName);
 }
