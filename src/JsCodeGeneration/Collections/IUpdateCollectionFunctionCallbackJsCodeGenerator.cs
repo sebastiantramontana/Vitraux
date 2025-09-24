@@ -4,5 +4,5 @@ namespace Vitraux.JsCodeGeneration.Collections;
 
 internal interface IUpdateCollectionFunctionCallbackJsCodeGenerator
 {
-    UpdateCollectionFunctionCallbackInfo GenerateJs(JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator);
+    FunctionCallbackInfo GenerateJs(JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator);
 }

@@ -12,7 +12,7 @@ internal class UpdateCollectionFunctionCallbackJsCodeGenerator(
     const string CollectionItemObjectName = "item";
     const string ParentElementObjectName = "p";
 
-    public UpdateCollectionFunctionCallbackInfo GenerateJs(JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator)
+    public FunctionCallbackInfo GenerateJs(JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator)
     {
         var functionName = collectionUpdateFunctionNameGenerator.Generate();
         var generatedJs = updateViewJsGenerator.GenerateJs(QueryElementStrategy.Always, elementObjectPairNames.Children, CollectionItemObjectName, ParentElementObjectName);

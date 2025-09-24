@@ -2,7 +2,7 @@
 
 namespace Vitraux.Modeling.Data.Actions;
 
-internal record class ActionTarget : IActionTarget
+internal record class ActionTarget : ITarget
 {
     private const string InputValueParameterName = "Value";
     private readonly ICollection<ActionSourceParameter> _parameters = [];
