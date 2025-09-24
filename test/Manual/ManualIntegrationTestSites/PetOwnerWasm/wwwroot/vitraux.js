@@ -10,7 +10,7 @@ class VitrauxInternalError extends Error {
     }
 }
 
-class ActionListener extends EventListener {
+class ActionListener {
     #vmKey;
     #actionKey;
     #actionArgsCallback;
@@ -240,7 +240,7 @@ globalThis.vitraux = {
                     version: version
                 };
 
-                localStorage.setItem(global.vitraux.getFullVMKey(vmKey), JSON.stringify(vmFuncObj));
+                localStorage.setItem(globalThis.vitraux.getFullVMKey(vmKey), JSON.stringify(vmFuncObj));
             }
         },
         dom: {
@@ -400,10 +400,10 @@ globalThis.vitraux = {
     actions: {
         vmActions: [],
 
-        queryElementStrategy: Object.freeze({
+        actionRegistrationStrategy: Object.freeze({
             OnlyOnceAtStart: "OnlyOnceAtStart",
-            OnlyOnceOnDemand: "OnlyOnceOnDemand",
-            Always: "Always"
+            OnlyOnceOnDemand: "OnlyOnceOnFirstViewModelRendering",
+            Always: "AlwaysOnViewModelRendering"
         }),
 
         getActionFullVMKey(vmKey) {
@@ -446,10 +446,10 @@ globalThis.vitraux = {
             return (vmActionObj.version === version) ? vmActionObj : false;
         },
 
-        storeActionsFunction(vmActionKey, version, actionsCode, queryElementStrategy) {
+        storeActionsFunction(vmActionKey, version, actionsCode, actionRegistrationStrategy) {
             const vmActionObj = {
                 actionsCode: actionsCode,
-                queryElementStrategy: queryElementStrategy,
+                actionRegistrationStrategy: actionRegistrationStrategy,
                 version: version
             };
 
@@ -466,27 +466,27 @@ globalThis.vitraux = {
             if (!vmActionObj)
                 return false;
 
-            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, vmActionObj.actionsCode, queryElementStrategy);
+            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, vmActionObj.actionsCode, vmActionObj.actionRegistrationStrategy);
 
             return true;
         },
 
-        initializeNonCachedViewFunctions(vmKey, actionsCode, queryElementStrategy) {
-            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, queryElementStrategy);
+        initializeNonCachedActionsFunction(vmKey, actionsCode, actionRegistrationStrategy) {
+            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, actionRegistrationStrategy);
         },
 
-        initializeNewActionsFunctionToCacheByVersion(vmKey, version, actionsCode, queryElementStrategy) {
+        initializeNewActionsFunctionToCacheByVersion(vmKey, version, actionsCode, actionRegistrationStrategy) {
             if (!vmKey || !version)
                 throw new VitrauxInternalError("Version must be set in initializeNewActionsFunctionToCacheByVersion!");
 
-            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, queryElementStrategy);
+            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, actionRegistrationStrategy);
 
             const vmActionKey = this.getActionFullVMKey(vmKey);
-            this.storeActionsFunction(vmActionKey, version, actionsCode, queryElementStrategy);
+            this.storeActionsFunction(vmActionKey, version, actionsCode, actionRegistrationStrategy);
         },
 
-        initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, queryElementStrategy) {
-            if (queryElementStrategy === this.queryElementStrategy.OnlyOnceAtStart) {
+        initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, actionRegistrationStrategy) {
+            if (actionRegistrationStrategy === this.actionRegistrationStrategy.OnlyOnceAtStart) {
                 this.executeActionRegistrationsCode(actionsCode);
             }
             else {

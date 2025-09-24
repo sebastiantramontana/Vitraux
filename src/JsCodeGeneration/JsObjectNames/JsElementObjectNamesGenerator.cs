@@ -8,7 +8,7 @@ namespace Vitraux.JsCodeGeneration.JsObjectNames;
 
 internal class JsElementObjectNamesGenerator(
     IUniqueSelectorsFilter uniqueSelectorsFilter,
-    IAtomicAutoNumberGenerator atomicAutoNumberGenerator,
+    IJsObjectNamesGenerator jsObjectNamesGenerator,
     INotImplementedCaseGuard notImplementedCaseGuard) : IJsElementObjectNamesGenerator
 {
     const string ElementObjectNamePrefix = "e";
@@ -22,7 +22,9 @@ internal class JsElementObjectNamesGenerator(
         return selectors.Select((selector) =>
         {
             var initialName = GetInitialNameBySelector(selector);
-            return new JsElementObjectName(GenerateObjectName(namePrefix, initialName), selector);
+            var jsName = jsObjectNamesGenerator.GenerateUniqueObjectName(namePrefix, initialName);
+
+            return new JsElementObjectName(jsName, selector);
         }).ToArray();
     }
 
@@ -34,13 +36,4 @@ internal class JsElementObjectNamesGenerator(
             InsertionSelectorBase => CollectionElementObjectNamePrefix,
             _ => notImplementedCaseGuard.ThrowException<string>(selector)
         };
-
-    private string GenerateObjectName(string namePrefix, string initialName)
-    {
-        var numberedNamePosfix = atomicAutoNumberGenerator.Next();
-
-        return string.IsNullOrWhiteSpace(namePrefix)
-                ? $"{initialName}{numberedNamePosfix}"
-                : $"{namePrefix}_{initialName}{numberedNamePosfix}";
-    }
 }

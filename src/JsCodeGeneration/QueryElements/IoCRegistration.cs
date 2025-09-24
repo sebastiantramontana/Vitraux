@@ -10,6 +10,7 @@ internal static class IoCRegistration
         => serviceCollection
             .AddSingleton<IQueryElementsJsCodeGeneratorContext, QueryElementsJsCodeGeneratorContext>()
             .AddSingleton<IQueryElementsJsGenerator, QueryElementsJsGenerator>()
+            .AddSingleton<IJsObjectNamesGenerator, JsObjectNamesGenerator>()
             .AddSingleton<IJsElementObjectNamesGenerator, JsElementObjectNamesGenerator>()
             .AddStrategies();
 }
