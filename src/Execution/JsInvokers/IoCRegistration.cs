@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Vitraux.Execution.JsInvokers.ViewFunctions;
 
 namespace Vitraux.Execution.JsInvokers;
 internal static class IoCRegistration
