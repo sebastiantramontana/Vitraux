@@ -1,4 +1,4 @@
-﻿namespace Vitraux.Execution.JsInvokers.Actions;
+﻿namespace Vitraux.Execution.JsInvokers.Actions.Registration;
 
 internal interface IJsInitializeNonCachedActionsFunctionInvoker
 {

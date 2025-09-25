@@ -1,6 +1,6 @@
 ﻿namespace Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
 
-public interface IRootActionPassValueOrNameSourceBuilder<TViewModel> : IRootActionParameterNameBuilder<TViewModel>
+public interface IRootActionPassValueOrNameSourceBuilder<TViewModel> : IRootActionAddParameterNameBuilder<TViewModel>, IRootActionSourceFinallizableBuilder<TViewModel>
 {
-    IRootActionParameterNameFinallizableBuilder<TViewModel> PassValue { get; }
+    IRootActionAddParameterNameFinallizableBuilder<TViewModel> AddParameterValue { get; }
 }

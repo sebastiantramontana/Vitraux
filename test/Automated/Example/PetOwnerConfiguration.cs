@@ -13,6 +13,21 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
 
     public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> modelMapper)
         => modelMapper
+            .MapAction((pet, args) => Task.CompletedTask)
+                .FromInputs.ByQuery("1").On("fdfd")
+            .MapAction((pet, args) => Task.CompletedTask)
+                .FromInputs.ById("2").On("sdfdfr").AddParameterValue
+                .FromInputs.ById("3").On("sdfdfr")
+            .MapAction((pet, args) => Task.CompletedTask)
+                .FromInputs.ByQuery("11w").On("feedfd")
+                .FromInputs.ById("2").On("sdfdfr").AddParameterValue
+                .FromInputs.ById("3").On("sdfdfr")
+                    .AddParameter("gfdg").FromParamElements.ByQuery("dff00").FromContent
+                    .AddParameter("jhjghj").FromParamInputs.ById("dfdfdddffe")
+                .FromInputs.ById("3").On("sdfdfr")
+                    .AddParameterValue
+                    .AddParameter("gfdg").FromParamElements.ByQuery("dff00").FromContent
+                    .AddParameter("jhjghj").FromParamInputs.ById("dfdfdddffe")
             .MapValue(po => po.Name)
                 .ToElements.ById("petowner-name").ToContent
                 .ToJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))
