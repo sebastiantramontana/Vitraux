@@ -2,6 +2,6 @@
 
 public interface IRootActionAddParametersFromBuilder<TViewModel>
 {
-    IRootActionParameterFromInputBuilder<TViewModel> FromInputs { get; }
-    IRootActionParameterFromElementSelectorBuilder<TViewModel> FromElements { get; }
+    IRootActionParameterFromInputBuilder<TViewModel> FromParamInputs { get; }
+    IRootActionParameterFromElementSelectorBuilder<TViewModel> FromParamElements { get; }
 }

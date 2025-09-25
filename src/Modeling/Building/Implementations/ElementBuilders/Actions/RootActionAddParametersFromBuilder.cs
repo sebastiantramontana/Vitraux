@@ -5,14 +5,14 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 internal class RootActionAddParametersFromBuilder<TViewModel>(
     ActionSourceParameter parameter,
-    IRootActionParameterNameBuilder<TViewModel> parameterNameBuilder,
+    IRootActionAddParameterNameBuilder<TViewModel> parameterNameBuilder,
     IRootActionSourceBuilder<TViewModel> rootActionSourceBuilder,
     IModelMapper<TViewModel> modelMapper)
     : IRootActionAddParametersFromBuilder<TViewModel>
 {
-    public IRootActionParameterFromInputBuilder<TViewModel> FromInputs
+    public IRootActionParameterFromInputBuilder<TViewModel> FromParamInputs
         => new RootActionParameterFromInputBuilder<TViewModel>(parameter, parameterNameBuilder, rootActionSourceBuilder, modelMapper);
 
-    public IRootActionParameterFromElementSelectorBuilder<TViewModel> FromElements
+    public IRootActionParameterFromElementSelectorBuilder<TViewModel> FromParamElements
         => new RootActionParameterFromElementSelectorBuilder<TViewModel>(parameter, parameterNameBuilder, rootActionSourceBuilder, modelMapper);
 }

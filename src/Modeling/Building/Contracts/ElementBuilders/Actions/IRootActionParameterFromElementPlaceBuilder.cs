@@ -2,6 +2,6 @@
 
 public interface IRootActionParameterFromElementPlaceBuilder<TViewModel>
 {
-    IRootActionParameterNameFinallizableBuilder<TViewModel> FromContent { get; }
-    IRootActionParameterNameFinallizableBuilder<TViewModel> FromAttribute(string attribute);
+    IRootActionAddParameterNameFinallizableBuilder<TViewModel> FromContent { get; }
+    IRootActionAddParameterNameFinallizableBuilder<TViewModel> FromAttribute(string attribute);
 }

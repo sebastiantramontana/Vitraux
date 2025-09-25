@@ -6,12 +6,12 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 internal class RootActionInputEventBuilder<TViewModel>(
     ActionTarget actionTarget,
     IRootActionSourceBuilder<TViewModel> rootActionSourceBuilder,
-    IModelMapper<TViewModel> modelMapper) 
+    IModelMapper<TViewModel> modelMapper)
     : IRootActionInputEventBuilder<TViewModel>
 {
-    public IRootActionAddParametersBuilder<TViewModel> On(string inputEvent)
+    public IRootActionPassValueOrNameSourceBuilder<TViewModel> On(string inputEvent)
     {
         actionTarget.Event = inputEvent;
-        return new RootActionAddParametersBuilder<TViewModel>(actionTarget, rootActionSourceBuilder, modelMapper);
+        return new RootActionPassValueOrNameSourceBuilder<TViewModel>(actionTarget, rootActionSourceBuilder, modelMapper);
     }
 }
