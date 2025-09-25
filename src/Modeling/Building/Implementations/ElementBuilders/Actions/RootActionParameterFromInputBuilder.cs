@@ -6,22 +6,22 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 internal class RootActionParameterFromInputBuilder<TViewModel>(
     ActionSourceParameter parameter,
-    IRootActionParameterNameBuilder<TViewModel> parameterNameBuilder,
+    IRootActionAddParameterNameBuilder<TViewModel> parameterNameBuilder,
     IRootActionSourceBuilder<TViewModel> rootActionSourceBuilder,
     IModelMapper<TViewModel> modelMapper)
     : IRootActionParameterFromInputBuilder<TViewModel>
 {
-    public IRootActionParameterNameFinallizableBuilder<TViewModel> ById(string id)
+    public IRootActionAddParameterNameFinallizableBuilder<TViewModel> ById(string id)
         => SetSelectorToParameter(new ElementIdSelectorString(id));
 
-    public IRootActionParameterNameFinallizableBuilder<TViewModel> ByQuery(string query)
+    public IRootActionAddParameterNameFinallizableBuilder<TViewModel> ByQuery(string query)
         => SetSelectorToParameter(new ElementQuerySelectorString(query));
 
-    private RootActionParameterNameFinallizableBuilder<TViewModel> SetSelectorToParameter(ElementSelectorBase elementSelector)
+    private RootActionAddParameterNameFinallizableBuilder<TViewModel> SetSelectorToParameter(ElementSelectorBase elementSelector)
     {
         parameter.Selector = elementSelector;
         parameter.ElementPlace = ValuePropertyElementPlace.Instance;
 
-        return new RootActionParameterNameFinallizableBuilder<TViewModel>(parameterNameBuilder, rootActionSourceBuilder, modelMapper);
+        return new RootActionAddParameterNameFinallizableBuilder<TViewModel>(parameterNameBuilder, rootActionSourceBuilder, modelMapper);
     }
 }

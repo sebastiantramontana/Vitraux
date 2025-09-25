@@ -1,4 +1,4 @@
-﻿using Vitraux.Execution.JsInvokers.Actions;
+﻿using Vitraux.Execution.JsInvokers.Actions.Registration;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.Actions;
 using Vitraux.JsCodeGeneration.JsObjectNames;

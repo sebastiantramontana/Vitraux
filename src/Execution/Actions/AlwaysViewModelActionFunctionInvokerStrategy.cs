@@ -1,4 +1,4 @@
-﻿using Vitraux.Execution.JsInvokers.Actions;
+﻿using Vitraux.Execution.JsInvokers.Actions.Registration;
 
 namespace Vitraux.Execution.Actions;
 

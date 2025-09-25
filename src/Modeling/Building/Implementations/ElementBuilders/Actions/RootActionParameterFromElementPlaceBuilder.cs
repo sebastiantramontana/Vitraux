@@ -7,20 +7,20 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 internal class RootActionParameterFromElementPlaceBuilder<TViewModel>(
     ActionSourceParameter parameter,
-    IRootActionParameterNameBuilder<TViewModel> parameterNameBuilder,
+    IRootActionAddParameterNameBuilder<TViewModel> parameterNameBuilder,
     IRootActionSourceBuilder<TViewModel> rootActionSourceBuilder,
     IModelMapper<TViewModel> modelMapper)
     : IRootActionParameterFromElementPlaceBuilder<TViewModel>
 {
-    public IRootActionParameterNameFinallizableBuilder<TViewModel> FromContent
+    public IRootActionAddParameterNameFinallizableBuilder<TViewModel> FromContent
         => SetElementPlace(ContentElementPlace.Instance);
 
-    public IRootActionParameterNameFinallizableBuilder<TViewModel> FromAttribute(string attribute)
+    public IRootActionAddParameterNameFinallizableBuilder<TViewModel> FromAttribute(string attribute)
         => SetElementPlace(new AttributeElementPlace(attribute));
 
-    private RootActionParameterNameFinallizableBuilder<TViewModel> SetElementPlace(ElementPlace elementPlace)
+    private RootActionAddParameterNameFinallizableBuilder<TViewModel> SetElementPlace(ElementPlace elementPlace)
     {
         parameter.ElementPlace = elementPlace;
-        return new RootActionParameterNameFinallizableBuilder<TViewModel>(parameterNameBuilder, rootActionSourceBuilder, modelMapper);
+        return new RootActionAddParameterNameFinallizableBuilder<TViewModel>(parameterNameBuilder, rootActionSourceBuilder, modelMapper);
     }
 }
