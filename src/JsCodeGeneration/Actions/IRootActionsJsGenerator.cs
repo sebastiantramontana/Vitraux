@@ -61,7 +61,8 @@ internal interface IRootActionEventRegistrationJsGenerator
 }
 
 internal class RootActionEventRegistrationJsGenerator(
-    IRegisterActionCall registerActionCall,
+    IRegisterActionAsyncCall registerActionAsyncCall,
+    IRegisterActionSyncCall registerActionSyncCall,
     IAtomicAutoNumberGenerator atomicAutoNumberGenerator) : IRootActionEventRegistrationJsGenerator
 {
     public StringBuilder GenerateJs(StringBuilder stringBuilder, IEnumerable<ActionData> actions, string vmKey, IEnumerable<JsElementObjectName> jsInputObjectNames)
@@ -72,7 +73,7 @@ internal class RootActionEventRegistrationJsGenerator(
             {
                 var actionArgsCallback = GenerateActionArgsCallback(target.Parameters);
                 var actionKey = GenerateActionKey();
-                var targetEventRgistrationJs = GenerateActionTargetEventRegistration(target, vmKey, actionKey, actionArgsCallback.FunctionName, jsInputObjectNames);
+                var targetEventRgistrationJs = GenerateActionTargetEventRegistration(target, actionData.IsAsync, vmKey, actionKey, actionArgsCallback.FunctionName, jsInputObjectNames);
 
                 return sb
                     .AppendLine(actionArgsCallback.JsCode)
@@ -83,11 +84,16 @@ internal class RootActionEventRegistrationJsGenerator(
     private string GenerateActionKey()
         => $"a{atomicAutoNumberGenerator.Next()}";
 
-    private string GenerateActionTargetEventRegistration(ActionTarget actionTarget, string vmKey, string actionKey, string functionCallbackName, IEnumerable<JsElementObjectName> jsInputObjectNames)
+    private string GenerateActionTargetEventRegistration(ActionTarget actionTarget, bool isAsync, string vmKey, string actionKey, string functionCallbackName, IEnumerable<JsElementObjectName> jsInputObjectNames)
     {
         var jsObjName = jsInputObjectNames.Single(i => i.AssociatedSelector == actionTarget.Selector);
+        var registerActionCall = GetRegisterActionCall(isAsync);
+
         return registerActionCall.Generate(jsObjName.Name, actionTarget.Event, vmKey, actionKey, functionCallbackName);
     }
+
+    private IRegisterActionCall GetRegisterActionCall(bool isAsync)
+        => isAsync ? registerActionAsyncCall : registerActionSyncCall;
 
     private static FunctionCallbackInfo GenerateActionArgsCallback(IEnumerable<ActionSourceParameter> actionParameters)
         => throw new NotImplementedException();
