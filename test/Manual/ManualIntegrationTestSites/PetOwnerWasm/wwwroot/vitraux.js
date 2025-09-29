@@ -249,17 +249,9 @@ globalThis.vitraux = {
                     element.textContent = content;
             },
 
-            getElementsContent(elements) {
-                return elements.map(e => e.textContent);
-            },
-
             setElementsHtml(elements, html) {
                 for (const element of elements)
                     element.innerHTML = html;
-            },
-
-            getElementsHtml(elements) {
-                return elements.map(e => e.innerHTML);
             },
 
             setElementsAttribute(elements, attribute, value) {
@@ -278,15 +270,6 @@ globalThis.vitraux = {
             toggleBoolAttribute(elements, attribute, value) {
                 for (const element of elements)
                     element.toggleAttribute(attribute, value);
-            },
-
-            getElementsAttribute(elements, attribute) {
-                return elements.map(e => getAttributeValue(e, attribute));
-
-                function getAttributeValue(element, attributeName) {
-                    const attributeValue = element.getAttribute(attributeName);
-                    return attributeName === attributeValue ? true : attributeValue;
-                }
             },
 
             updateValueByInsertingElements(elementToInsert, appendToElements, queryChildrenFunction, updateChildElementsFunction) {
@@ -398,99 +381,120 @@ globalThis.vitraux = {
         }
     },
     actions: {
-        vmActions: [],
+        dom: {
+            getElementsContent(elements) {
+                return elements.map(e => e.textContent);
+            },
 
-        actionRegistrationStrategy: Object.freeze({
-            OnlyOnceAtStart: "OnlyOnceAtStart",
-            OnlyOnceOnDemand: "OnlyOnceOnFirstViewModelRendering",
-            Always: "AlwaysOnViewModelRendering"
-        }),
+            getElementsAttribute(elements, attribute) {
+                return elements.map(e => getAttributeValue(e, attribute));
 
-        getActionFullVMKey(vmKey) {
-            return `${globalThis.vitraux.getFullVMKey(vmKey)}-actions`;
-        },
+                function getAttributeValue(element, attributeName) {
+                    const attributeValue = element.getAttribute(attributeName);
+                    return attributeName === attributeValue ? true : attributeValue;
+                }
+            },
 
-        executeActionRegistrationsCode(code) {
-            const func = new Function(code);
-            func();
-        },
-
-        createActionRegistrationsFunction(vmKey, code) {
-            this.vmActions[vmKey] = new Function(code);
-        },
-
-        executeActionRegistrationsFunction(vmKey) {
-            const func = this.vmActions[vmKey];
-            func();
-        },
-
-        registerAction(elements, event, vmKey, actionKey, actionArgsCallback) {
-            const actionListener = new ActionListener(vmKey, actionKey, actionArgsCallback);
-
-            for (const element of elements) {
-                element.addEventListener(event, actionListener);
+            getInputsValue(inputs) {
+                return inputs.map(i => i.value);
             }
         },
 
-        getActionFunctionCodeFromVersion(vmActionKey, version) {
-            if (!vmActionKey || !version)
-                throw new VitrauxInternalError("vmKey and version must be set in getActionFunctionCodeFromVersion!");
+        registration: {
+            vmActions: [],
 
-            const vmActionObjJson = localStorage.getItem(vmActionKey);
+            actionRegistrationStrategy: Object.freeze({
+                OnlyOnceAtStart: "OnlyOnceAtStart",
+                OnlyOnceOnDemand: "OnlyOnceOnFirstViewModelRendering",
+                Always: "AlwaysOnViewModelRendering"
+            }),
 
-            if (!vmActionObjJson)
-                return false;
+            getActionFullVMCacheKey(vmKey) {
+                return `${globalThis.vitraux.getFullVMKey(vmKey)}-actions`;
+            },
 
-            const vmActionObj = JSON.parse(vmActionObjJson);
+            executeActionRegistrationsCode(code) {
+                const func = new Function(code);
+                func();
+            },
 
-            return (vmActionObj.version === version) ? vmActionObj : false;
-        },
+            createActionRegistrationsFunction(vmKey, code) {
+                this.vmActions[vmKey] = new Function(code);
+            },
 
-        storeActionsFunction(vmActionKey, version, actionsCode, actionRegistrationStrategy) {
-            const vmActionObj = {
-                actionsCode: actionsCode,
-                actionRegistrationStrategy: actionRegistrationStrategy,
-                version: version
-            };
+            executeActionRegistrationsFunction(vmKey) {
+                const func = this.vmActions[vmKey];
+                func();
+            },
 
-            localStorage.setItem(vmActionKey, JSON.stringify(vmActionObj));
-        },
+            registerAction(elements, event, vmKey, actionKey, actionArgsCallback) {
+                const actionListener = new ActionListener(vmKey, actionKey, actionArgsCallback);
 
-        tryInitializeActionsFunctionFromCacheByVersion(vmKey, version) {
-            if (!vmKey || !version)
-                throw new VitrauxInternalError("Version must be set in tryInitializeActionsFunctionFromCacheByVersion!");
+                for (const element of elements) {
+                    element.addEventListener(event, actionListener);
+                }
+            },
 
-            const vmActionKey = this.getActionFullVMKey(vmKey);
-            const vmActionObj = this.getActionFunctionCodeFromVersion(vmActionKey, version);
+            getActionFunctionCodeFromVersion(vmActionCacheKey, version) {
+                if (!vmActionCacheKey || !version)
+                    throw new VitrauxInternalError("vmKey and version must be set in getActionFunctionCodeFromVersion!");
 
-            if (!vmActionObj)
-                return false;
+                const vmActionObjJson = localStorage.getItem(vmActionCacheKey);
 
-            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, vmActionObj.actionsCode, vmActionObj.actionRegistrationStrategy);
+                if (!vmActionObjJson)
+                    return false;
 
-            return true;
-        },
+                const vmActionObj = JSON.parse(vmActionObjJson);
 
-        initializeNonCachedActionsFunction(vmKey, actionsCode, actionRegistrationStrategy) {
-            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, actionRegistrationStrategy);
-        },
+                return (vmActionObj.version === version) ? vmActionObj : false;
+            },
 
-        initializeNewActionsFunctionToCacheByVersion(vmKey, version, actionsCode, actionRegistrationStrategy) {
-            if (!vmKey || !version)
-                throw new VitrauxInternalError("Version must be set in initializeNewActionsFunctionToCacheByVersion!");
+            storeActionsFunction(vmActionKey, version, actionsCode, actionRegistrationStrategy) {
+                const vmActionObj = {
+                    actionsCode: actionsCode,
+                    actionRegistrationStrategy: actionRegistrationStrategy,
+                    version: version
+                };
 
-            this.initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, actionRegistrationStrategy);
+                localStorage.setItem(vmActionKey, JSON.stringify(vmActionObj));
+            },
 
-            const vmActionKey = this.getActionFullVMKey(vmKey);
-            this.storeActionsFunction(vmActionKey, version, actionsCode, actionRegistrationStrategy);
-        },
+            tryInitializeActionsFunctionFromCacheByVersion(vmKey, version) {
+                if (!vmKey || !version)
+                    throw new VitrauxInternalError("Version must be set in tryInitializeActionsFunctionFromCacheByVersion!");
 
-        initializeActionRegistrationsByQueryElementStrategy(vmKey, actionsCode, actionRegistrationStrategy) {
-            if (actionRegistrationStrategy === this.actionRegistrationStrategy.OnlyOnceAtStart) {
-                this.executeActionRegistrationsCode(actionsCode);
-            }
-            else {
-                this.createActionRegistrationsFunction(vmKey, actionsCode);
+                const vmActionCacheKey = this.getActionFullVMCacheKey(vmKey);
+                const vmActionObj = this.getActionFunctionCodeFromVersion(vmActionCacheKey, version);
+
+                if (!vmActionObj)
+                    return false;
+
+                this.initializeActionRegistrationsByActionRegistrationStrategy(vmKey, vmActionObj.actionsCode, vmActionObj.actionRegistrationStrategy);
+
+                return true;
+            },
+
+            initializeNonCachedActionsFunction(vmKey, actionsCode, actionRegistrationStrategy) {
+                this.initializeActionRegistrationsByActionRegistrationStrategy(vmKey, actionsCode, actionRegistrationStrategy);
+            },
+
+            initializeNewActionsFunctionToCacheByVersion(vmKey, version, actionsCode, actionRegistrationStrategy) {
+                if (!vmKey || !version)
+                    throw new VitrauxInternalError("Version must be set in initializeNewActionsFunctionToCacheByVersion!");
+
+                this.initializeActionRegistrationsByActionRegistrationStrategy(vmKey, actionsCode, actionRegistrationStrategy);
+
+                const vmActionKey = this.getActionFullVMCacheKey(vmKey);
+                this.storeActionsFunction(vmActionKey, version, actionsCode, actionRegistrationStrategy);
+            },
+
+            initializeActionRegistrationsByActionRegistrationStrategy(vmKey, actionsCode, actionRegistrationStrategy) {
+                if (actionRegistrationStrategy === this.actionRegistrationStrategy.OnlyOnceAtStart) {
+                    this.executeActionRegistrationsCode(actionsCode);
+                }
+                else {
+                    this.createActionRegistrationsFunction(vmKey, actionsCode);
+                }
             }
         }
     }

@@ -4,11 +4,11 @@ using Vitraux.Modeling.Building.Contracts.ElementBuilders.Values.Root;
 
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
-internal class RootActionSourceFinallizableBuilder<TViewModel>(
-IRootActionSourceBuilder<TViewModel> rootActionSourceBuilder,
-IModelMapper<TViewModel> modelMapper) : IRootActionSourceFinallizableBuilder<TViewModel>
+internal class RootParametrizableActionSourceFinallizableBuilder<TViewModel>(
+    IRootParametrizableActionSourceBuilder<TViewModel> rootActionSourceBuilder,
+    IModelMapper<TViewModel> modelMapper) : IRootParametrizableActionSourceFinallizableBuilder<TViewModel>
 {
-    public IRootActionInputSourceSelectorBuilder<TViewModel> FromInputs
+    public IRootParametrizableActionInputSourceSelectorBuilder<TViewModel> FromInputs
         => rootActionSourceBuilder.FromInputs;
 
     public ModelMappingData Data

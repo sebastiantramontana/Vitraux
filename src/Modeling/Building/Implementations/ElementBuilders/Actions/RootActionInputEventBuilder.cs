@@ -9,9 +9,9 @@ internal class RootActionInputEventBuilder<TViewModel>(
     IModelMapper<TViewModel> modelMapper)
     : IRootActionInputEventBuilder<TViewModel>
 {
-    public IRootActionPassValueOrNameSourceBuilder<TViewModel> On(string inputEvent)
+    public IRootActionSourceFinallizableBuilder<TViewModel> On(string inputEvent)
     {
         actionTarget.Event = inputEvent;
-        return new RootActionPassValueOrNameSourceBuilder<TViewModel>(actionTarget, rootActionSourceBuilder, modelMapper);
+        return new RootActionSourceFinallizableBuilder<TViewModel>(rootActionSourceBuilder, modelMapper);
     }
 }
