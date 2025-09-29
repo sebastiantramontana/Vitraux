@@ -10,7 +10,7 @@ class VitrauxInternalError extends Error {
     }
 }
 
-class ActionListener {
+class ActionDispatcherProvider {
     #vmKey;
     #actionKey;
     #actionArgsCallback;
@@ -22,14 +22,16 @@ class ActionListener {
         this.#actionArgsCallback = actionArgsCallback;
     }
 
-    async handleEvent(event) {
-        const actionArgs = this.#actionArgsCallback.call();
-        await this.#invokeActionDispatcher(this.#vmKey, this.#actionKey, actionArgs);
-    }
-
-    async #invokeActionDispatcher(vmkey, actionKey, actionArguments) {
+    async getDispatcherInfo() {
+        const currentActionArgs = this.#actionArgsCallback.call();
         const vitrauxWasm = await this.#getVitrauxWasmExports();
-        await vitrauxWasm.DispatchAction(vmkey, actionKey, actionArguments);
+
+        return {
+            vmKey: this.#vmKey,
+            actionKey: this.#actionKey,
+            currentActionArgs: currentActionArgs,
+            dispatcher: vitrauxWasm
+        };
     }
 
     async #getVitrauxWasmExports() {
@@ -40,6 +42,32 @@ class ActionListener {
         }
 
         return this.#vitrauxWasmExports;
+    }
+}
+
+class ActionListenerSync {
+    #actionDispatcherProvider;
+
+    constructor(actionDispatcherProvider) {
+        this.#actionDispatcherProvider = actionDispatcherProvider;
+    }
+
+    async handleEvent(event) {
+        const dispatcherInfo = await this.#actionDispatcherProvider.getDispatcher();
+        dispatcherInfo.dispatcher.DispatchAction(dispatcherInfo.vmKey, dispatcherInfo.actionKey, dispatcherInfo.currentActionArgs);
+    }
+}
+
+class ActionListenerAsync {
+    #actionDispatcherProvider;
+
+    constructor(actionDispatcherProvider) {
+        this.#actionDispatcherProvider = actionDispatcherProvider;
+    }
+
+    async handleEvent(event) {
+        const dispatcherInfo = await this.#actionDispatcherProvider.getDispatcher();
+        await dispatcherInfo.dispatcher.DispatchActionAsync(dispatcherInfo.vmKey, dispatcherInfo.actionKey, dispatcherInfo.currentActionArgs);
     }
 }
 
@@ -427,8 +455,17 @@ globalThis.vitraux = {
                 func();
             },
 
-            registerAction(elements, event, vmKey, actionKey, actionArgsCallback) {
-                const actionListener = new ActionListener(vmKey, actionKey, actionArgsCallback);
+            registerActionAsync(elements, event, vmKey, actionKey, actionArgsCallback) {
+                this.addActionListenerToElements(elements, event, vmKey, actionKey, actionArgsCallback, (provider) => new ActionListenerAsync(provider));
+            },
+
+            registerActionSync(elements, event, vmKey, actionKey, actionArgsCallback) {
+                this.addActionListenerToElements(elements, event, vmKey, actionKey, actionArgsCallback, (provider) => new ActionListenerSync(provider));
+            },
+
+            addActionListenerToElements(elements, event, vmKey, actionKey, actionArgsCallback, actionListenerCreatorCallback) {
+                const provider = new ActionDispatcherProvider(vmKey, actionKey, actionArgsCallback);
+                const actionListener = actionListenerCreatorCallback(provider);
 
                 for (const element of elements) {
                     element.addEventListener(event, actionListener);
