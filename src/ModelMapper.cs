@@ -30,12 +30,36 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IMode
         return new RootCollectionTargetBuilder<TItem, TViewModel>(collection, this, serviceProvider);
     }
 
-    public IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, IDictionary<string, IEnumerable<string>>, Task> func)
+    public IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, Task> func)
     {
-        var action = new ActionData(func);
+        var action = new ActionData(func, true);
         Data.AddAction(action);
 
         return new RootActionSourceBuilder<TViewModel>(action, this);
+    }
+
+    public IRootActionSourceBuilder<TViewModel> MapAction(Action<TViewModel> func)
+    {
+        var action = new ActionData(func, false);
+        Data.AddAction(action);
+
+        return new RootActionSourceBuilder<TViewModel>(action, this);
+    }
+
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinderAsync<TViewModel> binder)
+    {
+        var action = new ActionData(binder.BindAction, true);
+        Data.AddAction(action);
+
+        return new RootParametrizableActionSourceBuilder<TViewModel>(action, this);
+    }
+
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinder<TViewModel> binder)
+    {
+        var action = new ActionData(binder.BindAction, false);
+        Data.AddAction(action);
+
+        return new RootParametrizableActionSourceBuilder<TViewModel>(action, this);
     }
 
     public ModelMappingData Data { get; } = new ModelMappingData();
