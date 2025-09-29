@@ -5,11 +5,10 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 internal class RootActionAddParameterNameBuilder<TViewModel>(
     ActionTarget actionTarget,
-    IRootActionSourceBuilder<TViewModel> rootActionSourceBuilder,
-    IModelMapper<TViewModel> modelMapper) : RootActionSourceFinallizableBuilder<TViewModel>(rootActionSourceBuilder, modelMapper),
-    IRootActionAddParameterNameBuilder<TViewModel>, IRootActionSourceFinallizableBuilder<TViewModel>
+    IRootParametrizableActionSourceBuilder<TViewModel> rootActionSourceBuilder,
+    IModelMapper<TViewModel> modelMapper) : IRootActionAddParameterNameBuilder<TViewModel>
 {
-    private readonly IRootActionSourceBuilder<TViewModel> _rootActionSourceBuilder = rootActionSourceBuilder;
+    private readonly IRootParametrizableActionSourceBuilder<TViewModel> _rootActionSourceBuilder = rootActionSourceBuilder;
     private readonly IModelMapper<TViewModel> _modelMapper = modelMapper;
 
     public IRootActionAddParametersFromBuilder<TViewModel> AddParameter(string paramName)

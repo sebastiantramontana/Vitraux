@@ -5,13 +5,13 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 internal class RootActionPassValueOrNameSourceBuilder<TViewModel>(
     ActionTarget actionTarget,
-    IRootActionSourceBuilder<TViewModel> rootActionSourceBuilder,
+    IRootParametrizableActionSourceBuilder<TViewModel> rootActionSourceBuilder,
     IModelMapper<TViewModel> modelMapper)
     : RootActionAddParameterNameBuilder<TViewModel>(actionTarget, rootActionSourceBuilder, modelMapper),
     IRootActionPassValueOrNameSourceBuilder<TViewModel>
 {
     private readonly ActionTarget _actionTarget = actionTarget;
-    private readonly IRootActionSourceBuilder<TViewModel> _rootActionSourceBuilder = rootActionSourceBuilder;
+    private readonly IRootParametrizableActionSourceBuilder<TViewModel> _rootActionSourceBuilder = rootActionSourceBuilder;
     private readonly IModelMapper<TViewModel> _modelMapper = modelMapper;
 
     public IRootActionAddParameterNameFinallizableBuilder<TViewModel> AddParameterValue
