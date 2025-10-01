@@ -22,3 +22,10 @@ public class PetOwnerActionParameterBinder3 : IPetOwnerActionParameterBinder3
     public Task BindAction(PetOwner viewModel, IDictionary<string, IEnumerable<string>> parameters)
         => Task.CompletedTask;
 }
+
+public interface IPetOwnerActionParameterBinder4 : IActionParametersBinder<PetOwner> { }
+
+public class PetOwnerActionParameterBinder4 : IPetOwnerActionParameterBinder4
+{
+    public void BindAction(PetOwner viewModel, IDictionary<string, IEnumerable<string>> parameters) { }
+}

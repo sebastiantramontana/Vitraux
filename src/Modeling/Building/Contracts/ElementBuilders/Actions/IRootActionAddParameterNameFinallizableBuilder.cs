@@ -1,5 +1,5 @@
 ﻿namespace Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
 
-public interface IRootActionAddParameterNameFinallizableBuilder<TViewModel> : IRootActionAddParameterNameBuilder<TViewModel>, IRootParametrizableActionSourceFinallizableBuilder<TViewModel>
+public interface IRootActionAddParameterNameFinallizableBuilder<TViewModel> : IRootActionAddParameterNameBuilder<TViewModel>, IModelMapper<TViewModel>
 {
 }
