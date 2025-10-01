@@ -5,7 +5,9 @@ namespace Vitraux.Test.Example;
 public class PetOwnerConfiguration(
     IDataUriConverter dataUriConverter,
     IPetOwnerActionParameterBinder1 parameterBinder1,
-    IPetOwnerActionParameterBinder2 parameterBinder2) : IModelConfiguration<PetOwner>
+    IPetOwnerActionParameterBinder2 parameterBinder2,
+    IPetOwnerActionParameterBinder3 parameterBinder3,
+    IPetOwnerActionParameterBinder4 parameterBinder4) : IModelConfiguration<PetOwner>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {
@@ -24,28 +26,34 @@ public class PetOwnerConfiguration(
             .MapAction((po) => po.Method2())
                 .FromInputs.ByQuery("1").On("fdfd")
             .MapAction((po) => po.Method2())
-                .FromInputs.ByQuery("1").On("fdfd")
-                .FromInputs.ById("dfsa").On("ghg")
+                .FromInputs.ByQuery("1").On("fdfd", "gfg")
+                .FromInputs.ById("dfsa").On("ghg","gfg")
             .MapAction(parameterBinder1)
                 .FromInputs.ById("2").On("sdfdfr").AddParameterValue
             .MapAction(parameterBinder2)
                 .FromInputs.ById("2").On("sdfdfr")
                     .AddParameterValue
-                .FromInputs.ById("3").On("sdfdfr")
-                    .AddParameter("gfdg").FromParamElements.ByQuery("dff00").FromContent
-                    .AddParameter("jhjghj").FromParamInputs.ById("dfdfdddffe")
-                .FromInputs.ById("3").On("sdfdfr")
+                    .AddParameter("dsfdfdsf").FromParamInputs.ByQuery("gfgdfg")
+                    .AddParameter("dfsdfsdf").FromParamElements.ById("dfdsf").FromContent
+            .MapAction(parameterBinder3)
+                .FromInputs.ById("2").On("sdfdfr")
+                .FromInputs.ByQuery("ffdfds").On("dfsdff","fdfdfd")
                     .AddParameterValue
-                    .AddParameter("gfdg").FromParamElements.ByQuery("dff00").FromContent
-                    .AddParameter("jhjghj").FromParamInputs.ById("dfdfdddffe")
+            .MapAction(parameterBinder4)
+                .FromInputs.ById("2").On("sdfdfr")
+                .FromInputs.ByQuery("ffdfds").On("dfsdff", "fdfdfd")
+                    .AddParameterValue
+                    .AddParameter("dfdsfsdf").FromParamInputs.ById("gfgdfg")
+                    .AddParameter("dfsdfsdf").FromParamElements.ByQuery("dfdsf").FromAttribute("dfsdf")
+            .MapAction(parameterBinder1)
+                .FromInputs.ByQuery("ffdfds").On("dfsdff", "fdfdfd")
+                    .AddParameter("dfdsfsdf").FromParamInputs.ById("gfgdfg")
+                    .AddParameter("dfsdfsdf").FromParamElements.ByQuery("dfdsf").FromContent
             .MapAction(parameterBinder2)
-                .FromInputs.ById("3").On("sdfdfr")
-                    .AddParameter("gfdg").FromParamElements.ByQuery("dff00").FromContent
-                    .AddParameter("jhjghj").FromParamInputs.ById("dfdfdddffe")
-                .FromInputs.ById("3").On("sdfdfr")
-                    .AddParameterValue
-                    .AddParameter("gfdg").FromParamElements.ByQuery("dff00").FromContent
-                    .AddParameter("jhjghj").FromParamInputs.ById("dfdfdddffe")
+                .FromInputs.ByQuery("ffdfds").On("dfsdff", "fdfdfd")
+                .FromInputs.ById("2").On("sdfdfr")
+                    .AddParameter("dfdsfsdf").FromParamInputs.ById("gfgdfg")
+                    .AddParameter("dfsdfsdf").FromParamElements.ByQuery("dfdsf").FromAttribute("dfsdf")
             .MapValue(po => po.Name)
                 .ToElements.ById("petowner-name").ToContent
                 .ToJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))
