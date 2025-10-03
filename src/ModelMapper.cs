@@ -12,7 +12,7 @@ using Vitraux.Modeling.Data.Values;
 namespace Vitraux;
 
 [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IModelMapper<TViewModel>
+internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider, IActionKeyGenerator actionKeyGenerator) : IModelMapper<TViewModel>
 {
     public IRootValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func)
     {
@@ -32,7 +32,7 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IMode
 
     public IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, Task> func)
     {
-        var action = new ActionData(func, true);
+        var action = new ActionData(func, true, GenerateActionKey());
         Data.AddAction(action);
 
         return new RootActionSourceBuilder<TViewModel>(action, this);
@@ -40,7 +40,7 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IMode
 
     public IRootActionSourceBuilder<TViewModel> MapAction(Action<TViewModel> func)
     {
-        var action = new ActionData(func, false);
+        var action = new ActionData(func, false, GenerateActionKey());
         Data.AddAction(action);
 
         return new RootActionSourceBuilder<TViewModel>(action, this);
@@ -48,7 +48,7 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IMode
 
     public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinderAsync<TViewModel> binder)
     {
-        var action = new ActionData(binder.BindAction, true);
+        var action = new ActionData(binder.BindAction, true, GenerateActionKey());
         Data.AddAction(action);
 
         return new RootParametrizableActionSourceBuilder<TViewModel>(action, this);
@@ -56,12 +56,14 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider) : IMode
 
     public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinder<TViewModel> binder)
     {
-        var action = new ActionData(binder.BindAction, false);
+        var action = new ActionData(binder.BindAction, false, GenerateActionKey());
         Data.AddAction(action);
 
         return new RootParametrizableActionSourceBuilder<TViewModel>(action, this);
     }
 
     public ModelMappingData Data { get; } = new ModelMappingData();
-}
 
+    private string GenerateActionKey()
+        => actionKeyGenerator.Generate();
+}

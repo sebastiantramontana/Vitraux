@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Actions;
 using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.JsObjectNames;
@@ -62,8 +61,7 @@ internal interface IRootActionEventRegistrationJsGenerator
 
 internal class RootActionEventRegistrationJsGenerator(
     IRegisterActionAsyncCall registerActionAsyncCall,
-    IRegisterActionSyncCall registerActionSyncCall,
-    IAtomicAutoNumberGenerator atomicAutoNumberGenerator) : IRootActionEventRegistrationJsGenerator
+    IRegisterActionSyncCall registerActionSyncCall) : IRootActionEventRegistrationJsGenerator
 {
     public StringBuilder GenerateJs(StringBuilder stringBuilder, IEnumerable<ActionData> actions, string vmKey, IEnumerable<JsElementObjectName> jsInputObjectNames)
         => actions.Aggregate(stringBuilder, (sb, action) => RegisterAction(sb, action, vmKey, jsInputObjectNames));
@@ -72,17 +70,13 @@ internal class RootActionEventRegistrationJsGenerator(
         => actionData.Targets.Aggregate(stringBuilder, (sb, target) =>
             {
                 var actionArgsCallback = GenerateActionArgsCallback(target.Parameters);
-                var actionKey = GenerateActionKey();
-                var targetEventRgistrationJs = GenerateActionTargetEventRegistration(target, actionData.IsAsync, vmKey, actionKey, actionArgsCallback.FunctionName, jsInputObjectNames);
+                var targetEventRgistrationJs = GenerateActionTargetEventRegistration(target, actionData.IsAsync, vmKey, actionData.ActionKey, actionArgsCallback.FunctionName, jsInputObjectNames);
 
                 return sb
                     .AppendLine(actionArgsCallback.JsCode)
                     .TryAppendLineForReadability()
                     .AppendLine(targetEventRgistrationJs);
             });
-
-    private string GenerateActionKey()
-        => $"a{atomicAutoNumberGenerator.Next()}";
 
     private string GenerateActionTargetEventRegistration(ActionTarget actionTarget, bool isAsync, string vmKey, string actionKey, string functionCallbackName, IEnumerable<JsElementObjectName> jsInputObjectNames)
     {
