@@ -2,5 +2,5 @@
 
 public interface IRootParametrizableActionInputEventBuilder<TViewModel>
 {
-    IRootActionSourceOrParameters<TViewModel> On(params string[] inputEvent);
+    IRootActionSourceOrParametersBuilder<TViewModel> On(params string[] inputEvents);
 }

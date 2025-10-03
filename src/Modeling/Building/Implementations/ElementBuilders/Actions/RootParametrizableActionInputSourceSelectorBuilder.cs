@@ -18,6 +18,6 @@ internal class RootParametrizableActionInputSourceSelectorBuilder<TViewModel>(
     private RootParametrizableActionInputEventBuilder<TViewModel> SetInputSelector(ElementSelectorBase selector)
     {
         actionTarget.Selector = selector;
-        return new RootParametrizableActionInputEventBuilder<TViewModel>(actionTarget, rootActionSourceBuilder, modelMapper);
+        return new RootParametrizableActionInputEventBuilder<TViewModel>(actionTarget, modelMapper, rootActionSourceBuilder);
     }
 }

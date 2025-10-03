@@ -10,7 +10,7 @@ internal class RootParametrizableActionSourceBuilder<TViewModel>(ActionData acti
 
     private RootParametrizableActionInputSourceSelectorBuilder<TViewModel> BuildActionInput()
     {
-        var actionTarget = new ActionTarget();
+        var actionTarget = new ActionTarget(actionData);
         actionData.AddTarget(actionTarget);
 
         return new RootParametrizableActionInputSourceSelectorBuilder<TViewModel>(actionTarget, this, modelMapper);
