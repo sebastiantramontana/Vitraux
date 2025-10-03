@@ -5,9 +5,8 @@ using Vitraux.Modeling.Data.Selectors.Values;
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 internal class RootActionParameterFromInputBuilder<TViewModel>(
-    ActionSourceParameter parameter,
+    ActionParameter parameter,
     IRootActionAddParameterNameBuilder<TViewModel> parameterNameBuilder,
-    IRootParametrizableActionSourceBuilder<TViewModel> rootActionSourceBuilder,
     IModelMapper<TViewModel> modelMapper)
     : IRootActionParameterFromInputBuilder<TViewModel>
 {
@@ -22,6 +21,6 @@ internal class RootActionParameterFromInputBuilder<TViewModel>(
         parameter.Selector = elementSelector;
         parameter.ElementPlace = ValuePropertyElementPlace.Instance;
 
-        return new RootActionAddParameterNameFinallizableBuilder<TViewModel>(parameterNameBuilder, rootActionSourceBuilder, modelMapper);
+        return new RootActionAddParameterNameFinallizableBuilder<TViewModel>(parameterNameBuilder, modelMapper);
     }
 }

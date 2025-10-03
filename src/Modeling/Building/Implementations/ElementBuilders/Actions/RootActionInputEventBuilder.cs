@@ -9,9 +9,12 @@ internal class RootActionInputEventBuilder<TViewModel>(
     IModelMapper<TViewModel> modelMapper)
     : IRootActionInputEventBuilder<TViewModel>
 {
-    public IRootActionSourceFinallizableBuilder<TViewModel> On(string inputEvent)
+    public IRootActionSourceFinallizableBuilder<TViewModel> On(params string[] inputEvents)
     {
-        actionTarget.Event = inputEvent;
+        if (inputEvents.Length == 0)
+            throw new ArgumentException($"Invalid {nameof(inputEvents)} parameter in On(...) method. The event list cannot be null or empty in a MapAction mapping! ViewModel: {typeof(TViewModel).FullName}");
+
+        actionTarget.Events = inputEvents;
         return new RootActionSourceFinallizableBuilder<TViewModel>(rootActionSourceBuilder, modelMapper);
     }
 }

@@ -4,14 +4,12 @@ using Vitraux.Modeling.Data.Actions;
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 internal class RootActionPassValueOrNameSourceBuilder<TViewModel>(
-    ActionTarget actionTarget,
-    IRootParametrizableActionSourceBuilder<TViewModel> rootActionSourceBuilder,
+    ActionData actionData,
     IModelMapper<TViewModel> modelMapper)
-    : RootActionAddParameterNameBuilder<TViewModel>(actionTarget, rootActionSourceBuilder, modelMapper),
+    : RootActionAddParameterNameBuilder<TViewModel>(actionData, modelMapper),
     IRootActionPassValueOrNameSourceBuilder<TViewModel>
 {
-    private readonly ActionTarget _actionTarget = actionTarget;
-    private readonly IRootParametrizableActionSourceBuilder<TViewModel> _rootActionSourceBuilder = rootActionSourceBuilder;
+    private readonly ActionData _actionData = actionData;
     private readonly IModelMapper<TViewModel> _modelMapper = modelMapper;
 
     public IRootActionAddParameterNameFinallizableBuilder<TViewModel> AddParameterValue
@@ -19,7 +17,7 @@ internal class RootActionPassValueOrNameSourceBuilder<TViewModel>(
 
     private RootActionAddParameterNameFinallizableBuilder<TViewModel> AddInputValueParameter()
     {
-        _actionTarget.AddInputValueParameter();
-        return new RootActionAddParameterNameFinallizableBuilder<TViewModel>(this, _rootActionSourceBuilder, _modelMapper);
+        _actionData.PassInputValueParameter = true;
+        return new RootActionAddParameterNameFinallizableBuilder<TViewModel>(this, _modelMapper);
     }
 }

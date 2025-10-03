@@ -95,6 +95,6 @@ internal class RootActionEventRegistrationJsGenerator(
     private IRegisterActionCall GetRegisterActionCall(bool isAsync)
         => isAsync ? registerActionAsyncCall : registerActionSyncCall;
 
-    private static FunctionCallbackInfo GenerateActionArgsCallback(IEnumerable<ActionSourceParameter> actionParameters)
+    private static FunctionCallbackInfo GenerateActionArgsCallback(IEnumerable<ActionParameter> actionParameters)
         => throw new NotImplementedException();
 }
