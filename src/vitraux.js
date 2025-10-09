@@ -22,8 +22,8 @@ class ActionDispatcherProvider {
         this.#actionArgsCallback = actionArgsCallback;
     }
 
-    async getDispatcherInfo() {
-        const currentActionArgs = this.#actionArgsCallback.call();
+    async getDispatcherInfo(event) {
+        const currentActionArgs = this.#actionArgsCallback.call(null, event);
         const vitrauxWasm = await this.#getVitrauxWasmExports();
 
         return {
@@ -53,7 +53,7 @@ class ActionListenerSync {
     }
 
     async handleEvent(event) {
-        const dispatcherInfo = await this.#actionDispatcherProvider.getDispatcher();
+        const dispatcherInfo = await this.#actionDispatcherProvider.getDispatcherInfo(event);
         dispatcherInfo.dispatcher.DispatchAction(dispatcherInfo.vmKey, dispatcherInfo.actionKey, dispatcherInfo.currentActionArgs);
     }
 }
@@ -66,7 +66,7 @@ class ActionListenerAsync {
     }
 
     async handleEvent(event) {
-        const dispatcherInfo = await this.#actionDispatcherProvider.getDispatcher();
+        const dispatcherInfo = await this.#actionDispatcherProvider.getDispatcherInfo(event);
         await dispatcherInfo.dispatcher.DispatchActionAsync(dispatcherInfo.vmKey, dispatcherInfo.actionKey, dispatcherInfo.currentActionArgs);
     }
 }
@@ -455,20 +455,22 @@ globalThis.vitraux = {
                 func();
             },
 
-            registerActionAsync(elements, event, vmKey, actionKey, actionArgsCallback) {
-                this.addActionListenerToElements(elements, event, vmKey, actionKey, actionArgsCallback, (provider) => new ActionListenerAsync(provider));
+            registerActionAsync(elements, events, vmKey, actionKey, actionArgsCallback) {
+                this.addActionListenerToElements(elements, events, vmKey, actionKey, actionArgsCallback, (provider) => new ActionListenerAsync(provider));
             },
 
-            registerActionSync(elements, event, vmKey, actionKey, actionArgsCallback) {
-                this.addActionListenerToElements(elements, event, vmKey, actionKey, actionArgsCallback, (provider) => new ActionListenerSync(provider));
+            registerActionSync(elements, events, vmKey, actionKey, actionArgsCallback) {
+                this.addActionListenerToElements(elements, events, vmKey, actionKey, actionArgsCallback, (provider) => new ActionListenerSync(provider));
             },
 
-            addActionListenerToElements(elements, event, vmKey, actionKey, actionArgsCallback, actionListenerCreatorCallback) {
+            addActionListenerToElements(elements, events, vmKey, actionKey, actionArgsCallback, actionListenerCreatorCallback) {
                 const provider = new ActionDispatcherProvider(vmKey, actionKey, actionArgsCallback);
                 const actionListener = actionListenerCreatorCallback(provider);
 
                 for (const element of elements) {
-                    element.addEventListener(event, actionListener);
+                    for (const event of events) {
+                        element.addEventListener(event, actionListener);
+                    }
                 }
             },
 
