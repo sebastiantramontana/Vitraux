@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using Vitraux.Helpers;
+﻿using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage.JsLineGeneration.Value;
 using Vitraux.Modeling.Data.Selectors.Values;

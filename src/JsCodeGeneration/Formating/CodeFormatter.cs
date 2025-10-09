@@ -2,15 +2,16 @@
 
 internal class CodeFormatter : ICodeFormatter
 {
-    private const int NumberOfSpacesForIndentation = 4;
+    private const int IndentSpaceCharCount = 4;
 
     public string Indent(string code)
-    {
-        const char WhiteSpace = ' ';
+        => Indent(code, 1);
 
-        var indent = new string(WhiteSpace, NumberOfSpacesForIndentation);
-        return $"{indent}{ReindentCurrentCodeLines(code, indent)}".TrimEnd();
-    }
+    public string Indent(string code, int count)
+        => Indent(code, new string(' ', IndentSpaceCharCount * count));
+
+    private static string Indent(string code, string indentString)
+        => $"{indentString}{ReindentCurrentCodeLines(code, indentString)}".TrimEnd();
 
     private static string ReindentCurrentCodeLines(string code, string indent)
         => code
