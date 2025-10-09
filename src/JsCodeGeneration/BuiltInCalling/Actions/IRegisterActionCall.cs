@@ -2,5 +2,5 @@
 
 internal interface IRegisterActionCall
 {
-    string Generate(string elementsArg, string eventArg, string vmKeyArg, string actionKeyArg, string actionArgsCallbackArg);
+    string Generate(string elementsArg, IEnumerable<string> eventsArg, string vmKeyArg, string actionKeyArg, string actionArgsCallbackArg);
 }
