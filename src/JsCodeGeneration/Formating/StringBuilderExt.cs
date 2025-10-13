@@ -3,7 +3,7 @@
 namespace Vitraux.JsCodeGeneration.Formating;
 internal static class StringBuilderExt
 {
-    public static StringBuilder TryAppendLineForReadability(this StringBuilder sb) 
+    public static StringBuilder TryAppendLineForReadability(this StringBuilder sb)
         => sb.AppendLine().AppendLine();
 
     public static StringBuilder Add(this StringBuilder sb, Func<StringBuilder, StringBuilder> func)
@@ -20,6 +20,9 @@ internal static class StringBuilderExt
 
     public static StringBuilder Add<T1, T2, T3, T4>(this StringBuilder sb, Func<StringBuilder, T1, T2, T3, T4, StringBuilder> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         => func.Invoke(sb, arg1, arg2, arg3, arg4).AppendLine();
+
+    public static StringBuilder Add<T1, T2, T3, T4, T5>(this StringBuilder sb, Func<StringBuilder, T1, T2, T3, T4, T5, StringBuilder> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+        => func.Invoke(sb, arg1, arg2, arg3, arg4, arg5).AppendLine();
 
     public static StringBuilder RemoveLastCharacter(this StringBuilder stringBuilder, char character)
     {
