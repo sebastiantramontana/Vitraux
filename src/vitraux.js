@@ -10,64 +10,117 @@ class VitrauxInternalError extends Error {
     }
 }
 
-class ActionDispatcherProvider {
+class VitrauxWasm {
+    static #vitrauxWasmExports;
+
+    async getExports() {
+        if (!VitrauxWasm.#vitrauxWasmExports) {
+
+            const getAssemblyExports = await globalThis.getDotnetRuntime(0);
+            VitrauxWasm.#vitrauxWasmExports = await getAssemblyExports("Vitraux.dll");
+        }
+
+        return VitrauxWasm.#vitrauxWasmExports;
+    }
+}
+
+class ActionDispatcher {
+    #vmKey;
+    #actionKey;
+    #vitrauxWasm;
+
+    constructor(vmKey, actionKey, vitrauxWasm) {
+        this.#vmKey = vmKey;
+        this.#actionKey = actionKey;
+        this.#vitrauxWasm = vitrauxWasm;
+    }
+
+    async dispatchActionSync() {
+        const vitrauxWasmExports = await this.#vitrauxWasm.getExports();
+
+        vitrauxWasmExports.DispatchAction(this.#vmKey, this.#actionKey);
+    }
+
+    async dispatchActionAsync() {
+        const vitrauxWasmExports = await this.#vitrauxWasm.getExports();
+
+        await vitrauxWasmExports.DispatchAction(this.#vmKey, this.#actionKey);
+    }
+}
+
+class ParametrizableActionDispatcher {
     #vmKey;
     #actionKey;
     #actionArgsCallback;
-    #vitrauxWasmExports;
+    #vitrauxWasm;
 
-    constructor(vmKey, actionKey, actionArgsCallback) {
+    constructor(vmKey, actionKey, actionArgsCallback, vitrauxWasm) {
         this.#vmKey = vmKey;
         this.#actionKey = actionKey;
         this.#actionArgsCallback = actionArgsCallback;
+        this.#vitrauxWasm = vitrauxWasm;
     }
 
-    async getDispatcherInfo(event) {
+    async dispatchParametrizableActionSync(event) {
         const currentActionArgs = this.#actionArgsCallback.call(null, event);
-        const vitrauxWasm = await this.#getVitrauxWasmExports();
+        const vitrauxWasmExports = await this.#vitrauxWasm.getExports();
 
-        return {
-            vmKey: this.#vmKey,
-            actionKey: this.#actionKey,
-            currentActionArgs: currentActionArgs,
-            dispatcher: vitrauxWasm
-        };
+        vitrauxWasmExports.DispatchParametrizableAction(this.#vmKey, this.#actionKey, currentActionArgs);
     }
 
-    async #getVitrauxWasmExports() {
-        if (!this.#vitrauxWasmExports) {
+    async dispatchParametrizableActionAsync(event) {
+        const currentActionArgs = this.#actionArgsCallback.call(null, event);
+        const vitrauxWasmExports = await this.#vitrauxWasm.getExports();
 
-            const getAssemblyExports = await globalThis.getDotnetRuntime(0);
-            this.#vitrauxWasmExports = await getAssemblyExports("Vitraux.dll");
-        }
-
-        return this.#vitrauxWasmExports;
+        await vitrauxWasmExports.DispatchParametrizableActionAsync(this.#vmKey, this.#actionKey, currentActionArgs);
     }
 }
 
 class ActionListenerSync {
-    #actionDispatcherProvider;
+    #actionDispatcher;
 
-    constructor(actionDispatcherProvider) {
-        this.#actionDispatcherProvider = actionDispatcherProvider;
+    constructor(actionDispatcher) {
+        this.#actionDispatcher = actionDispatcher;
     }
 
-    async handleEvent(event) {
-        const dispatcherInfo = await this.#actionDispatcherProvider.getDispatcherInfo(event);
-        dispatcherInfo.dispatcher.DispatchAction(dispatcherInfo.vmKey, dispatcherInfo.actionKey, dispatcherInfo.currentActionArgs);
+    async handleEvent() {
+        await this.#actionDispatcher.dispatchActionSync();
     }
 }
 
 class ActionListenerAsync {
-    #actionDispatcherProvider;
+    #actionDispatcher;
 
-    constructor(actionDispatcherProvider) {
-        this.#actionDispatcherProvider = actionDispatcherProvider;
+    constructor(actionDispatcher) {
+        this.#actionDispatcher = actionDispatcher;
+    }
+
+    async handleEvent() {
+        await this.#actionDispatcher.dispatchActionAsync();
+    }
+}
+
+class ParametrizableActionListenerSync {
+    #actionDispatcher;
+
+    constructor(actionDispatcher) {
+        this.#actionDispatcher = actionDispatcher;
     }
 
     async handleEvent(event) {
-        const dispatcherInfo = await this.#actionDispatcherProvider.getDispatcherInfo(event);
-        await dispatcherInfo.dispatcher.DispatchActionAsync(dispatcherInfo.vmKey, dispatcherInfo.actionKey, dispatcherInfo.currentActionArgs);
+        await this.#actionDispatcher.dispatchParametrizableActionSync(event);
+    }
+}
+
+class ParametrizableActionListenerAsync {
+    #actionDispatcher;
+
+    constructor(actionDispatcher) {
+        this.#actionDispatcher = actionDispatcher;
+    }
+
+    async handleEvent(event) {
+        await this.#actionDispatcher.dispatchParametrizableActionAsync(event);
     }
 }
 
@@ -455,18 +508,23 @@ globalThis.vitraux = {
                 func();
             },
 
-            registerActionAsync(elements, events, vmKey, actionKey, actionArgsCallback) {
-                this.addActionListenerToElements(elements, events, vmKey, actionKey, actionArgsCallback, (provider) => new ActionListenerAsync(provider));
+            registerActionSync(elements, events, vmKey, actionKey) {
+                this.addActionListenerToElements(elements, events, new ActionListenerSync(new ActionDispatcher(vmKey, actionKey, new VitrauxWasm())));
             },
 
-            registerActionSync(elements, events, vmKey, actionKey, actionArgsCallback) {
-                this.addActionListenerToElements(elements, events, vmKey, actionKey, actionArgsCallback, (provider) => new ActionListenerSync(provider));
+            registerActionAsync(elements, events, vmKey, actionKey) {
+                this.addActionListenerToElements(elements, events, new ActionListenerAsync(new ActionDispatcher(vmKey, actionKey, new VitrauxWasm())));
             },
 
-            addActionListenerToElements(elements, events, vmKey, actionKey, actionArgsCallback, actionListenerCreatorCallback) {
-                const provider = new ActionDispatcherProvider(vmKey, actionKey, actionArgsCallback);
-                const actionListener = actionListenerCreatorCallback(provider);
+            registerParametrizableActionSync(elements, events, vmKey, actionKey, actionArgsCallback) {
+                this.addActionListenerToElements(elements, events, new ParametrizableActionListenerSync(new ParametrizableActionDispatcher(vmKey, actionKey, actionArgsCallback, new VitrauxWasm())));
+            },
 
+            registerParametrizableActionAsync(elements, events, vmKey, actionKey, actionArgsCallback) {
+                this.addActionListenerToElements(elements, events, new ParametrizableActionListenerAsync(new ParametrizableActionDispatcher(vmKey, actionKey, actionArgsCallback, new VitrauxWasm())));
+            },
+
+            addActionListenerToElements(elements, events, actionListener) {
                 for (const element of elements) {
                     for (const event of events) {
                         element.addEventListener(event, actionListener);
