@@ -11,21 +11,17 @@ public interface IPetOwnerActionParameterBinder2 : IActionParametersBinderAsync<
 
 public class PetOwnerActionParameterBinder2 : IPetOwnerActionParameterBinder2
 {
-    public Task BindAction(PetOwner viewModel, IDictionary<string, IEnumerable<string>> parameters)
+    public Task BindActionAsync(PetOwner viewModel, IDictionary<string, IEnumerable<string>> parameters)
         => Task.CompletedTask;
 }
 
-public interface IPetOwnerActionParameterBinder3 : IActionParametersBinderAsync<PetOwner> { }
-
-public class PetOwnerActionParameterBinder3 : IPetOwnerActionParameterBinder3
+public class PetOwnerActionParameterBinder3 : IActionParametersBinderAsync<PetOwner>
 {
-    public Task BindAction(PetOwner viewModel, IDictionary<string, IEnumerable<string>> parameters)
+    public Task BindActionAsync(PetOwner viewModel, IDictionary<string, IEnumerable<string>> parameters)
         => Task.CompletedTask;
 }
 
-public interface IPetOwnerActionParameterBinder4 : IActionParametersBinder<PetOwner> { }
-
-public class PetOwnerActionParameterBinder4 : IPetOwnerActionParameterBinder4
+public class PetOwnerActionParameterBinder4 : IActionParametersBinder<PetOwner>
 {
     public void BindAction(PetOwner viewModel, IDictionary<string, IEnumerable<string>> parameters) { }
 }

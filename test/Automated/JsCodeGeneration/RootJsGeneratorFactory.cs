@@ -9,7 +9,6 @@ using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.Initialization;
 using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.QueryElements;
-using Vitraux.JsCodeGeneration.QueryElements.ElementsGeneration;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart;
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.ElementsStorage;
@@ -19,6 +18,8 @@ using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elements
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 using Vitraux.JsCodeGeneration.UpdateViews;
 using Vitraux.JsCodeGeneration.Values;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
+using Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 namespace Vitraux.Test.JsCodeGeneration;
 
@@ -26,7 +27,7 @@ internal static class RootJsGeneratorFactory
 {
     internal static IJsFullObjectNamesGenerator JsFullObjectNamesGenerator { get; private set; } = default!;
     internal static INotImplementedCaseGuard NotImplementedCaseGuard { get; private set; } = default!;
-
+    internal static IActionKeyGenerator ActionKeyGenerator { get; private set; } = default!;
     internal static RootJsGenerator Create()
     {
         var getElementByIdAsArrayCall = new GetElementByIdAsArrayCall();
@@ -36,6 +37,7 @@ internal static class RootJsGeneratorFactory
         var getStoredTemplateCall = new GetStoredTemplateCall();
         var getFetchedElementCall = new GetFetchedElementCall();
         NotImplementedCaseGuard = new NotImplementedCaseGuard();
+        ActionKeyGenerator = new ActionKeyGenerator(new AtomicAutoNumberGenerator());
 
         var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(getElementByIdAsArrayCall,
                                                                                                           getStoredElementByIdAsArrayCall,
@@ -55,7 +57,8 @@ internal static class RootJsGeneratorFactory
                                                                        NotImplementedCaseGuard,
                                                                        customJsJsGenerator);
         var uniqueSelectorsFilter = new UniqueSelectorsFilter();
-        var jsElementObjectNamesGenerator = new JsElementObjectNamesGenerator(uniqueSelectorsFilter, new AtomicAutoNumberGenerator(), NotImplementedCaseGuard);
+        var jsObjectNamesGenerator = new JsObjectNamesGenerator(new AtomicAutoNumberGenerator());
+        var jsElementObjectNamesGenerator = new JsElementObjectNamesGenerator(uniqueSelectorsFilter, jsObjectNamesGenerator, NotImplementedCaseGuard);
 
         var valueNamesGenerator = new ValueNamesGenerator(NotImplementedCaseGuard);
         var collectionNamesGenerator = new CollectionNamesGenerator();

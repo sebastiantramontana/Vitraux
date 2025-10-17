@@ -24,15 +24,21 @@ internal class RootValueFinallizable<TViewModel, TValue>(
     public IRootValueCustomJsBuilder<TViewModel, TValue> ToJsFunction(string jsFunction)
         => multiTargetBuilderWrapped.ToJsFunction(jsFunction);
 
-    public IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, Task> action)
-        => modelMapperWrapped.MapAction(action);
+    public IRootActionSourceBuilder<TViewModel> MapActionAsync(Func<TViewModel, Task> action)
+        => modelMapperWrapped.MapActionAsync(action);
 
     public IRootActionSourceBuilder<TViewModel> MapAction(Action<TViewModel> action)
         => modelMapperWrapped.MapAction(action);
 
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinderAsync<TViewModel> binder)
-        => modelMapperWrapped.MapAction(binder);
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinderAsync<TViewModel>
+        => modelMapperWrapped.MapActionAsync<TActionParametersBinder>();
 
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinder<TViewModel> binder)
-        => modelMapperWrapped.MapAction(binder);
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinder<TViewModel>
+        => modelMapperWrapped.MapAction<TActionParametersBinder>();
+
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync()
+        => modelMapperWrapped.MapActionAsync();
+
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction()
+        => modelMapperWrapped.MapAction();
 }

@@ -2,5 +2,5 @@
 
 public interface IActionParametersBinderAsync<TViewModel>
 {
-    Task BindAction(TViewModel viewModel, IDictionary<string, IEnumerable<string>> parameters);
+    Task BindActionAsync(TViewModel viewModel, IDictionary<string, IEnumerable<string>> parameters);
 }
