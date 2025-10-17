@@ -3,8 +3,12 @@
 namespace Vitraux.JsCodeGeneration.Formating;
 internal static class StringBuilderExt
 {
-    public static StringBuilder TryAppendLineForReadability(this StringBuilder sb)
-        => sb.AppendLine().AppendLine();
+    private static readonly string _twoNewLines = $"{Environment.NewLine}{Environment.NewLine}";
+
+    public static StringBuilder TryAppendLineForReadability(this StringBuilder sb) 
+        => sb.IsShorterThanTwoNewLines() || sb.EndsWithTwoNewLines()
+            ? sb 
+            : sb.AppendLine().AppendLine();
 
     public static StringBuilder Add(this StringBuilder sb, Func<StringBuilder, StringBuilder> func)
         => func.Invoke(sb).AppendLine();
@@ -33,5 +37,19 @@ internal static class StringBuilderExt
         }
 
         return stringBuilder;
+    }
+
+    private static bool IsShorterThanTwoNewLines(this StringBuilder sb)
+        => sb.Length < _twoNewLines.Length;
+
+    private static bool EndsWithTwoNewLines(this StringBuilder sb)
+    {
+        for (var i = 0; i < _twoNewLines.Length; i++)
+        {
+            if (sb[^(_twoNewLines.Length - i)] != _twoNewLines[i])
+                return false;
+        }
+
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Moq;
 using Vitraux.Execution.ViewModelNames;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
 using Vitraux.Test.Example;
 using Vitraux.Test.JsCodeGeneration;
 
@@ -7,28 +8,29 @@ namespace Vitraux.Test.Utils;
 
 internal static class ServiceProviderMock
 {
-    public static IServiceProvider MockForPetOwner()
+    public static Mock<IServiceProvider> MockForPetOwner(IActionKeyGenerator actionKeyGenerator)
     {
         var serviceProviderMock = new Mock<IServiceProvider>();
 
         _ = serviceProviderMock
-            .Setup(sp => sp.GetService(It.IsAny<Type>()))
-            .Returns(new Func<Type, object?>(type =>
-                type switch
-                {
-                    var t when t == typeof(IViewModelJsNamesCacheGeneric<Subscription>) => CreateViewModelJsNamesCacheForSubscription(serviceProviderMock.Object),
-                    var t when t == typeof(IModelConfiguration<Vaccine>) => new VaccineConfiguration(),
-                    var t when t == typeof(IModelMapper<Vaccine>) => new ModelMapper<Vaccine>(serviceProviderMock.Object),
-                    _ => null
-                }));
+            .Setup(sp => sp.GetService(typeof(IViewModelJsNamesCacheGeneric<Subscription>)))
+            .Returns(() => CreateViewModelJsNamesCacheForSubscription(serviceProviderMock.Object, actionKeyGenerator));
 
-        return serviceProviderMock.Object;
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IModelConfiguration<Vaccine>)))
+            .Returns(new VaccineConfiguration());
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IModelMapper<Vaccine>)))
+            .Returns(new ModelMapper<Vaccine>(serviceProviderMock.Object, actionKeyGenerator));
+
+        return serviceProviderMock;
     }
 
-    private static ViewModelJsNamesCacheGeneric<Subscription> CreateViewModelJsNamesCacheForSubscription(IServiceProvider serviceProvider)
+    private static ViewModelJsNamesCacheGeneric<Subscription> CreateViewModelJsNamesCacheForSubscription(IServiceProvider serviceProvider, IActionKeyGenerator actionKeyGenerator)
     {
         var subscriptionConfig = new SubscriptionConfiguration();
-        var modelMapper = new ModelMapper<Subscription>(serviceProvider);
+        var modelMapper = new ModelMapper<Subscription>(serviceProvider, actionKeyGenerator);
         var data = subscriptionConfig.ConfigureMapping(modelMapper);
         var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(data);
         var serializationDataMapper = new ViewModelJsNamesMapper();

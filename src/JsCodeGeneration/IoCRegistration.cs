@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Vitraux.JsCodeGeneration.Actions;
 using Vitraux.JsCodeGeneration.BuiltInCalling;
 using Vitraux.JsCodeGeneration.Collections;
 using Vitraux.JsCodeGeneration.CustomJsGeneration;
@@ -23,7 +24,8 @@ internal static class IoCRegistration
             .AddJsObjectNames()
             .AddQueryElements()
             .AddUpdateViews()
-            .AddValues();
+            .AddValues()
+            .AddActions();
 
     private static IServiceCollection AddThisNamespace(this IServiceCollection serviceCollection)
         => serviceCollection

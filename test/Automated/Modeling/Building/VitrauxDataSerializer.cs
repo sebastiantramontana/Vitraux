@@ -4,9 +4,11 @@ using System.Text;
 
 namespace Vitraux.Test.Modeling.Building;
 
+public record class IgnoredProperty(Type FromType, string Name);
+
 public static class VitrauxDataSerializer
 {
-    public static string Serialize(object? obj, int indentLevel)
+    public static string Serialize(object? obj, int indentLevel, IEnumerable<IgnoredProperty> ignoredProperties)
     {
         const int indentSpace = 2;
 
@@ -22,7 +24,7 @@ public static class VitrauxDataSerializer
         {
             sb.AppendLine($"{bracketsIndent}{{");
 
-            foreach (var prop in GetFilteredProperties(type))
+            foreach (var prop in GetFilteredProperties(type, ignoredProperties))
             {
                 var value = prop.GetValue(obj);
                 var propType = value?.GetType() ?? prop.PropertyType;
@@ -37,14 +39,14 @@ public static class VitrauxDataSerializer
 
                     foreach (var item in enumerable)
                     {
-                        sb.AppendLine(Serialize(item, indentLevel + indentSpace));
+                        sb.AppendLine(Serialize(item, indentLevel + indentSpace, ignoredProperties));
                     }
 
                     sb.Append($"{bracketsIndent}]");
                 }
                 else
                 {
-                    sb.AppendLine(Serialize(value, indentLevel + indentSpace));
+                    sb.AppendLine(Serialize(value, indentLevel + indentSpace, ignoredProperties));
                 }
             }
 
@@ -58,13 +60,14 @@ public static class VitrauxDataSerializer
         return sb.ToString();
     }
 
-    private static IEnumerable<PropertyInfo> GetFilteredProperties(Type type)
+    private static IEnumerable<PropertyInfo> GetFilteredProperties(Type type, IEnumerable<IgnoredProperty> ignoredProperties)
     {
-        IEnumerable<string> ignoredProperties = ["EqualityContract", "FunctionPointerReturnAndParameterTypes"];
+        IEnumerable<string> ignoredAutomaticProperties = ["EqualityContract", "FunctionPointerReturnAndParameterTypes"];
 
         return type
             .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)
-            .Where(p => !ignoredProperties.Contains(p.Name));
+            .Where(p => !ignoredAutomaticProperties.Contains(p.Name))
+            .Where(p => !ignoredProperties.Contains(new IgnoredProperty(p.PropertyType, p.Name)));
     }
 
     private static bool IsIEnumerableOfVitrauxType(Type type)

@@ -5,6 +5,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using Vitraux.Helpers;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
 using Vitraux.Test.Example;
 using Vitraux.Test.Utils;
 
@@ -55,7 +56,7 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
         NavigatePage(driver);
 
         var rootJsGenerator = RootJsGeneratorFactory.Create();
-        var petOwnerMappingData = GetConfiguredPetOwnerMapping();
+        var petOwnerMappingData = GetConfiguredPetOwnerMapping(RootJsGeneratorFactory.ActionKeyGenerator);
         var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(petOwnerMappingData);
 
         var generatedJsCode = rootJsGenerator.GenerateJs(fullObjNames, queryElementStrategy);
@@ -129,15 +130,51 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
         driver.Navigate().GoToUrl(fullUrlPage);
     }
 
-    private static ModelMappingData GetConfiguredPetOwnerMapping()
+    private static ModelMappingData GetConfiguredPetOwnerMapping(IActionKeyGenerator actionKeyGenerator)
     {
-        var serviceProvider = ServiceProviderMock.MockForPetOwner();
+        var serviceProvider = MockServiceProvider(actionKeyGenerator);
         var petownerConfig = new PetOwnerConfiguration(new DataUriConverter());
-        var modelMapper = new ModelMapper<PetOwner>(serviceProvider);
+        var modelMapper = new ModelMapper<PetOwner>(serviceProvider, actionKeyGenerator);
         var modelMappingData = petownerConfig.ConfigureMapping(modelMapper);
 
         return modelMappingData;
     }
+
+    private static IServiceProvider MockServiceProvider(IActionKeyGenerator actionKeyGenerator)
+    {
+        var serviceProviderMock = ServiceProviderMock.MockForPetOwner(actionKeyGenerator);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder1)))
+            .Returns(ParamBinder1);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder2)))
+            .Returns(ParamBinder2);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IActionParametersBinderAsync<PetOwner>)))
+            .Returns(ParamBinder3);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IActionParametersBinder<PetOwner>)))
+            .Returns(ParamBinder4);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(PetOwnerActionParameterBinder3)))
+            .Returns(ParamBinder3);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(PetOwnerActionParameterBinder4)))
+            .Returns(ParamBinder4);
+
+        return serviceProviderMock.Object;
+    }
+
+    private static IPetOwnerActionParameterBinder1 ParamBinder1 { get; } = new PetOwnerActionParameterBinder1();
+    private static IPetOwnerActionParameterBinder2 ParamBinder2 { get; } = new PetOwnerActionParameterBinder2();
+    private static IActionParametersBinderAsync<PetOwner> ParamBinder3 { get; } = new PetOwnerActionParameterBinder3();
+    private static IActionParametersBinder<PetOwner> ParamBinder4 { get; } = new PetOwnerActionParameterBinder4();
 
     private static void ExecuteScriptAsAwaitableFunction(string functionName, string[] parameters, string[] args, string jsCode, IWebDriver driver)
     {

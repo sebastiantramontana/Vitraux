@@ -9,7 +9,7 @@ namespace Vitraux;
 
 internal class ModelRegistrar(IServiceCollection container) : IModelRegistrar
 {
-    public IModelRegistrar AddModelConfiguration<TViewModel, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TModelConfiguration>()
+    public IParameterBinderModelRegistrar<TViewModel> AddModelConfiguration<TViewModel, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TModelConfiguration>()
         where TModelConfiguration : class, IModelConfiguration<TViewModel>
     {
         _ = container
@@ -24,6 +24,6 @@ internal class ModelRegistrar(IServiceCollection container) : IModelRegistrar
             .AddSingleton<IViewModelShallowChangesTracker<TViewModel>, ViewModelShallowChangesTracker<TViewModel>>()
             .AddSingleton<IViewUpdater<TViewModel>, ViewUpdater<TViewModel>>();
 
-        return this;
+        return new ParameterBinderModelRegistrar<TViewModel>(container);
     }
 }

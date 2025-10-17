@@ -39,11 +39,7 @@ internal class JsActionElementObjectNamesGenerator(
 
     private static IEnumerable<(ElementSelectorBase Selector, ActionSelectorLabel Label)> GetUniqueSelectors(IEnumerable<ActionData> actions)
         => actions
-            .SelectMany(a =>
-                a.Targets
-                .SelectMany(t =>
-                    t.Parameters
-                    .Select(p => (p.Selector, ActionSelectorLabel.Parameter))
-                    .Append((t.Selector, ActionSelectorLabel.Input))))
+            .SelectMany(a => a.Targets.Select(t => (t.Selector, ActionSelectorLabel.Input)))
+            .Concat(actions.SelectMany(a => a.Parameters.Select(p => (p.Selector, ActionSelectorLabel.Parameter))))
             .DistinctBy(a => a.Selector);
 }
