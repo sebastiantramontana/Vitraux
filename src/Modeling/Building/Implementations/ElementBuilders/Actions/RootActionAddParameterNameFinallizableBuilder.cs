@@ -13,14 +13,18 @@ internal class RootActionAddParameterNameFinallizableBuilder<TViewModel>(
         => rootActionParameterNameBuilder.AddParameter(paramName);
     public ModelMappingData Data
         => modelMapper.Data;
-    public IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, Task> action)
-        => modelMapper.MapAction(action);
+    public IRootActionSourceBuilder<TViewModel> MapActionAsync(Func<TViewModel, Task> action)
+        => modelMapper.MapActionAsync(action);
     public IRootActionSourceBuilder<TViewModel> MapAction(Action<TViewModel> action)
         => modelMapper.MapAction(action);
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinder<TViewModel> binder)
-        => modelMapper.MapAction(binder);
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinderAsync<TViewModel> binder)
-        => modelMapper.MapAction(binder);
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinderAsync<TViewModel>
+        => modelMapper.MapActionAsync<TActionParametersBinder>();
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinder<TViewModel>
+        => modelMapper.MapAction<TActionParametersBinder>();
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync()
+        => modelMapper.MapActionAsync();
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction()
+        => modelMapper.MapAction();
     public IRootCollectionTargetBuilder<TItem, TViewModel> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func)
         => modelMapper.MapCollection(func);
     public IRootValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func)

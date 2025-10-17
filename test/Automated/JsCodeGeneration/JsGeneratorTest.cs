@@ -1,4 +1,5 @@
-﻿using Vitraux.Execution.Serialization;
+﻿using Moq;
+using Vitraux.Execution.Serialization;
 using Vitraux.Execution.Tracking;
 using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
@@ -204,9 +205,9 @@ public class JsGeneratorTest
     {
         var sut = RootJsGeneratorFactory.Create();
         var petownerConfig = new PetOwnerConfiguration(new DataUriConverter());
-        var serviceProvider = ServiceProviderMock.MockForPetOwner();
+        var serviceProvider = MockServiceProvider();
 
-        var modelMapper = new ModelMapper<PetOwner>(serviceProvider);
+        var modelMapper = new ModelMapper<PetOwner>(serviceProvider, RootJsGeneratorFactory.ActionKeyGenerator);
         var data = petownerConfig.ConfigureMapping(modelMapper);
         var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(data);
 
@@ -230,6 +231,48 @@ public class JsGeneratorTest
 
         Assert.Equal(ExpectedPetOwnerExampleJson, serializedPetOwnerExampleJson);
     }
+
+    private static IServiceProvider MockServiceProvider()
+    {
+        var serviceProviderMock = ServiceProviderMock.MockForPetOwner(RootJsGeneratorFactory.ActionKeyGenerator);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder1)))
+            .Returns(MockParamBinder1);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder2)))
+            .Returns(MockParamBinder2);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IActionParametersBinderAsync<PetOwner>)))
+            .Returns(MockParamBinder3);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IActionParametersBinder<PetOwner>)))
+            .Returns(MockParamBinder4);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IActionParametersBinderAsync<PetOwner>)))
+            .Returns(MockParamBinder3);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(PetOwnerActionParameterBinder3)))
+            .Returns(ParamBinder3);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(PetOwnerActionParameterBinder4)))
+            .Returns(ParamBinder4);
+
+        return serviceProviderMock.Object;
+    }
+
+    private static IPetOwnerActionParameterBinder1 MockParamBinder1 { get; } = Mock.Of<IPetOwnerActionParameterBinder1>();
+    private static IPetOwnerActionParameterBinder2 MockParamBinder2 { get; } = Mock.Of<IPetOwnerActionParameterBinder2>();
+    private static IActionParametersBinderAsync<PetOwner> MockParamBinder3 { get; } = Mock.Of<IActionParametersBinderAsync<PetOwner>>();
+    private static IActionParametersBinder<PetOwner> MockParamBinder4 { get; } = Mock.Of<IActionParametersBinder<PetOwner>>();
+    private static PetOwnerActionParameterBinder3 ParamBinder3 { get; } = new PetOwnerActionParameterBinder3();
+    private static PetOwnerActionParameterBinder4 ParamBinder4 { get; } = new PetOwnerActionParameterBinder4();
 
     private static PetOwner PetOwnerExample { get; } =
         new PetOwner(

@@ -1,5 +1,8 @@
 ﻿using Moq;
 using Vitraux.Helpers;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
+using Vitraux.Modeling.Data;
+using Vitraux.Modeling.Data.Actions;
 using Vitraux.Modeling.Data.Collections;
 using Vitraux.Modeling.Data.Selectors.Collections;
 using Vitraux.Modeling.Data.Selectors.Values;
@@ -12,7 +15,7 @@ namespace Vitraux.Test.Modeling.Building;
 
 public class PetOwnerConfigurationTest
 {
-    private readonly DataUriConverter dataUriConverter = new();
+    private static readonly DataUriConverter dataUriConverter = new();
 
     [Fact]
     public void TestMapping()
@@ -21,20 +24,58 @@ public class PetOwnerConfigurationTest
 
         PetOwnerConfiguration sut = new(dataUriConverter);
 
-        var serviceProvider = ServiceProviderMock.MockForPetOwner();
+        var actionKeyGenerator = new Mock<IActionKeyGenerator>();
 
-        var actualData = sut.ConfigureMapping(new ModelMapper<PetOwner>(serviceProvider));
+        _ = actionKeyGenerator
+            .Setup(g => g.Generate())
+            .Returns("SomeKey");
 
-        var actualDataSerialized = VitrauxDataSerializer.Serialize(actualData, 0);
-        var expectedDataSerialized = VitrauxDataSerializer.Serialize(expectedData, 0);
+        var serviceProvider = MockServiceProvider(actionKeyGenerator.Object);
+
+        var actualData = sut.ConfigureMapping(new ModelMapper<PetOwner>(serviceProvider, actionKeyGenerator.Object));
+
+        var ignoreParentActionData = new IgnoredProperty(typeof(ActionData), nameof(ActionTarget.Parent));
+        var actualDataSerialized = VitrauxDataSerializer.Serialize(actualData, 0, [ignoreParentActionData]);
+        var expectedDataSerialized = VitrauxDataSerializer.Serialize(expectedData, 0, [ignoreParentActionData]);
 
         Assert.Equal(expectedDataSerialized, actualDataSerialized);
     }
 
-    private string ToDataUri(byte[] data)
+    private static IServiceProvider MockServiceProvider(IActionKeyGenerator actionKeyGenerator)
+    {
+        var serviceProviderMock = ServiceProviderMock.MockForPetOwner(actionKeyGenerator);
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder1)))
+            .Returns(Mock.Of<IPetOwnerActionParameterBinder1>());
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder2)))
+            .Returns(Mock.Of<IPetOwnerActionParameterBinder2>());
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IActionParametersBinderAsync<PetOwner>)))
+            .Returns(Mock.Of<IActionParametersBinderAsync<PetOwner>>());
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(IActionParametersBinder<PetOwner>)))
+            .Returns(Mock.Of<IActionParametersBinder<PetOwner>>());
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(PetOwnerActionParameterBinder3)))
+            .Returns(new PetOwnerActionParameterBinder3());
+
+        _ = serviceProviderMock
+            .Setup(sp => sp.GetService(typeof(PetOwnerActionParameterBinder4)))
+            .Returns(new PetOwnerActionParameterBinder4());
+
+        return serviceProviderMock.Object;
+    }
+
+    private static string ToDataUri(byte[] data)
          => dataUriConverter.ToDataUri(MimeImage.Png, data);
 
-    private ModelMappingData CreatePetOwnerData()
+    private static ModelMappingData CreatePetOwnerData()
     {
         var petOwnerData = new ModelMappingData();
 
@@ -44,6 +85,16 @@ public class PetOwnerConfigurationTest
         var suscriptionValue = CreateSubscriptionValueData();
         var commentsValue = CreateCommentsValueData();
         var petsCollection = CreatePetsCollectionData();
+        var action1 = CreateAction1();
+        var action2 = CreateAction2();
+        var action3 = CreateAction3();
+        var action4 = CreateAction4();
+        var action5 = CreateAction5();
+        var action6 = CreateAction6();
+        var action7 = CreateAction7();
+        var action8 = CreateAction8();
+        var action9 = CreateAction9();
+        var action10 = CreateAction10();
 
         petOwnerData.AddValue(nameValue);
         petOwnerData.AddValue(addressValue);
@@ -51,11 +102,148 @@ public class PetOwnerConfigurationTest
         petOwnerData.AddValue(suscriptionValue);
         petOwnerData.AddValue(commentsValue);
         petOwnerData.AddCollection(petsCollection);
+        petOwnerData.AddAction(action1);
+        petOwnerData.AddAction(action2);
+        petOwnerData.AddAction(action3);
+        petOwnerData.AddAction(action4);
+        petOwnerData.AddAction(action5);
+        petOwnerData.AddAction(action6);
+        petOwnerData.AddAction(action7);
+        petOwnerData.AddAction(action8);
+        petOwnerData.AddAction(action9);
+        petOwnerData.AddAction(action10);
 
         return petOwnerData;
     }
 
-    private CollectionData CreatePetsCollectionData()
+    private static ActionData CreateAction1()
+    {
+        var action = new ActionData((PetOwner po) => po.Method1(), "SomeKey");
+
+        AddActionTarget(action, new ElementQuerySelectorString("el1"), ["event1"]);
+
+        return action;
+    }
+
+    private static ActionData CreateAction2()
+    {
+        var action = new ActionData((PetOwner po) => po.Method1(), "SomeKey");
+
+        AddActionTarget(action, new ElementQuerySelectorString("el2"), ["event2"]);
+        AddActionTarget(action, new ElementQuerySelectorString("el3"), ["event3", "event4"]);
+
+        return action;
+    }
+
+    private static ActionData CreateAction3()
+    {
+        var action = new ActionData((PetOwner po) => po.Method2(), "SomeKey");
+
+        AddActionTarget(action, new ElementQuerySelectorString("el4"), ["event5"]);
+
+        return action;
+    }
+
+    private static ActionData CreateAction4()
+    {
+        var action = new ActionData((PetOwner po) => po.Method2(), "SomeKey");
+
+        AddActionTarget(action, new ElementQuerySelectorString("el5"), ["event6", "event7"]);
+        AddActionTarget(action, new ElementIdSelectorString("el6"), ["event8", "event9"]);
+
+        return action;
+    }
+
+    private static ActionData CreateAction5()
+    {
+        IPetOwnerActionParameterBinder1 binder = new PetOwnerActionParameterBinder1();
+        var action = new ActionData(binder.BindAction, "SomeKey") { PassInputValueParameter = true };
+
+        AddActionTarget(action, new ElementIdSelectorString("el7"), ["event10"]);
+
+        return action;
+    }
+
+    private static ActionData CreateAction6()
+    {
+        IPetOwnerActionParameterBinder2 binder = new PetOwnerActionParameterBinder2();
+        var action = new ActionData(binder.BindActionAsync, "SomeKey") { PassInputValueParameter = true };
+
+        AddActionTarget(action, new ElementIdSelectorString("el8"), ["event11"]);
+
+        AddActionParameter(action, "p1", new ElementQuerySelectorString("el9"), ValuePropertyElementPlace.Instance);
+        AddActionParameter(action, "p2", new ElementIdSelectorString("el10"), ContentElementPlace.Instance);
+
+        return action;
+    }
+
+    private static ActionData CreateAction7()
+    {
+        var binder = new PetOwnerActionParameterBinder3();
+        var action = new ActionData(binder.BindActionAsync, "SomeKey") { PassInputValueParameter = true };
+
+        AddActionTarget(action, new ElementIdSelectorString("el11"), ["event12"]);
+        AddActionTarget(action, new ElementQuerySelectorString("el12"), ["event13", "event14"]);
+
+        return action;
+    }
+
+    private static ActionData CreateAction8()
+    {
+        var binder = new PetOwnerActionParameterBinder4();
+        var action = new ActionData(binder.BindAction, "SomeKey") { PassInputValueParameter = true };
+
+        AddActionTarget(action, new ElementIdSelectorString("el13"), ["event15"]);
+        AddActionTarget(action, new ElementQuerySelectorString("el14"), ["event16", "event17"]);
+
+        AddActionParameter(action, "p3", new ElementIdSelectorString("el15"), ValuePropertyElementPlace.Instance);
+        AddActionParameter(action, "p4", new ElementQuerySelectorString("el16"), new AttributeElementPlace("att1"));
+
+        return action;
+    }
+
+    private static ActionData CreateAction9()
+    {
+        IActionParametersBinderAsync<PetOwner> binder = new PetOwnerActionParameterBinder3();
+        var action = new ActionData(binder.BindActionAsync, "SomeKey");
+
+        AddActionTarget(action, new ElementQuerySelectorString("el17"), ["event18", "event19"]);
+
+        AddActionParameter(action, "p5", new ElementIdSelectorString("el18"), ValuePropertyElementPlace.Instance);
+        AddActionParameter(action, "p6", new ElementQuerySelectorString("el19"), ContentElementPlace.Instance);
+
+        return action;
+    }
+
+    private static ActionData CreateAction10()
+    {
+        IActionParametersBinder<PetOwner> binder = new PetOwnerActionParameterBinder4();
+        var action = new ActionData(binder.BindAction, "SomeKey");
+
+        AddActionTarget(action, new ElementQuerySelectorString("el20"), ["event20", "event21"]);
+        AddActionTarget(action, new ElementIdSelectorString("el21"), ["event22"]);
+
+        AddActionParameter(action, "p7", new ElementIdSelectorString("el22"), ValuePropertyElementPlace.Instance);
+        AddActionParameter(action, "p8", new ElementQuerySelectorString("el23"), new AttributeElementPlace("att2"));
+
+        return action;
+    }
+
+    private static void AddActionParameter(ActionData action, string name, ElementSelectorBase selector, ElementPlace place)
+        => action.AddParameter(new ActionParameter(name)
+        {
+            Selector = selector,
+            ElementPlace = place
+        });
+
+    private static void AddActionTarget(ActionData action, ElementSelectorBase selector, string[] events)
+        => action.AddTarget(new ActionTarget(action)
+        {
+            Selector = selector,
+            Events = events
+        });
+
+    private static CollectionData CreatePetsCollectionData()
     {
         var petsCollection = new CollectionData((PetOwner p) => p.Pets);
 
@@ -126,7 +314,6 @@ public class PetOwnerConfigurationTest
         return commentsValue;
     }
 
-
     private static ValueData CreateAddressValueData()
     {
         var addressValue = new ValueData((PetOwner p) => p.Address);
@@ -168,7 +355,7 @@ public class PetOwnerConfigurationTest
         return nameValue;
     }
 
-    private void FillPetsTableData(ModelMappingData petsTableData)
+    private static void FillPetsTableData(ModelMappingData petsTableData)
     {
         var petNameValue = CreatePetNameValue();
         var petVaccinesCollection = CreatePetVaccinesCollection();
@@ -266,7 +453,7 @@ public class PetOwnerConfigurationTest
         ingredientsData.AddValue(ingredientValue);
     }
 
-    private ValueData CreatePetPhoto()
+    private static ValueData CreatePetPhoto()
     {
         var petPhotoValue = new ValueData((Pet p) => ToDataUri(p.Photo));
 

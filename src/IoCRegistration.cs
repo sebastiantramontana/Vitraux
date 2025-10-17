@@ -3,6 +3,8 @@ using Vitraux.Execution;
 using Vitraux.Execution.Building;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
+using Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 namespace Vitraux;
 
@@ -10,6 +12,7 @@ public static class IoCRegistration
 {
     public static IVitrauxRegistrar AddVitraux(this IServiceCollection serviceCollection)
         => serviceCollection
+            .AddSingleton<IActionKeyGenerator, ActionKeyGenerator>()
             .AddExecution()
             .AddHelpers()
             .AddJsCodeGeneration()

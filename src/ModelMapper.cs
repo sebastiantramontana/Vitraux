@@ -30,40 +30,49 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider, IAction
         return new RootCollectionTargetBuilder<TItem, TViewModel>(collection, this, serviceProvider);
     }
 
-    public IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, Task> func)
-    {
-        var action = new ActionData(func, true, GenerateActionKey());
-        Data.AddAction(action);
-
-        return new RootActionSourceBuilder<TViewModel>(action, this);
-    }
+    public IRootActionSourceBuilder<TViewModel> MapActionAsync(Func<TViewModel, Task> func)
+        => AddAction(func);
 
     public IRootActionSourceBuilder<TViewModel> MapAction(Action<TViewModel> func)
-    {
-        var action = new ActionData(func, false, GenerateActionKey());
-        Data.AddAction(action);
+        => AddAction(func);
 
-        return new RootActionSourceBuilder<TViewModel>(action, this);
-    }
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinderAsync<TViewModel>
+        => AddParametrizableAction<TActionParametersBinder>((binder, actionKey) => new ActionData(binder.BindActionAsync, actionKey));
 
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinderAsync<TViewModel> binder)
-    {
-        var action = new ActionData(binder.BindAction, true, GenerateActionKey());
-        Data.AddAction(action);
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinder<TViewModel>
+        => AddParametrizableAction<TActionParametersBinder>((binder, actionKey) => new ActionData(binder.BindAction, actionKey));
 
-        return new RootParametrizableActionSourceBuilder<TViewModel>(action, this);
-    }
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync()
+        => AddParametrizableAction<IActionParametersBinderAsync<TViewModel>>((binder, actionKey) => new ActionData(binder.BindActionAsync, actionKey));
 
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinder<TViewModel> binder)
-    {
-        var action = new ActionData(binder.BindAction, false, GenerateActionKey());
-        Data.AddAction(action);
-
-        return new RootParametrizableActionSourceBuilder<TViewModel>(action, this);
-    }
+    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction()
+        => AddParametrizableAction<IActionParametersBinder<TViewModel>>((binder, actionKey) => new ActionData(binder.BindAction, actionKey));
 
     public ModelMappingData Data { get; } = new ModelMappingData();
 
+    private RootActionSourceBuilder<TViewModel> AddAction(Delegate func)
+    {
+        var action = new ActionData(func, GenerateActionKey());
+        Data.AddAction(action);
+
+        return new RootActionSourceBuilder<TViewModel>(action, this);
+    }
+
+    private RootParametrizableActionSourceBuilder<TViewModel> AddParametrizableAction<TActionParametersBinder>(Func<TActionParametersBinder, string, ActionData> actionDataFactory) where TActionParametersBinder : class
+    {
+        var binder = GetActionParameterBinder<TActionParametersBinder>();
+        var actionKey = GenerateActionKey();
+        var action = actionDataFactory.Invoke(binder, actionKey);
+
+        Data.AddAction(action);
+
+        return new RootParametrizableActionSourceBuilder<TViewModel>(action, this);
+    }
+
     private string GenerateActionKey()
         => actionKeyGenerator.Generate();
+
+    private TActionParametersBinder GetActionParameterBinder<TActionParametersBinder>() where TActionParametersBinder : class
+        => serviceProvider.GetService(typeof(TActionParametersBinder)) as TActionParametersBinder
+            ?? throw new InvalidOperationException($"Action parameter binder '{typeof(TActionParametersBinder).Name}' not found. Add it calling to AddActionParameterBinder<...>() method after AddModelConfiguration<...>()");
 }

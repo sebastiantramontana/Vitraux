@@ -10,7 +10,7 @@ internal class RootActionSourceBuilder<TViewModel>(ActionData actionData, IModel
 
     private RootActionInputSourceSelectorBuilder<TViewModel> BuildActionInput()
     {
-        var actionTarget = new ActionTarget();
+        var actionTarget = new ActionTarget(actionData);
         actionData.AddTarget(actionTarget);
 
         return new RootActionInputSourceSelectorBuilder<TViewModel>(actionTarget, this, modelMapper);

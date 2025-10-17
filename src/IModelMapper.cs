@@ -8,9 +8,11 @@ public interface IModelMapper<TViewModel>
 {
     IRootValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func);
     IRootCollectionTargetBuilder<TItem, TViewModel> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func);
-    IRootActionSourceBuilder<TViewModel> MapAction(Func<TViewModel, Task> action);
+    IRootActionSourceBuilder<TViewModel> MapActionAsync(Func<TViewModel, Task> action);
     IRootActionSourceBuilder<TViewModel> MapAction(Action<TViewModel> action);
-    IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinder<TViewModel> binder);
-    IRootParametrizableActionSourceBuilder<TViewModel> MapAction(IActionParametersBinderAsync<TViewModel> binder);
+    IRootParametrizableActionSourceBuilder<TViewModel> MapAction();
+    IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync();
+    IRootParametrizableActionSourceBuilder<TViewModel> MapAction<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinder<TViewModel>;
+    IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinderAsync<TViewModel>;
     ModelMappingData Data { get; }
 }

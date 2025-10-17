@@ -2,12 +2,7 @@
 
 namespace Vitraux.Test.Example;
 
-public class PetOwnerConfiguration(
-    IDataUriConverter dataUriConverter,
-    IPetOwnerActionParameterBinder1 parameterBinder1,
-    IPetOwnerActionParameterBinder2 parameterBinder2,
-    IPetOwnerActionParameterBinder3 parameterBinder3,
-    IPetOwnerActionParameterBinder4 parameterBinder4) : IModelConfiguration<PetOwner>
+public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelConfiguration<PetOwner>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {
@@ -19,41 +14,42 @@ public class PetOwnerConfiguration(
     public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> modelMapper)
         => modelMapper
             .MapAction(po => po.Method1())
-                .FromInputs.ByQuery("1").On("fdfd")
+                .FromInputs.ByQuery("el1").On("event1")
             .MapAction(po => po.Method1())
-                .FromInputs.ByQuery("1").On("fdfd")
-                .FromInputs.ByQuery("1").On("fdfsadsd")
-            .MapAction((po) => po.Method2())
-                .FromInputs.ByQuery("1").On("fdfd")
-            .MapAction((po) => po.Method2())
-                .FromInputs.ByQuery("1").On("fdfd", "gfg")
-                .FromInputs.ById("dfsa").On("ghg","gfg")
-            .MapAction(parameterBinder1)
-                .FromInputs.ById("2").On("sdfdfr").AddParameterValue
-            .MapAction(parameterBinder2)
-                .FromInputs.ById("2").On("sdfdfr")
-                    .AddParameterValue
-                    .AddParameter("dsfdfdsf").FromParamInputs.ByQuery("gfgdfg")
-                    .AddParameter("dfsdfsdf").FromParamElements.ById("dfdsf").FromContent
-            .MapAction(parameterBinder3)
-                .FromInputs.ById("2").On("sdfdfr")
-                .FromInputs.ByQuery("ffdfds").On("dfsdff","fdfdfd")
-                    .AddParameterValue
-            .MapAction(parameterBinder4)
-                .FromInputs.ById("2").On("sdfdfr")
-                .FromInputs.ByQuery("ffdfds").On("dfsdff", "fdfdfd")
-                    .AddParameterValue
-                    .AddParameter("dfdsfsdf").FromParamInputs.ById("gfgdfg")
-                    .AddParameter("dfsdfsdf").FromParamElements.ByQuery("dfdsf").FromAttribute("dfsdf")
-            .MapAction(parameterBinder1)
-                .FromInputs.ByQuery("ffdfds").On("dfsdff", "fdfdfd")
-                    .AddParameter("dfdsfsdf").FromParamInputs.ById("gfgdfg")
-                    .AddParameter("dfsdfsdf").FromParamElements.ByQuery("dfdsf").FromContent
-            .MapAction(parameterBinder2)
-                .FromInputs.ByQuery("ffdfds").On("dfsdff", "fdfdfd")
-                .FromInputs.ById("2").On("sdfdfr")
-                    .AddParameter("dfdsfsdf").FromParamInputs.ById("gfgdfg")
-                    .AddParameter("dfsdfsdf").FromParamElements.ByQuery("dfdsf").FromAttribute("dfsdf")
+                .FromInputs.ByQuery("el2").On("event2")
+                .FromInputs.ByQuery("el3").On("event3", "event4")
+            .MapActionAsync((po) => po.Method2())
+                .FromInputs.ByQuery("el4").On("event5")
+            .MapActionAsync((po) => po.Method2())
+                .FromInputs.ByQuery("el5").On("event6", "event7")
+                .FromInputs.ById("el6").On("event8", "event9")
+            .MapAction<IPetOwnerActionParameterBinder1>()
+                .FromInputs.ById("el7").On("event10")
+                .AddParameterValue
+            .MapActionAsync<IPetOwnerActionParameterBinder2>()
+                .FromInputs.ById("el8").On("event11")
+                .AddParameterValue
+                .AddParameter("p1").FromParamInputs.ByQuery("el9")
+                .AddParameter("p2").FromParamElements.ById("el10").FromContent
+            .MapActionAsync<PetOwnerActionParameterBinder3>()
+                .FromInputs.ById("el11").On("event12")
+                .FromInputs.ByQuery("el12").On("event13", "event14")
+                .AddParameterValue
+            .MapAction<PetOwnerActionParameterBinder4>()
+                .FromInputs.ById("el13").On("event15")
+                .FromInputs.ByQuery("el14").On("event16", "event17")
+                .AddParameterValue
+                .AddParameter("p3").FromParamInputs.ById("el15")
+                .AddParameter("p4").FromParamElements.ByQuery("el16").FromAttribute("att1")
+            .MapActionAsync()
+                .FromInputs.ByQuery("el17").On("event18", "event19")
+                .AddParameter("p5").FromParamInputs.ById("el18")
+                .AddParameter("p6").FromParamElements.ByQuery("el19").FromContent
+            .MapAction()
+                .FromInputs.ByQuery("el20").On("event20", "event21")
+                .FromInputs.ById("el21").On("event22")
+                .AddParameter("p7").FromParamInputs.ById("el22")
+                .AddParameter("p8").FromParamElements.ByQuery("el23").FromAttribute("att2")
             .MapValue(po => po.Name)
                 .ToElements.ById("petowner-name").ToContent
                 .ToJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))
