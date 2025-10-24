@@ -6,6 +6,8 @@ namespace Vitraux.JsCodeGeneration.Actions;
 
 internal class RootActionInputElementsQueryJsGenerator(IQueryElementsAlwaysJsCodeGenerator alwaysGenerator) : IRootActionInputElementsQueryJsGenerator
 {
-    public StringBuilder GenerateJs(StringBuilder stringBuilder, IEnumerable<JsElementObjectName> jsInputObjectNames)
-        => stringBuilder.AppendLine(alwaysGenerator.GenerateJsCode(jsInputObjectNames, string.Empty));
+    private const string RootElementObjectName = "document";
+
+    public StringBuilder GenerateJs(StringBuilder jsBuilder, IEnumerable<JsElementObjectName> jsInputObjectNames)
+        => jsBuilder.Append(alwaysGenerator.GenerateJsCode(jsInputObjectNames, RootElementObjectName));
 }

@@ -12,9 +12,12 @@ internal class RootActionParametersCallbackArgumentsJsObjectGenerator(
     IActionParameterGettingValueCallGenerator actionParameterGettingValueCallGenerator) : IRootActionParametersCallbackArgumentsJsObjectGenerator
 {
     public StringBuilder GenerateJs(StringBuilder jsBuilder, ActionData action, IEnumerable<JsElementObjectName> jsParameterObjectNames, int indentCount)
-        => jsParameterObjectNames
-            .Aggregate(jsBuilder, (sb, p) => sb.Add(GenerateJsObjectPropertyValue, p.Name, GetActionParameter(p.AssociatedSelector, action), indentCount))
-            .RemoveLastCharacter(',');
+        => jsParameterObjectNames.Any()
+            ? jsParameterObjectNames
+                .Aggregate(jsBuilder, (sb, p) => sb.AddLine(GenerateJsObjectPropertyValue, p.Name, GetActionParameter(p.AssociatedSelector, action), indentCount))
+                .TrimEnd()
+                .RemoveLastCharacter(',')
+            : jsBuilder;
 
     private static ActionParameter GetActionParameter(SelectorBase selector, ActionData action)
         => action.Parameters.Single(p => p.Selector == selector);

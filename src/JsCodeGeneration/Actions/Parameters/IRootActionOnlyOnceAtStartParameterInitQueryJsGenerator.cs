@@ -5,5 +5,5 @@ namespace Vitraux.JsCodeGeneration.Actions.Parameters;
 
 internal interface IRootActionOnlyOnceAtStartParameterInitQueryJsGenerator
 {
-    StringBuilder GenerateJs(StringBuilder stringBuilder, IEnumerable<JsElementObjectName> jsParametersObjectNames);
+    StringBuilder GenerateJs(StringBuilder jsBuilder, IEnumerable<JsElementObjectName> jsParametersObjectNames);
 }

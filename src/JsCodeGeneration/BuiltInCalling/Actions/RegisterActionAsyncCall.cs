@@ -1,7 +1,9 @@
 ﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Actions;
 
-internal class RegisterActionAsyncCall : IRegisterActionAsyncCall
+internal class RegisterActionAsyncCall(IRegisterActionCallGenerator generator) : IRegisterActionAsyncCall
 {
+    private const string FunctionName = "registerActionAsync";
+
     public string Generate(string elementsArg, IEnumerable<string> eventsArg, string vmKeyArg, string actionKeyArg)
-        => $"globalThis.vitraux.actions.registerActionAsync({elementsArg},'[{string.Join(",", eventsArg)}]','{vmKeyArg}', '{actionKeyArg}')";
+        => generator.Generate(FunctionName, elementsArg, eventsArg, vmKeyArg, actionKeyArg);
 }

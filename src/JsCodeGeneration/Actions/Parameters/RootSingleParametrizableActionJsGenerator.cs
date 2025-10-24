@@ -21,13 +21,13 @@ internal class RootSingleParametrizableActionJsGenerator(
         var callbackFunctionName = callbackFunctionNameGenerator.Generate();
 
         return jsBuilder
-            .Add(rootActionInputElementsQueryJsGenerator.GenerateJs, jsInputObjectNames)
-            .Add(GenerateParametersQuery, queryElementStrategy, jsParameterObjectNames)
-            .Add(rootActionParametersCallbackJsGenerator.GenerateJs, callbackFunctionName, action, queryElementStrategy, jsParameterObjectNames)
+            .AddTwoLines(rootActionInputElementsQueryJsGenerator.GenerateJs, jsInputObjectNames)
+            .TryAddTwoLines(TryGenerateParametersQuery, queryElementStrategy, jsParameterObjectNames)
+            .AddTwoLines(rootActionParametersCallbackJsGenerator.GenerateJs, callbackFunctionName, action, queryElementStrategy, jsParameterObjectNames)
             .Add(rootParametrizableActionInputEventsRegistrationJsGenerator.GenerateJs, action, jsInputObjectNames, vmKey, callbackFunctionName);
     }
 
-    private StringBuilder GenerateParametersQuery(StringBuilder jsBuilder, QueryElementStrategy queryElementStrategy, IEnumerable<JsElementObjectName> jsParameterObjectNames)
+    private StringBuilder TryGenerateParametersQuery(StringBuilder jsBuilder, QueryElementStrategy queryElementStrategy, IEnumerable<JsElementObjectName> jsParameterObjectNames)
         => queryElementStrategy == QueryElementStrategy.OnlyOnceAtStart
             ? rootActionOnlyOnceAtStartParameterInitQueryJsGenerator.GenerateJs(jsBuilder, jsParameterObjectNames)
             : jsBuilder;

@@ -5,5 +5,5 @@ namespace Vitraux.JsCodeGeneration.Actions;
 
 internal interface IRootActionInputElementsQueryJsGenerator
 {
-    StringBuilder GenerateJs(StringBuilder stringBuilder, IEnumerable<JsElementObjectName> jsInputObjectNames);
+    StringBuilder GenerateJs(StringBuilder jsBuilder, IEnumerable<JsElementObjectName> jsInputObjectNames);
 }

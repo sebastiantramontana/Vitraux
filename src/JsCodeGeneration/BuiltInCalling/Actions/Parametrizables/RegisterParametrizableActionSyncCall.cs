@@ -1,7 +1,9 @@
 ﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Actions.Parametrizables;
 
-internal class RegisterParametrizableActionSyncCall : IRegisterParametrizableActionSyncCall
+internal class RegisterParametrizableActionSyncCall(IRegisterParametrizableActionCallGenerator callGenerator) : IRegisterParametrizableActionSyncCall
 {
+    private const string FunctionName = "registerParametrizableActionSync";
+
     public string Generate(string elementsArg, IEnumerable<string> eventsArg, string vmKeyArg, string actionKeyArg, string actionArgsCallbackArg)
-        => $"globalThis.vitraux.actions.registerParametrizableActionSync({elementsArg},'{string.Join(",", eventsArg)}','{vmKeyArg}', '{actionKeyArg}', {actionArgsCallbackArg})";
+        => callGenerator.Generate(FunctionName, elementsArg, eventsArg, vmKeyArg, actionKeyArg, actionArgsCallbackArg);
 }

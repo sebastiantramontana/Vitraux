@@ -9,10 +9,10 @@ internal class RootActionParametersCallbackConstArgsJsGenerator(
     IRootActionParametersCallbackArgumentsJsObjectGenerator argumentsObjectJsGenerator,
     ICodeFormatter codeFormatter) : IRootActionParametersCallbackConstArgsJsGenerator
 {
-    public StringBuilder GenerateJs(StringBuilder jsBuilder, string argsJsObjectName, ActionData action, IEnumerable<JsElementObjectName> jsParameterObjectNames, int currentIndentCount) 
+    public StringBuilder GenerateJs(StringBuilder jsBuilder, string argsJsObjectName, ActionData action, IEnumerable<JsElementObjectName> jsParameterObjectNames, int currentIndentCount)
         => jsBuilder
-                .Add(GenerateArgsDeclaration, argsJsObjectName, currentIndentCount)
-                .Add(argumentsObjectJsGenerator.GenerateJs, action, jsParameterObjectNames, currentIndentCount + 1)
+                .AddLine(GenerateArgsDeclaration, argsJsObjectName, currentIndentCount)
+                .TryAddLine(argumentsObjectJsGenerator.GenerateJs, action, jsParameterObjectNames, currentIndentCount + 1)
                 .Add(GenerateCloseArgs, currentIndentCount);
 
     private StringBuilder GenerateArgsDeclaration(StringBuilder jsBuilder, string argsJsObjectName, int indentCount)

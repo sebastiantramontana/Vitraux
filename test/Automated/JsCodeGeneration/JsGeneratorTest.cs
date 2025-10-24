@@ -3,6 +3,8 @@ using Vitraux.Execution.Serialization;
 using Vitraux.Execution.Tracking;
 using Vitraux.Execution.ViewModelNames;
 using Vitraux.Helpers;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
+using Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 using Vitraux.Test.Example;
 using Vitraux.Test.Utils;
 
@@ -201,13 +203,14 @@ public class JsGeneratorTest
     [InlineData(QueryElementStrategy.OnlyOnceAtStart, expectedQueryElementsJsAtStart, expectedInitializationJsForAtStart)]
     [InlineData(QueryElementStrategy.OnlyOnceOnDemand, expectedQueryElementsJsOnDemand, expectedInitializationJsForOnDemand)]
     [InlineData(QueryElementStrategy.Always, expectedQueryElementsJsAlways, expectedInitializationJsForAlways)]
-    public async Task GenerateCodeTest(QueryElementStrategy queryElementStrategy, string expectedQueryElementsJs, string expectedInitializationJs)
+    public async Task GenerateJsTest(QueryElementStrategy queryElementStrategy, string expectedQueryElementsJs, string expectedInitializationJs)
     {
         var sut = RootJsGeneratorFactory.Create();
         var petownerConfig = new PetOwnerConfiguration(new DataUriConverter());
-        var serviceProvider = MockServiceProvider();
+        var actionKeyGenerator = new ActionKeyGenerator(new AtomicAutoNumberGenerator());
+        var serviceProvider = MockServiceProvider(actionKeyGenerator);
 
-        var modelMapper = new ModelMapper<PetOwner>(serviceProvider, RootJsGeneratorFactory.ActionKeyGenerator);
+        var modelMapper = new ModelMapper<PetOwner>(serviceProvider, actionKeyGenerator);
         var data = petownerConfig.ConfigureMapping(modelMapper);
         var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(data);
 
@@ -232,9 +235,9 @@ public class JsGeneratorTest
         Assert.Equal(ExpectedPetOwnerExampleJson, serializedPetOwnerExampleJson);
     }
 
-    private static IServiceProvider MockServiceProvider()
+    private static IServiceProvider MockServiceProvider(IActionKeyGenerator actionKeyGenerator)
     {
-        var serviceProviderMock = ServiceProviderMock.MockForPetOwner(RootJsGeneratorFactory.ActionKeyGenerator);
+        var serviceProviderMock = ServiceProviderMock.MockForPetOwner(actionKeyGenerator);
 
         _ = serviceProviderMock
             .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder1)))
