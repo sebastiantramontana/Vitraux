@@ -10,8 +10,10 @@ internal static class IoCRegistration
             .AddSingleton<IGetElementsAttributeCall, GetElementsAttributeCall>()
             .AddSingleton<IGetElementsContentCall, GetElementsContentCall>()
             .AddSingleton<IGetInputValueCall, GetInputValueCall>()
+            .AddSingleton<IRegisterActionCallGenerator, RegisterActionCallGenerator>()
             .AddSingleton<IRegisterActionAsyncCall, RegisterActionAsyncCall>()
             .AddSingleton<IRegisterActionSyncCall, RegisterActionSyncCall>()
+            .AddSingleton<IRegisterParametrizableActionCallGenerator, RegisterParametrizableActionCallGenerator>()
             .AddSingleton<IRegisterParametrizableActionAsyncCall, RegisterParametrizableActionAsyncCall>()
             .AddSingleton<IRegisterParametrizableActionSyncCall, RegisterParametrizableActionSyncCall>();
 }

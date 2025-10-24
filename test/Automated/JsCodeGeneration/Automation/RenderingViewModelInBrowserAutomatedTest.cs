@@ -6,6 +6,7 @@ using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using Vitraux.Helpers;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
+using Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 using Vitraux.Test.Example;
 using Vitraux.Test.Utils;
 
@@ -56,7 +57,8 @@ public class RenderingViewModelInBrowserAutomatedTest : IDisposable
         NavigatePage(driver);
 
         var rootJsGenerator = RootJsGeneratorFactory.Create();
-        var petOwnerMappingData = GetConfiguredPetOwnerMapping(RootJsGeneratorFactory.ActionKeyGenerator);
+        var actionKeyGenerator = new ActionKeyGenerator(new AtomicAutoNumberGenerator());
+        var petOwnerMappingData = GetConfiguredPetOwnerMapping(actionKeyGenerator);
         var fullObjNames = RootJsGeneratorFactory.JsFullObjectNamesGenerator.Generate(petOwnerMappingData);
 
         var generatedJsCode = rootJsGenerator.GenerateJs(fullObjNames, queryElementStrategy);

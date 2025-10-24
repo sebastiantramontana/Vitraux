@@ -16,9 +16,9 @@ internal class RootActionParametersCallbackBodyJsGenerator(
         const string ArgsJsObjectName = "args";
 
         return jsBuilder
-                .Add(callbackQueryElementsJsGenerator.GenerateJs, queryElementStrategy, jsParameterObjectNames, indentCount)
-                .Add(callbackConstArgsJsGenerator.GenerateJs, ArgsJsObjectName, action, jsParameterObjectNames, indentCount)
-                .Add(callbackInputValueParameterJsGenerator.GenerateJs, action.PassInputValueParameter, ArgsJsObjectName, callbackEventParameterName, indentCount)
+                .TryAddTwoLines(callbackQueryElementsJsGenerator.GenerateJs, queryElementStrategy, jsParameterObjectNames, indentCount)
+                .AddTwoLines(callbackConstArgsJsGenerator.GenerateJs, ArgsJsObjectName, action, jsParameterObjectNames, indentCount)
+                .TryAddTwoLines(callbackInputValueParameterJsGenerator.GenerateJs, action.PassInputValueParameter, ArgsJsObjectName, callbackEventParameterName, indentCount)
                 .Add(callbackReturnArgsJsGenerator.GenerateJs, ArgsJsObjectName, indentCount);
     }
 }

@@ -16,7 +16,7 @@ internal class RootSingleParameterlessActionJsGenerator(
         var jsInputObjectNames = actionInputJsElementObjectNames.Filter(action, jsAllElementObjectNames);
 
         return jsBuilder
-            .Add(rootActionInputElementsQueryJsGenerator.GenerateJs, jsInputObjectNames)
+            .AddTwoLines(rootActionInputElementsQueryJsGenerator.GenerateJs, jsInputObjectNames)
             .Add(rootActionInputEventsRegistrationJsGenerator.GenerateJs, action, jsInputObjectNames, vmKey);
     }
 }

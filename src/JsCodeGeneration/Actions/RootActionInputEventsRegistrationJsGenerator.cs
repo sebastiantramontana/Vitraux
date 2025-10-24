@@ -12,14 +12,19 @@ internal class RootActionInputEventsRegistrationJsGenerator(
     IRegisterActionSyncCall registerActionSyncCall) : IRootActionInputEventsRegistrationJsGenerator
 {
     public StringBuilder GenerateJs(StringBuilder jsBuilder, ActionData action, IEnumerable<JsElementObjectName> jsInputObjectNames, string vmKey)
-        => action.Targets.Aggregate(jsBuilder, (sb, target) => sb.Add(GenerateActionTargetEventRegistration, target, jsInputObjectNames, vmKey));
+        => action
+            .Targets
+            .Aggregate(jsBuilder, (sb, target) => sb.AddLine(GenerateActionTargetEventRegistration, target, jsInputObjectNames, vmKey))
+            .TrimEnd();
 
     private StringBuilder GenerateActionTargetEventRegistration(StringBuilder jsBuilder, ActionTarget actionTarget, IEnumerable<JsElementObjectName> jsInputObjectNames, string vmKey)
     {
         var registerActionCall = GetRegisterActionCall(actionTarget.Parent.IsAsync);
         var jsInputObjectName = GetInputObjectName(jsInputObjectNames, actionTarget.Selector);
+        var jsRegisterActionCall = registerActionCall.Generate(jsInputObjectName, actionTarget.Events, vmKey, actionTarget.Parent.ActionKey);
+        var RegisterActionCallJsSentence = $"{jsRegisterActionCall};";
 
-        return jsBuilder.Append(registerActionCall.Generate(jsInputObjectName, actionTarget.Events, vmKey, actionTarget.Parent.ActionKey));
+        return jsBuilder.Append(RegisterActionCallJsSentence);
     }
 
     private IRegisterActionCall GetRegisterActionCall(bool isAsync)
