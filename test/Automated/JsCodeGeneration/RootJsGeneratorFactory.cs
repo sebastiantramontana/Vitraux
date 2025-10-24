@@ -18,8 +18,6 @@ using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceAtStart.Elements
 using Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 using Vitraux.JsCodeGeneration.UpdateViews;
 using Vitraux.JsCodeGeneration.Values;
-using Vitraux.Modeling.Building.Contracts.ElementBuilders.Actions;
-using Vitraux.Modeling.Building.Implementations.ElementBuilders.Actions;
 
 namespace Vitraux.Test.JsCodeGeneration;
 
@@ -27,7 +25,6 @@ internal static class RootJsGeneratorFactory
 {
     internal static IJsFullObjectNamesGenerator JsFullObjectNamesGenerator { get; private set; } = default!;
     internal static INotImplementedCaseGuard NotImplementedCaseGuard { get; private set; } = default!;
-    internal static IActionKeyGenerator ActionKeyGenerator { get; private set; } = default!;
     internal static RootJsGenerator Create()
     {
         var getElementByIdAsArrayCall = new GetElementByIdAsArrayCall();
@@ -37,7 +34,6 @@ internal static class RootJsGeneratorFactory
         var getStoredTemplateCall = new GetStoredTemplateCall();
         var getFetchedElementCall = new GetFetchedElementCall();
         NotImplementedCaseGuard = new NotImplementedCaseGuard();
-        ActionKeyGenerator = new ActionKeyGenerator(new AtomicAutoNumberGenerator());
 
         var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(getElementByIdAsArrayCall,
                                                                                                           getStoredElementByIdAsArrayCall,

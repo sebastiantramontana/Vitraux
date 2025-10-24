@@ -14,8 +14,9 @@ internal class RootActionParametersCallbackJsGenerator(IRootActionParametersCall
 
         return jsBuilder
                 .AppendLine(GenerateCallbackDeclaration(callbackFunctionName, CallbackEventParameterName))
-                .Add(callbackBodyJsGenerator.GenerateJs, action, queryElementStrategy, jsParameterObjectNames, CallbackEventParameterName, 1)
-                .AppendLine(CloseCallback);
+                .AppendLine()
+                .AddLine(callbackBodyJsGenerator.GenerateJs, action, queryElementStrategy, jsParameterObjectNames, CallbackEventParameterName, 1)
+                .Append(CloseCallback);
     }
 
     private static string GenerateCallbackDeclaration(string callbackFunctionName, string callbackEventParameterName)
