@@ -1,6 +1,8 @@
-﻿namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
+﻿using System.Text;
+
+namespace Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 
 internal interface IUpdateValueByInsertingElementsCall
 {
-    string Generate(string elementToInsertObjectName, string appendToElemenstObjectName, string queryChildrenFunctionCall, string updateChildElementsFunctionCall);
+    StringBuilder Generate(StringBuilder jsBuilder, string elementToInsertObjectName, string appendToElemenstObjectName, string queryChildrenFunctionCall, string updateChildElementsFunctionCall, int indentCount);
 }

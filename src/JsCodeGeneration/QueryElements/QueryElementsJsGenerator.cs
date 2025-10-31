@@ -1,18 +1,18 @@
 ﻿using System.Text;
+using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.JsCodeGeneration.QueryElements;
 
-internal class QueryElementsJsGenerator : IQueryElementsJsGenerator
+internal class QueryElementsJsGenerator(ICodeFormatter codeFormatter) : IQueryElementsJsGenerator
 {
-    public string GenerateJsCode(IQueryElementsDeclaringJsGenerator declaringJsCodeGenerator, IEnumerable<JsElementObjectName> jsObjectNames, string parentObjectName)
-        => jsObjectNames
-            .Aggregate(new StringBuilder(), (sb, jsElementObjectName) => sb.AppendLine(BuildElementDeclarationCode(declaringJsCodeGenerator, jsElementObjectName, parentObjectName)))
-            .ToString()
-            .TrimEnd();
+    public StringBuilder GenerateJsCode(StringBuilder jsBuilder, IQueryElementsDeclaringJsGenerator declaringJsCodeGenerator, IEnumerable<JsElementObjectName> jsObjectNames, string parentObjectName, int indentCount)
+        => jsObjectNames.Any()
+            ? jsObjectNames
+                .Aggregate(jsBuilder, (sb, jsElementObjectName) => sb.AddLine(BuildElementDeclarationCode, declaringJsCodeGenerator, jsElementObjectName, parentObjectName, indentCount))
+                .TrimEnd()
+            : jsBuilder;
 
-    private static string BuildElementDeclarationCode(IQueryElementsDeclaringJsGenerator declaringJsCodeGenerator, JsElementObjectName jsElementObjectName, string parentObjectName)
-        => declaringJsCodeGenerator.GenerateJsCode(parentObjectName, jsElementObjectName);
+    private StringBuilder BuildElementDeclarationCode(StringBuilder jsBuilder, IQueryElementsDeclaringJsGenerator declaringJsCodeGenerator, JsElementObjectName jsElementObjectName, string parentObjectName, int indentCount)
+        => jsBuilder.Append(codeFormatter.IndentLine(declaringJsCodeGenerator.GenerateJsCode(parentObjectName, jsElementObjectName), indentCount));
 }
-
-

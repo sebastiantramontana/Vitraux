@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Vitraux.JsCodeGeneration.Formating;
 
 namespace Vitraux.JsCodeGeneration.Values;
 
@@ -7,17 +8,14 @@ internal class ValuesJsCodeGenerationBuilder(
     ITargetElementsValueJsGenerator targetElementsValueJsBuilder)
     : IValuesJsCodeGenerationBuilder
 {
-    public string BuildJsCode(string parentObjectName, IEnumerable<FullValueObjectName> values)
-        => values
-            .Aggregate(new StringBuilder(), (sb, value) =>
-            {
-                var targetJsCode = targetElementsValueJsBuilder.GenerateJs(parentObjectName, value);
-                var propertyCheckerJsCode = propertyChecker.GenerateJs(parentObjectName, value.Name, targetJsCode);
-
-                return sb
-                    .AppendLine(propertyCheckerJsCode)
-                    .AppendLine();
-            })
-            .ToString()
-            .TrimEnd();
+    public StringBuilder BuildJsCode(StringBuilder jsBuilder, string parentObjectName, IEnumerable<FullValueObjectName> values, int indentCount)
+        => values.Any()
+            ? values
+                .Aggregate(jsBuilder, (sb, value)
+                    => sb
+                    .AddLine(propertyChecker.GenerateBeginCheckJs, parentObjectName, value.Name, indentCount)
+                    .TryAddLine(targetElementsValueJsBuilder.GenerateJs, parentObjectName, value, indentCount + 1)
+                    .AddTwoLines(propertyChecker.GenerateEndCheckJs, indentCount))
+                .TrimEnd()
+            : jsBuilder;
 }

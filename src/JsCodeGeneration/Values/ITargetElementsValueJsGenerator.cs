@@ -1,6 +1,8 @@
-﻿namespace Vitraux.JsCodeGeneration.Values;
+﻿using System.Text;
+
+namespace Vitraux.JsCodeGeneration.Values;
 
 internal interface ITargetElementsValueJsGenerator
 {
-    string GenerateJs(string parentValueObjectName, ValueObjectNameWithJsTargets valueObjectNameWithTargets);
+    StringBuilder GenerateJs(StringBuilder jsBuilder, string parentValueObjectName, ValueObjectNameWithJsTargets valueObjectNameWithTargets, int indentCount);
 }

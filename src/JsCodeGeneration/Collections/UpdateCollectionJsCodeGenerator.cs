@@ -2,43 +2,44 @@
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.BuiltInCalling.Updating;
 using Vitraux.JsCodeGeneration.CustomJsGeneration;
+using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.UpdateViews;
 using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.JsCodeGeneration.Collections;
 
 internal class UpdateCollectionJsCodeGenerator(
+    ICollectionUpdateFunctionNameGenerator collectionUpdateFunctionNameGenerator,
     IUpdateTableCall updateTableCall,
     IUpdateCollectionByPopulatingElementsCall updateCollectionByPopulatingElementsCall,
     IUpdateCollectionFunctionCallbackJsCodeGenerator callbackJsCodeGenerator,
     ICustomJsJsGenerator customJsJsGenerator,
+    ICodeFormatter codeFormatter,
     INotImplementedCaseGuard notImplementedCaseGuard)
     : IUpdateCollectionJsCodeGenerator
 {
-    public string GenerateJs(string parentObjectName, string collectionObjectName, JsCollectionNames jsCollectionNames, IUpdateViewJsGenerator updateViewJsGenerator)
+    public StringBuilder GenerateJs(StringBuilder jsBuilder, string parentObjectName, string collectionObjectName, JsCollectionNames jsCollectionNames, IUpdateViewJsGenerator updateViewJsGenerator, int currentIndentCount)
         => jsCollectionNames switch
         {
-            JsCollectionElementObjectPairNames elementObjectPairNames => GetCollectionElementUpdateCall(parentObjectName, collectionObjectName, elementObjectPairNames, updateViewJsGenerator),
-            JsCollectionCustomJsNames customJsNames => GetCollectionCustomJsCall(customJsNames.CustomJsTarget, parentObjectName, collectionObjectName),
-            _ => notImplementedCaseGuard.ThrowException<string>(jsCollectionNames)
+            JsCollectionElementObjectPairNames elementObjectPairNames => jsBuilder.Add(AddCollectionElementUpdateCall, parentObjectName, collectionObjectName, elementObjectPairNames, updateViewJsGenerator, currentIndentCount),
+            JsCollectionCustomJsNames customJsNames => jsBuilder.Add(AddCollectionCustomJsCall, customJsNames.CustomJsTarget, parentObjectName, collectionObjectName, currentIndentCount),
+            _ => notImplementedCaseGuard.ThrowException<StringBuilder>(jsCollectionNames)
         };
 
-    private string GetCollectionElementUpdateCall(string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator)
+    private StringBuilder AddCollectionElementUpdateCall(StringBuilder jsBuilder, string parentObjectName, string collectionObjectName, JsCollectionElementObjectPairNames elementObjectPairNames, IUpdateViewJsGenerator updateViewJsGenerator, int currentIndentCount)
     {
-        var callbackInfo = callbackJsCodeGenerator.GenerateJs(elementObjectPairNames, updateViewJsGenerator);
-        var updateCall = GetUpdateCall(elementObjectPairNames, parentObjectName, collectionObjectName, callbackInfo.FunctionName);
+        var functionName = collectionUpdateFunctionNameGenerator.Generate();
+        var updateCall = GetUpdateCall(elementObjectPairNames, parentObjectName, collectionObjectName, functionName);
 
-        return new StringBuilder()
-                    .AppendLine(callbackInfo.JsCode)
-                    .AppendLine()
-                    .Append(updateCall)
-                    .ToString();
+        return jsBuilder
+            .AddTwoLines(callbackJsCodeGenerator.GenerateJs, elementObjectPairNames, updateViewJsGenerator, functionName, currentIndentCount)
+            .Append(codeFormatter.IndentLine(updateCall, currentIndentCount));
     }
 
-    private string GetCollectionCustomJsCall(CustomJsCollectionTarget customJsTarget, string parentObjectName, string collectionObjectName)
+    private StringBuilder AddCollectionCustomJsCall(StringBuilder jsBuilder, CustomJsCollectionTarget customJsTarget, string parentObjectName, string collectionObjectName, int currentIndentCount)
     {
         var fullCollectionObjectName = CreateFullCollectionObjectName(parentObjectName, collectionObjectName);
-        return customJsJsGenerator.Generate(customJsTarget, fullCollectionObjectName);
+        return jsBuilder.Add(customJsJsGenerator.Generate, customJsTarget, fullCollectionObjectName, currentIndentCount);
     }
 
     private string GetUpdateCall(JsCollectionElementObjectPairNames elementObjectPairNames, string parentObjectName, string collectionObjectName, string updateFunctionCallbackName)

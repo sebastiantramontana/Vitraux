@@ -35,7 +35,7 @@ internal static class RootActionsJsGeneratorFactory
         var getFetchedElementCall = new GetFetchedElementCall();
 
         // Query elements builder
-        var queryElementsBuilder = new QueryElementsJsGenerator();
+        var queryElementsBuilder = new QueryElementsJsGenerator(codeFormatter);
 
         // ALWAYS strategy generators
         var declaringAlwaysByIdGenerator = new QueryElementsDeclaringAlwaysByIdJsGenerator(getElementByIdAsArrayCall, NotImplementedCaseGuard);
@@ -116,7 +116,7 @@ internal static class RootActionsJsGeneratorFactory
         var rootActionParametersCallbackConstArgsJsGenerator = new RootActionParametersCallbackConstArgsJsGenerator(rootActionParametersCallbackArgumentsJsObjectGenerator, codeFormatter);
         var rootActionParametersCallbackInputValueParameterJsGenerator = new RootActionParametersCallbackInputValueParameterJsGenerator(codeFormatter);
         var rootActionParametersCallbackReturnArgsJsGenerator = new RootActionParametersCallbackReturnArgsJsGenerator(codeFormatter);
-        var rootActionParametersCallbackQueryElementsJsGenerator = new RootActionParametersCallbackQueryElementsJsGenerator(queryElementsContext, codeFormatter);
+        var rootActionParametersCallbackQueryElementsJsGenerator = new RootActionParametersCallbackQueryElementsJsGenerator(queryElementsContext);
         var rootActionParametersCallbackBodyJsGenerator = new RootActionParametersCallbackBodyJsGenerator(
             rootActionParametersCallbackQueryElementsJsGenerator,
             rootActionParametersCallbackConstArgsJsGenerator,

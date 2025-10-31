@@ -3,11 +3,6 @@
 namespace Vitraux.JsCodeGeneration.Formating;
 internal static class StringBuilderExt
 {
-    private static readonly string _twoNewLines = $"{Environment.NewLine}{Environment.NewLine}";
-
-    public static StringBuilder TryAppendTwoLinesForReadability(this StringBuilder sb)
-        => sb.TryAppendLinesForReadability(_twoNewLines);
-
     public static StringBuilder Add(this StringBuilder sb, Func<StringBuilder, StringBuilder> func)
         => func.Invoke(sb);
 
@@ -25,6 +20,9 @@ internal static class StringBuilderExt
 
     public static StringBuilder Add<T1, T2, T3, T4, T5>(this StringBuilder sb, Func<StringBuilder, T1, T2, T3, T4, T5, StringBuilder> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         => func.Invoke(sb, arg1, arg2, arg3, arg4, arg5);
+
+    public static StringBuilder Add<T1, T2, T3, T4, T5, T6>(this StringBuilder sb, Func<StringBuilder, T1, T2, T3, T4, T5, T6, StringBuilder> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+        => func.Invoke(sb, arg1, arg2, arg3, arg4, arg5, arg6);
 
     public static StringBuilder AddLine(this StringBuilder sb, Func<StringBuilder, StringBuilder> func)
         => sb.Add(func).AppendLine();
@@ -98,15 +96,18 @@ internal static class StringBuilderExt
     public static StringBuilder TryAddTwoLines<T1, T2, T3, T4, T5>(this StringBuilder sb, Func<StringBuilder, T1, T2, T3, T4, T5, StringBuilder> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         => sb.TryAddLines(sb2 => sb2.Add(func, arg1, arg2, arg3, arg4, arg5), 2);
 
-    public static StringBuilder RemoveLastCharacter(this StringBuilder stringBuilder, char character)
+    public static StringBuilder RemoveLastCharacter(this StringBuilder sb, char character)
     {
-        for (var i = stringBuilder.Length - 1; i >= 0; i--)
+        if (sb.Length == 0)
+            return sb;
+
+        for (var i = sb.Length - 1; i >= 0; i--)
         {
-            if (stringBuilder[i] == character)
-                return stringBuilder.Remove(i, 1);
+            if (sb[i] == character)
+                return sb.Remove(i, 1);
         }
 
-        return stringBuilder;
+        return sb;
     }
 
     public static StringBuilder TryAddLines(this StringBuilder sb, Func<StringBuilder, StringBuilder> func, int newLinesCount)
@@ -114,16 +115,30 @@ internal static class StringBuilderExt
         var previousLength = sb.Length;
         var newSb = func.Invoke(sb);
 
-        return newSb.Length > previousLength ? newSb.AppendNewLines(newLinesCount) : newSb;
+        return newSb.Length > previousLength
+            ? newSb.AppendNewLines(newLinesCount)
+            : newSb;
     }
 
     public static StringBuilder TrimEnd(this StringBuilder sb)
     {
-        var whiteSpacelength = 0;
+        if (sb.Length == 0)
+            return sb;
 
-        for (var i = sb.Length - 1; i >= 0 && char.IsWhiteSpace(sb[i]); i--, whiteSpacelength++) ;
+        var whiteSpaceCount = 0;
 
-        return sb.Remove(sb.Length - whiteSpacelength, whiteSpacelength);
+        for (var i = sb.Length - 1; i >= 0; i--)
+        {
+            if (!char.IsWhiteSpace(sb[i]))
+                break;
+
+            whiteSpaceCount++;
+        }
+
+        if (whiteSpaceCount > 0)
+            sb.Length -= whiteSpaceCount;
+
+        return sb;
     }
 
     private static StringBuilder AppendNewLines(this StringBuilder sb, int newLinesCount)
@@ -132,24 +147,5 @@ internal static class StringBuilderExt
             sb = sb.AppendLine();
 
         return sb;
-    }
-
-    private static StringBuilder TryAppendLinesForReadability(this StringBuilder sb, string newLines)
-        => sb.IsShorterThanNewLines(newLines) || sb.EndsWithNewLines(newLines)
-            ? sb
-            : sb.Append(newLines);
-
-    private static bool IsShorterThanNewLines(this StringBuilder sb, string newLines)
-        => sb.Length < newLines.Length;
-
-    private static bool EndsWithNewLines(this StringBuilder sb, string newLines)
-    {
-        for (var i = 0; i < newLines.Length; i++)
-        {
-            if (sb[^(newLines.Length - i)] != newLines[i])
-                return false;
-        }
-
-        return true;
     }
 }

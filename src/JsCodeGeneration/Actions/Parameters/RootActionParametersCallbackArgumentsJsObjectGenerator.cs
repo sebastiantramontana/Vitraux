@@ -23,7 +23,7 @@ internal class RootActionParametersCallbackArgumentsJsObjectGenerator(
         => action.Parameters.Single(p => p.Selector == selector);
 
     private StringBuilder GenerateJsObjectPropertyValue(StringBuilder jsBuilder, string jsParameterObjectName, ActionParameter parameter, int indentCount)
-        => jsBuilder.Append(codeFormatter.Indent(GenerateJsObjectPropertyValue(jsParameterObjectName, parameter), indentCount));
+        => jsBuilder.Append(codeFormatter.IndentLine(GenerateJsObjectPropertyValue(jsParameterObjectName, parameter), indentCount));
 
     private string GenerateJsObjectPropertyValue(string jsParameterObjectName, ActionParameter parameter)
         => $"{GenerateObjectProperty(parameter.ParamName)}: {GenerateObjectValueFromPlace(jsParameterObjectName, parameter.ElementPlace)},";

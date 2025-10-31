@@ -1,4 +1,5 @@
-﻿using Vitraux.JsCodeGeneration.JsObjectNames;
+﻿using System.Text;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.OnlyOnceOnDemand;
 
@@ -7,6 +8,6 @@ internal class QueryElementsOnlyOnceOnDemandJsCodeGenerator(
     IQueryElementsDeclaringOnlyOnceOnDemandJsCodeGenerator onlyOnceOnDemandGenerator)
     : IQueryElementsOnlyOnceOnDemandJsCodeGenerator
 {
-    public string GenerateJsCode(IEnumerable<JsElementObjectName> jsObjectNames, string parentElementObjectName)
-        => generator.GenerateJsCode(onlyOnceOnDemandGenerator, jsObjectNames, parentElementObjectName);
+    public StringBuilder GenerateJsCode(StringBuilder jsBuilder, IEnumerable<JsElementObjectName> jsObjectNames, string parentElementObjectName, int indentCount)
+        => generator.GenerateJsCode(jsBuilder, onlyOnceOnDemandGenerator, jsObjectNames, parentElementObjectName, indentCount);
 }
