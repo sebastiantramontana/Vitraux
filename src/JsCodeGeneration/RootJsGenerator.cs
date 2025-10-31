@@ -1,4 +1,5 @@
-﻿using Vitraux.JsCodeGeneration.Initialization;
+﻿using System.Text;
+using Vitraux.JsCodeGeneration.Initialization;
 using Vitraux.JsCodeGeneration.JsObjectNames;
 using Vitraux.JsCodeGeneration.UpdateViews;
 
@@ -11,13 +12,14 @@ internal class RootJsGenerator(
 {
     private const string ParentObjectName = "vm";
     private const string ParentElementObjectName = "document";
+    private const int ZeroIndent = 0;
 
     public GeneratedJsCode GenerateJs(FullObjectNames fullObjectNames, QueryElementStrategy queryElementStrategy)
     {
         var initializeViewJs = GenerateInitializeViewJsCode(queryElementStrategy, fullObjectNames.JsElementObjectNames, ParentElementObjectName);
-        var updateViewInfo = updateViewJsGenerator.GenerateJs(queryElementStrategy, fullObjectNames, ParentObjectName, ParentElementObjectName);
+        var updateViewJsBuilder = updateViewJsGenerator.GenerateJs(new StringBuilder(), queryElementStrategy, fullObjectNames, ParentObjectName, ParentElementObjectName, ZeroIndent);
 
-        return new(initializeViewJs, updateViewInfo);
+        return new(initializeViewJs, updateViewJsBuilder.ToString());
     }
 
     private string GenerateInitializeViewJsCode(QueryElementStrategy strategy, IEnumerable<JsElementObjectName> allJsElementObjectNames, string parentElementObjectName)

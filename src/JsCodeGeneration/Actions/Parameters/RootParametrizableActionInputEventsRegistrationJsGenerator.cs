@@ -12,10 +12,11 @@ internal class RootParametrizableActionInputEventsRegistrationJsGenerator(
     IRegisterParametrizableActionSyncCall registerParametrizableActionSyncCall) : IRootParametrizableActionInputEventsRegistrationJsGenerator
 {
     public StringBuilder GenerateJs(StringBuilder jsBuilder, ActionData action, IEnumerable<JsElementObjectName> jsInputObjectNames, string vmKey, string actionArgsCallbackFunctionName)
-        => action
-            .Targets
-            .Aggregate(jsBuilder, (sb, target) => sb.AddLine(GenerateActionTargetEventRegistration, target, jsInputObjectNames, vmKey, actionArgsCallbackFunctionName))
-            .TrimEnd();
+        => action.Targets.Any()
+            ? action.Targets
+                .Aggregate(jsBuilder, (sb, target) => sb.AddLine(GenerateActionTargetEventRegistration, target, jsInputObjectNames, vmKey, actionArgsCallbackFunctionName))
+                .TrimEnd()
+            : jsBuilder;
 
     private StringBuilder GenerateActionTargetEventRegistration(StringBuilder jsBuilder, ActionTarget actionTarget, IEnumerable<JsElementObjectName> jsInputObjectNames, string vmKey, string actionArgsCallbackFunctionName)
     {

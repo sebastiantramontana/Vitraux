@@ -14,31 +14,27 @@ internal class UpdateViewJsGenerator(
     IQueryElementsJsCodeGeneratorContext queryElementsJsCodeGeneratorContext)
     : IUpdateViewJsGenerator
 {
-    public string GenerateJs(
+    public StringBuilder GenerateJs(
+        StringBuilder jsBuilder,
         QueryElementStrategy queryElementStrategy,
         FullObjectNames fullObjectNames,
         string parentObjectName,
-        string parentElementObjectName)
-        => new StringBuilder()
-                .Append(GenerateQueryElementsJsCode(queryElementStrategy, fullObjectNames.JsElementObjectNames, parentElementObjectName))
-                .TryAppendTwoLinesForReadability()
-                .Append(GenerateValuesJsCode(parentObjectName, fullObjectNames.ValueNames))
-                .TryAppendTwoLinesForReadability()
-                .Append(GenerateCollectionJsCode(parentObjectName, fullObjectNames.CollectionNames))
-                .TryAppendTwoLinesForReadability()
-                .Append(promiseJsGenerator.ReturnResolvedPromiseJsLine)
-                .ToString()
-                .TrimEnd();
+        string parentElementObjectName,
+        int indentCount)
+        => jsBuilder
+            .TryAddTwoLines(GenerateQueryElementsJsCode, queryElementStrategy, fullObjectNames.JsElementObjectNames, parentElementObjectName, indentCount)
+            .TryAddTwoLines(GenerateValuesJsCode, parentObjectName, fullObjectNames.ValueNames, indentCount)
+            .TryAddTwoLines(GenerateCollectionJsCode, parentObjectName, fullObjectNames.CollectionNames, indentCount)
+            .Add(promiseJsGenerator.GenerateJs, indentCount);
 
-    private string GenerateValuesJsCode(string parentObjectName, IEnumerable<FullValueObjectName> valueNames)
-        => valuesJsCodeGenerationBuilder.BuildJsCode(parentObjectName, valueNames);
+    private StringBuilder GenerateValuesJsCode(StringBuilder jsBuilder, string parentObjectName, IEnumerable<FullValueObjectName> valueNames, int indentCount)
+        => jsBuilder.Add(valuesJsCodeGenerationBuilder.BuildJsCode, parentObjectName, valueNames, indentCount);
 
-    private string GenerateCollectionJsCode(string parentObjectName, IEnumerable<FullCollectionObjectName> collectionNames)
-        => collectionsJsCodeGenerationBuilder.BuildJsCode(parentObjectName, collectionNames, this);
+    private StringBuilder GenerateCollectionJsCode(StringBuilder jsBuilder, string parentObjectName, IEnumerable<FullCollectionObjectName> collectionNames, int indentCount)
+        => jsBuilder.Add(collectionsJsCodeGenerationBuilder.BuildJsCode, parentObjectName, collectionNames, this, indentCount);
 
-    private string GenerateQueryElementsJsCode(QueryElementStrategy strategy, IEnumerable<JsElementObjectName> allJsObjectNames, string parentElementObjectName)
+    private StringBuilder GenerateQueryElementsJsCode(StringBuilder jsBuilder, QueryElementStrategy strategy, IEnumerable<JsElementObjectName> allJsObjectNames, string parentElementObjectName, int indentCount)
         => queryElementsJsCodeGeneratorContext
             .GetStrategy(strategy)
-            .GenerateJsCode(allJsObjectNames, parentElementObjectName)
-            .TrimEnd();
+            .GenerateJsCode(jsBuilder, allJsObjectNames, parentElementObjectName, indentCount);
 }

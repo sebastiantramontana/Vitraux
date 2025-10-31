@@ -1,4 +1,5 @@
-﻿using Vitraux.JsCodeGeneration.JsObjectNames;
+﻿using System.Text;
+using Vitraux.JsCodeGeneration.JsObjectNames;
 
 namespace Vitraux.JsCodeGeneration.QueryElements.Strategies.Always;
 
@@ -7,6 +8,6 @@ internal class QueryElementsAlwaysJsCodeGenerator(
     IQueryElementsJsGenerator builder)
     : IQueryElementsAlwaysJsCodeGenerator
 {
-    public string GenerateJsCode(IEnumerable<JsElementObjectName> jsObjectNames, string parentElementObjectName)
-        => builder.GenerateJsCode(generator, jsObjectNames, parentElementObjectName);
+    public StringBuilder GenerateJsCode(StringBuilder jsBuilder, IEnumerable<JsElementObjectName> jsObjectNames, string parentElementObjectName, int indentCount)
+        => builder.GenerateJsCode(jsBuilder, generator, jsObjectNames, parentElementObjectName, indentCount);
 }

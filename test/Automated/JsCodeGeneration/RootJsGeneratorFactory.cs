@@ -34,6 +34,7 @@ internal static class RootJsGeneratorFactory
         var getStoredTemplateCall = new GetStoredTemplateCall();
         var getFetchedElementCall = new GetFetchedElementCall();
         NotImplementedCaseGuard = new NotImplementedCaseGuard();
+        var codeFormatter = new CodeFormatter();
 
         var queryElementsGeneratorByStrategyContext = CreateQueryElementsJsCodeGeneratorByStrategyContext(getElementByIdAsArrayCall,
                                                                                                           getStoredElementByIdAsArrayCall,
@@ -41,10 +42,10 @@ internal static class RootJsGeneratorFactory
                                                                                                           getStoredElementsByQuerySelectorCall,
                                                                                                           getStoredTemplateCall,
                                                                                                           getFetchedElementCall,
-                                                                                                          NotImplementedCaseGuard);
+                                                                                                          NotImplementedCaseGuard,
+                                                                                                          codeFormatter);
         var isValueValid = new IsValueValidCall();
-        var codeFormatter = new CodeFormatter();
-        var customJsJsGenerator = new CustomJsJsGenerator(new AtomicAutoNumberGenerator());
+        var customJsJsGenerator = new CustomJsJsGenerator(new AtomicAutoNumberGenerator(), codeFormatter);
         var propertyCheckerJsCodeGeneration = new PropertyCheckerJsCodeGeneration(isValueValid, codeFormatter);
 
         var valueJsCodeGenerator = CreateValuesJsCodeGenerationBuilder(getElementsByQuerySelectorCall,
@@ -62,7 +63,7 @@ internal static class RootJsGeneratorFactory
 
         var collectionsJsCodeGenerationBuilder = CreateCollectionsJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, codeFormatter, customJsJsGenerator);
 
-        var promiseJsGenerator = new PromiseJsGenerator();
+        var promiseJsGenerator = new PromiseJsGenerator(codeFormatter);
         var updateViewJsGenerator = new UpdateViewJsGenerator(promiseJsGenerator,
                                                               valueJsCodeGenerator,
                                                               collectionsJsCodeGenerationBuilder,
@@ -72,7 +73,8 @@ internal static class RootJsGeneratorFactory
                                                                               getStoredTemplateCall,
                                                                               getFetchedElementCall,
                                                                               NotImplementedCaseGuard,
-                                                                              promiseJsGenerator);
+                                                                              promiseJsGenerator,
+                                                                              codeFormatter);
 
         return new RootJsGenerator(initializeJsGeneratorContext, updateViewJsGenerator);
     }
@@ -84,9 +86,10 @@ internal static class RootJsGeneratorFactory
         IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
         IGetStoredTemplateCall getStoredTemplateCall,
         IGetFetchedElementCall getFetchedElementCall,
-        INotImplementedCaseGuard notImplementedCaseGuard)
+        INotImplementedCaseGuard notImplementedCaseGuard,
+        ICodeFormatter codeFormatter)
     {
-        var builder = new QueryElementsJsGenerator();
+        var builder = new QueryElementsJsGenerator(codeFormatter);
 
         var atStartGenerator = CreateAtStartGenerator(builder);
         var onDemandGenerator = CreateOnDemandGenerator(builder,
@@ -106,10 +109,10 @@ internal static class RootJsGeneratorFactory
     private static CollectionsJsGenerationBuilder CreateCollectionsJsCodeGenerationBuilder(IPropertyCheckerJsCodeGeneration propertyCheckerJsCodeGeneration, ICodeFormatter codeFormatter, ICustomJsJsGenerator customJsJsGenerator)
     {
         var functionNameGenerator = new CollectionUpdateFunctionNameGenerator(new AtomicAutoNumberGenerator());
-        var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(functionNameGenerator, codeFormatter);
+        var updateCollectionFunctionCallbackJsCodeGenerator = new UpdateCollectionFunctionCallbackJsCodeGenerator(codeFormatter);
         var updateCollectionByPopulatingElementsCall = new UpdateCollectionByPopulatingElementsCall();
         var updateTableCall = new UpdateTableCall();
-        var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator, customJsJsGenerator, NotImplementedCaseGuard);
+        var updateCollectionJsCodeGenerator = new UpdateCollectionJsCodeGenerator(functionNameGenerator, updateTableCall, updateCollectionByPopulatingElementsCall, updateCollectionFunctionCallbackJsCodeGenerator, customJsJsGenerator, codeFormatter, NotImplementedCaseGuard);
 
         return new CollectionsJsGenerationBuilder(propertyCheckerJsCodeGeneration, updateCollectionJsCodeGenerator);
     }
@@ -139,7 +142,7 @@ internal static class RootJsGeneratorFactory
         var targetByPopulatingElementsUpdateValueJsCodeGenerator = new TargetElementsUpdateValueInsertJsGenerator(updateByPopulatingElementsCall, toChildQueryFunctionCall, updateChildElementsFunctionCall, notImplementedCaseGuard);
         var viewModelKeyGenerator = new ViewModelKeyGenerator();
         var executeUpdateViewFunctionCall = new ExecuteUpdateViewFunctionCall();
-        var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsGenerator(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator, viewModelKeyGenerator, executeUpdateViewFunctionCall, customJsJsGenerator, notImplementedCaseGuard);
+        var targetElementsValueJsCodeGenerationBuilder = new TargetElementsValueJsGenerator(targetElementDirectUpdateValueJsCodeGenerator, targetByPopulatingElementsUpdateValueJsCodeGenerator, viewModelKeyGenerator, executeUpdateViewFunctionCall, customJsJsGenerator, codeFormatter, notImplementedCaseGuard);
 
         return new ValuesJsCodeGenerationBuilder(propertyCheckerJsCodeGeneration, targetElementsValueJsCodeGenerationBuilder);
     }
@@ -150,9 +153,10 @@ internal static class RootJsGeneratorFactory
         IGetStoredTemplateCall getStoredTemplateCall,
         IGetFetchedElementCall getFetchedElementCall,
         INotImplementedCaseGuard notImplementedCaseGuard,
-        IPromiseJsGenerator promiseJsGenerator)
+        IPromiseJsGenerator promiseJsGenerator,
+        ICodeFormatter codeFormatter)
     {
-        var onlyOnceAtStartInitializeJsGenerator = CreateOnlyOnceAtStartInitializeJsGenerator(getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall, getStoredTemplateCall, getFetchedElementCall, notImplementedCaseGuard);
+        var onlyOnceAtStartInitializeJsGenerator = CreateOnlyOnceAtStartInitializeJsGenerator(getStoredElementByIdAsArrayCall, getStoredElementsByQuerySelectorCall, getStoredTemplateCall, getFetchedElementCall, notImplementedCaseGuard, codeFormatter);
         var onlyOnceOnDemandInitializeJsGenerator = CreateOnlyOnceOnDemandInitializeJsGenerator(promiseJsGenerator);
         var alwaysInitializeJsGenerator = CreateAlwaysInitializeJsGenerator(promiseJsGenerator);
 
@@ -164,7 +168,8 @@ internal static class RootJsGeneratorFactory
         IGetStoredElementsByQuerySelectorCall getStoredElementsByQuerySelectorCall,
         IGetStoredTemplateCall getStoredTemplateCall,
         IGetFetchedElementCall getFetchedElementCall,
-        INotImplementedCaseGuard notImplementedCaseGuard)
+        INotImplementedCaseGuard notImplementedCaseGuard,
+        ICodeFormatter codeFormatter)
     {
         var storageElementJsLineGeneratorById = new StorageElementJsLineGeneratorById(getStoredElementByIdAsArrayCall);
         var storageElementJsLineGeneratorByQuerySelector = new StorageElementJsLineGeneratorByQuerySelector(getStoredElementsByQuerySelectorCall);
@@ -180,7 +185,7 @@ internal static class RootJsGeneratorFactory
         var jsLineGeneratorCollectionByUri = new StorageElementCollectionJsLineGeneratorByUri(storageElementJsLineGeneratorByUri, notImplementedCaseGuard);
         var storageElementCollectionLineGenerator = new StorageElementCollectionJsLineGenerator(jsLineGeneratorCollectionByTemplate, jsLineGeneratorCollectionByUri, notImplementedCaseGuard);
 
-        var promiseJsGenerator = new PromiseJsGenerator();
+        var promiseJsGenerator = new PromiseJsGenerator(codeFormatter);
 
         var storageElementValueLineGenerator = new StorageElementValueJsLineGenerator(storageElementJsLineGeneratorElementsById,
                                                                                       storageElementJsLineGeneratorElementsByQuery,

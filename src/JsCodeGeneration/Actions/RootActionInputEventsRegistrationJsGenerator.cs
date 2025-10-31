@@ -12,10 +12,11 @@ internal class RootActionInputEventsRegistrationJsGenerator(
     IRegisterActionSyncCall registerActionSyncCall) : IRootActionInputEventsRegistrationJsGenerator
 {
     public StringBuilder GenerateJs(StringBuilder jsBuilder, ActionData action, IEnumerable<JsElementObjectName> jsInputObjectNames, string vmKey)
-        => action
-            .Targets
-            .Aggregate(jsBuilder, (sb, target) => sb.AddLine(GenerateActionTargetEventRegistration, target, jsInputObjectNames, vmKey))
-            .TrimEnd();
+        => action.Targets.Any()
+            ? action.Targets
+                .Aggregate(jsBuilder, (sb, target) => sb.AddLine(GenerateActionTargetEventRegistration, target, jsInputObjectNames, vmKey))
+                .TrimEnd()
+            : jsBuilder;
 
     private StringBuilder GenerateActionTargetEventRegistration(StringBuilder jsBuilder, ActionTarget actionTarget, IEnumerable<JsElementObjectName> jsInputObjectNames, string vmKey)
     {

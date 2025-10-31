@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.JsCodeGeneration.UpdateViews;
 
 namespace Vitraux.JsCodeGeneration.Collections;
@@ -8,29 +9,23 @@ internal class CollectionsJsGenerationBuilder(
     IUpdateCollectionJsCodeGenerator updateCollectionJsCodeGenerator)
     : ICollectionsJsGenerationBuilder
 {
-    public string BuildJsCode(string parentObjectName, IEnumerable<FullCollectionObjectName> collections, IUpdateViewJsGenerator updateViewJsGenerator)
-        => collections.Aggregate(new StringBuilder(), (sb, collection)
-            =>
-            {
-                var updateCollectionJs = collection
-                        .AssociatedNames
-                        .Aggregate(new StringBuilder(), (sb2, associatedElement) =>
-                        {
-                            var jsCodeCollection = updateCollectionJsCodeGenerator.GenerateJs(parentObjectName, collection.Name, associatedElement, updateViewJsGenerator);
+    public StringBuilder BuildJsCode(StringBuilder jsBuilder, string parentObjectName, IEnumerable<FullCollectionObjectName> collections, IUpdateViewJsGenerator updateViewJsGenerator, int indentCount)
+        => collections.Any()
+            ? collections
+                .Aggregate(jsBuilder, (sb, collection)
+                    => jsBuilder
+                        .AddLine(propertyChecker.GenerateBeginCheckJs, parentObjectName, collection.Name, indentCount)
+                        .AddLine(GenerateJsUpdateCollection, collection, parentObjectName, updateViewJsGenerator, indentCount + 1)
+                        .AddTwoLines(propertyChecker.GenerateEndCheckJs, indentCount))
+                .TrimEnd()
+            : jsBuilder;
 
-                            return sb2
-                                .AppendLine(jsCodeCollection)
-                                .AppendLine();
-                        })
-                        .ToString()
-                        .TrimEnd();
-
-                var propertyCheckerJsCode = propertyChecker.GenerateJs(parentObjectName, collection.Name, updateCollectionJs);
-
-                return sb
-                    .AppendLine(propertyCheckerJsCode)
-                    .AppendLine();
-            })
-            .ToString()
+    private StringBuilder GenerateJsUpdateCollection(StringBuilder jsBuilder, FullCollectionObjectName collection, string parentObjectName, IUpdateViewJsGenerator updateViewJsGenerator, int indentCount)
+     => collection
+            .AssociatedNames
+            .Aggregate(jsBuilder, (sb, associatedElement)
+                => sb
+                    .AddLine(updateCollectionJsCodeGenerator.GenerateJs, parentObjectName, collection.Name, associatedElement, updateViewJsGenerator, indentCount)
+                    .AppendLine())
             .TrimEnd();
 }

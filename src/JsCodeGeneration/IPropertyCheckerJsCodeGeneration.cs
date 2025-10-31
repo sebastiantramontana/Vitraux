@@ -1,6 +1,9 @@
-﻿namespace Vitraux.JsCodeGeneration;
+﻿using System.Text;
+
+namespace Vitraux.JsCodeGeneration;
 
 internal interface IPropertyCheckerJsCodeGeneration
 {
-    string GenerateJs(string objectParentName, string valueObjectName, string jsCodeBlock);
+    StringBuilder GenerateBeginCheckJs(StringBuilder jsBuilder, string objectParentName, string valueObjectName, int indentCount);
+    StringBuilder GenerateEndCheckJs(StringBuilder jsBuilder, int indentCount);
 }

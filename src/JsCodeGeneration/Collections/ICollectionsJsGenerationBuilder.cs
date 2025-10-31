@@ -1,8 +1,9 @@
-﻿using Vitraux.JsCodeGeneration.UpdateViews;
+﻿using System.Text;
+using Vitraux.JsCodeGeneration.UpdateViews;
 
 namespace Vitraux.JsCodeGeneration.Collections;
 
 internal interface ICollectionsJsGenerationBuilder
 {
-    string BuildJsCode(string parentObjectName, IEnumerable<FullCollectionObjectName> collectionObjectNames, IUpdateViewJsGenerator updateViewJsGenerator);
+    StringBuilder BuildJsCode(StringBuilder jsBuilder, string parentObjectName, IEnumerable<FullCollectionObjectName> collectionObjectNames, IUpdateViewJsGenerator updateViewJsGenerator, int indentCount);
 }
