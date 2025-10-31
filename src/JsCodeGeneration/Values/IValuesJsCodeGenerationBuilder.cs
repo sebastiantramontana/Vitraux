@@ -1,6 +1,8 @@
-﻿namespace Vitraux.JsCodeGeneration.Values;
+﻿using System.Text;
+
+namespace Vitraux.JsCodeGeneration.Values;
 
 internal interface IValuesJsCodeGenerationBuilder
 {
-    string BuildJsCode(string parentObjectName, IEnumerable<FullValueObjectName> values);
+    StringBuilder BuildJsCode(StringBuilder jsBuilder, string parentObjectName, IEnumerable<FullValueObjectName> values, int indentCount);
 }

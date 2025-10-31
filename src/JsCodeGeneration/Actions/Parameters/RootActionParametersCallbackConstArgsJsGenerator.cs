@@ -16,11 +16,11 @@ internal class RootActionParametersCallbackConstArgsJsGenerator(
                 .Add(GenerateCloseArgs, currentIndentCount);
 
     private StringBuilder GenerateArgsDeclaration(StringBuilder jsBuilder, string argsJsObjectName, int indentCount)
-        => jsBuilder.Append(codeFormatter.Indent($"const {argsJsObjectName} = {{", indentCount));
+        => jsBuilder.Append(codeFormatter.IndentLine($"const {argsJsObjectName} = {{", indentCount));
 
     private StringBuilder GenerateCloseArgs(StringBuilder jsBuilder, int indentCount)
     {
         const string CloseArgs = "};";
-        return jsBuilder.Append(codeFormatter.Indent(CloseArgs, indentCount));
+        return jsBuilder.Append(codeFormatter.IndentLine(CloseArgs, indentCount));
     }
 }

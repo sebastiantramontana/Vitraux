@@ -1,8 +1,9 @@
-﻿using Vitraux.Modeling.Data;
+﻿using System.Text;
+using Vitraux.Modeling.Data;
 
 namespace Vitraux.JsCodeGeneration.CustomJsGeneration;
 
 internal interface ICustomJsJsGenerator
 {
-    string Generate(CustomJsTargetBase customJsTarget, string objArg);
+    StringBuilder Generate(StringBuilder jsBuilder, CustomJsTargetBase customJsTarget, string objArg, int indentCount);
 }

@@ -1,23 +1,27 @@
 ﻿using System.Text;
 using Vitraux.Helpers;
+using Vitraux.JsCodeGeneration.Formating;
 using Vitraux.Modeling.Data;
 
 namespace Vitraux.JsCodeGeneration.CustomJsGeneration;
 
-internal class CustomJsJsGenerator(IAtomicAutoNumberGenerator atomicAutoNumberGenerator) : ICustomJsJsGenerator
+internal class CustomJsJsGenerator(IAtomicAutoNumberGenerator atomicAutoNumberGenerator, ICodeFormatter codeFormatter) : ICustomJsJsGenerator
 {
-    public string Generate(CustomJsTargetBase customJsTarget, string objArg)
+    public StringBuilder Generate(StringBuilder jsBuilder, CustomJsTargetBase customJsTarget, string objArg, int indentCount)
     {
         var customJs = customJsTarget.ModuleFrom is not null
             ? GenerateJsImportModuleInfo(customJsTarget)
             : GenerateNoImportModuleInfo(customJsTarget);
 
-        return new StringBuilder()
-            .AppendLine(customJs.ImportLine)
-            .Append(GenerateJsFunctionCall(customJs.FullFunctionPath, objArg))
-            .ToString()
-            .TrimStart();
+        return jsBuilder
+            .TryAddLine(AddImportLine, customJs.ImportLine, indentCount)
+            .Add(GenerateJsFunctionCall, customJs.FullFunctionPath, objArg, indentCount);
     }
+
+    private StringBuilder AddImportLine(StringBuilder jsBuilder, string importLine, int indentCount)
+        => !string.IsNullOrWhiteSpace(importLine)
+            ? jsBuilder.Append(codeFormatter.IndentLine(importLine, indentCount))
+            : jsBuilder;
 
     private static (string ImportLine, string FullFunctionPath) GenerateNoImportModuleInfo(CustomJsTargetBase customJsTarget)
         => (string.Empty, customJsTarget.FunctionName);
@@ -35,7 +39,7 @@ internal class CustomJsJsGenerator(IAtomicAutoNumberGenerator atomicAutoNumberGe
     private static string GenerateJsImportModuleCall(string moduleName, Uri moduleUri)
         => $"const {moduleName} = await import(\'{moduleUri}\');";
 
-    private static string GenerateJsFunctionCall(string fullFunctionPath, string objArg)
-        => $"await {fullFunctionPath}({objArg});";
+    private StringBuilder GenerateJsFunctionCall(StringBuilder jsBuilder, string fullFunctionPath, string objArg, int indentCount)
+        => jsBuilder.Append(codeFormatter.IndentLine($"await {fullFunctionPath}({objArg});", indentCount));
 
 }
