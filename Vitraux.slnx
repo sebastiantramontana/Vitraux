@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/Vitraux.csproj" />
+  <Project Path="test/Automated/Vitraux.Test.csproj" />
+  <Project Path="test/Manual/ManualIntegrationTestSites/Clock/DotNetSolution/ClockWasm.csproj" />
+  <Project Path="test/Manual/ManualIntegrationTestSites/PetOwnerWasm/PetOwnerWasm.csproj" />
+</Solution>
