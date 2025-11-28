@@ -15,7 +15,6 @@
                 await Blazor.start();
 
                 const petOwnerWasm = await getPetOwnerWasm();
-                await addEventListenerToDropDown(petOwnerWasm);
 
                 await petOwnerWasm.RefreshPetOwnerNames();
                 addSelectPetOwnerDefaultOption();
@@ -29,13 +28,6 @@
                 const { getAssemblyExports } = await globalThis.getDotnetRuntime(0);
                 const exports = await getAssemblyExports("PetOwnerWasm.dll");
                 return exports.PetOwnerWasm.Program;
-            }
-
-            async function addEventListenerToDropDown(petOwnerWasm) {
-                const dropdown = document.getElementById('petowners');
-                dropdown.addEventListener('change', async (event) => {
-                    await petOwnerWasm.SelectPetOwner(Number.parseInt(event.target.value));
-                });
             }
 
             function hideSpinner() {
@@ -71,6 +63,7 @@
             <div class="select-container">
                 <select id="petowners" disabled> </select>
                 <div id="petowners-spinner"><span>Loading petowners...</span><span class="select-spinner"></span></div>
+                <div><button id="fake-po-button">Show a fake petowner</button></div>
             </div>
         </div>
 

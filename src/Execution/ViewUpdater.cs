@@ -3,24 +3,23 @@ using Vitraux.Execution.JsInvokers.ViewFunctions;
 using Vitraux.Execution.Serialization;
 using Vitraux.Execution.Tracking;
 using Vitraux.Execution.ViewModelNames;
+using Vitraux.Execution.ViewModelNames.Actions;
 
 namespace Vitraux.Execution;
 
 internal class ViewUpdater<TViewModel>(
-    IViewModelJsNamesCacheGeneric<TViewModel> objectNamesRepository,
+    IViewModelJsNamesRepositoryGeneric<TViewModel> objectNamesRepository,
     IModelConfiguration<TViewModel> modelConfiguration,
     IViewModelChangeTrackingContext<TViewModel> viewModelChangeTrackingContext,
     IViewModelJsonSerializer jsonSerializer,
     IJsExecuteUpdateViewFunctionInvoker jsExecuteUpdateView,
-    IViewModelActionFunctionInvokerContext viewModelActionFunctionInvokerContext)
-    : IViewUpdater<TViewModel>
+    IViewModelActionFunctionInvokerContext viewModelActionFunctionInvokerContext,
+    IViewModelJsActionsRepository viewModelJsActionsRepository)
+    : IViewUpdater<TViewModel> where TViewModel : notnull
 {
     public async Task Update(TViewModel viewModel)
     {
-        if (viewModel is null)
-        {
-            return;
-        }
+        viewModelJsActionsRepository.SetViewModelInstance(objectNamesRepository.ViewModelKey, viewModel);
 
         var viewModelChangesTracker = viewModelChangeTrackingContext.GetChangesTracker(modelConfiguration.ConfigurationBehavior.TrackChanges);
         var trackedViewModelData = viewModelChangesTracker.Track(viewModel, objectNamesRepository.ViewModelJsNames);

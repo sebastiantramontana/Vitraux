@@ -11,5 +11,5 @@ internal class RootActionParametersCallbackInputValueParameterJsGenerator(ICodeF
             : jsBuilder;
 
     private static string GenerateSettingInputValueJs(string argsJsObjectName, string callbackEventParameterName)
-        => $"{argsJsObjectName}.inputValue = {callbackEventParameterName}.target.value;";
+        => $"{argsJsObjectName}.inputValue = [{callbackEventParameterName}.target.value];";
 }
