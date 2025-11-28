@@ -31,28 +31,28 @@ internal class ModelMapper<TViewModel>(IServiceProvider serviceProvider, IAction
     }
 
     public IRootActionSourceBuilder<TViewModel> MapActionAsync(Func<TViewModel, Task> func)
-        => AddAction(func);
+        => AddAction(func, true);
 
     public IRootActionSourceBuilder<TViewModel> MapAction(Action<TViewModel> func)
-        => AddAction(func);
+        => AddAction(func, false);
 
     public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinderAsync<TViewModel>
-        => AddParametrizableAction<TActionParametersBinder>((binder, actionKey) => new ActionData(binder.BindActionAsync, actionKey));
+        => AddParametrizableAction<TActionParametersBinder>((binder, actionKey) => new ActionData(binder, true, actionKey));
 
     public IRootParametrizableActionSourceBuilder<TViewModel> MapAction<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinder<TViewModel>
-        => AddParametrizableAction<TActionParametersBinder>((binder, actionKey) => new ActionData(binder.BindAction, actionKey));
+        => AddParametrizableAction<TActionParametersBinder>((binder, actionKey) => new ActionData(binder, false, actionKey));
 
     public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync()
-        => AddParametrizableAction<IActionParametersBinderAsync<TViewModel>>((binder, actionKey) => new ActionData(binder.BindActionAsync, actionKey));
+        => AddParametrizableAction<IActionParametersBinderAsync<TViewModel>>((binder, actionKey) => new ActionData(binder, true, actionKey));
 
     public IRootParametrizableActionSourceBuilder<TViewModel> MapAction()
-        => AddParametrizableAction<IActionParametersBinder<TViewModel>>((binder, actionKey) => new ActionData(binder.BindAction, actionKey));
+        => AddParametrizableAction<IActionParametersBinder<TViewModel>>((binder, actionKey) => new ActionData(binder, false, actionKey));
 
     public ModelMappingData Data { get; } = new ModelMappingData();
 
-    private RootActionSourceBuilder<TViewModel> AddAction(Delegate func)
+    private RootActionSourceBuilder<TViewModel> AddAction(Delegate func, bool isAsync)
     {
-        var action = new ActionData(func, GenerateActionKey());
+        var action = new ActionData(func, isAsync, GenerateActionKey());
         Data.AddAction(action);
 
         return new RootActionSourceBuilder<TViewModel>(action, this);

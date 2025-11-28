@@ -8,7 +8,7 @@ namespace Vitraux.Execution.Tracking;
 internal class ViewModelShallowChangesTracker<TViewModel>(
     ISerializablePropertyValueExtractor serializablePropertyValueExtractor,
     IViewModelNoChangesTracker<TViewModel> noChangesTracker,
-    IViewModelJsNamesCacheGeneric<TViewModel> vmJsNamesCache)
+    IViewModelJsNamesRepositoryGeneric<TViewModel> vmJsNamesRepository)
     : IViewModelShallowChangesTracker<TViewModel>
 {
     private readonly Dictionary<string, object?> _previousValues = [];
@@ -82,7 +82,7 @@ internal class ViewModelShallowChangesTracker<TViewModel>(
     }
 
     private ViewModelJsNames GetViewModelJsNames(Type valueType)
-        => vmJsNamesCache.GetNamesByViewModelType(valueType);
+        => vmJsNamesRepository.GetNamesByViewModelType(valueType);
 
     private List<EncodedTrackedViewModelCollectionData> TrackCollections(object objToTrack, IEnumerable<ViewModelJsCollectionName> collectionNames)
     {

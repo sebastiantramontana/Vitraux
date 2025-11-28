@@ -1,6 +1,6 @@
 ﻿namespace Vitraux.Execution.ViewModelNames;
 
-internal interface IViewModelJsNamesCache
+internal interface IViewModelJsNamesRepository
 {
     public ViewModelJsNames ViewModelJsNames { get; set; }
 }
