@@ -11,16 +11,17 @@ class VitrauxInternalError extends Error {
 }
 
 class VitrauxWasm {
-    static #vitrauxWasmExports;
+    static #vitrauxWasmActionDispatcher;
 
-    async getExports() {
-        if (!VitrauxWasm.#vitrauxWasmExports) {
+    async getActionDispatcher() {
+        if (!VitrauxWasm.#vitrauxWasmActionDispatcher) {
 
-            const getAssemblyExports = await globalThis.getDotnetRuntime(0);
-            VitrauxWasm.#vitrauxWasmExports = await getAssemblyExports("Vitraux.dll");
+            const { getAssemblyExports } = await globalThis.getDotnetRuntime(0);
+            const vitrauxWasmExports = await getAssemblyExports("Vitraux.dll");
+            VitrauxWasm.#vitrauxWasmActionDispatcher = vitrauxWasmExports.Vitraux.Execution.Actions.ActionDispatcher;
         }
 
-        return VitrauxWasm.#vitrauxWasmExports;
+        return VitrauxWasm.#vitrauxWasmActionDispatcher;
     }
 }
 
@@ -36,15 +37,13 @@ class ActionDispatcher {
     }
 
     async dispatchActionSync() {
-        const vitrauxWasmExports = await this.#vitrauxWasm.getExports();
-
-        vitrauxWasmExports.DispatchAction(this.#vmKey, this.#actionKey);
+        const vitrauxWasmActionDispatcher = await this.#vitrauxWasm.getActionDispatcher();
+        vitrauxWasmActionDispatcher.DispatchAction(this.#vmKey, this.#actionKey);
     }
 
     async dispatchActionAsync() {
-        const vitrauxWasmExports = await this.#vitrauxWasm.getExports();
-
-        await vitrauxWasmExports.DispatchAction(this.#vmKey, this.#actionKey);
+        const vitrauxWasmActionDispatcher = await this.#vitrauxWasm.getActionDispatcher();
+        await vitrauxWasmActionDispatcher.DispatchActionAsync(this.#vmKey, this.#actionKey);
     }
 }
 
@@ -62,17 +61,17 @@ class ParametrizableActionDispatcher {
     }
 
     async dispatchParametrizableActionSync(event) {
-        const currentActionArgs = this.#actionArgsCallback.call(null, event);
-        const vitrauxWasmExports = await this.#vitrauxWasm.getExports();
+        const currentActionArgs = this.#actionArgsCallback.call({}, event);
+        const vitrauxWasmActionDispatcher = await this.#vitrauxWasm.getActionDispatcher();
 
-        vitrauxWasmExports.DispatchParametrizableAction(this.#vmKey, this.#actionKey, currentActionArgs);
+        vitrauxWasmActionDispatcher.DispatchParametrizableAction(this.#vmKey, this.#actionKey, currentActionArgs);
     }
 
     async dispatchParametrizableActionAsync(event) {
-        const currentActionArgs = this.#actionArgsCallback.call(null, event);
-        const vitrauxWasmExports = await this.#vitrauxWasm.getExports();
+        const currentActionArgs = this.#actionArgsCallback.call({}, event);
+        const vitrauxWasmActionDispatcher = await this.#vitrauxWasm.getActionDispatcher();
 
-        await vitrauxWasmExports.DispatchParametrizableActionAsync(this.#vmKey, this.#actionKey, currentActionArgs);
+        await vitrauxWasmActionDispatcher.DispatchParametrizableActionAsync(this.#vmKey, this.#actionKey, currentActionArgs);
     }
 }
 

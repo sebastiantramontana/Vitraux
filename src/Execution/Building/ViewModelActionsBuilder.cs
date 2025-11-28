@@ -1,4 +1,6 @@
 ﻿using Vitraux.Execution.JsInvokers.Actions.Registration;
+using Vitraux.Execution.ViewModelNames;
+using Vitraux.Execution.ViewModelNames.Actions;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.Actions;
 using Vitraux.JsCodeGeneration.JsObjectNames;
@@ -12,6 +14,7 @@ internal class ViewModelActionsBuilder<TViewModel>(
     IJsTryInitializeActionsFunctionFromCacheByVersionInvoker tryInitializeFromCacheByVersionInvoker,
     IJsInitializeNewActionsFunctionToCacheByVersionInvoker initializeNewToCacheByVersionInvoker,
     IJsInitializeNonCachedActionsFunctionInvoker initializeNonCachedInvoker,
+    IViewModelJsActionsRepository viewModelJsActionsRepository,
     INotImplementedCaseGuard notImplementedCaseGuard) : IViewModelActionsBuilder<TViewModel>
 {
     public Task Build(string vmKey, ConfigurationBehavior configurationBehavior, IEnumerable<ActionData> actions)
@@ -31,8 +34,16 @@ internal class ViewModelActionsBuilder<TViewModel>(
                 break;
         }
 
+        AddViewModelActionsToRepository(vmKey, actions);
+
         return Task.CompletedTask;
     }
+
+    private void AddViewModelActionsToRepository(string vmKey, IEnumerable<ActionData> actions)
+        => viewModelJsActionsRepository.AddViewModelActions(vmKey, ConvertToActionInfos(actions));
+
+    private static IEnumerable<ViewModelJsActionInfo> ConvertToActionInfos(IEnumerable<ActionData> actions)
+        => actions.Select(a => new ViewModelJsActionInfo(a.ActionKey, a.Invokable, a.PassInputValueParameter, a.Parameters.Select(p => p.ParamName)));
 
     private string GenerateJsCode(string vmKey, QueryElementStrategy queryElementStrategy, IEnumerable<ActionData> actions)
     {

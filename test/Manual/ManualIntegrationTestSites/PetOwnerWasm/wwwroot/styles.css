@@ -37,13 +37,6 @@ h1 {
     margin: 1rem 0;
 }
 
-.select-container {
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    margin: 1rem 0;
-}
-
 .select-container #petowners-spinner {
     position: absolute;
     left: 0;

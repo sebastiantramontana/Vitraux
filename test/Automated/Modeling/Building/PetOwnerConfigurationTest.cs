@@ -47,19 +47,19 @@ public class PetOwnerConfigurationTest
 
         _ = serviceProviderMock
             .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder1)))
-            .Returns(Mock.Of<IPetOwnerActionParameterBinder1>());
+            .Returns(new PetOwnerActionParameterBinder1());
 
         _ = serviceProviderMock
             .Setup(sp => sp.GetService(typeof(IPetOwnerActionParameterBinder2)))
-            .Returns(Mock.Of<IPetOwnerActionParameterBinder2>());
+            .Returns(new PetOwnerActionParameterBinder2());
 
         _ = serviceProviderMock
             .Setup(sp => sp.GetService(typeof(IActionParametersBinderAsync<PetOwner>)))
-            .Returns(Mock.Of<IActionParametersBinderAsync<PetOwner>>());
+            .Returns(new PetOwnerActionParameterBinder3());
 
         _ = serviceProviderMock
             .Setup(sp => sp.GetService(typeof(IActionParametersBinder<PetOwner>)))
-            .Returns(Mock.Of<IActionParametersBinder<PetOwner>>());
+            .Returns(new PetOwnerActionParameterBinder4());
 
         _ = serviceProviderMock
             .Setup(sp => sp.GetService(typeof(PetOwnerActionParameterBinder3)))
@@ -118,7 +118,7 @@ public class PetOwnerConfigurationTest
 
     private static ActionData CreateAction1()
     {
-        var action = new ActionData((PetOwner po) => po.Method1(), "SomeKey");
+        var action = new ActionData((PetOwner po) => po.Method1(), false, "SomeKey");
 
         AddActionTarget(action, new ElementQuerySelectorString("el1"), ["event1"]);
 
@@ -127,7 +127,7 @@ public class PetOwnerConfigurationTest
 
     private static ActionData CreateAction2()
     {
-        var action = new ActionData((PetOwner po) => po.Method1(), "SomeKey");
+        var action = new ActionData((PetOwner po) => po.Method1(), false, "SomeKey");
 
         AddActionTarget(action, new ElementQuerySelectorString("el2"), ["event2"]);
         AddActionTarget(action, new ElementQuerySelectorString("el3"), ["event3", "event4"]);
@@ -137,7 +137,7 @@ public class PetOwnerConfigurationTest
 
     private static ActionData CreateAction3()
     {
-        var action = new ActionData((PetOwner po) => po.Method2(), "SomeKey");
+        var action = new ActionData((PetOwner po) => po.Method2(), true, "SomeKey");
 
         AddActionTarget(action, new ElementQuerySelectorString("el4"), ["event5"]);
 
@@ -146,7 +146,7 @@ public class PetOwnerConfigurationTest
 
     private static ActionData CreateAction4()
     {
-        var action = new ActionData((PetOwner po) => po.Method2(), "SomeKey");
+        var action = new ActionData((PetOwner po) => po.Method2(), true, "SomeKey");
 
         AddActionTarget(action, new ElementQuerySelectorString("el5"), ["event6", "event7"]);
         AddActionTarget(action, new ElementIdSelectorString("el6"), ["event8", "event9"]);
@@ -157,7 +157,7 @@ public class PetOwnerConfigurationTest
     private static ActionData CreateAction5()
     {
         IPetOwnerActionParameterBinder1 binder = new PetOwnerActionParameterBinder1();
-        var action = new ActionData(binder.BindAction, "SomeKey") { PassInputValueParameter = true };
+        var action = new ActionData(binder, false, "SomeKey") { PassInputValueParameter = true };
 
         AddActionTarget(action, new ElementIdSelectorString("el7"), ["event10"]);
 
@@ -167,7 +167,7 @@ public class PetOwnerConfigurationTest
     private static ActionData CreateAction6()
     {
         IPetOwnerActionParameterBinder2 binder = new PetOwnerActionParameterBinder2();
-        var action = new ActionData(binder.BindActionAsync, "SomeKey") { PassInputValueParameter = true };
+        var action = new ActionData(binder, true, "SomeKey") { PassInputValueParameter = true };
 
         AddActionTarget(action, new ElementIdSelectorString("el8"), ["event11"]);
 
@@ -180,7 +180,7 @@ public class PetOwnerConfigurationTest
     private static ActionData CreateAction7()
     {
         var binder = new PetOwnerActionParameterBinder3();
-        var action = new ActionData(binder.BindActionAsync, "SomeKey") { PassInputValueParameter = true };
+        var action = new ActionData(binder, true, "SomeKey") { PassInputValueParameter = true };
 
         AddActionTarget(action, new ElementIdSelectorString("el11"), ["event12"]);
         AddActionTarget(action, new ElementQuerySelectorString("el12"), ["event13", "event14"]);
@@ -191,7 +191,7 @@ public class PetOwnerConfigurationTest
     private static ActionData CreateAction8()
     {
         var binder = new PetOwnerActionParameterBinder4();
-        var action = new ActionData(binder.BindAction, "SomeKey") { PassInputValueParameter = true };
+        var action = new ActionData(binder, false, "SomeKey") { PassInputValueParameter = true };
 
         AddActionTarget(action, new ElementIdSelectorString("el13"), ["event15"]);
         AddActionTarget(action, new ElementQuerySelectorString("el14"), ["event16", "event17"]);
@@ -205,7 +205,7 @@ public class PetOwnerConfigurationTest
     private static ActionData CreateAction9()
     {
         IActionParametersBinderAsync<PetOwner> binder = new PetOwnerActionParameterBinder3();
-        var action = new ActionData(binder.BindActionAsync, "SomeKey");
+        var action = new ActionData(binder, true, "SomeKey");
 
         AddActionTarget(action, new ElementQuerySelectorString("el17"), ["event18", "event19"]);
 
@@ -218,7 +218,7 @@ public class PetOwnerConfigurationTest
     private static ActionData CreateAction10()
     {
         IActionParametersBinder<PetOwner> binder = new PetOwnerActionParameterBinder4();
-        var action = new ActionData(binder.BindAction, "SomeKey");
+        var action = new ActionData(binder, false, "SomeKey");
 
         AddActionTarget(action, new ElementQuerySelectorString("el20"), ["event20", "event21"]);
         AddActionTarget(action, new ElementIdSelectorString("el21"), ["event22"]);

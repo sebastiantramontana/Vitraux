@@ -10,12 +10,13 @@ namespace Vitraux;
 internal class ModelRegistrar(IServiceCollection container) : IModelRegistrar
 {
     public IParameterBinderModelRegistrar<TViewModel> AddModelConfiguration<TViewModel, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TModelConfiguration>()
+        where TViewModel : notnull
         where TModelConfiguration : class, IModelConfiguration<TViewModel>
     {
         _ = container
             .AddSingleton<IModelMapper<TViewModel>, ModelMapper<TViewModel>>()
             .AddSingleton<IModelConfiguration<TViewModel>, TModelConfiguration>()
-            .AddSingleton<IViewModelJsNamesCacheGeneric<TViewModel>, ViewModelJsNamesCacheGeneric<TViewModel>>()
+            .AddSingleton<IViewModelJsNamesRepositoryGeneric<TViewModel>, ViewModelJsNamesRepositoryGeneric<TViewModel>>()
             .AddSingleton<IViewModelUpdateFunctionBuilder<TViewModel>, ViewModelUpdateFunctionBuilder<TViewModel>>()
             .AddSingleton<IViewModelActionsBuilder<TViewModel>, ViewModelActionsBuilder<TViewModel>>()
             .AddSingleton<IBuilder, ViewModelRuntimeBuilder<TViewModel>>()

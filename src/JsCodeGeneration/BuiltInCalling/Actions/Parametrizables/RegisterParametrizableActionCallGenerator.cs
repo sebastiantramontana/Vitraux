@@ -2,7 +2,7 @@
 
 internal class RegisterParametrizableActionCallGenerator : IRegisterParametrizableActionCallGenerator
 {
-    private const string FunctionJsNamespacePath = "globalThis.vitraux.actions";
+    private const string FunctionJsNamespacePath = "globalThis.vitraux.actions.registration";
 
     public string Generate(string registerActionFunctionName, string elementsArg, IEnumerable<string> eventsArg, string vmKeyArg, string actionKeyArg, string actionArgsCallbackArg)
         => $"{FunctionJsNamespacePath}.{registerActionFunctionName}({elementsArg}, [{string.Join(",", QuoteArgs(eventsArg))}], '{vmKeyArg}', '{actionKeyArg}', {actionArgsCallbackArg})";

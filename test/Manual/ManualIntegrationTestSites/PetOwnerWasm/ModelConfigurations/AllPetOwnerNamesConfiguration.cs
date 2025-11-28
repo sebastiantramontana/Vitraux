@@ -1,9 +1,17 @@
 ﻿using PetOwnerWasm.ViewModel;
+using System.Diagnostics.CodeAnalysis;
 using Vitraux;
 
 namespace PetOwnerWasm.ModelConfigurations;
 
-public class AllPetOwnerNamesConfiguration : IModelConfiguration<AllPetOwnerNames>
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+internal class SelectPetOwnerBinder : ActionParametersBinderAsyncBase<AllPetOwnerNames>
+{
+    public override Task BindActionAsync(AllPetOwnerNames viewModel, IDictionary<string, IEnumerable<string>> parameters)
+        => viewModel.SelectPetOwner(int.Parse(parameters["inputValue"].Single()));
+}
+
+internal class AllPetOwnerNamesConfiguration : IModelConfiguration<AllPetOwnerNames>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {
@@ -14,7 +22,9 @@ public class AllPetOwnerNamesConfiguration : IModelConfiguration<AllPetOwnerName
 
     public ModelMappingData ConfigureMapping(IModelMapper<AllPetOwnerNames> modelMapper)
         => modelMapper
-            .MapCollection(po => po.Names)
+            .MapActionAsync(apo => apo.AddFakePetOwner()).FromInputs.ById("fake-po-button").On("click")
+            .MapActionAsync<SelectPetOwnerBinder>().FromInputs.ById("petowners").On("change").AddParameterValue
+            .MapCollection(apo => apo.Names)
                 .ToContainerElements.ById("petowners")
                 .FromTemplate("petowner-option-template")
                     .MapValue(name => name.Id).ToElements.ByQuery("option").ToAttribute("value")

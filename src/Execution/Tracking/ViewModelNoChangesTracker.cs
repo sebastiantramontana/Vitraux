@@ -6,7 +6,7 @@ namespace Vitraux.Execution.Tracking;
 
 internal class ViewModelNoChangesTracker<TViewModel>(
     ISerializablePropertyValueExtractor serializablePropertyValueExtractor,
-    IViewModelJsNamesCacheGeneric<TViewModel> vmJsNamesCache) : IViewModelNoChangesTracker<TViewModel>
+    IViewModelJsNamesRepositoryGeneric<TViewModel> vmJsNamesRepository) : IViewModelNoChangesTracker<TViewModel>
 {
     public EncodedTrackedViewModelAllData Track(object? objToTrack, ViewModelJsNames vmNames)
     {
@@ -32,7 +32,7 @@ internal class ViewModelNoChangesTracker<TViewModel>(
             }
             else
             {
-                var childrenVMJsNames = vmJsNamesCache.GetNamesByViewModelType(valueInfo.ValueType);
+                var childrenVMJsNames = vmJsNamesRepository.GetNamesByViewModelType(valueInfo.ValueType);
                 var allData = Track(valueInfo.Value, childrenVMJsNames);
                 return new EncodedTrackedViewModelComplexObjectValueData(encodedName, allData);
             }
