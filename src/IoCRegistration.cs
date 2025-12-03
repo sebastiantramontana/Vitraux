@@ -13,6 +13,7 @@ public static class IoCRegistration
     public static IVitrauxRegistrar AddVitraux(this IServiceCollection serviceCollection)
         => serviceCollection
             .AddSingleton<IActionKeyGenerator, ActionKeyGenerator>()
+            .AddSingleton<IViewModelRepository, ViewModelRepository>()
             .AddExecution()
             .AddHelpers()
             .AddJsCodeGeneration()
@@ -27,6 +28,6 @@ public static class IoCRegistration
     private static VitrauxRegistrar CreateVitrauxRegistrar(this IServiceCollection serviceCollection)
         => new(serviceCollection, serviceCollection.CreateModelRegistrar());
 
-    private static ModelRegistrar CreateModelRegistrar(this IServiceCollection serviceCollection)
+    private static ViewModelRegistrar CreateModelRegistrar(this IServiceCollection serviceCollection)
         => new(serviceCollection);
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chronometer</title>
+    <base href="/" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script src="vitraux.js"></script>
+    <script>
+        addEventListener("DOMContentLoaded", async () => {
+            try {
+                await Blazor.start();
+            }
+            catch (ex) {
+                console.log(`Something was wrong: ${ex}`);
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .chronometer {
+            font-weight: bolder;
+            font-size: 4em;
+            margin: 0 10px;
+        }
+
+        button {
+            font-size: 1.2em;
+            margin: 20px;
+            padding: 5px 20px;
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Chronometer from Wasm using Vitraux</h1>
+    <div class="chronometer">
+        <span id="hour">00</span><span>:</span><span id="minute">00</span><span>:</span><span id="second">00</span><span>:</span><span id="tenthsecond">0</span>
+    </div>
+    <div>
+        <button id="startPauseButton">Start</button>
+        <button id="resetButton" disabled>Reset</button>
+    </div>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+</body>
+
+</html>

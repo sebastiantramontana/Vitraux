@@ -6,7 +6,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Vitraux</PackageId>
-    <Version>1.1.0-rc</Version>
+    <Version>1.2.4-rc</Version>
     <Authors>Sebastian Tramontana</Authors>
     <Company>Sebastian Tramontana</Company>
     <Description>Map your .NET entities to HTML in WebAssembly</Description>
@@ -38,7 +38,9 @@
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\dist\vitraux-1.1.0-rc-min.js" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles\any\any\" />
+    <Content Include="..\dist\vitraux-1.2.4-rc-min.js" Link="vitraux-1.2.4-rc-min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\assets\logo.png" Pack="true" PackagePath="\" />
   </ItemGroup>

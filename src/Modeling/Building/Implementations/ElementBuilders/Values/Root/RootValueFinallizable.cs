@@ -35,10 +35,4 @@ internal class RootValueFinallizable<TViewModel, TValue>(
 
     public IRootParametrizableActionSourceBuilder<TViewModel> MapAction<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinder<TViewModel>
         => modelMapperWrapped.MapAction<TActionParametersBinder>();
-
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync()
-        => modelMapperWrapped.MapActionAsync();
-
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction()
-        => modelMapperWrapped.MapAction();
 }

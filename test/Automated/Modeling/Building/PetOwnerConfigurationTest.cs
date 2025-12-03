@@ -54,14 +54,6 @@ public class PetOwnerConfigurationTest
             .Returns(new PetOwnerActionParameterBinder2());
 
         _ = serviceProviderMock
-            .Setup(sp => sp.GetService(typeof(IActionParametersBinderAsync<PetOwner>)))
-            .Returns(new PetOwnerActionParameterBinder3());
-
-        _ = serviceProviderMock
-            .Setup(sp => sp.GetService(typeof(IActionParametersBinder<PetOwner>)))
-            .Returns(new PetOwnerActionParameterBinder4());
-
-        _ = serviceProviderMock
             .Setup(sp => sp.GetService(typeof(PetOwnerActionParameterBinder3)))
             .Returns(new PetOwnerActionParameterBinder3());
 
@@ -93,8 +85,6 @@ public class PetOwnerConfigurationTest
         var action6 = CreateAction6();
         var action7 = CreateAction7();
         var action8 = CreateAction8();
-        var action9 = CreateAction9();
-        var action10 = CreateAction10();
 
         petOwnerData.AddValue(nameValue);
         petOwnerData.AddValue(addressValue);
@@ -110,8 +100,6 @@ public class PetOwnerConfigurationTest
         petOwnerData.AddAction(action6);
         petOwnerData.AddAction(action7);
         petOwnerData.AddAction(action8);
-        petOwnerData.AddAction(action9);
-        petOwnerData.AddAction(action10);
 
         return petOwnerData;
     }
@@ -198,33 +186,6 @@ public class PetOwnerConfigurationTest
 
         AddActionParameter(action, "p3", new ElementIdSelectorString("el15"), ValuePropertyElementPlace.Instance);
         AddActionParameter(action, "p4", new ElementQuerySelectorString("el16"), new AttributeElementPlace("att1"));
-
-        return action;
-    }
-
-    private static ActionData CreateAction9()
-    {
-        IActionParametersBinderAsync<PetOwner> binder = new PetOwnerActionParameterBinder3();
-        var action = new ActionData(binder, true, "SomeKey");
-
-        AddActionTarget(action, new ElementQuerySelectorString("el17"), ["event18", "event19"]);
-
-        AddActionParameter(action, "p5", new ElementIdSelectorString("el18"), ValuePropertyElementPlace.Instance);
-        AddActionParameter(action, "p6", new ElementQuerySelectorString("el19"), ContentElementPlace.Instance);
-
-        return action;
-    }
-
-    private static ActionData CreateAction10()
-    {
-        IActionParametersBinder<PetOwner> binder = new PetOwnerActionParameterBinder4();
-        var action = new ActionData(binder, false, "SomeKey");
-
-        AddActionTarget(action, new ElementQuerySelectorString("el20"), ["event20", "event21"]);
-        AddActionTarget(action, new ElementIdSelectorString("el21"), ["event22"]);
-
-        AddActionParameter(action, "p7", new ElementIdSelectorString("el22"), ValuePropertyElementPlace.Instance);
-        AddActionParameter(action, "p8", new ElementQuerySelectorString("el23"), new AttributeElementPlace("att2"));
 
         return action;
     }

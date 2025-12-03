@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <Import Project="build\vitrauxjs.targets" />
+  <Import Project="build\_framework.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <TieredPGO>true</TieredPGO>
+    <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
+    <WasmEnableLinking>true</WasmEnableLinking>
+    <BlazorWebAssemblyEnableDebugging>false</BlazorWebAssemblyEnableDebugging>
+    <BlazorWebAssemblyEnableHotReload>false</BlazorWebAssemblyEnableHotReload>
+    <BlazorWebAssemblyEnablePrerendering>false</BlazorWebAssemblyEnablePrerendering>
+    <BlazorWebAssemblyEnablePWA>true</BlazorWebAssemblyEnablePWA>
+    <BlazorWebAssemblyLazyLoadAssemblies>true</BlazorWebAssemblyLazyLoadAssemblies>
+    <BlazorWebAssemblyEnableLazyLoading>true</BlazorWebAssemblyEnableLazyLoading>
+    <BlazorWebAssemblyEnableServiceWorker>true</BlazorWebAssemblyEnableServiceWorker>
+    <BlazorWebAssemblyEnableWebAssemblyStreaming>true</BlazorWebAssemblyEnableWebAssemblyStreaming>
+    <BlazorWebAssemblyEnableWebAssemblyThreads>true</BlazorWebAssemblyEnableWebAssemblyThreads>
+    <UseRazorCompileOnPublish>false</UseRazorCompileOnPublish>
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <BlazorWebAssemblyEnableAot>true</BlazorWebAssemblyEnableAot>
+    <WasmStripILAfterAOT>false</WasmStripILAfterAOT>
+    <BlazorEnableCompression>true</BlazorEnableCompression>
+    <BlazorWebAssemblyEnableCompression>true</BlazorWebAssemblyEnableCompression>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <BlazorWebAssemblyLoadAllGlobalizationData>false</BlazorWebAssemblyLoadAllGlobalizationData>
+    <EventSourceSupport>false</EventSourceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+    <StackTraceSupport>false</StackTraceSupport>
+    <UseNativeHttpHandler>true</UseNativeHttpHandler>
+    <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+    <CustomResourceTypesSupport>false</CustomResourceTypesSupport>
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+    <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
+    <WasmEnableSIMD>true</WasmEnableSIMD>
+    <BlazorWebAssemblyEnableWebAssemblySimd>true</BlazorWebAssemblyEnableWebAssemblySimd>
+    <BlazorWebAssemblyEnableWebAssemblyMultiValue>true</BlazorWebAssemblyEnableWebAssemblyMultiValue>
+    <BlazorWebAssemblyEnableWebAssemblyBigInt>false</BlazorWebAssemblyEnableWebAssemblyBigInt>
+    <BlazorWebAssemblyEnableWebAssemblySignExtension>true</BlazorWebAssemblyEnableWebAssemblySignExtension>
+    <BlazorWebAssemblyEnableWebAssemblyNonTrappingF2I>true</BlazorWebAssemblyEnableWebAssemblyNonTrappingF2I>
+    <BlazorWebAssemblyEnableWebAssemblySatF2I>true</BlazorWebAssemblyEnableWebAssemblySatF2I>
+    <BlazorWebAssemblyEnableWebAssemblyExceptions>true</BlazorWebAssemblyEnableWebAssemblyExceptions>
+    <BlazorWebAssemblyEnableWebAssemblyGC>true</BlazorWebAssemblyEnableWebAssemblyGC>
+    <BlazorWebAssemblyEnableWebAssemblyMemory64>false</BlazorWebAssemblyEnableWebAssemblyMemory64>
+    <BlazorWebAssemblyEnableWebAssemblyBulkMemory>true</BlazorWebAssemblyEnableWebAssemblyBulkMemory>
+    <BlazorWebAssemblyEnableWebAssemblyReferenceTypes>true</BlazorWebAssemblyEnableWebAssemblyReferenceTypes>
+    <BlazorWebAssemblyEnableWebAssemblyTailCalls>true</BlazorWebAssemblyEnableWebAssemblyTailCalls>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+    <PackageReference Include="Vitraux" />
+  </ItemGroup>
+</Project>
