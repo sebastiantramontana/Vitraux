@@ -1,6 +1,6 @@
 ﻿namespace Vitraux.Test.Example;
 
-internal class VaccineConfiguration : IModelConfiguration<Vaccine>
+internal class VaccineConfiguration : IViewModelConfiguration<Vaccine>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {

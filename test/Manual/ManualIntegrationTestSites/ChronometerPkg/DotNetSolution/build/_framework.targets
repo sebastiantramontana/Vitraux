@@ -1,0 +1,13 @@
+<Project>
+  <Target Name="_FrameworkCopy" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+      <Message Text="Copying _framework" Importance="high" />
+	  <ItemGroup>
+		  <_FrameworkFiles Include="$(ProjectDir)bin\$(Configuration)\net10.0\wwwroot\_framework\*.*" />
+	  </ItemGroup>
+
+	  <RemoveDir Directories="$(ProjectDir)..\TestSite\_framework\" />
+	  <Copy SourceFiles="@(_FrameworkFiles)"
+			DestinationFolder="$(ProjectDir)..\TestSite\_framework\"
+			SkipUnchangedFiles="true" />
+  </Target>
+</Project>

@@ -37,7 +37,7 @@ internal class CollectionModelMapper<TItem, TEndCollectionReturn>(
 
     private InnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> AddToOwnMapping()
     {
-        var mc = serviceProvider.GetRequiredService<IModelConfiguration<TItem>>();
+        var mc = serviceProvider.GetRequiredService<IViewModelConfiguration<TItem>>();
         var modelMapper = serviceProvider.GetRequiredService<IModelMapper<TItem>>();
         var data = mc.ConfigureMapping(modelMapper);
 

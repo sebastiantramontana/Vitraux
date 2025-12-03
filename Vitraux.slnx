@@ -1,6 +1,8 @@
 <Solution>
   <Project Path="src/Vitraux.csproj" />
   <Project Path="test/Automated/Vitraux.Test.csproj" />
-  <Project Path="test/Manual/ManualIntegrationTestSites/Clock/DotNetSolution/ClockWasm.csproj" />
+  <Project Path="test/Manual/ManualIntegrationTestSites/Chronometer/Chronometer.csproj" />
+  <Project Path="test/Manual/ManualIntegrationTestSites/ChronometerPkg/DotNetSolution/ChronometerPkg.csproj" />
+  <Project Path="test/Manual/ManualIntegrationTestSites/LogActions/LogActions.csproj" Id="950b9130-53b4-4df6-af53-e46e7fa33897" />
   <Project Path="test/Manual/ManualIntegrationTestSites/PetOwnerWasm/PetOwnerWasm.csproj" />
 </Solution>

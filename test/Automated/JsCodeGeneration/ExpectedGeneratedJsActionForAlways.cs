@@ -43,12 +43,12 @@ internal static class ExpectedGeneratedJsActionForAlways
 
         const pc1 = (event) => {
 
-            const p15 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el9');
-            const p16 = globalThis.vitraux.storedElements.getElementByIdAsArray('el10');
+            const p12 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el9');
+            const p13 = globalThis.vitraux.storedElements.getElementByIdAsArray('el10');
 
             const args = {
-                'p1': globalThis.vitraux.actions.dom.getInputsValue(p15),
-                'p2': globalThis.vitraux.actions.dom.getElementsContent(p16)
+                'p1': globalThis.vitraux.actions.dom.getInputsValue(p12),
+                'p2': globalThis.vitraux.actions.dom.getElementsContent(p13)
             };
 
             args.inputValue = [event.target.value];
@@ -79,12 +79,12 @@ internal static class ExpectedGeneratedJsActionForAlways
 
         const pc3 = (event) => {
 
-            const p17 = globalThis.vitraux.storedElements.getElementByIdAsArray('el15');
-            const p18 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el16');
+            const p14 = globalThis.vitraux.storedElements.getElementByIdAsArray('el15');
+            const p15 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el16');
 
             const args = {
-                'p3': globalThis.vitraux.actions.dom.getInputsValue(p17),
-                'p4': globalThis.vitraux.actions.dom.getElementsAttribute(p18,'att1')
+                'p3': globalThis.vitraux.actions.dom.getInputsValue(p14),
+                'p4': globalThis.vitraux.actions.dom.getElementsAttribute(p15,'att1')
             };
 
             args.inputValue = [event.target.value];
@@ -94,41 +94,5 @@ internal static class ExpectedGeneratedJsActionForAlways
 
         globalThis.vitraux.actions.registration.registerParametrizableActionSync(i10, ['event15'], 'vm_test', 'ak7', pc3);
         globalThis.vitraux.actions.registration.registerParametrizableActionSync(i11, ['event16','event17'], 'vm_test', 'ak7', pc3);
-
-        const i12 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el17');
-
-        const pc4 = (event) => {
-
-            const p19 = globalThis.vitraux.storedElements.getElementByIdAsArray('el18');
-            const p20 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el19');
-
-            const args = {
-                'p5': globalThis.vitraux.actions.dom.getInputsValue(p19),
-                'p6': globalThis.vitraux.actions.dom.getElementsContent(p20)
-            };
-
-            return args;
-        };
-
-        globalThis.vitraux.actions.registration.registerParametrizableActionAsync(i12, ['event18','event19'], 'vm_test', 'ak8', pc4);
-
-        const i13 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el20');
-        const i14 = globalThis.vitraux.storedElements.getElementByIdAsArray('el21');
-
-        const pc5 = (event) => {
-
-            const p21 = globalThis.vitraux.storedElements.getElementByIdAsArray('el22');
-            const p22 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el23');
-
-            const args = {
-                'p7': globalThis.vitraux.actions.dom.getInputsValue(p21),
-                'p8': globalThis.vitraux.actions.dom.getElementsAttribute(p22,'att2')
-            };
-
-            return args;
-        };
-
-        globalThis.vitraux.actions.registration.registerParametrizableActionSync(i13, ['event20','event21'], 'vm_test', 'ak9', pc5);
-        globalThis.vitraux.actions.registration.registerParametrizableActionSync(i14, ['event22'], 'vm_test', 'ak9', pc5);
         """;
 }

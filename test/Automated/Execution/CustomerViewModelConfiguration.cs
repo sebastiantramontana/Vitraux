@@ -1,6 +1,6 @@
 ﻿namespace Vitraux.Test.Execution;
 
-internal class CustomerViewModelConfiguration : IModelConfiguration<CustomerViewModel>
+internal class CustomerViewModelConfiguration : IViewModelConfiguration<CustomerViewModel>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {

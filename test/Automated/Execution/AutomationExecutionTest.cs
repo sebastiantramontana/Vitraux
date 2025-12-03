@@ -18,13 +18,13 @@ public class AutomationExecutionTest
             .AddSingleton<IJSRuntime>(jsInProcessRuntime)
             .AddVitraux()
             .AddDefaultConfiguration()
-            .AddModelConfiguration<PetOwner, PetOwnerConfiguration>()
+            .AddViewModelConfiguration<PetOwner, PetOwnerConfiguration>()
                 .AddActionParameterBinder<IPetOwnerActionParameterBinder1, PetOwnerActionParameterBinder1>()
                 .AddActionParameterBinderAsync<IPetOwnerActionParameterBinder2, PetOwnerActionParameterBinder2>()
                 .AddActionParameterBinderAsync<PetOwnerActionParameterBinder3>()
                 .AddActionParameterBinder<PetOwnerActionParameterBinder4>()
-            .AddModelConfiguration<Vaccine, VaccineConfiguration>()
-            .AddModelConfiguration<CustomerViewModel, CustomerViewModelConfiguration>();
+            .AddViewModelConfiguration<Vaccine, VaccineConfiguration>()
+            .AddViewModelConfiguration<CustomerViewModel, CustomerViewModelConfiguration>();
 
         var serviceProvider = container.BuildServiceProvider();
 

@@ -17,7 +17,7 @@ internal static class ServiceProviderMock
             .Returns(() => CreateViewModelJsNamesRepositoryForSubscription(serviceProviderMock.Object, actionKeyGenerator));
 
         _ = serviceProviderMock
-            .Setup(sp => sp.GetService(typeof(IModelConfiguration<Vaccine>)))
+            .Setup(sp => sp.GetService(typeof(IViewModelConfiguration<Vaccine>)))
             .Returns(new VaccineConfiguration());
 
         _ = serviceProviderMock

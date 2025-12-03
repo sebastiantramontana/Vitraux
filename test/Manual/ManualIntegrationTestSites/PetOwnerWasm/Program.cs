@@ -23,11 +23,11 @@ public partial class Program
         _ = builder.Services
             .AddVitraux()
             .AddConfiguration(() => new VitrauxConfiguration { UseShadowDom = true })
-            .AddModelConfiguration<AllPetOwnerNames, AllPetOwnerNamesConfiguration>()
+            .AddViewModelConfiguration<AllPetOwnerNames, AllPetOwnerNamesConfiguration>()
                 .AddActionParameterBinderAsync<SelectPetOwnerBinder>()
-            .AddModelConfiguration<PetOwner, PetOwnerConfiguration>()
-            .AddModelConfiguration<Subscription, SubscriptionConfiguration>()
-            .AddModelConfiguration<Vaccine, VaccineConfiguration>();
+            .AddViewModelConfiguration<PetOwner, PetOwnerConfiguration>()
+            .AddViewModelConfiguration<Subscription, SubscriptionConfiguration>()
+            .AddViewModelConfiguration<Vaccine, VaccineConfiguration>();
 
         await using var host = builder.Build();
 
