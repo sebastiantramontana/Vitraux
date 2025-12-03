@@ -20,10 +20,6 @@ IModelMapper<TViewModel> modelMapper) : IRootActionSourceFinallizableBuilder<TVi
         => modelMapper.MapActionAsync<TActionParametersBinder>();
     public IRootParametrizableActionSourceBuilder<TViewModel> MapAction<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinder<TViewModel>
         => modelMapper.MapAction<TActionParametersBinder>();
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync()
-        => modelMapper.MapActionAsync();
-    public IRootParametrizableActionSourceBuilder<TViewModel> MapAction()
-        => modelMapper.MapAction();
     public IRootCollectionTargetBuilder<TItem, TViewModel> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> func)
         => modelMapper.MapCollection(func);
     public IRootValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> func)

@@ -1,0 +1,47 @@
+<Project>
+
+	<Target 
+		Name="PrepareVitrauxContent" 
+		DependsOnTargets="ResolvePackageAssets" 
+		Condition="'$(Configuration)' == 'Release'">
+		<ItemGroup>
+			<VitrauxFromAssets Include="@(ContentWithTargetPath)"
+								 Condition=" '%(ContentWithTargetPath.NuGetPackageId)' == 'Vitraux' ">
+				<Id>%(ContentWithTargetPath.NuGetPackageId)</Id>
+				<Version>%(ContentWithTargetPath.NuGetPackageVersion)</Version>
+				<Framework>%(ContentWithTargetPath.)</Framework>
+			</VitrauxFromAssets>
+		</ItemGroup>
+
+		<ItemGroup>
+			<VitrauxPackage Include="@(VitrauxFromAssets)">
+				<Id>%(VitrauxFromAssets.Id)</Id>
+				<Version>%(VitrauxFromAssets.Version)</Version>
+			</VitrauxPackage>
+		</ItemGroup>
+
+		<ItemGroup>
+			<VitrauxPackagePath Include="$([System.IO.Path]::Combine(
+				  '$(NuGetPackageRoot)',
+				  '%(VitrauxPackage.Id)',
+				  '%(VitrauxPackage.Version)',
+				  'content',
+				  'vitraux-%(VitrauxPackage.Version)-min.js'
+			  ))" />
+		</ItemGroup>
+
+		<Message Text="VitrauxPackage: %(VitrauxPackage.Id) v%(VitrauxPackage.Version)" Importance="High" />
+		<Message Text="VitrauxPackagePath: @(VitrauxPackagePath)" Importance="High" />
+	</Target>
+	
+	<Target 
+		Name="CopyVitrauxJs" 
+		AfterTargets="Build"  
+		DependsOnTargets="PrepareVitrauxContent" 
+		Condition="'$(Configuration)' == 'Release'">
+		<Copy
+			  SourceFiles="@(VitrauxPackagePath)"
+			  DestinationFolder="$(ProjectDir)..\TestSite\"
+			  SkipUnchangedFiles="true" />
+	</Target>
+</Project>

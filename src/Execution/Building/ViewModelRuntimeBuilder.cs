@@ -3,7 +3,7 @@
 namespace Vitraux.Execution.Building;
 
 internal class ViewModelRuntimeBuilder<TViewModel>(
-    IModelConfiguration<TViewModel> modelConfiguration,
+    IViewModelConfiguration<TViewModel> modelConfiguration,
     IModelMapper<TViewModel> modelMapper,
     IViewModelKeyGenerator viewModelKeyGenerator,
     IViewModelUpdateFunctionBuilder<TViewModel> viewModelUpdateFunctionBuilder,

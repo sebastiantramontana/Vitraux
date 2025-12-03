@@ -1,5 +1,5 @@
 ﻿namespace Vitraux.Test.Example;
-internal class SubscriptionConfiguration : IModelConfiguration<Subscription>
+internal class SubscriptionConfiguration : IViewModelConfiguration<Subscription>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {

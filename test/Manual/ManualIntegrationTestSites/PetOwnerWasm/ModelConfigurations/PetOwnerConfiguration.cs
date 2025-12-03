@@ -4,7 +4,7 @@ using Vitraux.Helpers;
 
 namespace PetOwnerWasm.ModelConfigurations;
 
-public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelConfiguration<PetOwner>
+public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IViewModelConfiguration<PetOwner>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {

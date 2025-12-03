@@ -2,6 +2,6 @@
 
 public interface IVitrauxRegistrar
 {
-    IModelRegistrar AddConfiguration(Func<VitrauxConfiguration> config);
-    IModelRegistrar AddDefaultConfiguration();
+    IViewModelRegistrar AddConfiguration(Func<VitrauxConfiguration> config);
+    IViewModelRegistrar AddDefaultConfiguration();
 }

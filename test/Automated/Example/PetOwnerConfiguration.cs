@@ -2,7 +2,7 @@
 
 namespace Vitraux.Test.Example;
 
-public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelConfiguration<PetOwner>
+public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IViewModelConfiguration<PetOwner>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {
@@ -41,15 +41,6 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IModelC
                 .AddParameterValue
                 .AddParameter("p3").FromParamInputs.ById("el15")
                 .AddParameter("p4").FromParamElements.ByQuery("el16").FromAttribute("att1")
-            .MapActionAsync()
-                .FromInputs.ByQuery("el17").On("event18", "event19")
-                .AddParameter("p5").FromParamInputs.ById("el18")
-                .AddParameter("p6").FromParamElements.ByQuery("el19").FromContent
-            .MapAction()
-                .FromInputs.ByQuery("el20").On("event20", "event21")
-                .FromInputs.ById("el21").On("event22")
-                .AddParameter("p7").FromParamInputs.ById("el22")
-                .AddParameter("p8").FromParamElements.ByQuery("el23").FromAttribute("att2")
             .MapValue(po => po.Name)
                 .ToElements.ById("petowner-name").ToContent
                 .ToJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))

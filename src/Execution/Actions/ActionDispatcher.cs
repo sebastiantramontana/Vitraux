@@ -1,10 +1,12 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using Vitraux.Execution.ViewModelNames.Actions;
 
 namespace Vitraux.Execution.Actions;
 
 [SupportedOSPlatform("browser")]
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 public partial class ActionDispatcher
 {
     [JSExport]
@@ -25,9 +27,9 @@ public partial class ActionDispatcher
 
     private static object? InvokeActionParametersBinder(string vmKey, string actionKey, JSObject jsParameters)
     {
-        var actionInfo = ViewModelJsActionsRepository.GetViewModelAction(vmKey, actionKey);
+        var actionInfo = ViewModelJsActionsRepository.GetViewModelActionInfo(vmKey, actionKey);
         var parameters = ConvertParametersToDictionary(jsParameters, actionInfo.ParanNames, actionInfo.PassInputValueParameter);
-        var viewModel = ViewModelJsActionsRepository.GetViewModel(vmKey);
+        var viewModel = ViewModelRepository.GetViewModel(vmKey);
         var binder = (actionInfo.Invokable as IActionParametersBinderDispatch)!;
 
         return binder.BindActionToDispatch(viewModel, parameters);
@@ -35,8 +37,8 @@ public partial class ActionDispatcher
 
     private static object? InvokeDelegate(string vmKey, string actionKey)
     {
-        var actionInfo = ViewModelJsActionsRepository.GetViewModelAction(vmKey, actionKey);
-        var viewModel = ViewModelJsActionsRepository.GetViewModel(vmKey);
+        var actionInfo = ViewModelJsActionsRepository.GetViewModelActionInfo(vmKey, actionKey);
+        var viewModel = ViewModelRepository.GetViewModel(vmKey);
         var @delegate = (actionInfo.Invokable as Delegate)!;
 
         return @delegate.DynamicInvoke(viewModel);

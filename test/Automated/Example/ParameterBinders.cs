@@ -1,4 +1,6 @@
-﻿namespace Vitraux.Test.Example;
+﻿using Vitraux.Execution.Actions;
+
+namespace Vitraux.Test.Example;
 
 public interface IPetOwnerActionParameterBinder1 : IActionParametersBinder<PetOwner> { }
 

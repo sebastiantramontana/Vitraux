@@ -476,7 +476,7 @@ globalThis.vitraux = {
             },
 
             getInputsValue(inputs) {
-                return inputs.map(i => i.value);
+                return [...inputs].map(i => i.value);
             }
         },
 

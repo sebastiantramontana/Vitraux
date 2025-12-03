@@ -2,15 +2,15 @@
 
 namespace Vitraux;
 
-internal class VitrauxRegistrar(IServiceCollection serviceCollection, ModelRegistrar modelRegistrar) : IVitrauxRegistrar
+internal class VitrauxRegistrar(IServiceCollection serviceCollection, IViewModelRegistrar modelRegistrar) : IVitrauxRegistrar
 {
-    public IModelRegistrar AddConfiguration(Func<VitrauxConfiguration> config)
+    public IViewModelRegistrar AddConfiguration(Func<VitrauxConfiguration> config)
         => AddVitrauxConfiguration(config.Invoke());
 
-    public IModelRegistrar AddDefaultConfiguration()
+    public IViewModelRegistrar AddDefaultConfiguration()
         => AddVitrauxConfiguration(VitrauxConfiguration.Default);
 
-    private ModelRegistrar AddVitrauxConfiguration(VitrauxConfiguration vitrauxConfiguration)
+    private IViewModelRegistrar AddVitrauxConfiguration(VitrauxConfiguration vitrauxConfiguration)
     {
         _ = serviceCollection.AddSingleton(vitrauxConfiguration);
         return modelRegistrar;

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LogActions</title>
+    <base href="/" />
+    <link rel="preload" id="webassembly" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <script type="importmap"></script>
+    <script src="vitraux.js"></script>
+    <script>
+        addEventListener("DOMContentLoaded", async () => {
+            try {
+                await Blazor.start();
+            }
+            catch (ex) {
+                console.log(`Something was wrong: ${ex}`);
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        button {
+            font-size: 1.2em;
+            margin: 20px;
+            padding: 5px 5px;
+            width: 150px;
+        }
+
+        section {
+            border: solid 1px black;
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+        textarea {
+            width: 800px;
+            height: 200px;
+        }
+
+        input{
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Log Actions - Sync/Async Delegates - Sync/Async Binders</h1>
+        <section>
+            <div><strong>Parameters for Binders</strong></div>
+            <input id="inputNumber1" type="number" title="Just type a numeric parameter" value="123" />
+            <input id="inputNumber2" type="number" title="Just type a numeric parameter" value="456" />
+            <input id="inputText" type="text" title="Just type a text parameter" value="some text" />
+        </section>
+        <section>
+            <h2>Sync versions: Output in Devtool's Console </h2>
+            <button id="btnSyncDelegate">Delegate</button>
+            <button id="btnSyncBinder">Binder</button>
+        </section>
+        <section>
+            <h2>Async: Output in Textarea Log</h2>
+            <div>
+                <button id="btnAsyncDelegate">Delegate</button>
+                <button id="btnAsyncBinder">Binder</button>
+            </div>
+            <div>
+                <div>Log:</div>
+                <textarea id="txtLog"></textarea>
+            </div>
+        </section>
+    </div>
+    <script src="_framework/blazor.webassembly#[.{fingerprint}].js" autostart="false"></script>
+</body>
+
+</html>

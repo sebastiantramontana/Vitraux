@@ -1,5 +1,5 @@
-﻿using Vitraux.Execution.JsInvokers.Actions.Registration;
-using Vitraux.Execution.ViewModelNames;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Vitraux.Execution.JsInvokers.Actions.Registration;
 using Vitraux.Execution.ViewModelNames.Actions;
 using Vitraux.Helpers;
 using Vitraux.JsCodeGeneration.Actions;
@@ -15,7 +15,9 @@ internal class ViewModelActionsBuilder<TViewModel>(
     IJsInitializeNewActionsFunctionToCacheByVersionInvoker initializeNewToCacheByVersionInvoker,
     IJsInitializeNonCachedActionsFunctionInvoker initializeNonCachedInvoker,
     IViewModelJsActionsRepository viewModelJsActionsRepository,
-    INotImplementedCaseGuard notImplementedCaseGuard) : IViewModelActionsBuilder<TViewModel>
+    IViewModelRepository viewModelRepository,
+    IServiceProvider serviceProvider,
+    INotImplementedCaseGuard notImplementedCaseGuard) : IViewModelActionsBuilder<TViewModel> where TViewModel : class
 {
     public Task Build(string vmKey, ConfigurationBehavior configurationBehavior, IEnumerable<ActionData> actions)
     {
@@ -35,12 +37,21 @@ internal class ViewModelActionsBuilder<TViewModel>(
         }
 
         AddViewModelActionsToRepository(vmKey, actions);
+        TryStoreViewModelSingletonInstance(vmKey);
 
         return Task.CompletedTask;
     }
 
     private void AddViewModelActionsToRepository(string vmKey, IEnumerable<ActionData> actions)
         => viewModelJsActionsRepository.AddViewModelActions(vmKey, ConvertToActionInfos(actions));
+
+    private void TryStoreViewModelSingletonInstance(string vmKey)
+    {
+        var vm = serviceProvider.GetService<TViewModel>();
+
+        if (vm is not null)
+            viewModelRepository.SetViewModelInstance(vmKey, vm);
+    }
 
     private static IEnumerable<ViewModelJsActionInfo> ConvertToActionInfos(IEnumerable<ActionData> actions)
         => actions.Select(a => new ViewModelJsActionInfo(a.ActionKey, a.Invokable, a.PassInputValueParameter, a.Parameters.Select(p => p.ParamName)));

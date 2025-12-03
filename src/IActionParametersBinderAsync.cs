@@ -1,4 +1,6 @@
-﻿namespace Vitraux;
+﻿using Vitraux.Execution.Actions;
+
+namespace Vitraux;
 
 public interface IActionParametersBinderAsync<TViewModel> : IActionParametersBinderDispatch
 {

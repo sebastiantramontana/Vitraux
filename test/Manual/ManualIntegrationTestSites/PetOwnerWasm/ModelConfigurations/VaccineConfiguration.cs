@@ -3,7 +3,7 @@ using Vitraux;
 
 namespace PetOwnerWasm.ModelConfigurations;
 
-internal class VaccineConfiguration : IModelConfiguration<Vaccine>
+internal class VaccineConfiguration : IViewModelConfiguration<Vaccine>
 {
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {
