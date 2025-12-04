@@ -1,22 +1,13 @@
 <Project>
-
 	<Target 
 		Name="PrepareVitrauxContent" 
 		DependsOnTargets="ResolvePackageAssets" 
 		Condition="'$(Configuration)' == 'Release'">
 		<ItemGroup>
-			<VitrauxFromAssets Include="@(ContentWithTargetPath)"
+			<VitrauxPackage Include="@(ContentWithTargetPath)"
 								 Condition=" '%(ContentWithTargetPath.NuGetPackageId)' == 'Vitraux' ">
 				<Id>%(ContentWithTargetPath.NuGetPackageId)</Id>
 				<Version>%(ContentWithTargetPath.NuGetPackageVersion)</Version>
-				<Framework>%(ContentWithTargetPath.)</Framework>
-			</VitrauxFromAssets>
-		</ItemGroup>
-
-		<ItemGroup>
-			<VitrauxPackage Include="@(VitrauxFromAssets)">
-				<Id>%(VitrauxFromAssets.Id)</Id>
-				<Version>%(VitrauxFromAssets.Version)</Version>
 			</VitrauxPackage>
 		</ItemGroup>
 
@@ -25,13 +16,12 @@
 				  '$(NuGetPackageRoot)',
 				  '%(VitrauxPackage.Id)',
 				  '%(VitrauxPackage.Version)',
-				  'content',
+				  'contentFiles', 'any', 'any',
 				  'vitraux-%(VitrauxPackage.Version)-min.js'
 			  ))" />
 		</ItemGroup>
 
-		<Message Text="VitrauxPackage: %(VitrauxPackage.Id) v%(VitrauxPackage.Version)" Importance="High" />
-		<Message Text="VitrauxPackagePath: @(VitrauxPackagePath)" Importance="High" />
+		<Message Text="Copying  vitraux-%(VitrauxPackage.Version)-min.js from @(VitrauxPackagePath)" Importance="High" />
 	</Target>
 	
 	<Target 

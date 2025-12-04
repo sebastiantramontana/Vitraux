@@ -16,8 +16,10 @@ class VitrauxWasm {
     async getActionDispatcher() {
         if (!VitrauxWasm.#vitrauxWasmActionDispatcher) {
 
-            const { getAssemblyExports } = await globalThis.getDotnetRuntime(0);
+            const runtime = await globalThis.getDotnetRuntime(0);
+            const getAssemblyExports = runtime["getAssemblyExports"];
             const vitrauxWasmExports = await getAssemblyExports("Vitraux.dll");
+
             VitrauxWasm.#vitrauxWasmActionDispatcher = vitrauxWasmExports.Vitraux.Execution.Actions.ActionDispatcher;
         }
 
