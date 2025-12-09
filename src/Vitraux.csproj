@@ -1,45 +1,60 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Vitraux</PackageId>
-    <Version>1.2.5-rc</Version>
-    <Authors>Sebastian Tramontana</Authors>
-    <Company>Sebastian Tramontana</Company>
-    <Description>Map your .NET entities to HTML in WebAssembly</Description>
-    <PackageTags>dotnet .net blazor wasm webassembly html dom vitraux</PackageTags>
-    <RepositoryUrl>https://github.com/sebastiantramontana/Vitraux</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>logo.png</PackageIcon>
-    <ErrorReport>none</ErrorReport>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <IsAotCompatible>False</IsAotCompatible>
-    <IsTrimmable>False</IsTrimmable>
-    <DebugType>portable</DebugType>
-    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <IsAotCompatible>True</IsAotCompatible>
-    <IsTrimmable>True</IsTrimmable>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <DebugType>none</DebugType>
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <InvariantGlobalization>true</InvariantGlobalization>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.JSInterop" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\dist\vitraux-1.2.5-rc-min.js" Link="vitraux-1.2.5-rc-min.js" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles\any\any\" />
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-    <None Include="..\assets\logo.png" Pack="true" PackagePath="\" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Vitraux</PackageId>
+		<Version>1.2.5-rc</Version>
+		<PackageReleaseNotes>
+		Vitraux 1.2.5-rc
+		- Updated to .Net 10.0.
+		- Added the new Actions system for declarative ViewModel method binding.
+			- Supports sync and async actions.
+			- Supports parameterized actions via custom binders.
+			- Generates efficient auto-registered JS event handlers.
+		- Improved JS generation pipeline for better performance.
+		- Internal refactoring and code cleanup for stability and maintainability.
+		- Updated reference manual and developer documentation.
+
+		This is a release candidate for 1.2.5. API is considered stable for production testing.
+		</PackageReleaseNotes>
+		<Authors>Sebastian Tramontana</Authors>
+		<Company>Sebastian Tramontana</Company>
+		<Copyright>Copyright (c) 2025 Sebastian Tramontana</Copyright>
+		<Description>Map your .NET entities to HTML in WebAssembly</Description>
+		<PackageTags>dotnet .net blazor wasm webassembly html dom vitraux</PackageTags>
+		<RepositoryUrl>https://github.com/sebastiantramontana/Vitraux</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/sebastiantramontana/Vitraux</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>logo.png</PackageIcon>
+		<ErrorReport>none</ErrorReport>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<IsAotCompatible>False</IsAotCompatible>
+		<IsTrimmable>False</IsTrimmable>
+		<DebugType>portable</DebugType>
+		<GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<IsAotCompatible>True</IsAotCompatible>
+		<IsTrimmable>True</IsTrimmable>
+		<EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+		<DebugType>none</DebugType>
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<InvariantGlobalization>true</InvariantGlobalization>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Microsoft.JSInterop" />
+		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="..\dist\vitraux-1.2.5-rc-min.js" Link="vitraux-1.2.5-rc-min.js" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles\any\any\" />
+		<None Include="..\README.md" Pack="true" PackagePath="\" />
+		<None Include="..\assets\logo.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>
