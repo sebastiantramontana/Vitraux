@@ -2,7 +2,7 @@
 ### Map your .NET ViewModels to HTML in WebAssembly
 ![Banner](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/assets/vitraux-banner.png)
 
-![Version](https://img.shields.io/badge/Version-1.0.2--rc-yellow.svg)
+![Version](https://img.shields.io/badge/Version-1.2.6--rc-yellow.svg)
 ![Version](https://img.shields.io/badge/Tests-passing!-green)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/sebastiantramontana/Vitraux/main/LICENSE)
 
