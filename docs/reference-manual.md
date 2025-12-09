@@ -1,12 +1,13 @@
 # Vitraux Reference Manual
 
-This manual explains the public surface and runtime model of Vitraux for .NET and front-end developers. It focuses on how mappings are declared in C#, how the library generates and invokes JavaScript to update the DOM, configuration options, caching, and change tracking.
+This manual explains the public surface and runtime model of Vitraux for .NET and front-end developers. It focuses on how mappings are declared in C#, how the library generates and invokes JavaScript to update the DOM, wire HTML events, configuration options, caching, and change tracking.
 
 ---
 
 ## Concepts at a Glance
 
-- ViewModel mapping: declare how a .NET ViewModel projects into HTML elements.
+- ViewModel output mapping: declare how a .NET ViewModel projects into HTML elements.
+- ViewModel action mapping: declaratively wire HTML events to ViewModel methods using auto-generated JavaScript event handlers.
 - Generated JS: at startup, Vitraux generates two JS functions per ViewModel on the fly: an initialize function and an update function.
 - Element query strategies: control when/where DOM queries happen to resolve target elements.
 - Change tracking: send full data or only changes on Update.
@@ -24,13 +25,24 @@ Vitraux integrates via DI and a build step to prepare JS functions for your mapp
 
 ```csharp
 _ = builder.Services
-			.AddVitraux()                              // registers core services
-			.AddConfiguration(() => new VitrauxConfiguration
-			{
-					UseShadowDom = true                    // optional; default: true
-			})
-			.AddModelConfiguration<MyViewModel, MyViewModelConfiguration>()
-            .AddModelConfiguration<MyOtherViewModel, MyOtherViewModelConfiguration>(); //Add your viewmodels
+			.AddVitraux()                              									// registers core services
+			.AddConfiguration(() => new VitrauxConfiguration { UseShadowDom = true })	// optional; default: true
+			.AddViewModelConfiguration<MyViewModel, MyViewModelConfiguration>()			//Add your ViewModel configuration
+				.AddActionParameterBinder<MySyncBinder>()								//Add your action binders
+				.AddActionParameterBinderAsync<MyAsyncBinder>()
+            .AddViewModelConfiguration<MyOtherViewModel, MyOtherViewModelConfiguration>();
+
+// or
+
+_ = builder.Services
+    .AddVitraux()
+    .AddDefaultConfiguration()							//Add the default configuration: UseShadowDom = true
+    .AddViewModel<MyViewModel>() 						//Register your ViewModel as a singleton
+        .AddConfiguration<MyViewModelConfiguration>()	//Add your ViewModels configuration
+        .AddActionParameterBinder<MySyncBinder>()		//Add your action binders
+        .AddActionParameterBinderAsync<MyAsyncBinder>()
+	.AddViewModel<MyOtherViewModel>()
+		.AddConfiguration<MyViewModelConfiguration>()
 ```
 
 2) Build Vitraux (generates/initializes JS functions)
@@ -43,48 +55,60 @@ await host.Services.BuildVitraux();
 
 ```csharp
 var updater = host.Services.GetRequiredService<IViewUpdater<MyViewModel>>();
-await updater.Update(vm);
+await updater.Update(vm);	//ViewModel configured using .AddViewModelConfiguration<MyViewModel, MyViewModelConfiguration>()
+//or
+await updater.Update();		//ViewModel registered as singleton using .AddViewModel<MyViewModel>().
 ```
+
+**⚠️ Important**
+Actions (see below) are always attached to the ViewModel instance currently active in the UI: (the instance passed to the last `Update(vm)`).
+When using AddViewModel<T>(), the singleton instance is used automatically.
 
 ### APIs involved
 
 - `AddVitraux(this IServiceCollection)` registers internal subsystems.
 - `AddConfiguration(Func<VitrauxConfiguration>)` or `AddDefaultConfiguration()` provides global options passed to the JS runtime at build time.
-- `AddModelConfiguration<TViewModel, TConfiguration>()` wires a mapping and registers an updater and trackers for that ViewModel.
-- `BuildVitraux(this IServiceProvider)` triggers code generation and initialization per registered ViewModel.
-
+- `AddModelConfiguration<TViewModel, TConfiguration>()` wires a mapping and registers an updater, event handlers and trackers for that ViewModel.
+- `AddViewModel<TViewModel>().AddConfiguration<TConfiguration>()` Register the ViewModel in the IoC container, then wires a mapping and registers an updater and trackers for that ViewModel.
+- `BuildVitraux(this IServiceCollection)` triggers code generation and initialization for each registered ViewModels.
+- `AddActionParameterBinder<TParameterBinder>()` Register a custom action parameter binder to be called on registered HTML events. Used to parse HTML parameters and call the appropriate ViewModel method.
 ---
 
 ## ViewModel Mapping DSL
 
-You declare mapping inside an `IModelConfiguration<TViewModel>` implementation via the provided fluent builder (`IModelMapper<TViewModel>`). Just an example:
+You declare mapping inside an `IViewModelConfiguration<TViewModel>` implementation via the provided fluent builder (`IModelMapper<TViewModel>`). Just an example:
 
 ```csharp
-public class PetOwnerConfiguration : IModelConfiguration<PetOwner>
+public class PetOwnerConfiguration : IViewModelConfiguration<PetOwner>
 {
-		public ConfigurationBehavior ConfigurationBehavior { get; } = new()
-		{
-				QueryElementStrategy = QueryElementStrategy.OnlyOnceAtStart,
-				TrackChanges = true,
-				VMUpdateFunctionCaching = VMUpdateFunctionCaching.ByVersion("1.0")
-		};
+	public ConfigurationBehavior ConfigurationBehavior { get; } = new()
+	{
+		ActionRegistrationStrategy = ActionRegistrationStrategy.OnlyOnceAtStart,
+		QueryElementStrategy = QueryElementStrategy.OnlyOnceAtStart,
+		TrackChanges = true,
+		AutoGeneratedFunctionCaching = AutoGeneratedFunctionCaching.ByVersion("1.0")
+	};
 
-		public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> model)
-				=> model
-						.MapValue(po => po.Name)                   // value mapping
-								.ToElements.ById("petowner-name").ToContent
-						.MapValue(po => po.HtmlComments)
-								.ToElements.ByQuery(".comments").ToHtml
-						.MapCollection(po => po.Pets)              // collection mapping
-								.ToTables.ById("petowner-pets")
-								.PopulatingRows.ToTBody(0)
-										.FromTemplate("petowner-pet-row")
-												.MapValue(pet => pet.Name)
-														.ToElements.ByQuery("[data-id='pet-name']").ToContent
-												.MapValue(pet => pet.DateOfBirth)
-														.ToElements.ByQuery("[data-id='pet-date-of-birth']").ToContent
-								.EndCollection
-						.Data;
+    public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> model)
+		=> model
+			.MapActionAsync<SelectPetOwnerBinder>().FromInputs.ById("dropdown-petowners").On("change")	// action mapping
+				.AddParameterValue
+				.AddParameter("numbers").FromParamInputs.ByQuery("input[type='number']")
+				.AddParameter("extratext").FromParamInputs.ByQuery("input[type='text']")
+			.MapValue(po => po.Name)                   													// value mapping
+				.ToElements.ById("petowner-name").ToContent
+			.MapValue(po => po.HtmlComments)
+				.ToElements.ByQuery(".comments").ToHtml
+			.MapCollection(po => po.Pets)              													// collection mapping
+				.ToTables.ById("petowner-pets")
+				.PopulatingRows.ToTBody(0)
+					.FromTemplate("petowner-pet-row")
+						.MapValue(pet => pet.Name)
+							.ToElements.ByQuery("[data-id='pet-name']").ToContent
+						.MapValue(pet => pet.DateOfBirth)
+							.ToElements.ByQuery("[data-id='pet-date-of-birth']").ToContent
+				.EndCollection
+			.Data;
 }
 ```
 
@@ -95,7 +119,7 @@ public class PetOwnerConfiguration : IModelConfiguration<PetOwner>
 	So, the following `MapValue` would be valid for Vitraux although no one would do that: `MapValue<TValue>(pet => Int32.Parse(pet.DateOfBirth.ToString("yyyy")) + 2000)`
 - `.ToElements.ById(string)` or `.ByQuery(string)` selects target element(s).
 - `.ToContent` sets `textContent` via the built-in JS call.
-- `.ToHtml` sets `innerHTML`: Injected html is a user responsability.
+- `.ToHtml` sets `innerHTML`: Injected HTML is the user’s responsibility.
 - `.ToAttribute(string attribute)` sets/toggles the given attribute:
   - If the mapped value is boolean: `true` adds the attribute (presence-based), `false` removes it. Ideal for boolean attributes like `disabled`, `checked`, `hidden`.
   - Otherwise: sets the attribute to the stringified value, e.g., `href`, `src`, `data-*`.
@@ -140,56 +164,152 @@ End of chains:
 ### ⚠️ Important
 Custom JS functions passed to `ToJsFunction(...)` are always awaited and must return a Promise.
 
+### Map actions
+
+Actions let you map HTML events to ViewModel methods using the same declarative style as value and collection mappings.
+
+There are four combination families:
+
+- **Non-parameterized Actions** – the event only needs to trigger a ViewModel parameterless method.
+- **Parameterized Actions** – the event also needs to send values from inputs or elements using a custom action parameter binder in .NET.
+- **Sync Actions** - the ViewModel method must not return a value.
+- **Async Actions** - the ViewModel method must return a Task.
+
+#### Combination of Actions
+
+- Use `MapAction` or `MapActionAsync` 
+	- with a lambda that points to a ViewModel method, then specify the HTML inputs and events: Used when the ViewModel method has no parameters and no binder is required.
+	- with an action parameter binder, then specify the HTML inputs, events and parameters: Mandatory when the ViewModel method has parameters.
+
+```csharp
+// Example: LogViewModelConfiguration
+public class LogViewModelConfiguration : IViewModelConfiguration<LogViewModel>
+{
+    public ConfigurationBehavior ConfigurationBehavior { get; } = new()
+    {
+		ActionRegistrationStrategy = ActionRegistrationStrategy.OnlyOnceAtStart,
+        QueryElementStrategy = QueryElementStrategy.OnlyOnceAtStart,
+        TrackChanges = true,
+        AutoGeneratedFunctionCaching = AutoGeneratedFunctionCaching.ByVersion("1.0")
+    };
+
+    public ModelMappingData ConfigureMapping(IModelMapper<LogViewModel> modelMapper)
+        => modelMapper
+            .MapAction(log => log.AddLog()).FromInputs.ById("btnSyncDelegate").On("click")
+			.MapActionAsync(log => log.AddLogAsync()).FromInputs.ById("btnAsyncDelegate").On("click")
+			.MapAction<SyncBinder>().FromInputs.ById("btnSyncBinder").On("click")
+				.AddParameter("numbers").FromParamInputs.ByQuery("input[type='number']")
+				.AddParameter("extratext").FromParamElements.ByQuery("input[type='text']")
+			.MapActionAsync<AsyncBinder>().FromInputs.ById("btnAsyncBinder").On("click")
+				.AddParameter("numbers").FromParamInputs.ByQuery("input[type='number']")
+				.AddParameter("extratext").FromParamElements.ByQuery("input[type='text']").FromAttribute("my-attribute")
+			//... another mappings
+            .MapCollection(vm => vm.Names)
+                .ToContainerElements.ById("petowners")
+                .FromTemplate("petowner-option-template")
+                    .MapValue(name => name.Id).ToElements.ByQuery("option").ToAttribute("value")
+                    .MapValue(name => name.Name).ToElements.ByQuery("option").ToContent
+            .EndCollection
+            .Data;
+}
+```
+
+#### Action Parameter Rules
+
+- FromParamInputs: When adding a parameter using FromParamInputs, values are taken from the input element’s value property.
+- FromParamElements: Decide where to get the values: from text content (FromContent) or attribute (FromAttribute).
+
+#### Action Parameter Binders
+
+Define a custom action parameter binder to parse, validate, or preprocess the action parameters, then call the appropriate ViewModel method.
+
+- If the ViewModel method has parameters, you must provide a custom action parameter binder (sync or async) to parse the HTML values before calling the method.
+- Create a subclass and inherit it from ActionParametersBinder\[Async\]Base abstract class.
+- All HTML parameters are passed as a IDictionary\<string, IEnumerable\<string\>\>
+	- The key is the parameter name passed to AddParameter method in the mapping.
+		- E.g. in the previous example, AddParameter("numbers"), sets the key as "numbers"
+	- The value is a collection (IEnumerable\<string\>) of values retrieved from HTML inputs or elements by FromParamInputs or FromParamElements.
+		- E.g. in the previous example, FromParamInputs.ByQuery("input\[type='number'\]"), gets the values from all HTML inputs that match the selector passed to ByQuery.
+- Register the subclass binder with AddActionParameterBinder\<MyBinder\> or AddActionParameterBinderAsync\<MyBinderAsync\> on initialization (see above).
+- Use the MapAction\<MyBinder\> or MapActionAsync\<MyBinderAsync\> in the ViewModel mapping.
+- If no parameters are declared, Actions call the ViewModel method directly without a binder.
+
+```csharp
+public class AsyncBinder : ActionParametersBinderAsyncBase<LogViewModel>
+{
+    public override Task BindActionAsync(LogViewModel viewModel, IDictionary<string, IEnumerable<string>> parameters)
+    {
+        var num1 = double.Parse(parameters["numbers"].ElementAt(0));
+        var num2 = double.Parse(parameters["numbers"].ElementAt(1));
+        var text = parameters["extratext"].Single();
+
+        return viewModel.AddLogAsync(num1, num2, text);
+    }
+}
+```
+
 ---
 
 ## ConfigurationBehavior
 
-`ConfigurationBehavior` lives in your `IModelConfiguration<TViewModel>` and controls runtime behavior.
+`ConfigurationBehavior` lives in your `IViewModelConfiguration<TViewModel>` and controls runtime behavior for the ViewModel. Each ViewModel has its own behavior.
 
-- `QueryElementStrategy` (default: `OnlyOnceAtStart`)
-	- `OnlyOnceAtStart`: Query and store DOM element references at initialization time only. Fastest updates, but requires HTML elements to exist at startup.
-	- `OnlyOnceOnDemand`: Defer element declarations until the first update call that needs them. Useful when fragments are lazy-inserted.
-	- `Always`: Resolve selectors every update. Safest for highly dynamic DOM, but slower.
+- `QueryElementStrategy` (default: `OnlyOnceAtStart`): Set how and when the HTML elements are queried and reused. Used for DOM updates and for resolving elements required by action parameters.
+	- `OnlyOnceAtStart`: Query and store DOM element references at initialization time only. Fastest updates and action parameters, but requires HTML elements to exist at startup.
+	- `OnlyOnceOnDemand`: Defer element declarations until the first update or event listener call that needs them. Useful when fragments are lazy-inserted.
+	- `Always`: Resolve selectors every update or action paramaters call. Safest for highly dynamic DOM, but slower.
 
-- `TrackChanges` (default: false)
-	- `false`: Serialize full ViewModel into JSON every `Update`. Simple and predictable.
-	- `true`: Use shallow change tracking for top-level value and collection properties:
+- `TrackChanges` (default: false): If enabled, it checks ViewModel changes and only updates the DOM with that ones.
+	- Useful to minimize the serialized JSON and only update the DOM with valid changes.
+	- When `false`: Serialize full ViewModel into JSON every `Update`. Simple and predictable.
+	- When `true`: Use shallow change tracking for top-level value and collection properties:
 		- Values: compares simple values by `Equals`; complex objects track whole sub-objects when reference or simple members change. Nested object serialization leverages the child ViewModel’s mapping names.
 		- Collections: compares sequence by order and equality; when different, the entire collection is sent.
 
-- `VMUpdateFunctionCaching`
+- `AutoGeneratedFunctionCaching`
 	- `NoCache` (default): Generate and initialize JS functions every run.
 	- `ByVersion("x.y")`: Try to reuse previously cached JS functions in local storage identified by version; if not present, generate and cache them under that version. Bump the version to invalidate cache.
+	- Use it in the following way: `AutoGeneratedFunctionCaching.ByVersion("My.Version")` or `AutoGeneratedFunctionCaching.NoCache`
 
+- `ActionRegistrationStrategy` (default: OnlyOnceAtStart): Set how and when the auto-generated action listeners script is executed.
+	- OnlyOnceAtStart: Run the script at initialization time only. It requires HTML elements to exist at startup.
+	- OnlyOnceOnFirstViewModelRendering: Defer script execution until the first update. Useful when fragments are lazy-inserted.
+	- AlwaysOnViewModelRendering: Execute the script every update call. Safest for highly dynamic DOM, but slower. This mode is rarely needed and should only be used when your DOM structure changes dynamically between updates.
 ---
 
 ## IViewUpdater<TViewModel>
 
-`IViewUpdater<TViewModel>.Update(TViewModel vm)` serializes the ViewModel (or changes) and invokes the generated update JS function for that ViewModel.
-
-- Blazor WebAssembly interop has non-trivial overhead per call. Instead of wiring property-level bindings (e.g., INotifyPropertyChanged) that trigger many small interop calls, Vitraux batches the UI sync: one call per Update carrying the whole ViewModel (or its diff). The generated JS applies all changes in one pass.
+Blazor WebAssembly interop has a non-trivial overhead per call.
+- Instead of wiring property-level bindings (e.g., INotifyPropertyChanged) that trigger many small interop calls, Vitraux batches the UI sync.
+	- One call per Update carrying the whole ViewModel (or its diff). 
+	- The auto-generated JS applies all changes in one pass.
+- All the Update methods serialize a ViewModel (or changes) and invokes the auto-generated update JS function for that ViewModel.
+	- `IViewUpdater<TViewModel>.Update(TViewModel vm)` Update the ViewModel passed as argument and save it in memory to dispatch actions.
+	- `IViewUpdater<TViewModel>.Update()` Update the ViewModel registered as singleton with AddViewModel().
 
 **Pros**
 - Fewer JS interop round-trips (typically one per update).
 - Deterministic, atomic UI updates per call.
 - No INotifyPropertyChanged or event wiring required.
-- Works well with TrackChanges to minimize payload size.
+- Works well with TrackChanges to minimize payload size and efficient DOM updating.
 
 **Cons**
 - Updates are explicit; you must call Update when state changes.
 - Large ViewModels without TrackChanges can increase payload size.
 - No per-property “live binding”; partial updates require calling Update with the latest model (or rely on TrackChanges).
+- The Update(TViewModel vm) overload saves the ViewModel instance to dispatch actions, so the last passed ViewModel (with its state) will dispatch them:
+	- This means Actions always run against the ViewModel instance stored by the last Update call.
 
-Pipeline:
+**Pipeline:**
 
 1) Select changes tracker based on `TrackChanges`.
 2) Produce an encoded structure containing value properties and collection properties aligned to generated JS names.
 3) Serialize to JSON with a tuned `Utf8JsonWriter` for speed.
 4) Invoke the generated update view JS function.
+5) Register actions depending on `ActionRegistrationStrategy`.
 
-Error handling notes:
-
-- Passing `null` to `Update` is a no-op.
+**Error handling notes:**
+- Passing `null` to `Update` is a no-op, but all the pipeline is executed unnecessarily.
 - If a selector resolves zero elements, the specific handler is a no-op for that value/collection (no exception).
 
 ---
@@ -197,8 +317,8 @@ Error handling notes:
 ## The Vitraux JavaScript runtime: vitraux-\<version\>-min.js (let’s just refer to it as vitraux.js)
 
 **Why you must include it**
-- The C# side (BuildVitraux and Update) calls into a well-known JS API exposed on globalThis.vitraux. If vitraux-\<version\>-min.js is not loaded, those interop calls fail and no DOM updates can run.
-- The file hosts the runtime that stores your generated functions, performs DOM operations, manages caching, and bridges .NET \<-\> JS.
+- The C# side (BuildVitraux and Update) calls into a well-known JS API exposed on globalThis.vitraux. If vitraux-\<version\>-min.js is not loaded, those interop calls fail and no DOM updates nor Actions can run.
+- The file hosts the runtime that stores your generated functions, performs DOM operations, manages caching, add event listeners, and bridges .NET \<-\> JS.
 
 ### ⚠️ Important
 Ensure that vitraux-\<version\>-min.js matches with Vitraux Nuget's package version!
@@ -209,6 +329,8 @@ Ensure that vitraux-\<version\>-min.js matches with Vitraux Nuget's package vers
 <script src="js/vitraux-<version>-min.js"></script>
 <script src="_framework/blazor.webassembly.js" autostart="false"></script>
 ```
+### ⚠️ Important
+Do not place the Vitraux JS file after Blazor autostart, otherwise BuildVitraux will fail.
 
 **Load order and hosting notes**
 - Must be loaded before the first interop to globalThis.vitraux:
@@ -216,16 +338,17 @@ Ensure that vitraux-\<version\>-min.js matches with Vitraux Nuget's package vers
   - With autostart="false", you typically call Blazor.start() from your page script; vitraux-\<version\>-min.js should be loaded earlier in the page so the .NET code finds globalThis.vitraux when it initializes.
 - The runtime uses modern JS (Promises and dynamic import). For .ToJsFunction().FromModule(...), the browser must support ES module dynamic import.
 - Versioning: the ByVersion("x.y") cache path relies on the runtime’s versioned registry to reuse compiled functions across app sessions. Bump the version whenever you change mappings so vitraux.js knows to discard the old functions.
-- Security: ToHtml writes innerHTML as-is. Sanitize untrusted content on the .NET side or use a custom JS target that sanitizes before inserting. Sanitization is user responsability.
+- Security: ToHtml writes innerHTML and actions get parameter values as-is. Sanitize untrusted content on the .NET side or use a custom JS target that sanitizes before inserting. Sanitization is user responsibility.
 
-## Generated JavaScript and Interop
+## Auto-Generated JavaScript and Interop
 
 At build time per ViewModel type, Vitraux:
 
 1) Computes a unique ViewModel key.
-2) Generates two JS function sources:
-	 - Initialize JS: declares and optionally stores element references according to the selected `QueryElementStrategy`.
-	 - Update JS: orchestrates value placements and collection updates, returning a resolved Promise.
+2) Generates three JS sources:
+	 - Initialization code: declares and optionally stores element references according to the selected `QueryElementStrategy`.
+	 - Update code: orchestrates value placements and collection updates, returning a resolved Promise.
+	 - Action-registration code: if ActionRegistrationStrategy is OnlyOnceAtStart, event handlers are registered during initialization; otherwise, registration happens according to the selected strategy.
 3) Initializes functions in the browser depending on caching:
 	 - `NoCache`: `globalThis.vitraux.updating.vmFunctions.initializeNonCachedViewFunctions(vmKey, initJs, updateJs)`
 	 - `ByVersion`: try `tryInitializeViewFunctionsFromCacheByVersion(vmKey, version)`, else `initializeNewViewFunctionsToCacheByVersion(vmKey, version, initJs, updateJs)`
@@ -233,6 +356,7 @@ At build time per ViewModel type, Vitraux:
 During `Update`, C# calls the in-process JS function:
 
 - `executeUpdateViewFunctionFromJson(vmKey, json)` which parses JSON and calls the cached update function for that ViewModel key.
+- `executeActionRegistrationsFunction(vmKey)` if `ActionRegistrationStrategy` is not OnlyOnceAtStart, register actions.
 
 ### Short example (autogenerated update JS, shortened)
 ```javascript
@@ -245,6 +369,32 @@ if(globalThis.vitraux.updating.utils.isValueValid(item.v0)) {
     globalThis.vitraux.updating.dom.setElementsAttribute(n0_c0_e11, 'href', item.v0);
     globalThis.vitraux.updating.dom.setElementsAttribute(n0_c0_e12, 'href', item.v0);
 }
+...
+```
+
+### Short example (autogenerated action registrations JS, shortened)
+```javascript
+...
+const i10 = globalThis.vitraux.storedElements.getElementByIdAsArray('el13');
+const i11 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el14');
+
+const pc3 = (event) => {
+
+    const p14 = globalThis.vitraux.storedElements.getElementByIdAsArray('el15');
+    const p15 = globalThis.vitraux.storedElements.getElementsByQuerySelector(document, 'el16');
+
+    const args = {
+        'p3': globalThis.vitraux.actions.dom.getInputsValue(p14),
+        'p4': globalThis.vitraux.actions.dom.getElementsAttribute(p15,'att1')
+    };
+
+    args.inputValue = [event.target.value];
+
+    return args;
+};
+
+globalThis.vitraux.actions.registration.registerParametrizableActionAsync(i10, ['click'], 'vm_test', 'ak7', pc3);
+globalThis.vitraux.actions.registration.registerParametrizableActionAsync(i11, ['change','load'], 'vm_test', 'ak7', pc3);
 ...
 ```
 
@@ -318,13 +468,17 @@ Note: Name encoding uses `JsonEncodedText` to keep property names safe for trans
 
 ## Mapping Reference (Fluent API)
 
-Root mapper: `IModelMapper<TViewModel>`
+### Root mapper: `IModelMapper<TViewModel>`
 
 - `IRootValueTargetBuilder<TViewModel, TValue> MapValue<TValue>(Func<TViewModel, TValue> selector)`
 - `IRootCollectionTargetBuilder<TItem, TViewModel> MapCollection<TItem>(Func<TViewModel, IEnumerable<TItem>> selector)`
+- `IRootActionSourceBuilder<TViewModel> MapActionAsync(Func<TViewModel, Task> action);`
+- `IRootActionSourceBuilder<TViewModel> MapAction(Action<TViewModel> action);`
+- `IRootParametrizableActionSourceBuilder<TViewModel> MapAction<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinder<TViewModel>;`
+- `IRootParametrizableActionSourceBuilder<TViewModel> MapActionAsync<TActionParametersBinder>() where TActionParametersBinder : class, IActionParametersBinderAsync<TViewModel>;`
 - `ModelMappingData Data { get; }` (result of the fluent mapping)
 
-Value mapping chain:
+### Value mapping chain:
 
 - `.ToElements` → `ById(string)` | `ByQuery(string)` → `ToContent` | `ToHtml` | `ToAttribute(string)`
 - Optional insertion for values: `.Insert.FromTemplate(string)|FromUri(Uri).ToChildren.ByQuery(string).ToContent|ToHtml|ToAttribute(...)`
@@ -332,12 +486,19 @@ Value mapping chain:
 	- `.ToJsFunction(string)` [optional: `.FromModule(Uri)`]
 	- `.ToOwnMapping`
 
-Collection mapping chain:
+### Collection mapping chain:
 
 - `.ToTables.ById(string)|ByQuery(string).PopulatingRows.ToTBody(int).FromTemplate(string)|FromUri(Uri)`
 - `.ToContainerElements.ById(string)|ByQuery(string).FromTemplate(string)|FromUri(Uri)`
 - Alternative target: `.ToJsFunction(string)` [optional: `.FromModule(Uri)`]
 - Inside collection item mapping: `MapValue(...)`, `MapCollection(...)`, `.ToOwnMapping`, `.ToJsFunction(string)` [optional: `.FromModule(Uri)`]
+
+### Action mapping chain:
+
+- Without paramaters: `.FromInputs.ById(string)|ByQuery(string).On(string[])`
+- With parameters: 
+	- Parameters from inputs: [optional: `.AddParameterValue`]`.AddParameter(string).FromParamInputs.ById(string)|ByQuery(string)`
+	- Parameters from elements: [optional: `.AddParameterValue`]`.AddParameter(string).FromParamElements.ById(string)|ByQuery(string).FromContent|FromAttribute(string)`
 
 ---
 
@@ -349,7 +510,8 @@ Collection mapping chain:
 - `ConfigurationBehavior`
 	- `QueryElementStrategy QueryElementStrategy` – see strategies above.
 	- `bool TrackChanges` – enable shallow change tracking.
-	- `VMUpdateFunctionCaching VMUpdateFunctionCaching` – `NoCache` or `ByVersion(string)`.
+	- `AutoGeneratedFunctionCaching AutoGeneratedFunctionCaching` – `NoCache` or `ByVersion(string)`.
+	- `ActionRegistrationStrategy ActionRegistrationStrategy` - see above.
 
 ---
 
@@ -358,20 +520,20 @@ Collection mapping chain:
 Per ViewModel type during `BuildVitraux()`:
 
 1) Mapping collection: Vitraux calls your `ConfigureMapping` to get `ModelMappingData`.
-2) JS name generation: converts model data to strongly typed JS name structures (values, collections, element objects).
-3) JS code generation: produces initialization and update source strings.
+2) JS name generation: converts model data to strongly typed JS name structures (values, collections, actions, element objects).
+3) JS code generation: produces initialization, update and action source strings.
 4) Caching and JS initialization:
 	 - NoCache: initialize functions directly.
 	 - ByVersion: try from cache else install new version into cache.
-5) Names cache stored: `IViewModelJsNamesCacheGeneric<TViewModel>` keeps the ViewModel key and generated names to align serialized JSON with JS.
+5) Names cache stored to keep the ViewModel key and generated names to align serialized JSON with JS.
 
-At runtime on `Update(vm)`:
+At runtime on `Update(vm)` or `Update()`:
 
 1) Choose tracker (no-changes vs shallow-changes).
 2) Produce encoded values/collections.
 3) Serialize to JSON.
 4) Call JS `executeUpdateViewFunctionFromJson` with the ViewModel key and JSON.
-
+5) Call `IViewModelActionFunctionInvokerStrategy` that correponds depending on `ActionRegistrationStrategy`
 ---
 
 ## Publishing, Trimming, and AOT (WebAssembly)
@@ -429,23 +591,24 @@ await updater.Update(new PetOwner { /* ... */ });
 // PetOwnerConfiguration.cs
 public class PetOwnerConfiguration : IModelConfiguration<PetOwner>
 {
-		public ConfigurationBehavior ConfigurationBehavior { get; } = new()
-		{
-				QueryElementStrategy = QueryElementStrategy.OnlyOnceAtStart,
-				TrackChanges = true,
-				VMUpdateFunctionCaching = VMUpdateFunctionCaching.ByVersion("1.0")
-		};
+	public ConfigurationBehavior ConfigurationBehavior { get; } = new()
+	{
+		QueryElementStrategy = QueryElementStrategy.OnlyOnceAtStart,
+		TrackChanges = true,
+		AutoGeneratedFunctionCaching = AutoGeneratedFunctionCaching.ByVersion("1.0")
+	};
 
-		public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> m)
-				=> m
-						.MapValue(x => x.Name).ToElements.ById("petowner-name").ToContent
-						.MapCollection(x => x.Pets)
-								.ToTables.ById("petowner-pets").PopulatingRows.ToTBody(0)
-										.FromTemplate("petowner-pet-row")
-												.MapValue(p => p.Name).ToElements.ByQuery("[data-id='pet-name']").ToContent
-												.MapValue(p => p.DateOfBirth).ToElements.ByQuery("[data-id='pet-date-of-birth']").ToContent
-								.EndCollection
-						.Data;
+	public ModelMappingData ConfigureMapping(IModelMapper<PetOwner> m)
+		=> m
+			.MapAction(vm => vm.Increment()).FromInputs.ById("btnAdd").On("click")
+			.MapValue(x => x.Name).ToElements.ById("petowner-name").ToContent
+			.MapCollection(x => x.Pets)
+				.ToTables.ById("petowner-pets").PopulatingRows.ToTBody(0)
+					.FromTemplate("petowner-pet-row")
+						.MapValue(p => p.Name).ToElements.ByQuery("[data-id='pet-name']").ToContent
+						.MapValue(p => p.DateOfBirth).ToElements.ByQuery("[data-id='pet-date-of-birth']").ToContent
+			.EndCollection
+			.Data;
 }
 ```
 
@@ -455,7 +618,7 @@ The HTML only needs IDs/selectors and templates; Vitraux handles the rest.
 
 ## Versioning and Deployment
 
-- When using `VMUpdateFunctionCaching.ByVersion`, bump the version whenever you change mappings or upgrade Vitraux so clients fetch fresh JS functions.
+- When using `AutoGeneratedFunctionCaching.ByVersion`, bump the version whenever you change mappings or upgrade Vitraux so clients fetch fresh JS functions.
 - The generated JS is transient in memory; the caching mechanism relies on the client’s JS runtime (via the Vitraux JS bootstrap) to store/reuse functions by version.
 
 ---
@@ -465,4 +628,6 @@ The HTML only needs IDs/selectors and templates; Vitraux handles the rest.
 - Elements not updating: verify selectors/IDs exist for the chosen `QueryElementStrategy`. For `OnlyOnceAtStart`, elements must exist at initialization; consider `OnlyOnceOnDemand`.
 - No visible rows: ensure the template id/URI is correct and the fragment contains the expected child selectors used by your item mappings.
 - Custom JS not called: confirm the function name is global or imported via `FromModule`. Functions must be callable and always return a Promise.
-- Shadow DOM: if your app does not use Shadow DOM, set `UseShadowDom = false` and ensure your selectors match the light DOM.
+- Shadow DOM: if your app does not use it, set `UseShadowDom = false` and ensure your selectors match the light DOM.
+- If your actions target elements that are created dynamically (e.g., via templates during updates), avoid OnlyOnceAtStart, since the elements will not exist yet when handlers are registered.
+- If Actions do not fire, confirm the element exists at the moment the handlers are registered (see ActionRegistrationStrategy).
