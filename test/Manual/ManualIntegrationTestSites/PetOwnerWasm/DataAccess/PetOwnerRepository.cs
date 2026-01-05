@@ -11,9 +11,9 @@ internal class PetOwnerRepository : IPetOwnerRepository
         if (!_allPetOwners.Any())
         {
             _allPetOwners = [
-                new PetOwner(1, "John Smith", "123 Evergreen Terrace, Springfield", "+1 (555) 123-4567", CreateHtmlContent("John Smith"), new Subscription(SubscriptionFrequency.Monthly, 9.99, true, true), await GetPets(1)),
-                new PetOwner(2, "Maria Gonzalez", "456 Evergreen Terrace, Springfield", "+1 (555) 321-7654", CreateHtmlContent("Maria Gonzalez"), new Subscription(SubscriptionFrequency.Yearly, 99.89, false, true), await GetPets(2)),
-                new PetOwner(3, "Charles Wilson", "789 Evergreen Terrace, Springfield", null, CreateHtmlContent("Charles Wilson"), new Subscription(SubscriptionFrequency.Semiannual, 55.67, true, false), await GetPets(3)),
+                new PetOwner(1, "John Smith", "123 Evergreen Terrace, Springfield", "+1 (555) 123-4567", CreateHtmlContent("John Smith"), new(SubscriptionFrequency.Monthly, 9.99, true, true), await GetPets(1), new("Tom Araya","11111-11111", new DateTime(2011,2,3))),
+                new PetOwner(2, "Maria Gonzalez", "456 Evergreen Terrace, Springfield", "+1 (555) 321-7654", CreateHtmlContent("Maria Gonzalez"), new(SubscriptionFrequency.Yearly, 99.89, false, true), await GetPets(2), new("Dave Mustaine","22222-22222", new DateTime(2012,3,4))),
+                new PetOwner(3, "Charles Wilson", "789 Evergreen Terrace, Springfield", null, CreateHtmlContent("Charles Wilson"), new(SubscriptionFrequency.Semiannual, 55.67, true, false), await GetPets(3), new("King Diamond","33333-33333", new DateTime(2013,4,5))),
             ];
         }
 

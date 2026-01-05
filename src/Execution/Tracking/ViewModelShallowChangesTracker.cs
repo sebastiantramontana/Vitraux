@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Text.Json;
 using Vitraux.Execution.Serialization;
+using Vitraux.Execution.Tracking.Encoded;
 using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution.Tracking;
@@ -13,7 +14,7 @@ internal class ViewModelShallowChangesTracker<TViewModel>(
 {
     private readonly Dictionary<string, object?> _previousValues = [];
 
-    public EncodedTrackedViewModelAllData Track(object? objToTrack, ViewModelJsNames vmNames)
+    public EncodedTrackedViewModelJsAllData Track(object? objToTrack, ViewModelJsNames vmNames)
     {
         if (objToTrack is null)
             return new([], []);
@@ -24,9 +25,9 @@ internal class ViewModelShallowChangesTracker<TViewModel>(
         return new(values, collections);
     }
 
-    private List<EncodedTrackedViewModelValueData> TrackValues(object objToTrack, IEnumerable<ViewModelJsValueName> valueNames)
+    private List<EncodedTrackedJsValueData> TrackValues(object objToTrack, IEnumerable<ViewModelJsValueName> valueNames)
     {
-        var selectedValues = new List<EncodedTrackedViewModelValueData>();
+        var selectedValues = new List<EncodedTrackedJsValueData>();
 
         foreach (var valueName in valueNames)
         {
@@ -34,19 +35,18 @@ internal class ViewModelShallowChangesTracker<TViewModel>(
 
             if (valueInfo.IsSimpleType)
             {
-                var propertyValue = serializablePropertyValueExtractor.GetSafeValue(valueInfo.Value);
-                CollectEncodedValueByTracking(valueName.ValuePropertyName, propertyValue, () => TrackNewEncodedSimpleValue(valueName.ValuePropertyName, propertyValue), selectedValues);
+                CollectEncodedValueByTracking(valueName.ValuePropertyName, valueInfo.Value, () => TrackNewEncodedSimpleValue(valueName.ValuePropertyName, valueInfo.Value), selectedValues);
             }
             else
             {
-                CollectEncodedValueByTracking(valueName.ValuePropertyName, valueInfo.Value, () => TrackNewEncodedComplexObjectValue(valueName.ValuePropertyName, valueInfo.Value, valueInfo.ValueType), selectedValues);
+                CollectEncodedValueByTracking(valueName.ValuePropertyName, valueInfo.Value, () => TrackNewEncodedObjectValue(valueName.ValuePropertyName, valueInfo.Value, valueInfo.ValueType), selectedValues);
             }
         }
 
         return selectedValues;
     }
 
-    private void CollectEncodedValueByTracking(string propertyName, object? value, Func<EncodedTrackedViewModelValueData> trackNewEncodedValueFunc, ICollection<EncodedTrackedViewModelValueData> collector)
+    private void CollectEncodedValueByTracking(string propertyName, object? value, Func<EncodedTrackedJsValueData> trackNewEncodedValueFunc, ICollection<EncodedTrackedJsValueData> collector)
     {
         if (TryGetPreviousValue(propertyName, out var previousValue))
         {
@@ -59,34 +59,47 @@ internal class ViewModelShallowChangesTracker<TViewModel>(
         }
     }
 
-    private static void CollectNewTrackedEncodedValue(Func<EncodedTrackedViewModelValueData> trackNewEncodedValueFunc, ICollection<EncodedTrackedViewModelValueData> collector)
+    private static void CollectNewTrackedEncodedValue(Func<EncodedTrackedJsValueData> trackNewEncodedValueFunc, ICollection<EncodedTrackedJsValueData> collector)
     {
         var encodedValue = trackNewEncodedValueFunc.Invoke();
         collector.Add(encodedValue);
     }
 
-    private EncodedTrackedViewModelSimpleValueData TrackNewEncodedSimpleValue(string propertyName, object value)
+    private EncodedTrackedJsSimpleValueData TrackNewEncodedSimpleValue(string propertyName, object? value)
     {
         TrackNewValue(propertyName, value);
-        return CreateEncodedSimpleValue(propertyName, value);
+        return CreateEncodedTrackedJsSimpleValueData(propertyName, value);
     }
 
-    private EncodedTrackedViewModelComplexObjectValueData TrackNewEncodedComplexObjectValue(string propertyName, object? valueToTrack, Type valueType)
+    private EncodedTrackedJsValueData TrackNewEncodedObjectValue(string propertyName, object? valueToTrack, Type valueType)
     {
         TrackNewValue(propertyName, valueToTrack);
 
-        var childrenVMJsNames = GetViewModelJsNames(valueType);
-        var allData = noChangesTracker.Track(valueToTrack, childrenVMJsNames);
+        var allData = TryTrackStoredViewModel(valueToTrack, valueType);
 
-        return CreateEncodedComplexObjectValue(propertyName, allData);
+        return (allData is null)
+            ? CreateEncodedTrackedJsSimpleValueData(propertyName, valueToTrack)
+            : CreateEncodedComplexObjectValue(propertyName, allData);
     }
 
-    private ViewModelJsNames GetViewModelJsNames(Type valueType)
+    private EncodedTrackedViewModelJsAllData? TryTrackStoredViewModel(object? vmToTrack, Type vmType)
+    {
+        var childrenVMJsNames = GetViewModelJsNames(vmType);
+
+        return childrenVMJsNames is not null
+            ? noChangesTracker.Track(vmToTrack, childrenVMJsNames)
+            : null;
+    }
+
+    private ViewModelJsNames? GetViewModelJsNames(Type valueType)
         => vmJsNamesRepository.GetNamesByViewModelType(valueType);
 
-    private List<EncodedTrackedViewModelCollectionData> TrackCollections(object objToTrack, IEnumerable<ViewModelJsCollectionName> collectionNames)
+    //private static ViewModelJsNames CreateViewModelJsNames(string propertyName, object? value)
+    //    => new([new(propertyName, () => value)], []);
+
+    private List<EncodedTrackedViewModelJsCollectionData> TrackCollections(object objToTrack, IEnumerable<ViewModelJsCollectionName> collectionNames)
     {
-        var selectedCollections = new List<EncodedTrackedViewModelCollectionData>();
+        var selectedCollections = new List<EncodedTrackedViewModelJsCollectionData>();
 
         foreach (var collectionName in collectionNames)
         {
@@ -110,18 +123,21 @@ internal class ViewModelShallowChangesTracker<TViewModel>(
         return selectedCollections;
     }
 
-    private static EncodedTrackedViewModelSimpleValueData CreateEncodedSimpleValue(string name, object propertyValue)
-        => new(EncodeName(name), propertyValue);
+    private EncodedTrackedJsSimpleValueData CreateEncodedTrackedJsSimpleValueData(string name, object? propertyValue)
+    {
+        var safePropertyValue = serializablePropertyValueExtractor.GetSafeValue(propertyValue);
+        return new(EncodeName(name), safePropertyValue);
+    }
 
-    private static EncodedTrackedViewModelComplexObjectValueData CreateEncodedComplexObjectValue(string name, EncodedTrackedViewModelAllData propertyAllData)
+    private static EncodedTrackedComplexViewModelJsValueData CreateEncodedComplexObjectValue(string name, EncodedTrackedViewModelJsAllData propertyAllData)
         => new(EncodeName(name), propertyAllData);
 
-    private EncodedTrackedViewModelCollectionData CreateEncodedCollection(IEnumerable<object?> childrenToTrack, ViewModelJsCollectionName collectionName)
+    private EncodedTrackedViewModelJsCollectionData CreateEncodedCollection(IEnumerable<object?> childrenToTrack, ViewModelJsCollectionName collectionName)
     {
         var dataChildren = childrenToTrack.SelectMany(ct
             => collectionName.Children.Select(cn => noChangesTracker.Track(ct, cn)));
 
-        return new EncodedTrackedViewModelCollectionData(EncodeName(collectionName.CollectionPropertyName), dataChildren);
+        return new EncodedTrackedViewModelJsCollectionData(EncodeName(collectionName.CollectionPropertyName), dataChildren);
     }
 
     private bool TryGetPreviousValue<T>(string name, out T value)

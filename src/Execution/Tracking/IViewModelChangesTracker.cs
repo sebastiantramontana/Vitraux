@@ -1,8 +1,9 @@
-﻿using Vitraux.Execution.ViewModelNames;
+﻿using Vitraux.Execution.Tracking.Encoded;
+using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution.Tracking;
 
 internal interface IViewModelChangesTracker<TViewModel>
 {
-    EncodedTrackedViewModelAllData Track(object? objToTrack, ViewModelJsNames vmNames);
+    EncodedTrackedViewModelJsAllData Track(object? viewModelToTrack, ViewModelJsNames vmNames);
 }

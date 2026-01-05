@@ -1,0 +1,2 @@
+﻿namespace Vitraux.Execution.Tracking.Encoded;
+internal record class EncodedTrackedViewModelJsAllData(IEnumerable<EncodedTrackedJsValueData> ValueProperties, IEnumerable<EncodedTrackedViewModelJsCollectionData> CollectionProperties);

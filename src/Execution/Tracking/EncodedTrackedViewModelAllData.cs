@@ -1,2 +1,0 @@
-﻿namespace Vitraux.Execution.Tracking;
-internal record class EncodedTrackedViewModelAllData(IEnumerable<EncodedTrackedViewModelValueData> ValueProperties, IEnumerable<EncodedTrackedViewModelCollectionData> CollectionProperties);

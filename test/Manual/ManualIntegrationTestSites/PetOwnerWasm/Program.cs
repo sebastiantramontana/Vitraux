@@ -18,9 +18,8 @@ public partial class Program
     {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-        builder.Services.AddSingleton<IPetOwnerRepository, PetOwnerRepository>();
-
         _ = builder.Services
+            .AddSingleton<IPetOwnerRepository, PetOwnerRepository>()
             .AddVitraux()
             .AddConfiguration(() => new VitrauxConfiguration { UseShadowDom = true })
             .AddViewModelConfiguration<AllPetOwnerNames, AllPetOwnerNamesConfiguration>()

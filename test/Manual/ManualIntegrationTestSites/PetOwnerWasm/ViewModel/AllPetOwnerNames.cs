@@ -15,7 +15,7 @@ internal class AllPetOwnerNames(IEnumerable<PetOwnerName> names, IPetOwnerReposi
 
     public Task AddFakePetOwner()
     {
-        var petOwner = new PetOwner(111, "Fake name", "Fake address", "Fake phone", "<h2>Fake Fake Fake Fake Fake</h2>", new Subscription(SubscriptionFrequency.Monthly, -1.0, false, false), []);
+        var petOwner = new PetOwner(111, "Fake name", "Fake address", "Fake phone", "<h2>Fake Fake Fake Fake Fake</h2>", new Subscription(SubscriptionFrequency.Monthly, -1.0, false, false), [], new("Fake Vet", "Fake License", DateTime.MinValue));
         return petownerViewUpdater.Update(petOwner);
     }
 }

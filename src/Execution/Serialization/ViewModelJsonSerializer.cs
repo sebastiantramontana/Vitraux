@@ -3,14 +3,14 @@ using System.Numerics;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Vitraux.Execution.Tracking;
+using Vitraux.Execution.Tracking.Encoded;
 using Vitraux.Helpers;
 
 namespace Vitraux.Execution.Serialization;
 
 internal class ViewModelJsonSerializer(INotImplementedCaseGuard notImplementedCaseGuard) : IViewModelJsonSerializer
 {
-    public async Task<string> Serialize(EncodedTrackedViewModelAllData encodedTrackedViewModelAllData)
+    public async Task<string> Serialize(EncodedTrackedViewModelJsAllData encodedTrackedViewModelAllData)
     {
         var buffer = new ArrayBufferWriter<byte>();
         await using var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions
@@ -31,20 +31,20 @@ internal class ViewModelJsonSerializer(INotImplementedCaseGuard notImplementedCa
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
-    private void SerializeObjectToJson(EncodedTrackedViewModelAllData encodedTrackedViewModelAllData, Utf8JsonWriter utf8JsonWriter)
+    private void SerializeObjectToJson(EncodedTrackedViewModelJsAllData encodedTrackedViewModelAllData, Utf8JsonWriter utf8JsonWriter)
     {
         utf8JsonWriter.WriteStartObject();
         SerializePropertiesToJson(encodedTrackedViewModelAllData, utf8JsonWriter);
         utf8JsonWriter.WriteEndObject();
     }
 
-    private void SerializePropertiesToJson(EncodedTrackedViewModelAllData encodedTrackedViewModelAllData, Utf8JsonWriter utf8JsonWriter)
+    private void SerializePropertiesToJson(EncodedTrackedViewModelJsAllData encodedTrackedViewModelAllData, Utf8JsonWriter utf8JsonWriter)
     {
         SerializeValuesToJson(encodedTrackedViewModelAllData.ValueProperties, utf8JsonWriter);
         SerializeCollectionsToJson(encodedTrackedViewModelAllData.CollectionProperties, utf8JsonWriter);
     }
 
-    private void SerializeValuesToJson(IEnumerable<EncodedTrackedViewModelValueData> values, Utf8JsonWriter utf8JsonWriter)
+    private void SerializeValuesToJson(IEnumerable<EncodedTrackedJsValueData> values, Utf8JsonWriter utf8JsonWriter)
     {
         foreach (var value in values)
         {
@@ -52,14 +52,14 @@ internal class ViewModelJsonSerializer(INotImplementedCaseGuard notImplementedCa
         }
     }
 
-    private void SerializeValueToJson(EncodedTrackedViewModelValueData value, Utf8JsonWriter utf8JsonWriter)
+    private void SerializeValueToJson(EncodedTrackedJsValueData value, Utf8JsonWriter utf8JsonWriter)
     {
         switch (value)
         {
-            case EncodedTrackedViewModelSimpleValueData simpleValue:
+            case EncodedTrackedJsSimpleValueData simpleValue:
                 SerializeSimpleValueToJson(simpleValue, utf8JsonWriter);
                 break;
-            case EncodedTrackedViewModelComplexObjectValueData complexValue:
+            case EncodedTrackedComplexViewModelJsValueData complexValue:
                 SerializeComplexObjectValueToJson(complexValue, utf8JsonWriter);
                 break;
             default:
@@ -68,13 +68,13 @@ internal class ViewModelJsonSerializer(INotImplementedCaseGuard notImplementedCa
         }
     }
 
-    private void SerializeComplexObjectValueToJson(EncodedTrackedViewModelComplexObjectValueData objectValue, Utf8JsonWriter utf8JsonWriter)
+    private void SerializeComplexObjectValueToJson(EncodedTrackedComplexViewModelJsValueData objectValue, Utf8JsonWriter utf8JsonWriter)
     {
         utf8JsonWriter.WritePropertyName(objectValue.ValuePropertyName);
         SerializeObjectToJson(objectValue.PropertyAllData, utf8JsonWriter);
     }
 
-    private static void SerializeSimpleValueToJson(EncodedTrackedViewModelSimpleValueData value, Utf8JsonWriter utf8JsonWriter)
+    private static void SerializeSimpleValueToJson(EncodedTrackedJsSimpleValueData value, Utf8JsonWriter utf8JsonWriter)
     {
         switch (value.PropertyValue)
         {
@@ -132,7 +132,7 @@ internal class ViewModelJsonSerializer(INotImplementedCaseGuard notImplementedCa
         }
     }
 
-    private void SerializeCollectionsToJson(IEnumerable<EncodedTrackedViewModelCollectionData> collections, Utf8JsonWriter utf8JsonWriter)
+    private void SerializeCollectionsToJson(IEnumerable<EncodedTrackedViewModelJsCollectionData> collections, Utf8JsonWriter utf8JsonWriter)
     {
         foreach (var col in collections)
         {
@@ -140,7 +140,7 @@ internal class ViewModelJsonSerializer(INotImplementedCaseGuard notImplementedCa
         }
     }
 
-    private void SerializeCollectionToJson(EncodedTrackedViewModelCollectionData collection, Utf8JsonWriter utf8JsonWriter)
+    private void SerializeCollectionToJson(EncodedTrackedViewModelJsCollectionData collection, Utf8JsonWriter utf8JsonWriter)
     {
         utf8JsonWriter.WritePropertyName(collection.ValuePropertyName);
         utf8JsonWriter.WriteStartArray();

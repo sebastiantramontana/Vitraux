@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Vitraux.Execution.Serialization;
+using Vitraux.Execution.Tracking.Encoded;
 using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution.Tracking;
@@ -8,7 +9,7 @@ internal class ViewModelNoChangesTracker<TViewModel>(
     ISerializablePropertyValueExtractor serializablePropertyValueExtractor,
     IViewModelJsNamesRepositoryGeneric<TViewModel> vmJsNamesRepository) : IViewModelNoChangesTracker<TViewModel>
 {
-    public EncodedTrackedViewModelAllData Track(object? objToTrack, ViewModelJsNames vmNames)
+    public EncodedTrackedViewModelJsAllData Track(object? objToTrack, ViewModelJsNames vmNames)
     {
         if (objToTrack is null)
             return new([], []);
@@ -19,33 +20,49 @@ internal class ViewModelNoChangesTracker<TViewModel>(
         return new(values, collections);
     }
 
-    private IEnumerable<EncodedTrackedViewModelValueData> TrackValues(object objToTrack, IEnumerable<ViewModelJsValueName> valueNames)
-        => valueNames.Select<ViewModelJsValueName, EncodedTrackedViewModelValueData>(value =>
+    private IEnumerable<EncodedTrackedJsValueData> TrackValues(object vmToTrack, IEnumerable<ViewModelJsValueName> valueNames)
+        => valueNames.Select<ViewModelJsValueName, EncodedTrackedJsValueData>(value =>
         {
-            var encodedName = EncodeName(value.ValuePropertyName);
-            var valueInfo = serializablePropertyValueExtractor.GetValueInfo(value.ValuePropertyValueDelegate, objToTrack);
+            var encodedPropertyName = EncodeName(value.ValuePropertyName);
+            var valueInfo = serializablePropertyValueExtractor.GetValueInfo(value.ValuePropertyValueDelegate, vmToTrack);
 
             if (valueInfo.IsSimpleType)
             {
-                var propertyValue = serializablePropertyValueExtractor.GetSafeValue(valueInfo.Value);
-                return new EncodedTrackedViewModelSimpleValueData(encodedName, propertyValue);
+                return CreateEncodedTrackedJsSimpleValueData(encodedPropertyName, valueInfo.Value);
             }
             else
             {
-                var childrenVMJsNames = vmJsNamesRepository.GetNamesByViewModelType(valueInfo.ValueType);
-                var allData = Track(valueInfo.Value, childrenVMJsNames);
-                return new EncodedTrackedViewModelComplexObjectValueData(encodedName, allData);
+                var allData = TryTrackStoredViewModel(valueInfo.Value, valueInfo.ValueType);
+
+                return (allData is null)
+                     ? CreateEncodedTrackedJsSimpleValueData(encodedPropertyName, valueInfo.Value)
+                     : new EncodedTrackedComplexViewModelJsValueData(encodedPropertyName, allData);
             }
         });
 
-    private IEnumerable<EncodedTrackedViewModelCollectionData> TrackCollections(object objToTrack, IEnumerable<ViewModelJsCollectionName> collectionNames)
+    private EncodedTrackedJsSimpleValueData CreateEncodedTrackedJsSimpleValueData(JsonEncodedText propertyName, object? value)
+    {
+        var propertyValue = serializablePropertyValueExtractor.GetSafeValue(value);
+        return new(propertyName, propertyValue);
+    }
+
+    private EncodedTrackedViewModelJsAllData? TryTrackStoredViewModel(object? vmToTrack, Type vmType)
+    {
+        var childrenVMJsNames = vmJsNamesRepository.GetNamesByViewModelType(vmType);
+
+        return childrenVMJsNames is not null
+            ? Track(vmToTrack, childrenVMJsNames)
+            : null;
+    }
+
+    private IEnumerable<EncodedTrackedViewModelJsCollectionData> TrackCollections(object vmToTrack, IEnumerable<ViewModelJsCollectionName> collectionNames)
         => collectionNames.Select(colItem =>
         {
             var encodedName = EncodeName(colItem.CollectionPropertyName);
-            var collectionValues = serializablePropertyValueExtractor.GetCollection(colItem.CollectionPropertyValueDelegate, objToTrack);
+            var collectionValues = serializablePropertyValueExtractor.GetCollection(colItem.CollectionPropertyValueDelegate, vmToTrack);
             var dataChildren = collectionValues.SelectMany(cv => colItem.Children.Select(c => Track(cv, c)));
 
-            return new EncodedTrackedViewModelCollectionData(encodedName, dataChildren);
+            return new EncodedTrackedViewModelJsCollectionData(encodedName, dataChildren);
         });
 
     private static JsonEncodedText EncodeName(string name)
