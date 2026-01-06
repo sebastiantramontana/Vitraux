@@ -58,6 +58,8 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IViewMo
                 .ToElements.ById("petowner-phonenumber-id").ToContent
             .MapValue(po => po.Subscription)
                 .ToOwnMapping
+            .MapValue(po => po.RegularVeterinarian)
+                .ToJsFunction("logObject").FromModule(new Uri("./modules/logging.js", UriKind.Relative))
             .MapValue(po => po.HtmlComments)
                 .ToElements.ByQuery(".comments").ToHtml
             .MapCollection(po => po.Pets)

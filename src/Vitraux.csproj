@@ -6,19 +6,12 @@
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Vitraux</PackageId>
-		<Version>1.2.6-rc</Version>
+		<Version>1.2.7-rc</Version>
 		<PackageReleaseNotes>
-		Vitraux 1.2.6-rc
-		- Updated to .Net 10.0.
-		- Added the new Actions system for declarative ViewModel method binding.
-			- Supports sync and async actions.
-			- Supports parameterized actions via custom binders.
-			- Generates efficient auto-registered JS event handlers.
-		- Improved JS generation pipeline for better performance.
-		- Internal refactoring and code cleanup for stability and maintainability.
-		- Updated reference manual and developer documentation.
+			Vitraux 1.2.7-rc
+			Fix tracking and serialization of complex objects when they aren't configured and stored VMs.
 
-		This is a release candidate for 1.2.6. API is considered stable for production testing.
+			This is a release candidate for 1.2.7. API is considered stable for production testing.
 		</PackageReleaseNotes>
 		<Authors>Sebastian Tramontana</Authors>
 		<Company>Sebastian Tramontana</Company>
@@ -53,7 +46,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="..\dist\vitraux-1.2.6-rc-min.js" Link="vitraux-1.2.6-rc-min.js" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles\any\any\" />
+		<Content Include="..\dist\vitraux-1.2.7-rc-min.js" Link="vitraux-1.2.7-rc-min.js" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="contentFiles\any\any\" />
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
 		<None Include="..\assets\logo.png" Pack="true" PackagePath="\" />
 	</ItemGroup>

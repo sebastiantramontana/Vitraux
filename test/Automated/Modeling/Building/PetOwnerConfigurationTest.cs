@@ -75,6 +75,7 @@ public class PetOwnerConfigurationTest
         var addressValue = CreateAddressValueData();
         var phoneNumberValue = CreatePhoneNumberValueData();
         var suscriptionValue = CreateSubscriptionValueData();
+        var vetValue = CreateRegularVeterinarianValueData();
         var commentsValue = CreateCommentsValueData();
         var petsCollection = CreatePetsCollectionData();
         var action1 = CreateAction1();
@@ -90,6 +91,7 @@ public class PetOwnerConfigurationTest
         petOwnerData.AddValue(addressValue);
         petOwnerData.AddValue(phoneNumberValue);
         petOwnerData.AddValue(suscriptionValue);
+        petOwnerData.AddValue(vetValue);
         petOwnerData.AddValue(commentsValue);
         petOwnerData.AddCollection(petsCollection);
         petOwnerData.AddAction(action1);
@@ -223,6 +225,18 @@ public class PetOwnerConfigurationTest
         petsCollection.AddTarget(petsTarget1);
         petsCollection.AddTarget(petsTarget2);
         return petsCollection;
+    }
+
+    private static ValueData CreateRegularVeterinarianValueData()
+    {
+        var vetValue = new ValueData((PetOwner p) => p.RegularVeterinarian);
+        var vetTarget = new CustomJsValueTarget("logObject")
+        {
+            ModuleFrom = new Uri("./modules/logging.js", UriKind.Relative)
+        };
+
+        vetValue.AddTarget(vetTarget);
+        return vetValue;
     }
 
     private static ValueData CreateSubscriptionValueData()

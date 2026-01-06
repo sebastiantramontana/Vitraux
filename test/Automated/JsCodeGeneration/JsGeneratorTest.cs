@@ -103,7 +103,12 @@ public class JsGeneratorTest
                                         }
 
                                         if(globalThis.vitraux.updating.utils.isValueValid(vm.v4)) {
-                                            globalThis.vitraux.updating.dom.setElementsHtml(e7, vm.v4);
+                                            const m1 = await import('./modules/logging.js');
+                                            await m1.logObject(vm.v4);
+                                        }
+
+                                        if(globalThis.vitraux.updating.utils.isValueValid(vm.v5)) {
+                                            globalThis.vitraux.updating.dom.setElementsHtml(e7, vm.v5);
                                         }
 
                                         if(globalThis.vitraux.updating.utils.isValueValid(vm.c0)) {
@@ -192,8 +197,8 @@ public class JsGeneratorTest
 
                                             await globalThis.vitraux.updating.dom.updateTable(e8, 0, c9, uc0, vm.c0);
 
-                                            const m1 = await import('./modules/pets.js');
-                                            await m1.pets.manage(vm.c0);
+                                            const m2 = await import('./modules/pets.js');
+                                            await m2.pets.manage(vm.c0);
                                         }
 
                                         return Promise.resolve();
@@ -305,10 +310,11 @@ public class JsGeneratorTest
                     [
                         new Antiparasitic("Worm Treatment", new DateTime(2025,9,22))
                     ])
-            ]);
+            ],
+            new Veterinarian("Dave Mustaine", "12345-112233", new DateTime(2010, 3, 4)));
 
     private const string ExpectedPetOwnerExampleJson =
         """
-        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":{"v0":"Semiannual","v1":123.456,"v2":true,"v3":true},"v4":"\u003Ch2\u003ESome comments\u003C/h2\u003E","c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"2022-06-08T00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"2022-07-09T00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"2023-10-15T00:00:00"},{"v0":"Tick Treatment","v1":"2023-11-16T00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"2024-04-01T00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"2025-09-22T00:00:00"}]}]}
+        {"v0":"Juan","v1":"123 Main St","v2":"555-1234","v3":{"v0":"Semiannual","v1":123.456,"v2":true,"v3":true},"v4":"Veterinarian { Name = Dave Mustaine, License = 12345-112233, GraduationDate = 4/3/2010 00:00:00 }","v5":"\u003Ch2\u003ESome comments\u003C/h2\u003E","c0":[{"v0":"Fido","v1":"data:image/png;base64,AQID","c0":[{"v0":"Rabies","v1":"2022-06-08T00:00:00","c0":[{"v0":"Ingredient1"},{"v0":"Ingredient2"}]},{"v0":"Distemper","v1":"2022-07-09T00:00:00","c0":[{"v0":"Ingredient3"}]}],"c1":[{"v0":"Flea Treatment","v1":"2023-10-15T00:00:00"},{"v0":"Tick Treatment","v1":"2023-11-16T00:00:00"}]},{"v0":"Toulose","v1":"data:image/png;base64,BAUG","c0":[{"v0":"Feline Leukemia","v1":"2024-04-01T00:00:00","c0":[{"v0":"Ingredient4"}]}],"c1":[{"v0":"Worm Treatment","v1":"2025-09-22T00:00:00"}]}]}
         """;
 }
