@@ -13,7 +13,7 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel>(
     IJsTryInitializeViewFunctionsFromCacheByVersionInvoker jsTryInitializeViewFunctionsFromCacheByVersionInvoker,
     IJsInitializeNewViewFunctionsToCacheByVersionInvoker jsinitializeNewViewFunctionsToCacheByVersionInvoker,
     IViewModelJsNamesMapper encodedSerializationDataMapper,
-    IViewModelJsNamesRepositoryGeneric<TViewModel> vmSerializationDataRepository,
+    IViewModelJsNamesRepositoryGeneric<TViewModel> viewModelJsNamesRepository,
     INotImplementedCaseGuard notImplementedCaseGuard)
     : IViewModelUpdateFunctionBuilder<TViewModel>
 {
@@ -33,8 +33,8 @@ internal class ViewModelUpdateFunctionBuilder<TViewModel>(
 
     private void StoreSerializationData(string vmKey, FullObjectNames fullObjectNames)
     {
-        vmSerializationDataRepository.ViewModelKey = vmKey;
-        vmSerializationDataRepository.ViewModelJsNames = encodedSerializationDataMapper.MapFromFull(fullObjectNames);
+        viewModelJsNamesRepository.ViewModelKey = vmKey;
+        viewModelJsNamesRepository.ViewModelJsNames = encodedSerializationDataMapper.MapFromFull(fullObjectNames);
     }
 
     private GeneratedJsCode GenerateJsCode(FullObjectNames fullObjectNames, QueryElementStrategy queryElementStrategy)
