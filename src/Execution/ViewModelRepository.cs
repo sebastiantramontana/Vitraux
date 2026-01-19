@@ -15,5 +15,5 @@ internal class ViewModelRepository : IViewModelRepository
     internal static object GetViewModel(string vmKey)
         => _vmInstances.TryGetValue(vmKey, out var viewModel)
             ? viewModel
-            : throw new InvalidOperationException($"Viewmodel instance with key {vmKey} not found. Probably, IViewUpdater<TViewModel>.Update(viewModel) was never called");
+            : throw new InvalidOperationException($"Viewmodel instance with key {vmKey} not found. Probably, it was not added calling to AddViewModel<TViewModel>() or IViewUpdater<TViewModel>.Update(viewModel) was never called when added with AddViewModelConfiguration<TViewModel,TViewModelConfiguration>()");
 }

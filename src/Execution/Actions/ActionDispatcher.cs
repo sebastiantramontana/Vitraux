@@ -15,7 +15,7 @@ public partial class ActionDispatcher
 
     [JSExport]
     public static Task DispatchActionAsync(string vmKey, string actionKey)
-        => (InvokeDelegate(vmKey, actionKey) as Task)!;
+        => InvokeDelegate(vmKey, actionKey) as Task ?? throw GetNullTaskException();
 
     [JSExport]
     public static void DispatchParametrizableAction(string vmKey, string actionKey, JSObject jsParameters)
@@ -23,7 +23,7 @@ public partial class ActionDispatcher
 
     [JSExport]
     public static Task DispatchParametrizableActionAsync(string vmKey, string actionKey, JSObject jsParameters)
-        => (InvokeActionParametersBinder(vmKey, actionKey, jsParameters) as Task)!;
+        => InvokeActionParametersBinder(vmKey, actionKey, jsParameters) as Task ?? throw GetNullTaskException();
 
     private static object? InvokeActionParametersBinder(string vmKey, string actionKey, JSObject jsParameters)
     {
@@ -69,4 +69,7 @@ public partial class ActionDispatcher
 
         return [.. values];
     }
+
+    private static NullReferenceException GetNullTaskException()
+        => new("Vitraux internal error: A Task instance was expected to dispatch an async action in ActionDispatcher, but it was null");
 }

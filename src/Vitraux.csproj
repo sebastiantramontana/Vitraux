@@ -6,12 +6,12 @@
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Vitraux</PackageId>
-		<Version>1.2.8-rc</Version>
+		<Version>1.2.9-rc</Version>
 		<PackageReleaseNotes>
-			Vitraux 1.2.8-rc
-			Fix to avoid possible circular dependency for users
+			Vitraux 1.2.9-rc
+			Fix for a scenario where a ViewModel instance needed to be in memory to handle actions, but it didn't exist because IViewUpdater.Update(vm) hadn't been called.
 
-			This is a release candidate for 1.2.8. API is considered stable for production testing.
+			This is a release candidate for 1.2.9. API is considered stable for production testing.
 		</PackageReleaseNotes>
 		<Authors>Sebastian Tramontana</Authors>
 		<Company>Sebastian Tramontana</Company>
@@ -46,7 +46,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="..\dist\vitraux-1.2.8-rc-min.js" Link="vitraux-1.2.8-rc-min.js" CopyToOutputDirectory="Always" Pack="true" PackagePath="contentFiles\any\any\" />
+		<Content Include="..\dist\vitraux-1.2.9-rc-min.js" Link="vitraux-1.2.9-rc-min.js" CopyToOutputDirectory="Always" Pack="true" PackagePath="contentFiles\any\any\" />
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
 		<None Include="..\assets\logo.png" Pack="true" PackagePath="\" />
 	</ItemGroup>

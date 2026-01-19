@@ -1,4 +1,5 @@
-﻿using Vitraux.Execution.ViewModelNames;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Vitraux.Execution.ViewModelNames;
 
 namespace Vitraux.Execution.Building;
 
@@ -8,7 +9,8 @@ internal class ViewModelRuntimeBuilder<TViewModel>(
     IViewModelKeyGenerator viewModelKeyGenerator,
     IViewModelUpdateFunctionBuilder<TViewModel> viewModelUpdateFunctionBuilder,
     IViewModelActionsBuilder<TViewModel> viewModelActionsBuilder,
-    IViewModelRepository viewModelRepository) : IBuilder
+    IViewModelRepository viewModelRepository,
+    IServiceProvider serviceProvider) : IBuilder where TViewModel : class
 {
     public Task Build()
     {
@@ -16,11 +18,21 @@ internal class ViewModelRuntimeBuilder<TViewModel>(
         var behavior = modelConfiguration.ConfigurationBehavior;
         var mappingData = modelConfiguration.ConfigureMapping(modelMapper);
 
-        viewModelRepository.ConfigurationBehavior = behavior;
+        TrySaveViewModelInstance(vmKey, behavior);
 
         var updateFuncTask = viewModelUpdateFunctionBuilder.Build(vmKey, behavior, mappingData);
         var actionsTask = viewModelActionsBuilder.Build(vmKey, behavior, mappingData.Actions);
 
         return Task.WhenAll(updateFuncTask, actionsTask);
+    }
+
+    private void TrySaveViewModelInstance(string vmKey, ConfigurationBehavior behavior)
+    {
+        viewModelRepository.ConfigurationBehavior = behavior;
+
+        var viewModel = serviceProvider.GetService<TViewModel>();
+
+        if (viewModel is not null)
+            viewModelRepository.SetViewModelInstance<TViewModel>(vmKey, viewModel);
     }
 }
