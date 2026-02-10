@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>From Template</title>
+    <base href="/" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preload" id="webassembly" />
+    <script type="importmap"></script>
+    <script src="vitraux.js"></script>
+    <script>
+        addEventListener("DOMContentLoaded", async () => {
+            try {
+                await Blazor.start();
+            }
+            catch (ex) {
+                console.log(`Something was wrong: ${ex}`);
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+        }
+
+        button {
+            font-size: 1.2em;
+            margin: 20px;
+            padding: 5px 20px;
+            width: auto;
+            display: block;
+            clear: both;
+            margin: auto;
+        }
+
+        .from-template-value {
+            margin-left: 40px;
+            margin-right: 40px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            width: 200px;
+            float: left;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, td {
+            border: 1px solid black;
+        }
+
+        .header-row {
+            font-weight: bold;
+        }
+
+        .header-row:nth-child(odd)
+        {
+            background-color: #f9f9f9;
+        }
+
+        .header-row:nth-child(even)
+        {
+            background-color: #f0f0f0;
+        }
+
+        .header-cell {
+            text-align: left;
+            padding: 4px;
+            width: 50%;
+        }
+
+        .expected-cell {
+            text-align: center;
+            padding: 4px;
+            width: 50%;
+            background-color: #f0fff0;
+        }
+
+        .template-content {
+            text-align: center;
+            padding: 4px;
+            height: 40px;
+        }
+
+        .test-case-group {
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid grey;
+            float: left;
+        }
+
+        .center-blocks
+        {
+            margin: auto; 
+            width: fit-content;
+        }
+
+        .container-level-1 {
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            margin: 10px;
+            float: left;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <h1>Elements Loaded From Templates Test</h1>
+    <h2>Tests for Values</h2>
+    <div class="test-case-group">
+        <h3>Test cases: Zero Children Modified and non existent template</h3>
+        <div class="center-blocks">
+            <div class="from-template-value">
+            <table>
+                <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>1</td></tr>
+                <tr class="header-row"><td class="header-cell">Existent&nbsp;Template</td><td>NO</td></tr>
+                <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />No content modification</td></tr>
+                <tr><td id="element-for-zero-children-non-existen-template" colspan="2" class="template-content">This content should not be modified</td></tr>
+            </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Existent&nbsp;Template</td><td>NO</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />No content modification</td></tr>
+                    <tr><td many-elements-for-zero-children-non-existent-template colspan="2" class="template-content">This content should not be modified</td></tr>
+                    <tr><td many-elements-for-zero-children-non-existent-template colspan="2" class="template-content">This content should not be modified</td></tr>
+                    <tr><td many-elements-for-zero-children-non-existent-template colspan="2" class="template-content">This content should not be modified</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Template&nbsp;Children</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Modified&nbsp;Children</td><td>0</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />Template content without any modification</td></tr>
+                    <tr><td id="element-for-zero-children-template-one" colspan="2" class="template-content">Template content here</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Template&nbsp;Children</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Modified&nbsp;Children</td><td>0</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />Template content without any modification</td></tr>
+                    <tr><td many-elements-for-zero-children-template-one colspan="2" class="template-content">Template content here</td></tr>
+                    <tr><td many-elements-for-zero-children-template-one colspan="2" class="template-content">Template content here</td></tr>
+                    <tr><td many-elements-for-zero-children-template-one colspan="2" class="template-content">Template content here</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Template&nbsp;Children</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Modified&nbsp;Children</td><td>0</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />Template content without any modification</td></tr>
+                    <tr><td id="element-for-zero-children-template-many" colspan="2" class="template-content">Template content here</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Template&nbsp;Children</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Modified&nbsp;Children</td><td>0</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />Template content without any modification</td></tr>
+                    <tr><td many-elements-for-zero-children-template-many colspan="2" class="template-content">Template content here</td></tr>
+                    <tr><td many-elements-for-zero-children-template-many colspan="2" class="template-content">Template content here</td></tr>
+                    <tr><td many-elements-for-zero-children-template-many colspan="2" class="template-content">Template content here</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="test-case-group">
+        <h3>Test cases: Children Modified and non existent template</h3>
+        <div class="center-blocks">
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Existent&nbsp;Template</td><td>NO</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />No content modification</td></tr>
+                    <tr><td id="element-for-children-non-existent-template" colspan="2" class="template-content">This content should not be modified</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Existent&nbsp;Template</td><td>NO</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />No content modification</td></tr>
+                    <tr><td many-elements-for-children-non-existent-template colspan="2" class="template-content">This content should not be modified</td></tr>
+                    <tr><td many-elements-for-children-non-existent-template colspan="2" class="template-content">This content should not be modified</td></tr>
+                    <tr><td many-elements-for-children-non-existent-template colspan="2" class="template-content">This content should not be modified</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Template&nbsp;Children</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Modified&nbsp;Children</td><td>1</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />Template content with 1 modified child</td></tr>
+                    <tr><td id="element-for-one-child" colspan="2" class="template-content">Template content here</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Template&nbsp;Children</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Modified&nbsp;Children</td><td>1</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />Template content with 1 modified child</td></tr>
+                    <tr><td many-elements-for-one-child colspan="2" class="template-content">Template content here</td></tr>
+                    <tr><td many-elements-for-one-child colspan="2" class="template-content">Template content here</td></tr>
+                    <tr><td many-elements-for-one-child colspan="2" class="template-content">Template content here</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>1</td></tr>
+                    <tr class="header-row"><td class="header-cell">Template&nbsp;Children</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Modified&nbsp;Children</td><td>N</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />Template content where 3 children are modified and 2 are left unchanged</td></tr>
+                    <tr><td id="element-for-many-children" colspan="2" class="template-content">Template content here</td></tr>
+                </table>
+            </div>
+            <div class="from-template-value">
+                <table>
+                    <tr class="header-row"><td class="header-cell">Parent&nbsp;Elements</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Template&nbsp;Children</td><td>N</td></tr>
+                    <tr class="header-row"><td class="header-cell">Modified&nbsp;Children</td><td>N</td></tr>
+                    <tr><td class="expected-cell" colspan="2"><strong>Expected: </strong><br />Template content where 3 children are modified and 2 are left unchanged</td></tr>
+                    <tr><td many-elements-for-many-children colspan="2" class="template-content">Template content here</td></tr>
+                    <tr><td many-elements-for-many-children colspan="2" class="template-content">Template content here</td></tr>
+                    <tr><td many-elements-for-many-children colspan="2" class="template-content">Template content here</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <h2>Tests for Collections: Containers and Tables</h2>
+    <div class="test-case-group">
+        <ul class="container-level-1"></ul>
+        <ul class="container-level-1"></ul>
+        <table table-level-1></table>
+    </div>
+
+
+
+
+
+    <div>
+        <button id="load-from-templates">Load From Templates</button>
+    </div>
+    <script src="_framework/blazor.webassembly#[.{fingerprint}].js" autostart="false"></script>
+</body>
+
+<template id="one-child-template">
+    <div time-children>unchanged child</div>
+</template>
+
+<template id="many-children-template">
+    <div time-children>unchanged child</div>
+    <div>Non-modifiable child</div>
+    <div time-children>unchanged child</div>
+    <div>Non-modifiable child</div>
+    <div time-children>unchanged child</div>
+</template>
+
+<template id="container-level-1-template">
+    <li item-level-1>Item to be modified - level 1</li>
+    <li>Non-modified item - level 1</li>
+    <li><table table-level-2></table></li>
+</template>
+
+<template id="table-level-1-template">
+    <tr><td>Cell to be modified - level 1</td></tr>
+</template>
+
+<template id="table-level-2-template">
+    <tr>
+        <td cell-level-2>Cell to be modified - level 2</td>
+        <td cell-container-2>Cell as container - level 2</td>
+    </tr>
+</template>
+
+<template id="container-level-2-template">
+    <li item-level-1>Item to be modified - level 2</li>
+    <li>Non-modified item - level 2</li>
+</template>
+
+<template id="container-level-3-template">
+    <li item-level-1>Item to be modified - level 3</li>
+    <li>Non-modified item - level 3</li>
+</template>
+
+</html>

@@ -1,0 +1,14 @@
+<Project>
+  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+  <Target Name="VitrauxJsCopy" AfterTargets="Build">
+      <Message Text="Copying vitraux.js" Importance="high" />
+	  <ItemGroup>
+		  <VitrauxJsFile Include="..\..\..\..\src\vitraux.js" />
+	  </ItemGroup>
+
+	  <Copy
+			SourceFiles="@(VitrauxJsFile)"
+			DestinationFolder="$(ProjectDir)wwwroot\"
+			SkipUnchangedFiles="true" />
+  </Target>
+</Project>
