@@ -17,7 +17,7 @@ internal class RootCollectionToOwnMappingFinallizable<TItem, TViewModel>(
         => toTableWrapped;
     public IRootContainerElementsSelectorBuilder<TItem, TViewModel> ToContainerElements
         => toContainerElementsWrapped;
-    public IRootCollectionCustomJsBuilder<TItem, TViewModel> ToJsFunction(string jsFunction)
+    public IRootCollectionCustomJsBuilder<TItem, TViewModel> ToCollectionJsFunction(string jsFunction)
     {
         var target = new CustomJsCollectionTarget(jsFunction);
         collectionData.AddTarget(target);

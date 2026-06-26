@@ -17,15 +17,15 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IViewMo
         => modelMapper
             .MapValue(po => po.Name)
                 .ToElements.ById("petowner-name").ToContent
-                .ToJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))
+                .ToValueJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))
             .MapValue(po => po.Address).ToElements.ById("petowner-address").ToContent
             .MapValue(po => po.PhoneNumber).ToElements.ById("petowner-phone-number").ToContent
             .MapValue(po => po.Subscription).ToOwnMapping
-            .MapValue(po => po.Subscription).ToJsFunction("logObject").FromModule(new Uri("./modules/logging.js", UriKind.Relative)) //Since Subscription is a configured and stored VM, logObject will show [object Object] because it is serialized as a VM.
-            .MapValue(po => po.RegularVeterinarian).ToJsFunction("logObject").FromModule(new Uri("./modules/logging.js", UriKind.Relative)) //Since RegularVeterinarian is not a configured and stored VM, logObject will show something like Veterinarian { Name = Tom Araya, License = 11111-11111, GraduationDate = 3/2/2011 00:00:00 } because it is stringified
+            .MapValue(po => po.Subscription).ToValueJsFunction("logObject").FromModule(new Uri("./modules/logging.js", UriKind.Relative)) //Since Subscription is a configured and stored VM, logObject will show [object Object] because it is serialized as a VM.
+            .MapValue(po => po.RegularVeterinarian).ToValueJsFunction("logObject").FromModule(new Uri("./modules/logging.js", UriKind.Relative)) //Since RegularVeterinarian is not a configured and stored VM, logObject will show something like Veterinarian { Name = Tom Araya, License = 11111-11111, GraduationDate = 3/2/2011 00:00:00 } because it is stringified
             .MapValue(po => po.HtmlComments).ToElements.ByQuery(".comments").ToHtml
             .MapCollection(po => po.Pets)
-                .ToJsFunction("pets.manage").FromModule(new Uri("./modules/pets.js", UriKind.Relative))
+                .ToCollectionJsFunction("pets.manage").FromModule(new Uri("./modules/pets.js", UriKind.Relative))
                 .ToTables.ById("petowner-pets")
                 .PopulatingRows.ToTBody(1).FromTemplate("petowner-pet-row")
                     .MapValue(pet => pet.Name).ToElements.ByQuery("[data-id='pet-name']").ToContent
@@ -36,7 +36,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IViewMo
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery("[data-id='pet-photo']").ToAttribute("src")
                     .MapCollection(pet => pet.Antiparasitics)
-                        .ToJsFunction("globalThis.manageAntiparasitics")
+                        .ToCollectionJsFunction("globalThis.manageAntiparasitics")
                         .ToContainerElements.ByQuery(".antiparasitics-list")
                         .FromTemplate("antiparasitic-item-template")
                             .MapValue(a => a.Name).ToElements.ByQuery(".antiparasitic-name").ToContent

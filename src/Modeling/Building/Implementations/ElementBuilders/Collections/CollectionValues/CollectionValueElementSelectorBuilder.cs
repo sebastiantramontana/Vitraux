@@ -7,7 +7,7 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.
 
 internal class CollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn>(
     ElementValueTarget target,
-    ICollectionModelMapper<TItem, TEndCollectionReturn> modelMapper,
+    IInnerCollectionFinallizable<TItem, TEndCollectionReturn> modelMapper,
     ICollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn> multiTargetBuilder,
     TEndCollectionReturn endCollectionReturn)
     : ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn>

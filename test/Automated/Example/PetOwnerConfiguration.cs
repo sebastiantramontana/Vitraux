@@ -43,7 +43,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IViewMo
                 .AddParameter("p4").FromParamElements.ByQuery("el16").FromAttribute("att1")
             .MapValue(po => po.Name)
                 .ToElements.ById("petowner-name").ToContent
-                .ToJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))
+                .ToValueJsFunction("poNameFunction").FromModule(new Uri("./modules/po.js", UriKind.Relative))
             .MapValue(po => po.Address)
                 .ToElements.ById("petowner-address-parent")
                     .Insert.FromTemplate("petowner-address-template")
@@ -59,11 +59,11 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IViewMo
             .MapValue(po => po.Subscription)
                 .ToOwnMapping
             .MapValue(po => po.RegularVeterinarian)
-                .ToJsFunction("logObject").FromModule(new Uri("./modules/logging.js", UriKind.Relative))
+                .ToValueJsFunction("logObject").FromModule(new Uri("./modules/logging.js", UriKind.Relative))
             .MapValue(po => po.HtmlComments)
                 .ToElements.ByQuery(".comments").ToHtml
             .MapCollection(po => po.Pets)
-                .ToJsFunction("pets.manage").FromModule(new Uri("./modules/pets.js", UriKind.Relative))
+                .ToCollectionJsFunction("pets.manage").FromModule(new Uri("./modules/pets.js", UriKind.Relative))
                 .ToTables.ById("pets-table")
                 .PopulatingRows.FromTemplate("pet-row-template")
                     .MapValue(pet => pet.Name)
@@ -77,7 +77,7 @@ public class PetOwnerConfiguration(IDataUriConverter dataUriConverter) : IViewMo
                     .EndCollection
                     .MapValue(pet => ToDataUri(pet.Photo)).ToElements.ByQuery(".pet-photo").ToAttribute("src")
                     .MapCollection(pet => pet.Antiparasitics)
-                        .ToJsFunction("globalThis.manageAntiparasitics")
+                        .ToCollectionJsFunction("globalThis.manageAntiparasitics")
                         .ToContainerElements.ByQuery(".inner-nav-antiparasitics")
                         .FromUri(new Uri("./htmlpieces/row-antiparasitics.html", UriKind.Relative))
                             .MapValue(a => a.Name).ToElements.ByQuery(".div-antiparasitics").ToContent

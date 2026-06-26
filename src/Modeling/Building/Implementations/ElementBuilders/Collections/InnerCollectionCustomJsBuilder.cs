@@ -3,15 +3,14 @@ using Vitraux.Modeling.Data.Collections;
 
 namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections;
 
-internal class InnerCollectionCustomJsBuilder<TItem, TItemBack, TEndCollectionReturnModelMapper>(
+internal class InnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn>(
     CustomJsCollectionTarget target,
     CollectionData collectionData,
-    ICollectionModelMapper<TItemBack, TEndCollectionReturnModelMapper> modelMapper,
-    TEndCollectionReturnModelMapper endCollectionReturnModelMapper,
+    TEndCollectionReturn endCollectionReturn,
     IServiceProvider serviceProvider)
-    : InnerCollectionTargetBuilder<TItem, TItemBack, TEndCollectionReturnModelMapper>(collectionData, modelMapper, endCollectionReturnModelMapper, serviceProvider), IInnerCollectionCustomJsBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>>
+    : InnerCollectionTargetBuilder<TItem, TEndCollectionReturn>(collectionData, endCollectionReturn, serviceProvider), IInnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn>
 {
-    public IInnerCollectionTargetBuilder<TItem, IInnerCollectionFinallizable<TItemBack, TItem, TEndCollectionReturnModelMapper>> FromModule(Uri moduleUri)
+    public IInnerCollectionTargetBuilder<TItem, TEndCollectionReturn> FromModule(Uri moduleUri)
     {
         target.ModuleFrom = moduleUri;
         return this;

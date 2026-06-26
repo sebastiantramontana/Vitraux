@@ -19,7 +19,7 @@ internal class RootCollectionTargetBuilder<TItem, TViewModelBack>(
     public IRootContainerElementsSelectorBuilder<TItem, TViewModelBack> ToContainerElements
         => new RootContainerElementsSelectorBuilder<TItem, TViewModelBack>(collectionData, endCollectionReturn, serviceProvider);
 
-    public IRootCollectionCustomJsBuilder<TItem, TViewModelBack> ToJsFunction(string jsFunction)
+    public IRootCollectionCustomJsBuilder<TItem, TViewModelBack> ToCollectionJsFunction(string jsFunction)
     {
         var target = new CustomJsCollectionTarget(jsFunction);
         collectionData.AddTarget(target);

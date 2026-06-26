@@ -17,7 +17,7 @@ internal class InnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionRetu
         => toTableWrapped;
     public IInnerContainerElementsSelectorBuilder<TItem, TEndCollectionReturn> ToContainerElements
         => toContainerElementsWrapped;
-    public IInnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn> ToJsFunction(string jsFunction)
+    public IInnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn> ToCollectionJsFunction(string jsFunction)
     {
         var target = new CustomJsCollectionTarget(jsFunction);
         collectionData.AddTarget(target);

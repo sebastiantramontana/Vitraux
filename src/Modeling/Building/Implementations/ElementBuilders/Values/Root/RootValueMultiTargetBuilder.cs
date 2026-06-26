@@ -11,7 +11,7 @@ internal class RootValueMultiTargetBuilder<TViewModel, TValue>(
     public IRootValueElementSelectorBuilder<TViewModel, TValue> ToElements
         => BuildElementTarget();
 
-    public IRootValueCustomJsBuilder<TViewModel, TValue> ToJsFunction(string jsFunction)
+    public IRootValueCustomJsBuilder<TViewModel, TValue> ToValueJsFunction(string jsFunction)
         => BuildCustomJsTarget(jsFunction);
 
     private RootValueElementSelectorBuilder<TViewModel, TValue> BuildElementTarget()

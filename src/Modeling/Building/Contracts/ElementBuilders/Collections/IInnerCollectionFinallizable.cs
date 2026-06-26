@@ -1,7 +1,7 @@
 ﻿namespace Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
 
-public interface IInnerCollectionFinallizable<TItemBack, TItemActual, TEndCollectionReturn> 
-    : ICollectionModelMapper<TItemBack, TEndCollectionReturn>, IInnerCollectionTargetBuilder<TItemActual, IInnerCollectionFinallizable<TItemBack, TItemActual, TEndCollectionReturn>>
+public interface IInnerCollectionFinallizable<TItem, TEndCollectionReturn>
+    : ICollectionModelMapper<TItem, TEndCollectionReturn>, IInnerCollectionTargetBuilder<TItem, TEndCollectionReturn>
 {
     TEndCollectionReturn EndCollection { get; }
 }

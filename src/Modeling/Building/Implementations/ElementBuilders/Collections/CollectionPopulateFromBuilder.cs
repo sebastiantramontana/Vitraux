@@ -11,10 +11,10 @@ internal class CollectionPopulateFromBuilder<TItem, TEndCollectionReturn>(
     IServiceProvider serviceProvider)
     : ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn>
 {
-    public ICollectionModelMapper<TItem, TEndCollectionReturn> FromTemplate(string id)
+    public IInnerCollectionFinallizable<TItem, TEndCollectionReturn> FromTemplate(string id)
         => SetInsertionSelector(new TemplateInsertionSelectorId(id));
 
-    public ICollectionModelMapper<TItem, TEndCollectionReturn> FromUri(Uri uri)
+    public IInnerCollectionFinallizable<TItem, TEndCollectionReturn> FromUri(Uri uri)
         => SetInsertionSelector(new UriInsertionSelectorUri(uri));
 
     private CollectionModelMapper<TItem, TEndCollectionReturn> SetInsertionSelector(InsertionSelectorBase insertionSelector)

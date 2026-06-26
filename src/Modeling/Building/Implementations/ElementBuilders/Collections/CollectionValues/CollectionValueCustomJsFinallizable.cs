@@ -6,7 +6,7 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.
 
 internal class CollectionValueCustomJsFinallizable<TItem, TValue, TEndCollectionReturn>(
     CustomJsValueTarget target,
-    ICollectionModelMapper<TItem, TEndCollectionReturn> modelMapper,
+    IInnerCollectionFinallizable<TItem, TEndCollectionReturn> modelMapper,
     ICollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn> multiTargetBuilder,
     TEndCollectionReturn endCollectionReturn)
     : CollectionValueFinallizable<TItem, TValue, TEndCollectionReturn>(endCollectionReturn, modelMapper, multiTargetBuilder), 

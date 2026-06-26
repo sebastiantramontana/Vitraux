@@ -7,6 +7,6 @@ public interface IInnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionR
 {
     IInnerTableSelectorBuilder<TItem, TEndCollectionReturn> ToTables { get; }
     IInnerContainerElementsSelectorBuilder<TItem, TEndCollectionReturn> ToContainerElements { get; }
-    IInnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn> ToJsFunction(string jsFunction);
+    IInnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn> ToCollectionJsFunction(string jsFunction);
     TEndCollectionReturn EndCollection { get; }
 }

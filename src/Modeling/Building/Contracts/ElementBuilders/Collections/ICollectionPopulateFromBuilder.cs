@@ -2,6 +2,6 @@
 
 public interface ICollectionPopulateFromBuilder<TItem, TEndCollectionReturn>
 {
-    ICollectionModelMapper<TItem, TEndCollectionReturn> FromTemplate(string id);
-    ICollectionModelMapper<TItem, TEndCollectionReturn> FromUri(Uri uri);
+    IInnerCollectionFinallizable<TItem, TEndCollectionReturn> FromTemplate(string id);
+    IInnerCollectionFinallizable<TItem, TEndCollectionReturn> FromUri(Uri uri);
 }

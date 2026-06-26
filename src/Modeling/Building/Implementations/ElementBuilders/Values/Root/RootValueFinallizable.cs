@@ -21,8 +21,8 @@ internal class RootValueFinallizable<TViewModel, TValue>(
     public ModelMappingData Data
         => modelMapperWrapped.Data;
 
-    public IRootValueCustomJsBuilder<TViewModel, TValue> ToJsFunction(string jsFunction)
-        => multiTargetBuilderWrapped.ToJsFunction(jsFunction);
+    public IRootValueCustomJsBuilder<TViewModel, TValue> ToValueJsFunction(string jsFunction)
+        => multiTargetBuilderWrapped.ToValueJsFunction(jsFunction);
 
     public IRootActionSourceBuilder<TViewModel> MapActionAsync(Func<TViewModel, Task> action)
         => modelMapperWrapped.MapActionAsync(action);

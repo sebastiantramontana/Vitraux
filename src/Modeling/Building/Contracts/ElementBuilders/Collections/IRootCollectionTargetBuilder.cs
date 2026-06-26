@@ -7,5 +7,5 @@ public interface IRootCollectionTargetBuilder<TItem, TViewModel>
 {
     IRootTableSelectorBuilder<TItem, TViewModel> ToTables { get; }
     IRootContainerElementsSelectorBuilder<TItem, TViewModel> ToContainerElements { get; }
-    IRootCollectionCustomJsBuilder<TItem, TViewModel> ToJsFunction(string jsFunction);
+    IRootCollectionCustomJsBuilder<TItem, TViewModel> ToCollectionJsFunction(string jsFunction);
 }

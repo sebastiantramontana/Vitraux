@@ -4,8 +4,6 @@ namespace FromTemplate;
 
 public class FromTemplateModelConfiguration(IViewUpdater<FromTemplateViewModel> viewUpdater) : IViewModelConfiguration<FromTemplateViewModel>
 {
-    private IEnumerable<int> numbersToSuffle = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-
     public ConfigurationBehavior ConfigurationBehavior { get; } = new()
     {
         QueryElementStrategy = QueryElementStrategy.OnlyOnceAtStart,
@@ -20,47 +18,90 @@ public class FromTemplateModelConfiguration(IViewUpdater<FromTemplateViewModel> 
                 .MapValueZeroToZeroCases()
                 .MapValueOneOrManyToZeroCases()
                 .MapValueOneOrManyToOneOrManyCases()
-            .MapCollection(vm => vm.ShuffledNumbers).ToContainerElements.ById("dfdfdsf").FromTemplate("dfsdfdf")
-                .MapValue(n=>n.ShuffledNumber).ToElements.ByQuery("dfsdf").ToContent
-                .MapCollection(n=>n.Children).ToContainerElements.ByQuery("dfsdfsdf").FromTemplate("dasd")
-                    .MapValue(n=>n.ShuffledNumber).ToElements.ByQuery("dfsfdsf").ToContent
+            .MapCollection(vm => vm.Numbers).ToContainerElements.ById("dfdfdsf").FromTemplate("dfsdfdf")
+                .MapValue(n => n.Level).ToElements.ByQuery("dfsdf12").ToContent
+                .MapValue(n => n.Number).ToElements.ByQuery("dfsdf").ToContent
+                .MapCollection(n => n.Children).ToContainerElements.ByQuery("dfsdfsdf").FromTemplate("dasd")
+                    .MapValue(n => n.Level).ToElements.ByQuery("dfsdf12").ToContent
+                    .MapValue(n => n.Number).ToElements.ByQuery("dfsfdsf").ToContent
                 .EndCollection
             .EndCollection
-            .MapCollection(vm => vm.ShuffledNumbers)
+            .MapCollection(vm => vm.Numbers).ToContainerElements.ById("dfdfdsf").FromTemplate("dfsdfdf")
+                .MapValue(n => n.Level).ToElements.ByQuery("dfsdf12").ToContent
+                .MapValue(n => n.Number).ToElements.ByQuery("dfsdf").ToContent
+                .MapCollection(n => n.Children).ToContainerElements.ByQuery("dfsdfsdf").FromTemplate("dasd")
+                    .MapValue(n => n.Level).ToElements.ByQuery("dfsdf12").ToContent
+                    .MapValue(n => n.Number).ToElements.ByQuery("dfsfdsf").ToContent
+                    .MapCollection(n => n.Children)
+                        .ToContainerElements.ByQuery("dfsdfsdf").FromTemplate("dasd")
+                            .MapValue(n => n.Level).ToElements.ByQuery("dfsdf12").ToContent
+                            .MapValue(n => n.Number).ToElements.ByQuery("dfsfdsf").ToContent
+                        //.ToContainerElements.ByQuery("dfsdfsdf").FromTemplate("dasd")
+                        //    .MapValue(n => n.Level).ToElements.ByQuery("dfsdf12").ToContent
+                        //    .MapValue(n => n.Number).ToElements.ByQuery("dfsfdsf").ToContent
+                    .EndCollection
+                .EndCollection
+            .EndCollection
+            .MapCollection(vm => vm.Numbers) //Start MapCollection buggy
                 .ToContainerElements.ByQuery(".container-level-1").FromTemplate("container-level-1-template")
-                    .MapValue(n => n.ShuffledNumber).ToElements.ByQuery("[item-level-1]").ToContent
+                    .MapValue(n => n.Level).ToElements.ByQuery("[item-level-1-level]").ToContent
+                    .MapValue(n => n.Number).ToElements.ByQuery("[item-level-1-number]").ToContent
                     .MapCollection(n => n.Children).ToTables.ByQuery("[table-level-2]").PopulatingRows.FromTemplate("table-level-2-template")
-                        .MapValue(c => c.ShuffledNumber).ToElements.ByQuery("[cell-level-2]").ToContent
+                        .MapValue(c => c.Level).ToElements.ByQuery("[cell-level-2-level]").ToContent
+                        .MapValue(c => c.Number).ToElements.ByQuery("[cell-level-2-number]").ToContent
                         .MapCollection(c => c.Children).ToContainerElements.ByQuery("cell-container-2").FromTemplate("container-level-3-template")
-                            .MapValue(c => c.ShuffledNumber).ToElements.ByQuery("item-level-3").ToContent
+                            .MapValue(c => c.Level).ToElements.ByQuery("item-level-3-level").ToContent
+                            .MapValue(c => c.Number).ToElements.ByQuery("item-level-3-number").ToContent
                         .EndCollection
                     .EndCollection
                 .ToTables.ByQuery("[table-level-1]").PopulatingRows.FromTemplate("table-level-1-template")
-                    .MapValue(n => n.ShuffledNumber).ToElements.ByQuery("tr > td").ToContent
+                    .MapValue(n => n.Level).ToElements.ByQuery("tr > td[level]").ToContent
+                    .MapValue(n => n.Number).ToElements.ByQuery("tr > td[number]").ToContent
                     .MapCollection(n => n.Children).ToContainerElements.ByQuery("gfddgfg").FromTemplate("dfdfsdf")
-                        .MapValue(c => c.ShuffledNumber).ToElements.ByQuery("dfdsfdf").ToContent
+                        .MapValue(c => c.Level).ToElements.ByQuery("dfdsfdf").ToContent
+                        .MapValue(c => c.Number).ToElements.ByQuery("dfdsfdf").ToContent
                         .MapCollection(c => c.Children).ToContainerElements.ByQuery("fsdfsdf").FromTemplate("dfdsfdf")
-                            .MapValue(c => c.ShuffledNumber).ToElements.ByQuery("dfdsfdf").ToContent
+                            .MapValue(c => c.Level).ToElements.ByQuery("dfdsfdf").ToContent
+                            .MapValue(c => c.Number).ToElements.ByQuery("dfdsfdf").ToContent
                         .EndCollection
                     .EndCollection
-            .EndCollection
+                .ToTables.ByQuery("[another-table-level-1]").PopulatingRows.FromTemplate("table-level-1-template")
+                    .MapValue(n => n.Level).ToElements.ByQuery("tr > td[level]").ToContent
+                    .MapValue(n => n.Number).ToElements.ByQuery("tr > td[number]").ToContent
+                    .MapCollection(n => n.Children).ToContainerElements.ByQuery("gfddgfg").FromTemplate("dfdfsdf")
+                        .MapValue(c => c.Level).ToElements.ByQuery("dfdsfdf").ToContent
+                        .MapValue(c => c.Number).ToElements.ByQuery("dfdsfdf").ToContent
+                        .MapCollection(c => c.Children).ToContainerElements.ByQuery("fsdfsdf").FromTemplate("dfdsfdf")
+                            .MapValue(c => c.Level).ToElements.ByQuery("dfdsfdf").ToContent
+                            .MapValue(c => c.Number).ToElements.ByQuery("dfdsfdf").ToContent
+                        .EndCollection
+                    .EndCollection
+            .EndCollection // <-- this EndCollection should finish the started MapCollection buggy
+          //.EndCollection |
+          //.EndCollection | bug: In this case, the DSL expects 2 more EndCollection to finish the started MapCollection buggy. 
             .Data;
 
-    private Task UpdateViewModel(FromTemplateViewModel vm)
+    /*
+        Cause of Bug: The interface model for DSL in namespace Vitraux.Modeling.Building.Contracts is expecting an EndCollection for each collection target (ToContainerElements or ToTables) per MapCollection
+    */
+
+    private Task UpdateViewModel()
     {
         var now = DateTime.Now;
-        var shuffledNumbers = ReshuffleNumbers();
+        var children = GenerateChildren();
 
-        var newVM = new FromTemplateViewModel(now, shuffledNumbers);
+        var newVM = new FromTemplateViewModel(now, children);
 
         return viewUpdater.Update(newVM);
     }
 
-    private IEnumerable<int> ReshuffleNumbers()
-    {
-        numbersToSuffle = numbersToSuffle.Shuffle();
-        return numbersToSuffle;
-    }
+    private static IEnumerable<NumbersLevel> GenerateChildren()
+       => GenerateChildrenRecursive([1, 2, 3, 4, 5], 1, 3);
+
+    private static IEnumerable<NumbersLevel> GenerateChildrenRecursive(IEnumerable<int> numbers, int currentLevel, int depthLevelCount)
+        => (currentLevel == depthLevelCount)
+            ? []
+            : numbers.Select(number => new NumbersLevel(currentLevel, number, GenerateChildrenRecursive(numbers, currentLevel + 1, depthLevelCount)));
 
     private static string FormatTime(DateTime now)
         => now.ToString("HH:mm:ss");

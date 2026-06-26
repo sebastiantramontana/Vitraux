@@ -23,7 +23,7 @@ internal class RootCollectionToOwnMappingCustomJsBuilder<TItem, TViewModel>(
         return this;
     }
 
-    public IRootCollectionCustomJsBuilder<TItem, TViewModel> ToJsFunction(string jsFunction)
+    public IRootCollectionCustomJsBuilder<TItem, TViewModel> ToCollectionJsFunction(string jsFunction)
     {
         var target = new CustomJsCollectionTarget(jsFunction);
         collectionData.AddTarget(target);

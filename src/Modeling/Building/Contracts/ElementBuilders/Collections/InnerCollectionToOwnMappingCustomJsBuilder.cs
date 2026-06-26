@@ -23,7 +23,7 @@ internal class InnerCollectionToOwnMappingCustomJsBuilder<TItem, TEndCollectionR
         return this;
     }
 
-    public IInnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn> ToJsFunction(string jsFunction)
+    public IInnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn> ToCollectionJsFunction(string jsFunction)
     {
         var target = new CustomJsCollectionTarget(jsFunction);
         collectionData.AddTarget(target);

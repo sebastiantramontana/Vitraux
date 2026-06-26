@@ -6,13 +6,13 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.
 
 internal class CollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>(
     ValueData valueData,
-    ICollectionModelMapper<TItem, TEndCollectionReturn> modelMapper,
+    IInnerCollectionFinallizable<TItem, TEndCollectionReturn> modelMapper,
     TEndCollectionReturn endCollectionReturn)
     : CollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>(valueData, modelMapper, endCollectionReturn),
       ICollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>
 {
     private readonly ValueData _valueData = valueData;
-    private readonly ICollectionModelMapper<TItem, TEndCollectionReturn> _modelMapper = modelMapper;
+    private readonly IInnerCollectionFinallizable<TItem, TEndCollectionReturn> _modelMapper = modelMapper;
 
     public ICollectionModelMapper<TItem, TEndCollectionReturn> ToOwnMapping
         => BuildOwnMapping();

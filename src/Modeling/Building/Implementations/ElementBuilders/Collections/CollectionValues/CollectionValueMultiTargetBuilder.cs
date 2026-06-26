@@ -6,14 +6,14 @@ namespace Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.
 
 internal class CollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>(
     ValueData valueData,
-    ICollectionModelMapper<TItem, TEndCollectionReturn> modelMapper,
+    IInnerCollectionFinallizable<TItem, TEndCollectionReturn> modelMapper,
     TEndCollectionReturn endCollectionReturn)
     : ICollectionValueMultiTargetBuilder<TItem, TValue, TEndCollectionReturn>
 {
     public ICollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> ToElements
         => BuildElementTarget();
 
-    public ICollectionValueCustomJsFinallizable<TItem, TValue, TEndCollectionReturn> ToJsFunction(string jsFunction)
+    public ICollectionValueCustomJsFinallizable<TItem, TValue, TEndCollectionReturn> ToValueJsFunction(string jsFunction)
         => BuildCustomJsTarget(jsFunction);
 
     private CollectionValueElementSelectorBuilder<TItem, TValue, TEndCollectionReturn> BuildElementTarget()

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections;
 using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.CollectionValues;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.ContainerElements;
+using Vitraux.Modeling.Building.Contracts.ElementBuilders.Collections.Tables;
 using Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.CollectionValues;
 using Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.ContainerElements;
 using Vitraux.Modeling.Building.Implementations.ElementBuilders.Collections.Tables;
@@ -14,8 +16,25 @@ internal class CollectionModelMapper<TItem, TEndCollectionReturn>(
     ModelMappingData modelMappingDataToCollect,
     CollectionData originalCollectionData,
     IServiceProvider serviceProvider)
-    : ICollectionModelMapper<TItem, TEndCollectionReturn>
+    : IInnerCollectionFinallizable<TItem, TEndCollectionReturn>
 {
+    public TEndCollectionReturn EndCollection
+        => endCollectionReturn;
+
+    public IInnerTableSelectorBuilder<TItem, TEndCollectionReturn> ToTables
+        => new InnerTableSelectorBuilder<TItem, TEndCollectionReturn>(originalCollectionData, endCollectionReturn, serviceProvider);
+
+    public IInnerContainerElementsSelectorBuilder<TItem, TEndCollectionReturn> ToContainerElements
+        => new InnerContainerElementsSelectorBuilder<TItem, TEndCollectionReturn>(originalCollectionData, endCollectionReturn, serviceProvider);
+
+    public IInnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn> ToCollectionJsFunction(string jsFunction)
+    {
+        var target = new CustomJsCollectionTarget(jsFunction);
+        originalCollectionData.AddTarget(target);
+
+        return new InnerCollectionCustomJsBuilder<TItem, TEndCollectionReturn>(target, originalCollectionData, endCollectionReturn, serviceProvider);
+    }
+
     public IInnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> ToOwnMapping
         => AddToOwnMapping();
 
@@ -27,12 +46,12 @@ internal class CollectionModelMapper<TItem, TEndCollectionReturn>(
         return new CollectionValueTargetBuilder<TItem, TValue, TEndCollectionReturn>(newValue, this, endCollectionReturn);
     }
 
-    public IInnerCollectionTargetBuilder<TInnerItem, IInnerCollectionFinallizable<TItem, TInnerItem, TEndCollectionReturn>> MapCollection<TInnerItem>(Func<TItem, IEnumerable<TInnerItem>> func)
+    public IInnerCollectionTargetBuilder<TInnerItem, IInnerCollectionFinallizable<TItem, TEndCollectionReturn>> MapCollection<TInnerItem>(Func<TItem, IEnumerable<TInnerItem>> func)
     {
         var newCollection = new CollectionData(func);
         modelMappingDataToCollect.AddCollection(newCollection);
 
-        return new InnerCollectionTargetBuilder<TInnerItem, TItem, TEndCollectionReturn>(newCollection, this, endCollectionReturn, serviceProvider);
+        return new InnerCollectionTargetBuilder<TInnerItem, IInnerCollectionFinallizable<TItem, TEndCollectionReturn>>(newCollection, this, serviceProvider);
     }
 
     private InnerCollectionToOwnMappingFinallizable<TItem, TEndCollectionReturn> AddToOwnMapping()
